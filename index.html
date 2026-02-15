@@ -336,7 +336,8 @@
     <div class="container">
         <!-- HEADER -->
         <div class="site-header">
-            <div class="site-title">Bridgeman Downs Retirement Village<b></b> Residents Information Hub</div>
+            <div class="site-title">Bridgeman Downs Retirement Village<b> 
+                                    Residents Information Hub</div>
             <div class="site-subtitle">Your Community Connection</div>
         </div>
         
@@ -436,24 +437,7 @@
                         <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="showPage('contact')">Send Feedback</button>
                         <button class="btn" style="width: 100%;" onclick="showPage('contact')">Emergency Contacts</button>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="sidebar-widget">
-    <div class="widget-title">🌤️ Local Weather</div>
-    <div id="weather-widget" style="text-align: center; padding: 10px;">
-        <div id="weather-loading" style="color: #5f6368;">Loading weather...</div>
-        <div id="weather-content" style="display: none;">
-            <div id="weather-temp" style="font-size: 2em; font-weight: bold; color: #2c5aa0;"></div>
-            <div id="weather-desc" style="color: #202124; margin: 5px 0;"></div>
-            <div id="weather-details" style="color: #5f6368; font-size: 0.9em; line-height: 1.6;">
-                <div id="weather-minmax"></div>
-                <div id="weather-humidity"></div>
-            </div>
-            <div style="color: #9aa0a6; font-size: 0.8em; margin-top: 10px;">Brisbane, QLD</div>
-        </div>
-    </div>
-</div>
+               
         <!-- NEWSLETTER PAGE -->
         <div id="newsletter" class="page-content">
             <h2 class="section-title">Newsletter Archive</h2>
@@ -699,76 +683,7 @@
     
     <script>
         function showPage(pageId) {
-            // Weather widget - Brisbane
-function loadWeather() {
-    // Using Open-Meteo API (free, no API key needed)
-    // Brisbane coordinates: -27.4705, 153.0260
-    var apiUrl = 'https://api.open-meteo.com/v1/forecast?latitude=-27.4705&longitude=153.0260&current=temperature_2m,relative_humidity_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=Australia/Brisbane';
-    
-    fetch(apiUrl)
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-            var temp = Math.round(data.current.temperature_2m);
-            var humidity = data.current.relative_humidity_2m;
-            var weatherCode = data.current.weather_code;
-            var maxTemp = Math.round(data.daily.temperature_2m_max[0]);
-            var minTemp = Math.round(data.daily.temperature_2m_min[0]);
             
-            // Weather code descriptions
-            var weatherDesc = getWeatherDescription(weatherCode);
-            
-            // Update display
-            document.getElementById('weather-temp').textContent = temp + '°C';
-            document.getElementById('weather-desc').textContent = weatherDesc;
-            document.getElementById('weather-minmax').textContent = 'High: ' + maxTemp + '°C | Low: ' + minTemp + '°C';
-            document.getElementById('weather-humidity').textContent = 'Humidity: ' + humidity + '%';
-            
-            // Show weather content, hide loading
-            document.getElementById('weather-loading').style.display = 'none';
-            document.getElementById('weather-content').style.display = 'block';
-        })
-        .catch(function(error) {
-            document.getElementById('weather-loading').textContent = 'Weather unavailable';
-            console.log('Weather error:', error);
-        });
-}
-
-function getWeatherDescription(code) {
-    var descriptions = {
-        0: 'Clear sky',
-        1: 'Mainly clear',
-        2: 'Partly cloudy',
-        3: 'Overcast',
-        45: 'Foggy',
-        48: 'Foggy',
-        51: 'Light drizzle',
-        53: 'Drizzle',
-        55: 'Heavy drizzle',
-        61: 'Light rain',
-        63: 'Rain',
-        65: 'Heavy rain',
-        71: 'Light snow',
-        73: 'Snow',
-        75: 'Heavy snow',
-        77: 'Snow grains',
-        80: 'Light showers',
-        81: 'Showers',
-        82: 'Heavy showers',
-        85: 'Light snow showers',
-        86: 'Snow showers',
-        95: 'Thunderstorm',
-        96: 'Thunderstorm with hail',
-        99: 'Thunderstorm with hail'
-    };
-    return descriptions[code] || 'Unknown';
-}
-
-// Load weather when page loads
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadWeather);
-} else {
-    loadWeather();
-}
             // Hide all pages
             var pages = document.querySelectorAll('.page-content');
             for (var i = 0; i < pages.length; i++) {
