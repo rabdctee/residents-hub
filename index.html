@@ -726,7 +726,7 @@
     </div>
     
     <script>
-    function showPage(pageId) {
+        function showPage(pageId) {
         
         // Hide all pages
         var pages = document.querySelectorAll('.page-content');
@@ -753,30 +753,6 @@
         
         return false;
     }
-    
-}
-</script>
-</body>
-</html>
-            // Remove active class from all nav items
-            var navItems = document.querySelectorAll('.nav-item');
-            for (var i = 0; i < navItems.length; i++) {
-                navItems[i].classList.remove('active');
-            }
-            
-            // Show selected page
-            document.getElementById(pageId).classList.add('active');
-            
-            // Add active class to clicked nav item
-            if (event && event.target) {
-                event.target.classList.add('active');
-            }
-            
-            // Scroll to top
-            window.scrollTo(0, 0);
-            
-            return false;
-        }
     </script>
 </body>
 </html>
