@@ -442,7 +442,25 @@
                 </div>
             </div>
         </div>
-        
+        <div class="sidebar-widget">
+    <div class="widget-title">🔗 Useful Links</div>
+    <button onclick="toggleLinks()" class="btn" style="width: 100%; text-align: left; position: relative;">
+        <span>View Links</span>
+        <span id="arrow" style="float: right;">▼</span>
+    </button>
+    
+    <div id="useful-links-dropdown" style="display: none; margin-top: 15px; line-height: 2;">
+        <a href="https://my.gov.au" target="_blank" style="display: block; color: #2c5aa0; text-decoration: none; padding: 5px 0; font-size: 0.9em;">🏛️ MyGov</a>
+        <a href="https://www.myagedcare.gov.au" target="_blank" style="display: block; color: #2c5aa0; text-decoration: none; padding: 5px 0; font-size: 0.9em;">🏥 My Aged Care</a>
+        <a href="https://www.qld.gov.au" target="_blank" style="display: block; color: #2c5aa0; text-decoration: none; padding: 5px 0; font-size: 0.9em;">🏛️ QLD Government</a>
+        <a href="https://www.dss.gov.au/older-australians" target="_blank" style="display: block; color: #2c5aa0; text-decoration: none; padding: 5px 0; font-size: 0.9em;">👥 Older Australians</a>
+        <a href="https://arqrv.org.au" target="_blank" style="display: block; color: #2c5aa0; text-decoration: none; padding: 5px 0; font-size: 0.9em;">🏘️ ARQ Advocacy</a>
+        <a href="https://www.esafety.gov.au/seniors" target="_blank" style="display: block; color: #2c5aa0; text-decoration: none; padding: 5px 0; font-size: 0.9em;">🔒 eSafety for Seniors</a>
+        <a href="https://www.canstar.com.au/energy/how-to-read-energy-bill/" target="_blank" style="display: block; color: #2c5aa0; text-decoration: none; padding: 5px 0; font-size: 0.9em;">⚡ Energy Bills Guide</a>
+        <a href="https://www.brisbane.qld.gov.au/libraries-venues-and-facilities/libraries/library-locations" target="_blank" style="display: block; color: #2c5aa0; text-decoration: none; padding: 5px 0; font-size: 0.9em;">📚 Brisbane Libraries</a>
+        <a href="https://au.localitybiz.com/brisbane/theater-%26-cinema-in-brisbane-city" target="_blank" style="display: block; color: #2c5aa0; text-decoration: none; padding: 5px 0; font-size: 0.9em;">🎭 Cinemas & Theatres</a>
+    </div>
+</div>
         <!-- NEWSLETTER PAGE -->
         <!-- NEWSLETTER PAGE -->
         <div id="newsletter" class="page-content">
@@ -695,7 +713,18 @@
             for (var i = 0; i < pages.length; i++) {
                 pages[i].classList.remove('active');
             }
-            
+           function toggleLinks() {
+    var dropdown = document.getElementById('useful-links-dropdown');
+    var arrow = document.getElementById('arrow');
+    
+    if (dropdown.style.display === 'none') {
+        dropdown.style.display = 'block';
+        arrow.textContent = '▲';
+    } else {
+        dropdown.style.display = 'none';
+        arrow.textContent = '▼';
+    }
+} 
             // Remove active class from all nav items
             var navItems = document.querySelectorAll('.nav-item');
             for (var i = 0; i < navItems.length; i++) {
