@@ -796,7 +796,18 @@
     
     <script>
         function showPage(pageId) {
-        
+        function toggleSection(sectionId) {
+    var section = document.getElementById(sectionId);
+    var arrow = document.getElementById(sectionId + '-arrow');
+    
+    if (section.style.display === 'none' || section.style.display === '') {
+        section.style.display = 'block';
+        arrow.textContent = '▲';
+    } else {
+        section.style.display = 'none';
+        arrow.textContent = '▼';
+    }
+}
         // Hide all pages
         var pages = document.querySelectorAll('.page-content');
         for (var i = 0; i < pages.length; i++) {
