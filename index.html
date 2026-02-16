@@ -538,95 +538,154 @@
         </div>
         
         <!-- VILLAGE INFORMATION PAGE -->
-        <div id="village-info" class="page-content">
-            <div class="warning-box">
-                <strong>🔒 RESIDENTS AREA - Residents Only</strong><br>
-                This page contains village documents and financial information for residents only.
-            </div>
-            
-            <h2 class="section-title">Village Information</h2>
-            <p style="color: #5f6368; margin-bottom: 30px;">Access important village documents and information. All documents are view-only for residents.</p>
-            
-            <div class="doc-section">
-                <h3>📜 QLD Government RV Act & Regulations</h3>
-                <a href="https://drive.google.com/drive/folders/1PcIMDqkXCdx-F07gYa5Kr-U-rcdnjMS4?usp=share_link" target="_blank" class="doc-link">
-                    View QLD Government Retirement Villages Act & Regulations
-                </a>
-            </div>
-            
-            <div class="doc-section">
-                <h3>📜 Constitution & Bylaws</h3>
-                <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=sharing" target="_blank" class="doc-link">
-                    View Village Constitution and Bylaws
-                </a>
-            </div>
-            
-            <div class="doc-section">
-                <h3>💰 Financial Reports</h3>
-                <a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank" class="doc-link">
-                    View Financial Reports and Budgets
-                </a>
-            </div>
-            
-            <div class="doc-section">
-                <h3>📝 Monthly Meetings - Agendas & Minutes</h3>
-                <a href="https://drive.google.com/drive/folders/10kOi7clFyWaSlS7AYY1aArYw7Lh7mwIz?usp=share_link" target="_blank" class="doc-link">
-                    View Meeting Agendas and Minutes
-                </a>
-            </div>
-            
-            <div class="doc-section">
-                <h3>🏛️ AGM Information</h3>
-                <div class="info-box">
-                    <strong>Next AGM:</strong> Tuesday, May 12, 2026 at 10:30 AM in the Melody Ridge Centre
-                </div>
-                <a href="https://drive.google.com/drive/folders/1wr1gDDpHNYbQVSuWAT7MfoadwX-_xZQ9?usp=share_link" target="_blank" class="doc-link">
-                    View AGM Documents and Materials
-                </a>
-            </div>
-
-            <div class="doc-section">
-                <h3>🏢 Aveo - Committee Chairpersons Roundtable</h3>
-                <a href="https://drive.google.com/drive/folders/18zfk867xllx_KSlnbWO7xtB1P-j2kANY?usp=share_link" target="_blank" class="doc-link">
-                    View Aveo 2026 Committee Chairpersons Roundtable Presentation
-                </a>
-                <p style="color: #5f6368; margin-top: 10px; font-size: 0.9em;">
-                    Presentation from Aveo 2026 Committee Chairpersons meeting
-                </p>
-            </div>
+<div id="village-info" class="page-content">
+    <div class="warning-box">
+        <strong>🔒 RESIDENTS AREA - Residents Only</strong><br>
+        This page contains village documents and financial information for residents only.
+    </div>
+    
+    <h2 class="section-title">Village Information</h2>
+    <p style="color: #5f6368; margin-bottom: 30px;">Click any section below to view documents</p>
+    
+    <!-- QLD Act Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('qld-act')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">📜 QLD Government RV Act & Regulations</span>
+            <span id="qld-act-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
         </div>
-   
-        <!-- USEFUL LINKS PAGE -->
+        <div id="qld-act" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <a href="https://drive.google.com/drive/folders/1PcIMDqkXCdx-F07gYa5Kr-U-rcdnjMS4?usp=share_link" target="_blank" class="doc-link">
+                View QLD Government Retirement Villages Act & Regulations
+            </a>
+        </div>
+    </div>
+    
+    <!-- Constitution Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('constitution')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">📜 Constitution & Bylaws</span>
+            <span id="constitution-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
+        </div>
+        <div id="constitution" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=sharing" target="_blank" class="doc-link">
+                View Village Constitution and Bylaws
+            </a>
+        </div>
+    </div>
+    
+    <!-- Financial Reports Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('financials')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">💰 Financial Reports</span>
+            <span id="financials-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
+        </div>
+        <div id="financials" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank" class="doc-link">
+                View Financial Reports and Budgets
+            </a>
+        </div>
+    </div>
+    
+    <!-- Minutes Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('minutes')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">📝 Monthly Meetings - Agendas & Minutes</span>
+            <span id="minutes-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
+        </div>
+        <div id="minutes" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <a href="https://drive.google.com/drive/folders/10kOi7clFyWaSlS7AYY1aArYw7Lh7mwIz?usp=share_link" target="_blank" class="doc-link">
+                View Meeting Agendas and Minutes
+            </a>
+        </div>
+    </div>
+    
+    <!-- AGM Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('agm')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🏛️ AGM Information</span>
+            <span id="agm-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
+        </div>
+        <div id="agm" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <div class="info-box">
+                <strong>Next AGM:</strong> Tuesday, May 12, 2026 at 10:30 AM in the Melody Ridge Centre
+            </div>
+            <a href="https://drive.google.com/drive/folders/1wr1gDDpHNYbQVSuWAT7MfoadwX-_xZQ9?usp=share_link" target="_blank" class="doc-link">
+                View AGM Documents and Materials
+            </a>
+        </div>
+    </div>
+    
+    <!-- Aveo Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('aveo')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🏢 Aveo - Committee Chairpersons Roundtable</span>
+            <span id="aveo-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
+        </div>
+        <div id="aveo" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <a href="https://drive.google.com/drive/folders/18zfk867xllx_KSlnbWO7xtB1P-j2kANY?usp=share_link" target="_blank" class="doc-link">
+                View Aveo Roundtable Communications
+            </a>
+            <p style="color: #5f6368; margin-top: 10px; font-size: 0.9em;">
+                Minutes and updates from Aveo Committee Chairpersons meetings
+            </p>
+        </div>
+    </div>
+</div>
+       <!-- USEFUL LINKS PAGE -->
 <div id="useful-links" class="page-content">
     <h2 class="section-title">🔗 Useful Links</h2>
-    <p style="color: #5f6368; margin-bottom: 30px;">Quick access to helpful government services, safety resources, and local information</p>
+    <p style="color: #5f6368; margin-bottom: 30px;">Click any section below to view links</p>
     
-    <div class="doc-section">
-        <h3>🏛️ Government Services</h3>
-        <a href="https://my.gov.au" target="_blank" class="doc-link">MyGov - Access government services online</a>
-        <a href="https://www.myagedcare.gov.au" target="_blank" class="doc-link">My Aged Care - Aged care services and support</a>
-        <a href="https://www.qld.gov.au" target="_blank" class="doc-link">QLD Government - State government services</a>
-        <a href="https://www.dss.gov.au/older-australians" target="_blank" class="doc-link">Department of Social Services - Older Australians</a>
+    <!-- Government Services Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('gov-services')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🏛️ Government Services</span>
+            <span id="gov-services-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
+        </div>
+        <div id="gov-services" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <a href="https://my.gov.au" target="_blank" class="doc-link">MyGov - Access government services online</a>
+            <a href="https://www.myagedcare.gov.au" target="_blank" class="doc-link">My Aged Care - Aged care services and support</a>
+            <a href="https://www.qld.gov.au" target="_blank" class="doc-link">QLD Government - State government services</a>
+            <a href="https://www.dss.gov.au/older-australians" target="_blank" class="doc-link">Department of Social Services - Older Australians</a>
+        </div>
     </div>
     
-    <div class="doc-section">
-        <h3>🏘️ Retirement Village Resources</h3>
-        <a href="https://arqrv.org.au" target="_blank" class="doc-link">ARQ - Association of Residents of QLD Retirement Villages</a>
-        <p style="color: #5f6368; margin-top: 10px; font-size: 0.9em;">
-            Advocacy and support for retirement village residents in Queensland
-        </p>
+    <!-- Retirement Village Resources Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('rv-resources')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🏘️ Retirement Village Resources</span>
+            <span id="rv-resources-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
+        </div>
+        <div id="rv-resources" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <a href="https://arqrv.org.au" target="_blank" class="doc-link">ARQ - Association of Residents of QLD Retirement Villages</a>
+            <p style="color: #5f6368; margin-top: 10px; font-size: 0.9em;">
+                Advocacy and support for retirement village residents in Queensland
+            </p>
+        </div>
     </div>
     
-    <div class="doc-section">
-        <h3>🔒 Safety & Information</h3>
-        <a href="https://www.esafety.gov.au/seniors" target="_blank" class="doc-link">eSafety - Online safety for seniors</a>
-        <a href="https://www.canstar.com.au/energy/how-to-read-energy-bill/" target="_blank" class="doc-link">Canstar - How to read your energy bill</a>
+    <!-- Safety & Information Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('safety')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🔒 Safety & Information</span>
+            <span id="safety-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
+        </div>
+        <div id="safety" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <a href="https://www.esafety.gov.au/seniors" target="_blank" class="doc-link">eSafety - Online safety for seniors</a>
+            <a href="https://www.canstar.com.au/energy/how-to-read-energy-bill/" target="_blank" class="doc-link">Canstar - How to read your energy bill</a>
+        </div>
     </div>
     
-    <div class="doc-section">
-        <h3>📚 Local Services</h3>
-        <a href="https://www.brisbane.qld.gov.au/libraries-venues-and-facilities/libraries/library-locations" target="_blank" class="doc-link">Brisbane Libraries - Library locations and services</a>
-        <a href="https://au.localitybiz.com/brisbane/theater-%26-cinema-in-brisbane-city" target="_blank" class="doc-link">Brisbane Entertainment - Cinemas and theatres</a>
+    <!-- Local Services Section -->
+    <div style="margin-bottom: 15px;">
+        <div onclick="toggleSection('local-services')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">📚 Local Services</span>
+            <span id="local-services-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
+        </div>
+        <div id="local-services" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
+            <a href="https://www.brisbane.qld.gov.au/libraries-venues-and-facilities/libraries/library-locations" target="_blank" class="doc-link">Brisbane Libraries - Library locations and services</a>
+            <a href="https://au.localitybiz.com/brisbane/theater-%26-cinema-in-brisbane-city" target="_blank" class="doc-link">Brisbane Entertainment - Cinemas and theatres</a>
+        </div>
     </div>
     
     <div class="info-box" style="margin-top: 40px;">
