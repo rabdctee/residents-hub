@@ -706,25 +706,49 @@
     </div>
     
     <script>
-        function showPage(pageId) {
-            
-            // Hide all pages
-            var pages = document.querySelectorAll('.page-content');
-            for (var i = 0; i < pages.length; i++) {
-                pages[i].classList.remove('active');
-            }
-           function toggleLinks() {
-    var dropdown = document.getElementById('useful-links-dropdown');
-    var arrow = document.getElementById('arrow');
-    
-    if (dropdown.style.display === 'none') {
-        dropdown.style.display = 'block';
-        arrow.textContent = '▲';
-    } else {
-        dropdown.style.display = 'none';
-        arrow.textContent = '▼';
+    function showPage(pageId) {
+        
+        // Hide all pages
+        var pages = document.querySelectorAll('.page-content');
+        for (var i = 0; i < pages.length; i++) {
+            pages[i].classList.remove('active');
+        }
+        
+        // Remove active class from all nav items
+        var navItems = document.querySelectorAll('.nav-item');
+        for (var i = 0; i < navItems.length; i++) {
+            navItems[i].classList.remove('active');
+        }
+        
+        // Show selected page
+        document.getElementById(pageId).classList.add('active');
+        
+        // Add active class to clicked nav item
+        if (event && event.target) {
+            event.target.classList.add('active');
+        }
+        
+        // Scroll to top
+        window.scrollTo(0, 0);
+        
+        return false;
     }
-} 
+    
+    function toggleLinks() {
+        var dropdown = document.getElementById('useful-links-dropdown');
+        var arrow = document.getElementById('arrow');
+        
+        if (dropdown.style.display === 'none') {
+            dropdown.style.display = 'block';
+            arrow.textContent = '▲';
+        } else {
+            dropdown.style.display = 'none';
+            arrow.textContent = '▼';
+        }
+    }
+</script>
+</body>
+</html>
             // Remove active class from all nav items
             var navItems = document.querySelectorAll('.nav-item');
             for (var i = 0; i < navItems.length; i++) {
