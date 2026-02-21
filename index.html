@@ -437,34 +437,21 @@
                         <!-- END OF ANNOUNCEMENTS SECTION -->
                     </div>
                     
-                    <div class="content-section">
-                        <h2 class="section-title">Quick Access</h2>
-                        <div class="card-grid">
-                            <div class="card">
-                                <div class="card-icon">📋</div>
-                                <div class="card-title">Village Documents</div>
-                                <div class="card-description">Constitution, finances, meeting minutes and AGM information</div>
-                                <button class="btn" onclick="showPage('village-info')">View Documents</button>
-                            </div>
-                            
-                            <div class="card">
-                                <div class="card-icon"><img src="calendar.png" alt="Calendar" style="width: 60px; height: 60px;"></div>
-                                <div class="card-title">Upcoming Events</div>
-                                <div class="card-description">See what's happening and register for events</div>
-                                <button class="btn" onclick="showPage('events')">View Calendar</button>
-                            </div>
-                            
-                            <div class="card">
-                                <div class="card-icon">📰</div>
-                                <div class="card-title">Latest Newsletter</div>
-                                <div class="card-description">Read the current edition</div>
-                                <button class="btn" onclick="showPage('newsletter')">Read Now</button>
-                            </div>
-                        </div>
+                 <div class="content-section">
+                    <h2 class="section-title">Quick Access</h2>
+                    <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
+                        <button class="btn" style="width: 100%; margin-bottom: 10px; text-align: left; font-size: 16px;" onclick="showPage('village-info')">
+                            📋 Village Documents
+                        </button>
+                        <button class="btn" style="width: 100%; margin-bottom: 10px; text-align: left; font-size: 16px;" onclick="showPage('events')">
+                            <img src="calendar.png" alt="" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px;"> Upcoming Events
+                        </button>
+                        <button class="btn" style="width: 100%; text-align: left; font-size: 16px;" onclick="showPage('newsletter')">
+                            📰 Latest Newsletter
+                        </button>
                     </div>
                 </div>
-                
-                <div>
+            <div>
                     <div class="sidebar-widget">
                         <div class="widget-title"><img src="calendar.png" alt="Calendar" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 5px;">Upcoming Events</div>
                         <!-- UPDATE EVENTS HERE - Edit as needed -->
