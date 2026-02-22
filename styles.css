@@ -1,3 +1,4 @@
+/* ============================= */
 /* GENERAL RESET */
 * {
     margin: 0;
@@ -13,6 +14,7 @@ body {
     line-height: 1.6;
 }
 
+/* ============================= */
 /* CONTAINER */
 .container {
     max-width: 1200px;
@@ -21,6 +23,7 @@ body {
     background: #fff;
 }
 
+/* ============================= */
 /* HEADER */
 .site-header {
     text-align: center;
@@ -39,6 +42,7 @@ body {
     color: #555;
 }
 
+/* ============================= */
 /* NAVIGATION */
 .nav-bar {
     display: flex;
@@ -65,6 +69,7 @@ body {
     color: white;
 }
 
+/* ============================= */
 /* PAGE CONTENT */
 .page-content {
     display: none;
@@ -75,6 +80,7 @@ body {
     display: block;
 }
 
+/* ============================= */
 /* SECTION TITLES */
 .section-title {
     font-size: 1.6em;
@@ -82,6 +88,7 @@ body {
     color: #2c5aa0;
 }
 
+/* ============================= */
 /* TWO-COLUMN LAYOUT */
 .home-grid,
 .two-column {
@@ -94,6 +101,7 @@ body {
     flex: 1;
 }
 
+/* ============================= */
 /* SIDEBAR */
 .sidebar-widget {
     background: #f8f9fa;
@@ -108,6 +116,7 @@ body {
     color: #2c5aa0;
 }
 
+/* ============================= */
 /* ANNOUNCEMENTS / CARDS */
 .announcement,
 .contact-card {
@@ -118,6 +127,7 @@ body {
     margin-bottom: 15px;
 }
 
+/* ============================= */
 /* DOCUMENT TOGGLE */
 .doc-toggle {
     background: #f8f9fa;
@@ -128,10 +138,28 @@ body {
     cursor: pointer;
     font-weight: 600;
     transition: background 0.3s;
+    position: relative;
+    padding-right: 30px; /* space for arrow */
 }
 
 .doc-toggle:hover {
     background: #e1e7f0;
+}
+
+/* ROTATING ARROW */
+.doc-toggle::after {
+    content: "▼";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    transition: transform 0.3s ease;
+    font-size: 1em;
+    color: #2c5aa0;
+}
+
+.doc-toggle.open::after {
+    transform: translateY(-50%) rotate(180deg);
 }
 
 /* DOC SECTION LINKS */
@@ -139,6 +167,7 @@ body {
     padding: 10px 15px;
     border-left: 4px solid #2c5aa0;
     margin-bottom: 15px;
+    display: none; /* hidden until toggle opens */
 }
 
 .doc-section a {
@@ -152,6 +181,7 @@ body {
     text-decoration: underline;
 }
 
+/* ============================= */
 /* EMBED CONTAINERS (Calendar) */
 .embed-container {
     width: 100%;
@@ -159,6 +189,7 @@ body {
     margin-bottom: 20px;
 }
 
+/* ============================= */
 /* FOOTER */
 .footer {
     background: #2c5aa0;
@@ -169,6 +200,7 @@ body {
     font-size: 0.95em;
 }
 
+/* ============================= */
 /* RESPONSIVE */
 @media (max-width: 900px) {
     .home-grid,
