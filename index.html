@@ -13,8 +13,12 @@
         /* Containers */
         .container { max-width:1200px; margin:0 auto; padding:20px; }
 
+        /* Header */
         header { background:#2c5aa0; color:white; padding:20px 0; text-align:center; }
-        header h1 { margin-bottom:10px; }
+        header h1 { margin-bottom:5px; }
+        header p { margin-bottom:15px; }
+
+        /* Navigation */
         nav.nav-bar { display:flex; flex-wrap:wrap; justify-content:center; margin-bottom:20px; }
         .nav-item { margin:5px 10px; padding:8px 12px; background:white; color:#2c5aa0; text-decoration:none; border-radius:4px; cursor:pointer; }
         .nav-item.active { background:#ffdd00; color:#202124; }
@@ -30,6 +34,8 @@
         /* Cards and boxes */
         .card, .info-box, .contact-card { background:white; border-radius:8px; padding:15px; margin-bottom:15px; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
         .info-box { background:#2c5aa0; color:white; text-align:center; }
+
+        /* Buttons */
         .button, .btn { background:#2c5aa0; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; display:inline-block; text-decoration:none; }
         .btn:hover { background:#1f4470; }
 
@@ -45,6 +51,10 @@
         .doc-section { display:none; padding:10px 15px; border-left:3px solid #2c5aa0; margin-bottom:15px; background:white; border-radius:0 0 5px 5px; }
         .doc-toggle::after { content:"▼"; font-size:1.2em; color:#5f6368; transition:transform 0.3s; }
         .doc-toggle.active::after { content:"▲"; transform:rotate(180deg); }
+
+        /* Sticky buttons */
+        .sticky-action-bar { position:sticky; top:20px; background:transparent; padding-bottom:10px; z-index:100; }
+        .sticky-action-bar .btn { width:100%; margin-bottom:10px; }
 
         /* Responsive adjustments */
         @media (max-width:768px) { .two-column { flex-direction:column; } }
@@ -68,6 +78,7 @@
     </header>
 
     <div class="container">
+
         <!-- ================= HOME ================= -->
         <div id="home" class="page-content active">
             <div class="info-box">
@@ -95,14 +106,6 @@
                         <div>Tue, Feb 24 - Movie Bus</div>
                         <div>Wed, Feb 25 - Solar Presentation</div>
                     </div>
-                    <div class="sidebar-widget">
-                        <strong>Quick Links</strong><br>
-                        <a class="btn" onclick="showPage('village-info')">📋 Village Documents</a><br>
-                        <a class="btn" onclick="showPage('events')">📅 Upcoming Events</a><br>
-                        <a class="btn" onclick="showPage('newsletter')">📰 Latest Newsletter</a><br>
-                        <a class="btn" onclick="showPage('contact')">📝 Send Feedback</a><br>
-                        <a class="btn" onclick="showPage('contact')">📞 Emergency Contacts</a>
-                    </div>
                 </div>
             </div>
         </div>
@@ -110,22 +113,40 @@
         <!-- ================= NEWSLETTER ================= -->
         <div id="newsletter" class="page-content">
             <h2>Newsletter Archive</h2>
-            <a href="https://drive.google.com/drive/folders/1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT?usp=share_link" target="_blank">Open Newsletter Archive</a>
+            <a class="btn" href="https://drive.google.com/drive/folders/1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT?usp=share_link" target="_blank">Open Newsletter Archive</a>
         </div>
 
         <!-- ================= EVENTS & ACTIVITIES ================= -->
         <div id="events" class="page-content">
-            <h2>Events & Activities</h2>
-            <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSd-KOK2eV79f7U4xC2j8buLHJ0KZsLxBFQ49709UUYBrLg5Qg/viewform" target="_blank">Register for an Event</a>
-            <div class="embed-container" style="margin-top:20px;">
-                <iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" width="100%" height="600" style="border:0;" frameborder="0" scrolling="yes"></iframe>
+            <div class="sticky-action-bar">
+                <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSd-KOK2eV79f7U4xC2j8buLHJ0KZsLxBFQ49709UUYBrLg5Qg/viewform" target="_blank">
+                    📅 Register for an Event
+                </a>
             </div>
+            <h2>Events & Activities</h2>
+            <iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" width="100%" height="600" style="border:0; margin-top:20px;" frameborder="0" scrolling="yes"></iframe>
         </div>
 
         <!-- ================= NOTICEBOARD ================= -->
         <div id="noticeboard" class="page-content">
+            <div class="sticky-action-bar">
+                <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfQ7UZfN6l5_oefSrtckF87-taz0IjkZycCX_7w8fFh2I-3Mw/viewform" target="_blank">✏️ Submit a Post</a>
+            </div>
             <h2>Community Noticeboard</h2>
-            <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfQ7UZfN6l5_oefSrtckF87-taz0IjkZycCX_7w8fFh2I-3Mw/viewform" target="_blank">Submit a Post</a>
+
+            <div class="card">
+                <div style="color:#2c5aa0; font-weight:bold;">FOR SALE</div>
+                <div><strong>Maggie May • Unit NN</strong></div>
+                <div style="font-size:0.85em; color:#5f6368;">Posted February 20, 2026</div>
+                <div>Dining Table and 4 Chairs - $150. Contact Unit NN or call NNNN NNN NNN.</div>
+            </div>
+
+            <div class="card">
+                <div style="color:#2c5aa0; font-weight:bold;">ANNOUNCEMENT</div>
+                <div><strong>Mickey Mouse • Unit NN</strong></div>
+                <div style="font-size:0.85em; color:#5f6368;">Posted February 21, 2026</div>
+                <div>Lost Cat "Smokey" - friendly, wearing blue collar. Reward offered. Call NNNN NNN NNN.</div>
+            </div>
         </div>
 
         <!-- ================= VILLAGE INFO ================= -->
@@ -139,23 +160,71 @@
 
             <div class="doc-toggle" onclick="toggleSection('constitution')">📜 Constitution & Bylaws</div>
             <div id="constitution" class="doc-section">
-                <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=sharing" target="_blank">View Village Constitution & Bylaws</a>
+                <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=sharing" target="_blank">View Constitution & Bylaws</a>
+            </div>
+
+            <div class="doc-toggle" onclick="toggleSection('financials')">💰 Financial Reports</div>
+            <div id="financials" class="doc-section">
+                <a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank">View Financial Reports</a>
+            </div>
+
+            <div class="doc-toggle" onclick="toggleSection('minutes')">📝 Monthly Meetings - Agendas & Minutes</div>
+            <div id="minutes" class="doc-section">
+                <a href="https://drive.google.com/drive/folders/10kOi7clFyWaSlS7AYY1aArYw7Lh7mwIz?usp=share_link" target="_blank">View Meeting Agendas & Minutes</a>
+            </div>
+
+            <div class="doc-toggle" onclick="toggleSection('agm')">🏛️ AGM Information</div>
+            <div id="agm" class="doc-section">
+                <div class="info-box">
+                    Next AGM: Tuesday, May 12, 2026 at 10:30 AM, Melody Ridge Centre
+                </div>
+                <a href="https://drive.google.com/drive/folders/1wr1gDDpHNYbQVSuWAT7MfoadwX-_xZQ9?usp=share_link" target="_blank">View AGM Documents</a>
+            </div>
+
+            <div class="doc-toggle" onclick="toggleSection('aveo')">🏢 Aveo - Committee Chairpersons Roundtable</div>
+            <div id="aveo" class="doc-section">
+                <a href="https://drive.google.com/drive/folders/18zfk867xllx_KSlnbWO7xtB1P-j2kANY?usp=share_link" target="_blank">View Aveo Roundtable Communications</a>
             </div>
         </div>
 
         <!-- ================= USEFUL LINKS ================= -->
         <div id="useful-links" class="page-content">
             <h2>Useful Links</h2>
+
             <div class="doc-toggle" onclick="toggleSection('gov-services')">🏛️ Government Services</div>
             <div id="gov-services" class="doc-section">
                 <a href="https://my.gov.au" target="_blank">MyGov</a><br>
-                <a href="https://www.myagedcare.gov.au" target="_blank">My Aged Care</a>
+                <a href="https://www.myagedcare.gov.au" target="_blank">My Aged Care</a><br>
+                <a href="https://www.qld.gov.au" target="_blank">QLD Government</a><br>
+                <a href="https://www.dss.gov.au/older-australians" target="_blank">Dept of Social Services - Older Australians</a>
+            </div>
+
+            <div class="doc-toggle" onclick="toggleSection('rv-resources')">🏘️ Retirement Village Resources</div>
+            <div id="rv-resources" class="doc-section">
+                <a href="https://arqrv.org.au" target="_blank">ARQ - Association of Residents of QLD Retirement Villages</a>
+            </div>
+
+            <div class="doc-toggle" onclick="toggleSection('safety')">🔒 Safety & Information</div>
+            <div id="safety" class="doc-section">
+                <a href="https://www.esafety.gov.au/seniors" target="_blank">eSafety - Online safety for seniors</a><br>
+                <a href="https://www.canstar.com.au/energy/how-to-read-energy-bill/" target="_blank">Canstar - How to read energy bill</a>
+            </div>
+
+            <div class="doc-toggle" onclick="toggleSection('local-services')">📚 Local Services</div>
+            <div id="local-services" class="doc-section">
+                <a href="https://www.brisbane.qld.gov.au/libraries-venues-and-facilities/libraries/library-locations" target="_blank">Brisbane Libraries</a><br>
+                <a href="https://www.brisbane.qld.gov.au/events-arts-and-culture/what-s-on-in-brisbane" target="_blank">What's on in Brisbane</a><br>
+                <a href="https://au.localitybiz.com/brisbane/theater-%26-cinema-in-brisbane-city" target="_blank">Brisbane Entertainment</a>
             </div>
         </div>
 
         <!-- ================= COMMITTEE ================= -->
         <div id="committee" class="page-content">
             <h2>Committee Resources 🔒</h2>
+            <div class="sticky-action-bar">
+                <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScXEfeclpotjDBMJkpSLcNo9_YkKyOmW4xDYRGav5xdsU1UyQ/viewform" target="_blank">📝 Send Feedback</a>
+            </div>
+
             <div class="doc-toggle" onclick="toggleSection('committee-docs')">📚 Committee Documents</div>
             <div id="committee-docs" class="doc-section">
                 <a href="https://drive.google.com/drive/folders/1e0v0Kr007uIE5E0RwIt8UzG6eJ-4fZRM?usp=sharing" target="_blank">View Committee Documents</a>
@@ -165,8 +234,9 @@
         <!-- ================= CONTACT ================= -->
         <div id="contact" class="page-content">
             <h2>Contact & Feedback</h2>
-            <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScXEfeclpotjDBMJkpSLcNo9_YkKyOmW4xDYRGav5xdsU1UyQ/viewform" target="_blank">Send Feedback</a>
+            <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLScXEfeclpotjDBMJkpSLcNo9_YkKyOmW4xDYRGav5xdsU1UyQ/viewform" target="_blank">📝 Send Feedback</a>
         </div>
+
     </div>
 
     <footer>
@@ -188,7 +258,7 @@
             if(section.style.display==='block'){ section.style.display='none'; toggle.classList.remove('active'); }
             else { section.style.display='block'; toggle.classList.add('active'); }
         }
-       </script>
+  </script>
 
 </body>
 </html>
