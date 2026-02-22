@@ -1,171 +1,181 @@
 /* ===============================
-   BASE RESET
+   BASE
 ================================= */
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.6;
-  background-color: #f4f6f8;
-  color: #333;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f8;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333;
 }
 
 /* ===============================
-   TYPOGRAPHY
-================================= */
-h1, h2, h3 {
-  margin-top: 0;
-}
-
-h1 {
-  font-size: 2rem;
-}
-
-h2 {
-  font-size: 1.4rem;
-  margin-bottom: 0.75rem;
-}
-
-p {
-  margin-bottom: 1rem;
-}
-
-a {
-  color: #005a9c;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/* ===============================
-   LAYOUT CONTAINER
+   MAIN CONTAINER
 ================================= */
 .container {
-  padding: 1rem;
-  max-width: 1100px;
-  margin: auto;
+    max-width: 1200px;
+    margin: auto;
+    background: #ffffff;
+    padding-bottom: 40px;
 }
 
 /* ===============================
    HEADER
 ================================= */
-header {
-  background-color: #005a9c;
-  color: white;
-  padding: 1rem;
+.site-header {
+    background: #005a9c;
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
 }
 
-header h1 {
-  margin: 0;
+.site-title {
+    font-size: 1.8rem;
+    font-weight: 600;
 }
 
-nav {
-  margin-top: 0.5rem;
-}
-
-nav a {
-  display: inline-block;
-  margin-right: 1rem;
-  color: white;
-  font-weight: bold;
-  padding: 0.5rem 0;
+.site-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
 }
 
 /* ===============================
-   HERO SECTION
+   NAVIGATION
 ================================= */
-.hero {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 6px;
-  margin-bottom: 1.5rem;
+.nav-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: #003f70;
+}
+
+.nav-item {
+    padding: 14px 18px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: #005a9c;
 }
 
 /* ===============================
-   CARDS
+   PAGE CONTENT
 ================================= */
-.card {
-  background-color: white;
-  padding: 1rem;
-  border-radius: 6px;
-  margin-bottom: 1rem;
-  border: 1px solid #ddd;
+.page-content {
+    display: none;
+    padding: 30px 20px;
 }
 
-.card h3 {
-  margin-top: 0;
+.page-content.active {
+    display: block;
+}
+
+/* ===============================
+   GRID / TWO-COLUMN
+================================= */
+.home-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+/* Sidebar widgets and cards */
+.sidebar-widget,
+.contact-card,
+.announcement,
+.doc-section,
+.content-section {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Announcement date */
+.announcement-date {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+/* Section headings */
+.section-title {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #005a9c;
+    padding-bottom: 8px;
+}
+
+/* Widget titles */
+.widget-title {
+    font-weight: 600;
+    margin-bottom: 10px;
 }
 
 /* ===============================
    BUTTONS
 ================================= */
-.button {
-  display: inline-block;
-  padding: 0.6rem 1rem;
-  background-color: #005a9c;
-  color: white;
-  border-radius: 4px;
-  margin-top: 0.5rem;
-  font-weight: bold;
+.btn {
+    display: inline-block;
+    background: #005a9c;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
 }
 
-.button:hover {
-  background-color: #003f70;
-}
-
-/* ===============================
-   SECTIONS
-================================= */
-.section {
-  margin-bottom: 2rem;
+.btn:hover {
+    background: #003f70;
 }
 
 /* ===============================
    FOOTER
 ================================= */
-footer {
-  background-color: #003f70;
-  color: white;
-  padding: 1rem;
-  text-align: center;
-  font-size: 0.9rem;
+.footer {
+    background: #003f70;
+    color: white;
+    text-align: center;
+    padding: 25px 20px;
+    font-size: 0.9rem;
 }
 
 /* ===============================
-   RESPONSIVE BREAKPOINTS
+   RESPONSIVE
 ================================= */
+@media (max-width: 900px) {
 
-/* Tablet */
-@media screen and (min-width: 768px) {
+    /* Stack grid columns */
+    .home-grid {
+        grid-template-columns: 1fr;
+    }
 
-  .flex-2 {
-    display: flex;
-    gap: 1rem;
-  }
+    /* Stack navigation vertically */
+    .nav-bar {
+        flex-direction: column;
+    }
 
-  .flex-2 > div {
-    flex: 1;
-  }
-}
+    .nav-item {
+        border-top: 1px solid rgba(255,255,255,0.2);
+    }
 
-/* Desktop */
-@media screen and (min-width: 1024px) {
+    /* Adjust padding for smaller screens */
+    .site-header {
+        padding: 20px 10px;
+    }
 
-  .flex-3 {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .flex-3 > div {
-    flex: 1;
-  }
-
-  nav {
-    margin-top: 0;
-  }
+    .page-content {
+        padding: 20px 10px;
+    }
 }
