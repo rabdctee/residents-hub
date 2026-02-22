@@ -402,141 +402,111 @@
             <a href="javascript:void(0)" class="nav-item" onclick="showPage('contact')">Contact & Feedback</a>
         </nav>
         
-        <!-- HOME PAGE -->
-        <div id="home" class="page-content active">
-            <div class="info-box">
-                <div style="text-align: center;">
-                    <strong>🌐 Welcome to<br>Our Information Hub!</strong>
-                </div>
-                <br><br>
+<!-- HOME PAGE -->
+<div id="home" class="page-content active">
+    <div class="info-box">
+        <div style="text-align: center;">
+            <strong>🌐 Welcome to<br>Our Information Hub!</strong>
+        </div>
+        <br><br>
+        
+        <strong>How it works:</strong><br>
+        • <strong>Village documents</strong> (constitution, finances, minutes etc are only visible to Residents) - Click the links to open<br>
+        💡 <strong>Tip:</strong> Bookmark this page for easy access!
+    </div>
+    
+    <div class="two-column">
+        <div>
+            <!-- LEFT COLUMN -->
+            
+            <div class="content-section">
+                <h2 class="section-title">Latest Announcements</h2>
                 
-                <strong>How it works:</strong><br>
-                • <strong>Village documents</strong> (constitution, finances, minutes etc are only visible to Residents) - Click the links to open<br>
-                💡 <strong>Tip:</strong> Bookmark this page for easy access!
-            </div>
-            
-            <div class="two-column">
-                <div>
-                    <!-- LEFT COLUMN -->
-            
-                    <div class="content-section">
-                        <h2 class="section-title">Latest Announcements</h2>
-                        ...announcements...
+                <!-- UPDATE ANNOUNCEMENTS HERE - Edit the text below as needed -->
+                <div class="announcement">
+                    <div class="announcement-date"><img src="calendar.png" alt="" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 3px;"> February 23, 2026</div>
+                    <div class="announcement-text">
+                        <strong>Welcome to Our Information Hub:</strong> We're excited to launch our new community information hub! Access newsletters, events, and important documents all in one place.
                     </div>
+                </div>
+                
+                <div class="announcement">
+                    <div class="announcement-date"><img src="calendar.png" alt="" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 3px;"> February 25, 2026</div>
+                    <div class="announcement-text">
+                        <strong>Presentation on Solar Installation:</strong> A presentation for all Residents will be held on February 25th at 1:30 PM in the Manor. Please let the front desk know if you wish to attend.
+                    </div>
+                </div>
+                <!-- END OF ANNOUNCEMENTS SECTION -->
+            </div>
             
-                    <div class="content-section">
-    <h2 class="section-title">Quick Access</h2>
-    <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
-        
-        <div style="padding: 15px 0; border-bottom: 1px solid #e0e0e0;">
-            <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 1.5em; margin-right: 10px;">📋</span>
-                <strong style="font-size: 1.1em; color: #202124;">Village Documents</strong>
+            <div class="content-section">
+                <h2 class="section-title">Quick Access</h2>
+                <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
+                    
+                    <div style="padding: 15px 0; border-bottom: 1px solid #e0e0e0;">
+                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">📋</span>
+                            <strong style="font-size: 1.1em; color: #202124;">Village Documents</strong>
+                        </div>
+                        <p style="color: #5f6368; font-size: 0.95em; margin-bottom: 10px; margin-left: 35px;">Constitution, finances, meeting minutes and AGM information</p>
+                        <button class="btn" style="font-size: 14px; margin-left: 35px;" onclick="showPage('village-info')">View Documents</button>
+                    </div>
+                    
+                    <div style="padding: 15px 0; border-bottom: 1px solid #e0e0e0;">
+                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">📆</span>
+                            <strong style="font-size: 1.1em; color: #202124;">Upcoming Events</strong>
+                        </div>
+                        <p style="color: #5f6368; font-size: 0.95em; margin-bottom: 10px; margin-left: 35px;">See what's happening and register for events</p>
+                        <button class="btn" style="font-size: 14px; margin-left: 35px;" onclick="showPage('events')">View Calendar</button>
+                    </div>
+                    
+                    <div style="padding: 15px 0;">
+                        <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                            <span style="font-size: 1.5em; margin-right: 10px;">📰</span>
+                            <strong style="font-size: 1.1em; color: #202124;">Latest Newsletter</strong>
+                        </div>
+                        <p style="color: #5f6368; font-size: 0.95em; margin-bottom: 10px; margin-left: 35px;">Read the current edition</p>
+                        <button class="btn" style="font-size: 14px; margin-left: 35px;" onclick="showPage('newsletter')">Read Now</button>
+                    </div>
+                    
+                </div>
             </div>
-            <p style="color: #5f6368; font-size: 0.95em; margin-bottom: 10px; margin-left: 35px;">Constitution, finances, meeting minutes and AGM information</p>
-            <button class="btn" style="font-size: 14px; margin-left: 35px;" onclick="showPage('village-info')">View Documents</button>
+            
         </div>
         
-        <div style="padding: 15px 0; border-bottom: 1px solid #e0e0e0;">
-            <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 1.5em; margin-right: 10px;">📆</span>
-                <strong style="font-size: 1.1em; color: #202124;">Upcoming Events</strong>
+        <div>
+            <!-- RIGHT COLUMN (SIDEBAR) -->
+            
+            <div class="sidebar-widget">
+                <div class="widget-title"><img src="calendar.png" alt="Calendar" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;"> Upcoming Events</div>
+                <!-- UPDATE EVENTS HERE - Edit as needed -->
+                <div class="event-item">
+                    <div class="event-date">Mon, Feb 23</div>
+                    <div class="event-name">Line Dancing</div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date">Tue, Feb 24</div>
+                    <div class="event-name">Movie Bus</div>
+                </div>
+                <div class="event-item">
+                    <div class="event-date">Wed, Feb 25</div>
+                    <div class="event-name">Solar Presentation</div>
+                </div>
+                <!-- END OF EVENTS LIST -->
             </div>
-            <p style="color: #5f6368; font-size: 0.95em; margin-bottom: 10px; margin-left: 35px;">See what's happening and register for events</p>
-            <button class="btn" style="font-size: 14px; margin-left: 35px;" onclick="showPage('events')">View Calendar</button>
-        </div>
-        
-        <div style="padding: 15px 0;">
-            <div style="display: flex; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 1.5em; margin-right: 10px;">📰</span>
-                <strong style="font-size: 1.1em; color: #202124;">Latest Newsletter</strong>
+            
+            <div class="sidebar-widget">
+                <div class="widget-title">Quick Links</div>
+                <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="showPage('contact')">Contact Committee</button>
+                <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="showPage('contact')">Send Feedback</button>
+                <button class="btn" style="width: 100%;" onclick="showPage('contact')">Emergency Contacts</button>
             </div>
-            <p style="color: #5f6368; font-size: 0.95em; margin-bottom: 10px; margin-left: 35px;">Read the current edition</p>
-            <button class="btn" style="font-size: 14px; margin-left: 35px;" onclick="showPage('newsletter')">Read Now</button>
+            
         </div>
-        
     </div>
 </div>
-                        <!-- UPDATE ANNOUNCEMENTS HERE - Edit the text below as needed -->
-                        <div class="announcement">
-                            <div class="announcement-date"><img src="calendar.png" alt="" style="width: 60px; height: 60px; vertical-align: middle; margin-right: 3px;"> February 23, 2026</div>
-                            <div class="announcement-text">
-                                <strong>Welcome to Our Information Hub:</strong> We're excited to launch our new community information hub! Access newsletters, events, and important documents all in one place.
-                            </div>
-                        </div>
 
-                    </div>
-
-                    <div>
-                            <!-- RIGHT COLUMN (SIDEBAR) -->
-            
-                            <div class="sidebar-widget">
-                                <div class="widget-title">Upcoming Events</div>
-                                ...events...
-                            </div>
-            
-                            <div class="sidebar-widget">
-                                <div class="widget-title">Quick Links</div>
-                                ...quick links buttons...
-                            </div>
-            
-                        </div>
-                    </div>
-                </div>
-            
-                        <div class="announcement">
-                            <div class="announcement-date"><img src="calendar.png" alt="" style="width: 60px; height: 60px; vertical-align: middle; margin-right: 3px;"> February 25, 2026</div>
-                            <div class="announcement-text">
-                                <strong>Presentation on Solar Installation:</strong> A presentation for all Residents will be held on February 25th at 1:30 PM in the Manor. Please let the front desk know if you wish to attend.
-                            </div>
-                        </div>
-                        <!-- END OF ANNOUNCEMENTS SECTION -->
-                    </div>
-                    
-                 <div class="content-section">
-                    <h2 class="section-title">Quick Access</h2>
-                    <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
-                        <button class="btn" style="width: 100%; margin-bottom: 10px; text-align: left; font-size: 16px;" onclick="showPage('village-info')">
-                            📋 Village Documents
-                        </button>
-                        <button class="btn" style="width: 100%; margin-bottom: 10px; text-align: left; font-size: 16px;" onclick="showPage('events')">
-                            <img src="calendar.png" alt="" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px;"> Upcoming Events
-                        </button>
-                        <button class="btn" style="width: 100%; text-align: left; font-size: 16px;" onclick="showPage('newsletter')">
-                            📰 Latest Newsletter
-                        </button>
-                    </div>
-                </div>
-            <div>
-                    <div class="sidebar-widget">
-                        <div class="widget-title"><img src="calendar.png" alt="Calendar" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 5px;">Upcoming Events</div>
-                        <!-- UPDATE EVENTS HERE - Edit as needed -->
-                        <div class="event-item">
-                            <div class="event-date">Mon, Feb 23</div>
-                            <div class="event-name">Line Dancing</div>
-                        </div>
-                        <div class="event-item">
-                            <div class="event-date">Tue, Feb 24</div>
-                            <div class="event-name">Movie Bus</div>
-                        </div>
-                        <div class="event-item">
-                            <div class="event-date">Wed, Feb 25</div>
-                            <div class="event-name">Solar Presentation</div>
-                        </div>
-                        <!-- END OF EVENTS LIST -->
-                    </div>
-                    
-                    <div class="sidebar-widget">
-                        <div class="widget-title">Quick Links</div>
-                        <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="showPage('contact')">Contact Committee</button>
-                        <button class="btn" style="width: 100%; margin-bottom: 10px;" onclick="showPage('contact')">Send Feedback</button>
-                        <button class="btn" style="width: 100%;" onclick="showPage('contact')">Emergency Contacts</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <!-- NEWSLETTER PAGE -->
         <!-- NEWSLETTER PAGE -->
         <div id="newsletter" class="page-content">
             <h2 class="section-title">Newsletter Archive</h2>
