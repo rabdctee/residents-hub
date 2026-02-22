@@ -6,514 +6,160 @@
     <title>Bridgeman Downs Retirement Village Residents' Information Hub</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
 <div class="container">
 
-    <div class="site-header">...</div>
-
-    <nav class="nav-bar">...</nav>
-
-    <div id="home" class="page-content active">...</div>
-    <div id="newsletter" class="page-content">...</div>
-    <div id="events" class="page-content">...</div>
-    etc...
-
-    <div class="footer">...</div>
-
-</div>
-
-<script>...</script>
-
-</body>
-        <!-- HEADER -->
-        <div class="site-header">
-            <div class="site-title">
-    Bridgeman Downs Retirement Village<br>
-    Residents' Information Hub
-</div>
-            <div class="site-subtitle">Our Community Connection</div>
+    <!-- HEADER -->
+    <div class="site-header">
+        <div class="site-title">
+            Bridgeman Downs Retirement Village
         </div>
-        
-        <!-- NAVIGATION -->
-        <nav class="nav-bar">
-            <a href="javascript:void(0)" class="nav-item active" onclick="showPage('home')">Home</a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('newsletter')">Newsletter</a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('events')">Events & Activities</a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('noticeboard')">Noticeboard</a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('village-info')">Village Information 🔒</a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('useful-links')">Useful Links</a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('committee')">Committees-Work in Progress</a>
-            <a href="javascript:void(0)" class="nav-item" onclick="showPage('contact')">Contact & Feedback</a>
-        </nav>
-        
-<!-- HOME PAGE -->
-<div id="home" class="page-content active">
-    <div class="info-box" style="padding: 12px 20px;">
-    <div style="text-align: center; margin-bottom: 8px;">
-        <strong>🌐 Welcome to Our Information Hub!</strong>
+        <div class="site-subtitle">
+            Residents' Information Hub
+        </div>
     </div>
-    <p style="text-align: center; line-height: 1.4;">
-    💡 <strong>Tip:</strong> Bookmark this page!
-    </p>
-</div>
-    
-    <div class="two-column">
-        <div>
-            <!-- LEFT COLUMN -->
-    <section class="section">
-      <h2>Latest Announcements</h2>
 
-      <div class="flex-3">
+    <!-- NAVIGATION -->
+    <nav class="nav-bar">
+        <a href="#" class="nav-item active" onclick="showPage('home', this)">Home</a>
+        <a href="#" class="nav-item" onclick="showPage('newsletter', this)">Newsletter</a>
+        <a href="#" class="nav-item" onclick="showPage('events', this)">Events</a>
+        <a href="#" class="nav-item" onclick="showPage('documents', this)">Documents</a>
+        <a href="#" class="nav-item" onclick="showPage('contact', this)">Contact</a>
+    </nav>
 
-        <div class="card">
-          <h3>Announcement Title</h3>
-          <p>Short description here.</p>
-          <a href="#" class="button">Read More</a>
-        </div>
+    <!-- HOME PAGE -->
+    <div id="home" class="page-content active">
 
-  </div>
-</section>
-                
-                <!-- UPDATE ANNOUNCEMENTS HERE -->
-                <div class="announcement" style="padding: 15px; margin-bottom: 10px;">
-                    <div class="announcement-date"><img src="calendar.png" alt="" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 3px;"> February 23, 2026</div>
+        <h2 class="section-title">Welcome</h2>
+
+        <div class="home-grid">
+
+            <!-- MAIN CONTENT -->
+            <div>
+
+                <div class="announcement">
+                    <div class="announcement-date">February 2026</div>
                     <div class="announcement-text">
-                        <strong>Welcome to Our Information Hub:</strong> We're excited to launch our new community information hub! Access newsletters, events, and important documents all in one place.
+                        <strong>Welcome to our Residents’ Information Hub.</strong><br>
+                        This site provides updates, newsletters, events and important documents for our community.
                     </div>
                 </div>
-                
-                <div class="announcement" style="padding: 15px; margin-bottom: 10px;">
-                    <div class="announcement-date"><img src="calendar.png" alt="" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 3px;"> February 25, 2026</div>
+
+                <div class="announcement">
+                    <div class="announcement-date">Upcoming Event</div>
                     <div class="announcement-text">
-                        <strong>Presentation on Solar Installation:</strong> A presentation for all Residents will be held on February 25th at 1:30 PM in the Manor. Please let the front desk know if you wish to attend.
+                        Community Morning Tea – Friday 10am in the Village Hall.
                     </div>
                 </div>
-                <!-- END OF ANNOUNCEMENTS SECTION -->
+
             </div>
-            
-        </div>
-        
-        <div>
-            <!-- RIGHT COLUMN (SIDEBAR) -->
-            
-            <div class="sidebar-widget" style="margin-bottom: 15px;">
-                <div class="widget-title" style="margin-bottom: 10px;"><img src="calendar.png" alt="Calendar" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;"> Upcoming Events</div>
-                <!-- UPDATE EVENTS HERE -->
-                <div class="event-item" style="padding: 8px 0;">
-                    <div class="event-date">Mon, Feb 23</div>
-                    <div class="event-name">Line Dancing</div>
+
+            <!-- SIDEBAR -->
+            <div>
+
+                <div class="sidebar-widget">
+                    <div class="widget-title">Quick Links</div>
+                    <p><a href="#" onclick="showPage('newsletter')">Latest Newsletter</a></p>
+                    <p><a href="#" onclick="showPage('events')">Upcoming Events</a></p>
+                    <p><a href="#" onclick="showPage('documents')">Important Documents</a></p>
                 </div>
-                <div class="event-item" style="padding: 8px 0;">
-                    <div class="event-date">Tue, Feb 24</div>
-                    <div class="event-name">Movie Bus</div>
+
+                <div class="sidebar-widget">
+                    <div class="widget-title">Office Hours</div>
+                    <p>Monday – Friday</p>
+                    <p>9:00am – 3:00pm</p>
                 </div>
-                <div class="event-item" style="padding: 8px 0;">
-                    <div class="event-date">Wed, Feb 25</div>
-                    <div class="event-name">Solar Presentation</div>
-                </div>
-                <!-- END OF EVENTS LIST -->
+
             </div>
-            
-            <div class="sidebar-widget">
-                <div class="widget-title" style="margin-bottom: 10px;">Quick Links</div>
-                <button class="btn" style="width: 100%; margin-bottom: 8px; padding: 10px; font-size: 15px;" onclick="showPage('village-info')">📋 Village Documents</button>
-                <button class="btn" style="width: 100%; margin-bottom: 8px; padding: 10px; font-size: 15px;" onclick="showPage('events')"><img src="calendar.png" alt="" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> Upcoming Events</button>
-                <button class="btn" style="width: 100%; margin-bottom: 8px; padding: 10px; font-size: 15px;" onclick="showPage('newsletter')">📰 Latest Newsletter</button>
-                <button class="btn" style="width: 100%; margin-bottom: 8px; padding: 10px; font-size: 15px;" onclick="showPage('contact')">📝 Send Feedback</button>
-                <button class="btn" style="width: 100%; padding: 10px; font-size: 15px;" onclick="showPage('contact')">📞 Emergency Contacts</button>
-            </div>
-            
+
         </div>
     </div>
+
+    <!-- NEWSLETTER PAGE -->
+    <div id="newsletter" class="page-content">
+        <h2 class="section-title">Newsletter</h2>
+
+        <div class="doc-section">
+            <p>Latest newsletter available below:</p>
+            <a href="#" class="btn">Download February Newsletter (PDF)</a>
+        </div>
+    </div>
+
+    <!-- EVENTS PAGE -->
+    <div id="events" class="page-content">
+        <h2 class="section-title">Events</h2>
+
+        <div class="content-section">
+            <h3>Community Morning Tea</h3>
+            <p>Friday 10:00am – Village Hall</p>
+        </div>
+
+        <div class="content-section">
+            <h3>Monthly Residents Meeting</h3>
+            <p>First Tuesday of each month</p>
+        </div>
+    </div>
+
+    <!-- DOCUMENTS PAGE -->
+    <div id="documents" class="page-content">
+        <h2 class="section-title">Important Documents</h2>
+
+        <div class="doc-section">
+            <p><a href="#">Village Rules (PDF)</a></p>
+            <p><a href="#">Emergency Contacts</a></p>
+            <p><a href="#">Maintenance Request Form</a></p>
+        </div>
+    </div>
+
+    <!-- CONTACT PAGE -->
+    <div id="contact" class="page-content">
+        <h2 class="section-title">Contact</h2>
+
+        <div class="contact-card">
+            <p><strong>Village Office</strong></p>
+            <p>Phone: (07) 0000 0000</p>
+            <p>Email: info@bridgemandownsvillage.com.au</p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        © 2026 Bridgeman Downs Retirement Village – Residents’ Information Hub
+    </div>
+
 </div>
 
-        <!-- NEWSLETTER PAGE -->
-        <div id="newsletter" class="page-content">
-            <h2 class="section-title">Newsletter Archive</h2>
-            <p style="color: #5f6368; margin-bottom: 30px;">Access current and past monthly newsletters</p>
-            
-            <a href="https://drive.google.com/drive/folders/1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT?usp=share_link" target="_blank" class="doc-link">
-                Open Newsletter Archive
-            </a>
-            
-            <p style="color: #5f6368; margin-top: 20px; font-size: 0.95em;">
-                📌 <strong>Tip:</strong> Click the link above to view all newsletters. The folder will open in a new tab where you can browse, view and download any newsletter.
-            </p>
-        </div>
-        
-        <!-- EVENTS & ACTIVITIES PAGE -->
-        <div id="events" class="page-content">
-    
-            <!-- STICKY REGISTER BUTTON -->
-            <div class="sticky-action-bar">
-                <div class="sticky-action-box">
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd-KOK2eV79f7U4xC2j8buLHJ0KZsLxBFQ49709UUYBrLg5Qg/viewform" target="_blank" class="btn">
-                        <img src="calendar.png" alt="" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px;"> Register for an Event
-                    </a>
-            </div>
-        </div>
-            
-            <h2 class="section-title"><img src="calendar.png" alt="Calendar" style="width: 32px; height: 32px; vertical-align: middle; margin-right: 10px;">Events & Activities</h2>
-            
-            <div class="embed-container">
-                <iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" style="border: 0" width="100%" height="600" frameborder="0" scrolling="yes"></iframe>
-            </div>
-            
-        </div>
-        
-        <!-- NOTICEBOARD PAGE -->
-        <div id="noticeboard" class="page-content">
-            
-            <!-- STICKY SUBMIT BUTTON -->
-            <div class="sticky-action-bar">
-                <div class="sticky-action-box">
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfQ7UZfN6l5_oefSrtckF87-taz0IjkZycCX_7w8fFh2I-3Mw/viewform" target="_blank" class="btn">
-                        ✏️ Submit a Post to Noticeboard
-                    </a>
-                </div>
-            </div>
-            
-            <h2 class="section-title">Community Noticeboard</h2>
-            <p style="color: #5f6368; margin-bottom: 20px;">Share items for sale, wanted items, announcements and connect with your neighbours</p>
-            
-            <div class="info-box">
-                <strong>📝 Want to post something?</strong><br>
-                Use the form below to submit a post. Posts will be published as soon as possible.
-            </div>
-            
-            <div class="content-section">
-                <h3 style="color: #202124; font-size: 1.4em; margin-bottom: 15px;">Recent Posts</h3>
-                
-                <!-- UPDATE NOTICEBOARD POSTS HERE - Add/remove/edit posts as needed -->
-                <div style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-                    <div style="color: #2c5aa0; font-size: 0.85em; font-weight: 600; margin-bottom: 5px;">FOR SALE</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Maggie May • Unit NN</div>
-                    <div style="color: #5f6368; font-size: 0.85em; margin-bottom: 10px;">Posted February 20, 2026</div>
-                    <div style="line-height: 1.6;">
-                        <strong>Dining Table and 4 Chairs - $150</strong><br>
-                        Beautiful wooden dining set in excellent condition. Table extends to seat 6. Downsizing and must sell. Contact me at Unit NN or call NNNN NNN NNN.
-                    </div>
-                </div>
-                
-                <div style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-                    <div style="color: #2c5aa0; font-size: 0.85em; font-weight: 600; margin-bottom: 5px;">ANNOUNCEMENT</div>
-                    <div style="font-weight: 600; margin-bottom: 5px;">Mickey Mouse • Unit NN</div>
-                    <div style="color: #5f6368; font-size: 0.85em; margin-bottom: 10px;">Posted February 21, 2026</div>
-                    <div style="line-height: 1.6;">
-                        <strong>Lost Cat - Please Help!</strong><br>
-                        Our grey tabby cat "Smokey" has been missing since Wednesday evening. Very friendly, wearing a blue collar. If you see him, please call NNNN NNN NNN. Reward offered!
-                    </div>
-                </div>
-                <!-- END OF NOTICEBOARD POSTS -->
-            </div>
-        </div>
-        
-        <!-- VILLAGE INFORMATION PAGE -->
-<div id="village-info" class="page-content">
-    <div class="warning-box">
-        <strong>🔒 RESIDENTS AREA - Residents Only</strong><br>
-        This page contains village documents and financial information for residents only.
-    </div>
-    
-    <h2 class="section-title">Village Information</h2>
-    <p style="color: #5f6368; margin-bottom: 30px;">Click any section below to view documents</p>
-    
-    <!-- QLD Act Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('qld-act')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">📜 QLD Government RV Act & Regulations</span>
-            <span id="qld-act-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="qld-act" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <a href="https://drive.google.com/drive/folders/1PcIMDqkXCdx-F07gYa5Kr-U-rcdnjMS4?usp=share_link" target="_blank" class="doc-link">
-                View QLD Government Retirement Villages Act & Regulations
-            </a>
-        </div>
-    </div>
-    
-    <!-- Constitution Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('constitution')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">📜 Constitution & Bylaws</span>
-            <span id="constitution-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="constitution" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=sharing" target="_blank" class="doc-link">
-                View Village Constitution and Bylaws
-            </a>
-        </div>
-    </div>
-    
-    <!-- Financial Reports Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('financials')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">💰 Financial Reports</span>
-            <span id="financials-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="financials" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank" class="doc-link">
-                View Financial Reports and Budgets
-            </a>
-        </div>
-    </div>
-    
-    <!-- Minutes Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('minutes')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">📝 Monthly Meetings - Agendas & Minutes</span>
-            <span id="minutes-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="minutes" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <a href="https://drive.google.com/drive/folders/10kOi7clFyWaSlS7AYY1aArYw7Lh7mwIz?usp=share_link" target="_blank" class="doc-link">
-                View Meeting Agendas and Minutes
-            </a>
-        </div>
-    </div>
-    
-    <!-- AGM Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('agm')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🏛️ AGM Information</span>
-            <span id="agm-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="agm" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <div class="info-box">
-                <strong>Next AGM:</strong> Tuesday, May 12, 2026 at 10:30 AM in the Melody Ridge Centre
-            </div>
-            <a href="https://drive.google.com/drive/folders/1wr1gDDpHNYbQVSuWAT7MfoadwX-_xZQ9?usp=share_link" target="_blank" class="doc-link">
-                View AGM Documents and Materials
-            </a>
-        </div>
-    </div>
-    
-    <!-- Aveo Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('aveo')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🏢 Aveo - Committee Chairpersons Roundtable</span>
-            <span id="aveo-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="aveo" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <a href="https://drive.google.com/drive/folders/18zfk867xllx_KSlnbWO7xtB1P-j2kANY?usp=share_link" target="_blank" class="doc-link">
-                View Aveo Roundtable Communications
-            </a>
-            <p style="color: #5f6368; margin-top: 10px; font-size: 0.9em;">
-                Minutes and updates from Aveo Committee Chairpersons meetings
-            </p>
-        </div>
-    </div>
-</div>
-       <!-- USEFUL LINKS PAGE -->
-<div id="useful-links" class="page-content">
-    <h2 class="section-title">🔗 Useful Links</h2>
-    <p style="color: #5f6368; margin-bottom: 30px;">Click any section below to view links</p>
-    
-    <!-- Government Services Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('gov-services')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🏛️ Government Services</span>
-            <span id="gov-services-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="gov-services" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <a href="https://my.gov.au" target="_blank" class="doc-link">MyGov - Access government services online</a>
-            <a href="https://www.myagedcare.gov.au" target="_blank" class="doc-link">My Aged Care - Aged care services and support</a>
-            <a href="https://www.qld.gov.au" target="_blank" class="doc-link">QLD Government - State government services</a>
-            <a href="https://www.dss.gov.au/older-australians" target="_blank" class="doc-link">Department of Social Services - Older Australians</a>
-        </div>
-    </div>
-    
-    <!-- Retirement Village Resources Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('rv-resources')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🏘️ Retirement Village Resources</span>
-            <span id="rv-resources-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="rv-resources" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <a href="https://arqrv.org.au" target="_blank" class="doc-link">ARQ - Association of Residents of QLD Retirement Villages</a>
-            <p style="color: #5f6368; margin-top: 10px; font-size: 0.9em;">
-                Advocacy and support for retirement village residents in Queensland
-            </p>
-        </div>
-    </div>
-    
-    <!-- Safety & Information Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('safety')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">🔒 Safety & Information</span>
-            <span id="safety-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="safety" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <a href="https://www.esafety.gov.au/seniors" target="_blank" class="doc-link">eSafety - Online safety for seniors</a>
-            <a href="https://www.canstar.com.au/energy/how-to-read-energy-bill/" target="_blank" class="doc-link">Canstar - How to read your energy bill</a>
-        </div>
-    </div>
-    
-    <!-- Local Services Section -->
-    <div style="margin-bottom: 15px;">
-        <div onclick="toggleSection('local-services')" style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 5px; padding: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
-            <span style="color: #202124; font-size: 1.2em; font-weight: 600;">📚 Local Services</span>
-            <span id="local-services-arrow" style="color: #5f6368; font-size: 1.5em;">▼</span>
-        </div>
-        <div id="local-services" style="display: none; padding: 15px; background: white; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 5px 5px;">
-            <a href="https://www.brisbane.qld.gov.au/libraries-venues-and-facilities/libraries/library-locations" target="_blank" class="doc-link">Brisbane Libraries - Library locations and services</a>
-            <a href="https://https://www.brisbane.qld.gov.au/events-arts-and-culture/what-s-on-in-brisbane" target="_blank" class="doc-link">What's on in Brisbane - Brisbane City Council</a>
-            <a href="https://au.localitybiz.com/brisbane/theater-%26-cinema-in-brisbane-city" target="_blank" class="doc-link">Brisbane Entertainment - Cinemas and theatres</a>
-        </div>
-    </div>
-    
-    <div class="info-box" style="margin-top: 40px;">
-        <strong>💡 Tip:</strong> All links open in a new tab. Click any link above to visit the website while keeping this page open.
-    </div>
-</div>
-        <!-- COMMITTEE PAGE -->
-        <div id="committee" class="page-content">
-            <div class="warning-box">
-                <strong>🔒 COMMITTEE MEMBERS ONLY</strong><br>
-                This page is only visible to committee members. Documents here are a work in progress.
-            </div>
-            
-            <h2 class="section-title">Committee Resources</h2>
-            <p style="color: #5f6368; margin-bottom: 30px;">Internal committee documents and working materials</p>
-            
-            <div class="doc-section">
-                <h3>📚 Committee Documents</h3>
-                <a href="https://drive.google.com/drive/folders/1e0v0Kr007uIE5E0RwIt8UzG6eJ-4fZRM?usp=sharing" target="_blank" class="doc-link">
-                    View Committee Documents
-                </a>
-                <p style="color: #5f6368; margin-top: 10px; font-size: 0.9em;">
-                    Includes: Committee manual, draft financials, insurance documents, legal correspondence, and working files.
-                </p>
-            </div>
-        </div>
-        
-        <!-- CONTACT & FEEDBACK PAGE -->
-        <div id="contact" class="page-content">
-            
-            <!-- STICKY FEEDBACK BUTTON -->
-            <div class="sticky-action-bar">
-                <div class="sticky-action-box">
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLScXEfeclpotjDBMJkpSLcNo9_YkKyOmW4xDYRGav5xdsU1UyQ/viewform" target="_blank" class="btn">
-                        📝 Send Feedback to Committee
-                    </a>
-            </div>
-        </div>
-            
-            <h2 class="section-title">Contact Information</h2>
-            
-            <div class="two-column">
-                <div>
-                    <div class="contact-card">
-                        <h4>📧 Committee Email</h4>
-                        <p>rabd.ctee@gmail.com</p>
-                    </div>
-                    
-                    <div class="contact-card">
-                        <h4>Residents Committee - Office Bearers</h4>
-                        <!-- UPDATE COMMITTEE MEMBERS HERE -->
-                        <p><strong>Chairperson</strong><br>
-                        Rick Van Haeften<br>
-                        📧 <a href="mailto:bdra.chair@gmail.com" style="color: #2c5aa0; text-decoration: none; word-break: break-all;">bdra.chair@gmail.com</a></p>
-                        
-                        <p style="margin-top: 15px;"><strong>Treasurer</strong><br>
-                        Fay Schmacker<br>
-                        📧 <a href="mailto:bdra.treasurer@gmail.com" style="color: #2c5aa0; text-decoration: none; word-break: break-all;">bdra.treasurer@gmail.com</a></p>
-                        
-                        <p style="margin-top: 15px;"><strong>Secretary</strong><br>
-                        Jocelyn Gould<br>
-                        📧 <a href="mailto:bdra.secretary@gmail.com" style="color: #2c5aa0; text-decoration: none; word-break: break-all;">bdra.secretary@gmail.com</a></p><br>
+<!-- SIMPLE PAGE SWITCHING SCRIPT -->
+<script>
+function showPage(pageId, element) {
 
-                        
-                        <h4>Social Club Committee - Office Bearers</h4>
-                        <!-- UPDATE COMMITTEE MEMBERS HERE -->
-                        <p><strong>Convenor</strong><br>
-                        Kathy Kingsford<br>
-                        📧 <a href="mailto:bdsc.convenor@gmail.com" style="color: #2c5aa0; text-decoration: none; word-break: break-all;">bdsc.convenor@gmail.com</a></p>
-                        
-                        <p style="margin-top: 15px;"><strong>Treasurer</strong><br>
-                        Marie Rosolen<br>
-                        📧 <a href="mailto:bdsc.treasurer@gmail.com" style="color: #2c5aa0; text-decoration: none; word-break: break-all;">bdra.treasurer@gmail.com</a></p>
-                        
-                        <p style="margin-top: 15px;"><strong>Secretary</strong><br>
-                        Judy Ash<br>
-                        📧 <a href="mailto:bdsc.secretary@gmail.com" style="color: #2c5aa0; text-decoration: none; word-break: break-all;">bdsc.secretary@gmail.com</a></p>
-                        <!-- END COMMITTEE MEMBERS -->
-                    </div>
-                    
-                    <div class="contact-card">
-                        <h4>Emergency Contacts</h4>
-                        <!-- UPDATE EMERGENCY CONTACTS HERE -->
-                        <p>
-                            <strong>Emergency Services:</strong> 000<br>
-                            <strong>Police Non-Emergency:</strong> 131 444<br>
-                            <strong>Village Reception:</strong> 3862 9020<br>
-                            <strong>Energex:</strong> 131 962<br>
-                            <strong>After Hours Doctor Service:</strong> 137 425
-                        </p>
-                        <!-- END EMERGENCY CONTACTS -->
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 style="color: #202124; font-size: 1.4em; margin-bottom: 15px;">Send Us Feedback</h3>
-                    <p style="color: #5f6368; margin-bottom: 20px;">
-                        We value your input! Use the blue feedback button at the top of this page to share your thoughts with the committee.
-                    </p>
-    
-                    <div style="background: #e8f4f8; border-left: 4px solid #2c5aa0; padding: 20px; border-radius: 4px;">
-                        <strong>💡 Quick Tip:</strong><br><br>
-                        The feedback button stays visible as you scroll down the page, making it easy to submit feedback at any time.
-                </div>
-            </div>
-        </div>
-        
-        <!-- FOOTER -->
-        <div class="footer">
-            Bridgeman Downs Retirement Village Residents Information Hub<br>
-            © 2026 | For resident use only<br>
-            Contact: rabd.ctee@gmail.com | Emergency: 000
-        </div>
-    </div>
-    
-    <script>
-    function showPage(pageId) {
-        // Hide all pages
-        var pages = document.querySelectorAll('.page-content');
-        for (var i = 0; i < pages.length; i++) {
-            pages[i].classList.remove('active');
-        }
-        
-        // Remove active class from all nav items
-        var navItems = document.querySelectorAll('.nav-item');
-        for (var i = 0; i < navItems.length; i++) {
-            navItems[i].classList.remove('active');
-        }
-        
-        // Show selected page
-        document.getElementById(pageId).classList.add('active');
-        
-        // Add active class to clicked nav item
-        if (event && event.target) {
-            event.target.classList.add('active');
-        }
-        
-        // Scroll to top
-        window.scrollTo(0, 0);
-        
-        return false;
+    // Hide all pages
+    var pages = document.querySelectorAll('.page-content');
+    pages.forEach(function(page) {
+        page.classList.remove('active');
+    });
+
+    // Show selected page
+    document.getElementById(pageId).classList.add('active');
+
+    // Remove active nav state
+    var navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(function(item) {
+        item.classList.remove('active');
+    });
+
+    // Set active nav
+    if (element) {
+        element.classList.add('active');
     }
-    
-    function toggleSection(sectionId) {
-        var section = document.getElementById(sectionId);
-        var arrow = document.getElementById(sectionId + '-arrow');
-        
-        if (section.style.display === 'none' || section.style.display === '') {
-            section.style.display = 'block';
-            arrow.textContent = '▲';
-        } else {
-            section.style.display = 'none';
-            arrow.textContent = '▼';
-        }
-    }
+
+    // Scroll to top (helpful on mobile)
+    window.scrollTo(0, 0);
+}
 </script>
+
 </body>
 </html>
