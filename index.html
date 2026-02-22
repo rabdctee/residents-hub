@@ -4,204 +4,304 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bridgeman Downs Retirement Village Residents' Information Hub</title>
-<link rel="stylesheet" href="styles.css">
+
 <style>
-/* Basic Reset and Typography */
+
+/* ================= RESET ================= */
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size:18px; line-height:1.6; background:#f5f5f5; color:#202124; }
-h1,h2,h3,h4 { margin-bottom:0.5em; }
-.container { max-width:1200px; margin:0 auto; padding:20px; }
-header { background:#2c5aa0; color:white; padding:15px 0; }
-header h1 { margin-bottom:5px; }
-.nav-bar { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
-.nav-item { color:white; text-decoration:none; padding:8px 12px; border-radius:4px; background:rgba(255,255,255,0.2); transition:0.2s; }
-.nav-item.active, .nav-item:hover { background:rgba(255,255,255,0.4); }
-.page-content { display:none; margin-top:20px; }
+
+body {
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size:18px;
+    line-height:1.6;
+    background:#f5f7fa;
+    color:#202124;
+}
+
+/* ================= LAYOUT ================= */
+.container {
+    max-width:1200px;
+    margin:0 auto;
+    padding:20px;
+}
+
+/* ================= HEADER ================= */
+header {
+    background:#2c5aa0;
+    color:white;
+    padding:20px 0;
+}
+
+header h1 {
+    margin-bottom:5px;
+}
+
+header p {
+    margin-bottom:15px;
+}
+
+/* ================= NAVIGATION ================= */
+.nav-bar {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.nav-item {
+    text-decoration:none;
+    padding:10px 14px;
+    background:rgba(255,255,255,0.2);
+    color:white;
+    border-radius:5px;
+    transition:0.2s;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background:rgba(255,255,255,0.4);
+}
+
+/* ================= PAGE DISPLAY ================= */
+.page-content { display:none; margin-top:25px; }
 .page-content.active { display:block; }
-.two-column { display:flex; flex-wrap:wrap; gap:20px; }
-.two-column > div { flex:1 1 300px; }
-.info-box { background:#2c5aa0; color:white; padding:15px; border-radius:5px; margin-bottom:20px; }
-.section { margin-bottom:20px; }
-.announcement { background:white; padding:15px; margin-bottom:10px; border-radius:5px; border:1px solid #e0e0e0; }
-.announcement-date { font-size:0.85em; font-weight:600; margin-bottom:5px; color:#2c5aa0; }
-.sidebar-widget { background:white; padding:15px; border-radius:5px; border:1px solid #e0e0e0; margin-bottom:15px; }
-.widget-title { font-weight:600; margin-bottom:10px; }
-.event-item { padding:5px 0; }
-.doc-toggle { background:#f8f9fa; padding:12px; margin-bottom:5px; border-radius:5px; border:1px solid #e0e0e0; cursor:pointer; display:flex; justify-content:space-between; align-items:center; }
-.doc-toggle:after { content:'▼'; font-size:1.2em; color:#5f6368; transition:transform 0.3s; }
-.doc-toggle.active:after { transform:rotate(180deg); }
-.doc-section { display:none; background:white; padding:12px 15px; border-left:1px solid #e0e0e0; border-right:1px solid #e0e0e0; border-bottom:1px solid #e0e0e0; border-radius:0 0 5px 5px; margin-bottom:10px; }
-.sticky-action-bar { position:sticky; top:10px; z-index:10; margin-bottom:15px; }
-.sticky-action-bar .btn { background:#2c5aa0; color:white; padding:10px 15px; border:none; border-radius:5px; cursor:pointer; text-decoration:none; display:inline-block; margin-bottom:10px; }
-.embed-container { position:relative; padding-bottom:56.25%; height:0; overflow:hidden; max-width:100%; }
-.embed-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; }
-footer { text-align:center; padding:20px 0; background:#2c5aa0; color:white; margin-top:40px; }
-@media(max-width:768px){ .two-column{flex-direction:column;} }
+
+/* ================= HOME BLUE BOX ================= */
+.info-box {
+    background:#2c5aa0;
+    color:white;
+    padding:20px;
+    border-radius:6px;
+    margin-bottom:25px;
+}
+
+/* ================= TWO COLUMN ================= */
+.two-column {
+    display:flex;
+    gap:25px;
+    flex-wrap:wrap;
+}
+
+.two-column > div {
+    flex:1 1 350px;
+}
+
+/* ================= CARDS ================= */
+.card, .announcement, .widget {
+    background:white;
+    padding:18px;
+    border-radius:6px;
+    border:1px solid #e0e0e0;
+    margin-bottom:15px;
+}
+
+.announcement-date {
+    font-size:0.85em;
+    font-weight:600;
+    color:#2c5aa0;
+    margin-bottom:6px;
+}
+
+/* ================= BUTTONS ================= */
+.btn {
+    display:inline-block;
+    padding:12px 16px;
+    background:#2c5aa0;
+    color:white;
+    text-decoration:none;
+    border-radius:5px;
+    margin-bottom:10px;
+}
+
+.btn:hover {
+    background:#1f4478;
+}
+
+/* ================= STICKY BUTTONS ================= */
+.sticky-action-bar {
+    position:sticky;
+    top:15px;
+    z-index:100;
+    margin-bottom:20px;
+}
+
+/* ================= COLLAPSIBLE ================= */
+.doc-toggle {
+    background:#f1f3f5;
+    padding:14px;
+    border-radius:5px;
+    border:1px solid #ddd;
+    cursor:pointer;
+    margin-bottom:5px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.doc-toggle::after {
+    content:"▼";
+    font-size:1.1em;
+    transition:transform 0.3s ease;
+}
+
+.doc-toggle.active::after {
+    transform:rotate(180deg);
+}
+
+.doc-section {
+    display:none;
+    padding:15px;
+    border:1px solid #ddd;
+    border-top:none;
+    border-radius:0 0 5px 5px;
+    margin-bottom:12px;
+    background:white;
+}
+
+/* ================= EMBED ================= */
+.embed-container {
+    position:relative;
+    padding-bottom:56.25%;
+    height:0;
+    overflow:hidden;
+}
+
+.embed-container iframe {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
+
+/* ================= FOOTER ================= */
+footer {
+    background:#2c5aa0;
+    color:white;
+    text-align:center;
+    padding:20px;
+    margin-top:40px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+    .two-column { flex-direction:column; }
+}
+
 </style>
 </head>
+
 <body>
 
 <header>
-  <div class="container">
-    <h1>Residents’ Information Hub</h1>
-    <p>Our Community Connection</p>
-    <nav class="nav-bar">
-      <a href="javascript:void(0)" class="nav-item active" onclick="showPage('home')">Home</a>
-      <a href="javascript:void(0)" class="nav-item" onclick="showPage('newsletter')">Newsletter</a>
-      <a href="javascript:void(0)" class="nav-item" onclick="showPage('events')">Events & Activities</a>
-      <a href="javascript:void(0)" class="nav-item" onclick="showPage('noticeboard')">Noticeboard</a>
-      <a href="javascript:void(0)" class="nav-item" onclick="showPage('village-info')">Village Information 🔒</a>
-      <a href="javascript:void(0)" class="nav-item" onclick="showPage('useful-links')">Useful Links</a>
-      <a href="javascript:void(0)" class="nav-item" onclick="showPage('committee')">Committees</a>
-      <a href="javascript:void(0)" class="nav-item" onclick="showPage('contact')">Contact & Feedback</a>
-    </nav>
-  </div>
+<div class="container">
+<h1>Residents’ Information Hub</h1>
+<p>Bridgeman Downs Retirement Village</p>
+
+<nav class="nav-bar">
+<a href="#" class="nav-item active" onclick="showPage('home', this)">Home</a>
+<a href="#" class="nav-item" onclick="showPage('newsletter', this)">Newsletter</a>
+<a href="#" class="nav-item" onclick="showPage('events', this)">Events & Activities</a>
+<a href="#" class="nav-item" onclick="showPage('noticeboard', this)">Noticeboard</a>
+<a href="#" class="nav-item" onclick="showPage('village-info', this)">Village Information 🔒</a>
+<a href="#" class="nav-item" onclick="showPage('useful-links', this)">Useful Links</a>
+<a href="#" class="nav-item" onclick="showPage('committee', this)">Committees</a>
+<a href="#" class="nav-item" onclick="showPage('contact', this)">Contact & Feedback</a>
+</nav>
+
+</div>
 </header>
 
 <div class="container">
 
-<!-- HOME PAGE -->
+<!-- ================= HOME ================= -->
 <div id="home" class="page-content active">
-  <div class="info-box">
-    <strong>🌐 Welcome to Our Information Hub!</strong>
-    <p>💡 Bookmark this page for easy access to all resources!</p>
-  </div>
 
-  <div class="two-column">
-    <div>
-      <section class="section">
-        <h2>Latest Announcements</h2>
-        <div class="announcement">
-          <div class="announcement-date">Feb 23, 2026</div>
-          <div class="announcement-text"><strong>Welcome to Our Information Hub:</strong> We’ve launched our new community hub! Access newsletters, events, and documents in one place.</div>
-        </div>
-        <div class="announcement">
-          <div class="announcement-date">Feb 25, 2026</div>
-          <div class="announcement-text"><strong>Presentation on Solar Installation:</strong> Feb 25th at 1:30 PM in the Manor. Let the front desk know if you wish to attend.</div>
-        </div>
-      </section>
-    </div>
-
-    <div>
-      <div class="sidebar-widget">
-        <div class="widget-title">Upcoming Events</div>
-        <div class="event-item"><div class="event-date">Mon, Feb 23</div><div class="event-name">Line Dancing</div></div>
-        <div class="event-item"><div class="event-date">Tue, Feb 24</div><div class="event-name">Movie Bus</div></div>
-        <div class="event-item"><div class="event-date">Wed, Feb 25</div><div class="event-name">Solar Presentation</div></div>
-      </div>
-    </div>
-  </div>
+<div class="info-box">
+<strong>🌐 Welcome to Our Information Hub!</strong>
+<p>Bookmark this page for easy access to newsletters, events and village documents.</p>
 </div>
 
-<!-- NEWSLETTER -->
-<div id="newsletter" class="page-content">
-  <div class="sticky-action-bar">
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLScXEfeclpotjDBMJkpSLcNo9_YkKyOmW4xDYRGav5xdsU1UyQ/viewform" target="_blank" class="btn">Send Feedback / Subscribe</a>
-  </div>
-  <h2>Newsletter Archive</h2>
-  <p>Access current and past monthly newsletters</p>
-  <a href="https://drive.google.com/drive/folders/1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT?usp=share_link" target="_blank" class="btn">Open Newsletter Archive</a>
+<div class="two-column">
+
+<div>
+<h2>Latest Announcements</h2>
+
+<div class="announcement">
+<div class="announcement-date">Feb 23, 2026</div>
+<strong>Welcome to Residents' Information Hub</strong>
+<p>All newsletters, events and documents are now available in one place.</p>
 </div>
 
-<!-- EVENTS & ACTIVITIES -->
+<div class="announcement">
+<div class="announcement-date">Feb 25, 2026</div>
+<strong>Solar Installation Presentation</strong>
+<p>1:30pm in the Manor. Please notify reception if attending.</p>
+</div>
+
+</div>
+
+<div>
+<h2>Upcoming Events</h2>
+
+<div class="card">Line Dancing – Monday</div>
+<div class="card">Movie Bus – Tuesday</div>
+<div class="card">Solar Presentation – Wednesday</div>
+
+</div>
+
+</div>
+</div>
+
+<!-- ================= EVENTS ================= -->
 <div id="events" class="page-content">
-  <div class="sticky-action-bar">
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd-KOK2eV79f7U4xC2j8buLHJ0KZsLxBFQ49709UUYBrLg5Qg/viewform" target="_blank" class="btn">Register for an Event</a>
-  </div>
-  <h2>Events & Activities</h2>
-  <div class="embed-container">
-    <iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" style="border:0;" frameborder="0" scrolling="yes"></iframe>
-  </div>
+
+<div class="sticky-action-bar">
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSd-KOK2eV79f7U4xC2j8buLHJ0KZsLxBFQ49709UUYBrLg5Qg/viewform" target="_blank" class="btn">Register for an Event</a>
 </div>
 
-<!-- NOTICEBOARD -->
+<h2>Events & Activities</h2>
+
+<div class="embed-container">
+<iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA"></iframe>
+</div>
+
+</div>
+
+<!-- ================= NOTICEBOARD ================= -->
 <div id="noticeboard" class="page-content">
-  <div class="sticky-action-bar">
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSfQ7UZfN6l5_oefSrtckF87-taz0IjkZycCX_7w8fFh2I-3Mw/viewform" target="_blank" class="btn">Submit a Post</a>
-  </div>
-  <h2>Community Noticeboard</h2>
-  <!-- Example Posts -->
-  <div class="announcement">
-    <div class="announcement-date">Feb 20, 2026</div>
-    <div class="announcement-text"><strong>Dining Table and 4 Chairs - $150</strong> Wooden dining set, must sell. Contact Unit NN or NNNN NNN NNN.</div>
-  </div>
-  <div class="announcement">
-    <div class="announcement-date">Feb 21, 2026</div>
-    <div class="announcement-text"><strong>Lost Cat - Please Help!</strong> Friendly grey tabby "Smokey", wearing blue collar. Reward offered. Call NNNN NNN NNN.</div>
-  </div>
+
+<div class="sticky-action-bar">
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSfQ7UZfN6l5_oefSrtckF87-taz0IjkZycCX_7w8fFh2I-3Mw/viewform" target="_blank" class="btn">Submit a Post</a>
 </div>
 
-<!-- VILLAGE INFO -->
-<div id="village-info" class="page-content">
-  <h2>Village Information</h2>
-  <div class="doc-toggle" onclick="toggleDoc(this)">QLD Government RV Act & Regulations</div>
-  <div class="doc-section">
-    <a href="https://drive.google.com/drive/folders/1PcIMDqkXCdx-F07gYa5Kr-U-rcdnjMS4?usp=share_link" target="_blank">View QLD Government Retirement Villages Act & Regulations</a>
-  </div>
-  <div class="doc-toggle" onclick="toggleDoc(this)">Constitution & Bylaws</div>
-  <div class="doc-section">
-    <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=sharing" target="_blank">View Village Constitution and Bylaws</a>
-  </div>
-  <div class="doc-toggle" onclick="toggleDoc(this)">Financial Reports</div>
-  <div class="doc-section">
-    <a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank">View Financial Reports and Budgets</a>
-  </div>
-  <div class="doc-toggle" onclick="toggleDoc(this)">Monthly Meetings - Agendas & Minutes</div>
-  <div class="doc-section">
-    <a href="https://drive.google.com/drive/folders/10kOi7clFyWaSlS7AYY1aArYw7Lh7mwIz?usp=share_link" target="_blank">View Meeting Agendas and Minutes</a>
-  </div>
-  <div class="doc-toggle" onclick="toggleDoc(this)">AGM Information</div>
-  <div class="doc-section">
-    <a href="https://drive.google.com/drive/folders/1wr1gDDpHNYbQVSuWAT7MfoadwX-_xZQ9?usp=share_link" target="_blank">View AGM Documents and Materials</a>
-  </div>
-  <div class="doc-toggle" onclick="toggleDoc(this)">Aveo - Committee Chairpersons Roundtable</div>
-  <div class="doc-section">
-    <a href="https://drive.google.com/drive/folders/18zfk867xllx_KSlnbWO7xtB1P-j2kANY?usp=share_link" target="_blank">View Aveo Roundtable Communications</a>
-  </div>
+<h2>Community Noticeboard</h2>
+
+<div class="announcement">
+<div class="announcement-date">For Sale</div>
+<strong>Dining Table & 4 Chairs – $150</strong>
+<p>Contact Unit NN.</p>
 </div>
 
-<!-- USEFUL LINKS -->
-<div id="useful-links" class="page-content">
-  <h2>Useful Links</h2>
-  <div class="doc-toggle" onclick="toggleDoc(this)">Government Services</div>
-  <div class="doc-section">
-    <a href="https://my.gov.au" target="_blank">MyGov</a>
-    <a href="https://www.myagedcare.gov.au" target="_blank">My Aged Care</a>
-    <a href="https://www.qld.gov.au" target="_blank">QLD Government</a>
-    <a href="https://www.dss.gov.au/older-australians" target="_blank">Department of Social Services - Older Australians</a>
-  </div>
-  <div class="doc-toggle" onclick="toggleDoc(this)">Retirement Village Resources</div>
-  <div class="doc-section">
-    <a href="https://arqrv.org.au" target="_blank">ARQ - Association of Residents of QLD Retirement Villages</a>
-  </div>
-  <div class="doc-toggle" onclick="toggleDoc(this)">Safety & Information</div>
-  <div class="doc-section">
-    <a href="https://www.esafety.gov.au/seniors" target="_blank">eSafety - Online safety for seniors</a>
-    <a href="https://www.canstar.com.au/energy/how-to-read-energy-bill/" target="_blank">Canstar - How to read your energy bill</a>
-  </div>
-  <div class="doc-toggle" onclick="toggleDoc(this)">Local Services</div>
-  <div class="doc-section">
-    <a href="https://www.brisbane.qld.gov.au/libraries-venues-and-facilities/libraries/library-locations" target="_blank">Brisbane Libraries</a>
-    <a href="https://www.brisbane.qld.gov.au/events-arts-and-culture/what-s-on-in-brisbane" target="_blank">What's On in Brisbane</a>
-    <a href="https://au.localitybiz.com/brisbane/theater-%26-cinema-in-brisbane-city" target="_blank">Brisbane Entertainment</a>
-  </div>
+<div class="announcement">
+<div class="announcement-date">Lost</div>
+<strong>Grey Cat "Smokey"</strong>
+<p>Reward offered. Please call NNNN NNN NNN.</p>
 </div>
 
-<!-- COMMITTEE -->
-<div id="committee" class="page-content">
-  <div class="doc-toggle" onclick="toggleDoc(this)">Committee Documents</div>
-  <div class="doc-section">
-    <a href="https://drive.google.com/drive/folders/1e0v0Kr007uIE5E0RwIt8UzG6eJ-4fZRM?usp=sharing" target="_blank">View Committee Documents</a>
-  </div>
 </div>
 
-<!-- CONTACT & FEEDBACK -->
+<!-- ================= CONTACT ================= -->
 <div id="contact" class="page-content">
-  <div class="sticky-action-bar">
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLScXEfeclpotjDBMJkpSLcNo9_YkKyOmW4xDYRGav5xdsU1UyQ/viewform" target="_blank" class="btn">Send Feedback</a>
-  </div>
-  <h2>Contact Information</h2>
-  <p>Committee Email: rabd.ctee@gmail.com</p>
+
+<div class="sticky-action-bar">
+<a href="https://docs.google.com/forms/d/e/1FAIpQLScXEfeclpotjDBMJkpSLcNo9_YkKyOmW4xDYRGav5xdsU1UyQ/viewform" target="_blank" class="btn">Send Feedback</a>
+</div>
+
+<h2>Contact Information</h2>
+<p>Email: rabd.ctee@gmail.com</p>
+
+</div>
+
 </div>
 
 <footer>
@@ -209,22 +309,25 @@ footer { text-align:center; padding:20px 0; background:#2c5aa0; color:white; mar
 </footer>
 
 <script>
-function showPage(pageId){
-  document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  event.target.classList.add('active');
-  window.scrollTo(0,0);
+
+function showPage(pageId, link){
+    document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    link.classList.add('active');
+
+    window.scrollTo({top:0, behavior:'smooth'});
 }
+
 function toggleDoc(el){
-  el.classList.toggle('active');
-  var next = el.nextElementSibling;
-  if(next.style.display==='block') next.style.display='none';
-  else next.style.display='block';
+    el.classList.toggle('active');
+    const section = el.nextElementSibling;
+    section.style.display = section.style.display === 'block' ? 'none' : 'block';
 }
+
 </script>
 
 </body>
 </html>
-</body>
 </html>
