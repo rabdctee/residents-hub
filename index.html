@@ -1,144 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bridgeman Downs Retirement Village Residents' Information Hub</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bridgeman Downs Retirement Village Residents' Information Hub</title>
+<link rel="stylesheet" href="styles.css">
+
+<style>
+/* ----------------- Base ----------------- */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height:1.6; background:#f5f5f5; color:#202124; }
+.container { max-width:1200px; margin:0 auto; padding:20px; }
+
+/* ----------------- Header ----------------- */
+.site-header {
+    text-align:center;
+    padding:30px 20px;
+    background:#2c5aa0;
+    color:white;
+}
+.site-title { font-size:1.8em; font-weight:600; }
+.site-subtitle { font-size:1.2em; margin-top:5px; }
+
+/* ----------------- Navigation ----------------- */
+.nav-bar { display:flex; flex-wrap:wrap; justify-content:center; background:#1a3f7a; }
+.nav-bar .nav-item {
+    color:white;
+    text-decoration:none;
+    padding:12px 18px;
+    display:block;
+}
+.nav-bar .nav-item.active { background:#163264; font-weight:600; }
+.nav-bar .nav-item:hover { background:#163264; }
+
+/* ----------------- Pages ----------------- */
+.page-content { display:none; padding:20px; }
+.page-content.active { display:block; }
+
+/* ----------------- Two Column Layout ----------------- */
+.two-column { display:flex; flex-wrap:wrap; gap:20px; }
+.two-column > div { flex:1 1 300px; }
+
+/* ----------------- Sidebar / Widgets ----------------- */
+.sidebar-widget { margin-bottom:20px; }
+.widget-title { font-weight:600; margin-bottom:10px; }
+.doc-toggle {
+    display:block;
+    width:100%;
+    margin-bottom:10px;
+    padding:10px 15px;
+    background:#e1e7f0;
+    border-radius:5px;
+    cursor:pointer;
+    text-align:left;
+    transition:background 0.3s;
+}
+.doc-toggle:hover { background:#c7d2e0; }
+.doc-toggle.open::after {
+    content:"▲";
+    float:right;
+}
+.doc-toggle::after { content:"▼"; float:right; }
+
+/* ----------------- Sections ----------------- */
+.doc-section { display:none; padding:15px; background:white; border-radius:5px; margin-bottom:10px; }
+
+/* ----------------- Announcements ----------------- */
+.announcement { background:white; padding:12px; border-radius:5px; margin-bottom:10px; }
+
+/* ----------------- Buttons ----------------- */
+.sticky-action-bar { margin-bottom:20px; }
+.sticky-action-box a { display:block; padding:10px; background:#2c5aa0; color:white; text-decoration:none; border-radius:5px; margin-bottom:10px; text-align:center; }
+.sticky-action-box a:hover { background:#163264; }
+
+/* ----------------- Footer ----------------- */
+.footer { text-align:center; padding:20px; background:#1a3f7a; color:white; margin-top:20px; }
+
+/* ----------------- Home Page Blue Background ----------------- */
+#home { background:#2c5aa0; color:white; padding:20px; }
+#home a, #home .doc-toggle { color:white; }
+#home .doc-toggle:hover { background:#163264; }
+
+/* ----------------- Responsive ----------------- */
+@media (max-width:768px) {
+    .two-column { flex-direction:column; }
+    .nav-bar { flex-direction:column; }
+}
+</style>
 </head>
+
 <body>
 
-    <!-- HEADER -->
-    <header class="site-header">
-        <div class="site-title">Bridgeman Downs Retirement Village</div>
-        <div class="site-subtitle">Residents' Information Hub</div>
-    </header>
+<!-- HEADER -->
+<header class="site-header">
+    <div class="site-title">Bridgeman Downs Retirement Village</div>
+    <div class="site-subtitle">Residents' Information Hub</div>
+</header>
 
-    <!-- NAVIGATION -->
-    <nav class="nav-bar">
-        <a class="nav-item active" href="javascript:void(0)" onclick="showPage('home')">Home</a>
-        <a class="nav-item" href="javascript:void(0)" onclick="showPage('newsletter')">Newsletter</a>
-        <a class="nav-item" href="javascript:void(0)" onclick="showPage('events')">Events & Activities</a>
-        <a class="nav-item" href="javascript:void(0)" onclick="showPage('noticeboard')">Noticeboard</a>
-        <a class="nav-item" href="javascript:void(0)" onclick="showPage('village-info')">Village Information 🔒</a>
-        <a class="nav-item" href="javascript:void(0)" onclick="showPage('useful-links')">Useful Links</a>
-        <a class="nav-item" href="javascript:void(0)" onclick="showPage('committee')">Committees-Work in Progress</a>
-        <a class="nav-item" href="javascript:void(0)" onclick="showPage('contact')">Contact & Feedback</a>
-    </nav>
+<!-- NAVIGATION -->
+<nav class="nav-bar">
+    <a class="nav-item active" href="javascript:void(0)" onclick="showPage('home')">Home</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="showPage('newsletter')">Newsletter</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="showPage('events')">Events & Activities</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="showPage('noticeboard')">Noticeboard</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="showPage('village-info')">Village Information 🔒</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="showPage('useful-links')">Useful Links</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="showPage('committee')">Committees-Work in Progress</a>
+    <a class="nav-item" href="javascript:void(0)" onclick="showPage('contact')">Contact & Feedback</a>
+</nav>
 
-    <div class="container">
+<div class="container">
 
-        <!-- HOME PAGE -->
-        <div id="home" class="page-content active">
-            <div class="announcement" style="text-align:center; font-weight:600; font-size:1.1em; margin-bottom:20px;">
-                🌐 Welcome to Our Residents' Information Hub! 💡 Bookmark this page!
-            </div>
+<!-- ----------------- HOME ----------------- -->
+<div id="home" class="page-content active">
+    <div style="text-align:center; font-weight:600; font-size:1.2em; margin-bottom:20px;">
+        🌐 Welcome to Our Residents' Information Hub! 💡 Bookmark this page!
+    </div>
 
-            <div class="two-column">
+    <div class="two-column">
 
-                <!-- LEFT COLUMN -->
-                <div>
-                    <section>
-                        <h2 class="section-title">Latest Announcements</h2>
-
-                        <div class="announcement">
-                            <div><strong>Feb 23, 2026:</strong> Welcome to Our Information Hub! Access newsletters, events, and documents all in one place.</div>
-                        </div>
-                        <div class="announcement">
-                            <div><strong>Feb 25, 2026:</strong> Presentation on Solar Installation at 1:30 PM in the Manor. RSVP at front desk.</div>
-                        </div>
-                    </section>
-                </div>
-
-                <!-- RIGHT COLUMN -->
-                <div>
-                    <div class="sidebar-widget">
-                        <div class="widget-title">Upcoming Events</div>
-                        <div class="announcement">Mon, Feb 23: Line Dancing</div>
-                        <div class="announcement">Tue, Feb 24: Movie Bus</div>
-                        <div class="announcement">Wed, Feb 25: Solar Presentation</div>
-                    </div>
-
-                    <div class="sidebar-widget">
-                        <div class="widget-title">Quick Links</div>
-                        <a class="doc-toggle" onclick="showPage('village-info')">📋 Village Documents</a>
-                        <a class="doc-toggle" onclick="showPage('events')">📅 Upcoming Events</a>
-                        <a class="doc-toggle" onclick="showPage('newsletter')">📰 Latest Newsletter</a>
-                        <a class="doc-toggle" onclick="showPage('contact')">📝 Send Feedback</a>
-                        <a class="doc-toggle" onclick="showPage('contact')">📞 Emergency Contacts</a>
-                    </div>
-                </div>
-
-            </div>
+        <!-- LEFT COLUMN -->
+        <div>
+            <h2 class="section-title">Latest Announcements</h2>
+            <div class="announcement">Feb 23, 2026: Welcome to Our Information Hub! Access newsletters, events, and documents all in one place.</div>
+            <div class="announcement">Feb 25, 2026: Presentation on Solar Installation at 1:30 PM in the Manor. RSVP at front desk.</div>
         </div>
 
-        <!-- NEWSLETTER PAGE -->
-        <div id="newsletter" class="page-content">
-            <h2 class="section-title">Newsletter Archive</h2>
-            <p>Access current and past newsletters</p>
-            <a href="https://drive.google.com/drive/folders/1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT?usp=share_link" target="_blank" class="doc-section">Open Newsletter Archive</a>
-        </div>
-
-        <!-- EVENTS & ACTIVITIES PAGE -->
-        <div id="events" class="page-content">
-            <h2 class="section-title">Events & Activities</h2>
-            <div class="embed-container">
-                <iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" style="border:0" width="100%" height="600" frameborder="0" scrolling="yes"></iframe>
-            </div>
-        </div>
-
-        <!-- NOTICEBOARD PAGE -->
-        <div id="noticeboard" class="page-content">
-            <h2 class="section-title">Community Noticeboard</h2>
-            <div class="announcement">
-                <strong>FOR SALE:</strong> Dining Table and 4 Chairs – $150. Contact Unit NN.
-            </div>
-            <div class="announcement">
-                <strong>ANNOUNCEMENT:</strong> Lost Cat "Smokey". Please call NNNN NNN NNN.
-            </div>
-        </div>
-
-        <!-- VILLAGE INFO PAGE -->
-        <div id="village-info" class="page-content">
-            <h2 class="section-title">Village Information 🔒</h2>
-
-            <div class="doc-toggle" onclick="toggleSection('qld-act')">📜 QLD Government RV Act & Regulations</div>
-            <div id="qld-act" class="doc-section">
-                <a href="https://drive.google.com/drive/folders/1PcIMDqkXCdx-F07gYa5Kr-U-rcdnjMS4?usp=share_link" target="_blank">View Documents</a>
+        <!-- RIGHT COLUMN -->
+        <div>
+            <div class="sidebar-widget">
+                <div class="widget-title">Upcoming Events</div>
+                <div class="announcement">Mon, Feb 23: Line Dancing</div>
+                <div class="announcement">Tue, Feb 24: Movie Bus</div>
+                <div class="announcement">Wed, Feb 25: Solar Presentation</div>
             </div>
 
-            <div class="doc-toggle" onclick="toggleSection('constitution')">📜 Constitution & Bylaws</div>
-            <div id="constitution" class="doc-section">
-                <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=sharing" target="_blank">View Documents</a>
-            </div>
-
-            <div class="doc-toggle" onclick="toggleSection('financials')">💰 Financial Reports</div>
-            <div id="financials" class="doc-section">
-                <a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank">View Financials</a>
-            </div>
-
-            <div class="doc-toggle" onclick="toggleSection('minutes')">📝 Monthly Meetings - Agendas & Minutes</div>
-            <div id="minutes" class="doc-section">
-                <a href="https://drive.google.com/drive/folders/10kOi7clFyWaSlS7AYY1aArYw7Lh7mwIz?usp=share_link" target="_blank">View Minutes</a>
-            </div>
-        </div>
-
-        <!-- CONTACT PAGE -->
-        <div id="contact" class="page-content">
-            <h2 class="section-title">Contact & Feedback</h2>
-            <div class="doc-section">
-                Committee Email: rabd.ctee@gmail.com<br>
-                Emergency Contacts: 000, Police: 131 444, Reception: 3862 9020
+            <div class="sidebar-widget">
+                <div class="widget-title">Quick Links</div>
+                <a class="doc-toggle" onclick="showPage('village-info')">📋 Village Documents</a>
+                <a class="doc-toggle" onclick="showPage('events')">📅 Upcoming Events</a>
+                <a class="doc-toggle" onclick="showPage('newsletter')">📰 Latest Newsletter</a>
+                <a class="doc-toggle" onclick="showPage('contact')">📝 Send Feedback</a>
+                <a class="doc-toggle" onclick="showPage('contact')">📞 Emergency Contacts</a>
             </div>
         </div>
 
     </div>
+</div>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        Bridgeman Downs Retirement Village Residents Information Hub<br>
-        © 2026 | For resident use only | Contact: rabd.ctee@gmail.com
-    </footer>
+<!-- ----------------- NEWSLETTER ----------------- -->
+<div id="newsletter" class="page-content">
+    <h2 class="section-title">Newsletter Archive</h2>
+    <p>Access current and past newsletters:</p>
+    <a href="https://drive.google.com/drive/folders/1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT?usp=share_link" target="_blank" class="doc-section">Open Newsletter Archive</a>
+    <div class="sticky-action-bar">
+        <div class="sticky-action-box">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScXEfeclpotjDBMJkpSLcNo9_YkKyOmW4xDYRGav5xdsU1UyQ/viewform" target="_blank">Submit Newsletter Feedback</a>
+        </div>
+    </div>
+</div>
+
+<!-- ----------------- EVENTS & ACTIVITIES ----------------- -->
+<div id="events" class="page-content">
+    <h2 class="section-title">Events & Activities</h2>
+    <div class="sticky-action-bar">
+        <div class="sticky-action-box">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSd-KOK2eV79f7U4xC2j8buLHJ0KZsLxBFQ49709UUYBrLg5Qg/viewform" target="_blank">📝 Register for an Event</a>
+        </div>
+    </div>
+    <div class="embed-container">
+        <iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" style="border:0" width="100%" height="600" frameborder="0" scrolling="yes"></iframe>
+    </div>
+</div>
+
+<!-- ----------------- NOTICEBOARD ----------------- -->
+<div id="noticeboard" class="page-content">
+    <h2 class="section-title">Community Noticeboard</h2>
+    <div class="sticky-action-bar">
+        <div class="sticky-action-box">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfQ7UZfN6l5_oefSrtckF87-taz0IjkZycCX_7w8fFh2I-3Mw/viewform" target="_blank">✏️ Submit a Post to Noticeboard</a>
+        </div>
+    </div>
+    <div class="announcement">
+        <strong>FOR SALE:</strong> Dining Table and 4 Chairs – $150. Contact Unit NN.
+    </div>
+    <div class="announcement">
+        <strong>ANNOUNCEMENT:</strong> Lost Cat "Smokey". Please call NNNN NNN NNN.
+    </div>
+</div>
+
+<!-- ----------------- VILLAGE INFO ----------------- -->
+<div id="village-info" class="page-content">
+    <h2 class="section-title">Village Information 🔒</h2>
+
+    <div class="doc-toggle" onclick="toggleSection('qld-act')">📜 QLD Government RV Act & Regulations</div>
+    <div id="qld-act" class="doc-section">
+        <a href="https://drive.google.com/drive/folders/1PcIMDqkXCdx-F07gYa5Kr-U-rcdnjMS4?usp=share_link" target="_blank">View Documents</a>
+    </div>
+
+    <div class="doc-toggle" onclick="toggleSection('constitution')">📜 Constitution & Bylaws</div>
+    <div id="constitution" class="doc-section">
+        <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=sharing" target="_blank">View Documents</a>
+    </div>
+
+    <div class="doc-toggle" onclick="toggleSection('financials')">💰 Financial Reports</div>
+    <div id="financials" class="doc-section">
+        <a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank">View Financials</a>
+    </div>
+
+    <div class="doc-toggle" onclick="toggleSection('minutes')">📝 Monthly Meetings - Agendas & Minutes</div>
+    <div id="minutes" class="doc-section">
+        <a href="https://drive.google.com/drive/folders/10kOi7clFyWaSlS7AYY1aArYw7Lh7mwIz?usp=share_link" target="_blank">View Minutes</a>
+    </div>
+</div>
+
+<!-- ----------------- CONTACT ----------------- -->
+<div id="contact" class="page-content">
+    <h2 class="section-title">Contact & Feedback</h2>
+    <div class="sticky-action-bar">
+        <div class="sticky-action-box">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScXEfeclpotjDBMJkpSLcNo9_YkKyOmW4xDYRGav5xdsU1UyQ/viewform" target="_blank">📝 Send Feedback</a>
+        </div>
+    </div>
+    <p>Committee Email: rabd.ctee@gmail.com</p>
+    <p>Emergency Contacts: 000 | Police: 131 444 | Reception: 3862 9020</p>
+</div>
+
+<!-- ----------------- Footer ----------------- -->
+<footer class="footer">
+Bridgeman Downs Retirement Village Residents Information Hub<br>
+© 2026 | For resident use only | Contact: rabd.ctee@gmail.com
+</footer>
 
 <script>
 function showPage(pageId) {
