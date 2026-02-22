@@ -6,19 +6,14 @@
     <title>Bridgeman Downs Retirement Village Residents' Information Hub</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
 <div class="container">
 
     <!-- HEADER -->
     <div class="site-header">
-        <div class="site-title">
-            Bridgeman Downs Retirement Village
-        </div>
-        <div class="site-subtitle">
-            Residents' Information Hub
-        </div>
+        <div class="site-title">Bridgeman Downs Retirement Village</div>
+        <div class="site-subtitle">Residents' Information Hub</div>
     </div>
 
     <!-- NAVIGATION -->
@@ -32,19 +27,16 @@
 
     <!-- HOME PAGE -->
     <div id="home" class="page-content active">
-
         <h2 class="section-title">Welcome</h2>
 
         <div class="home-grid">
-
             <!-- MAIN CONTENT -->
             <div>
-
                 <div class="announcement">
-                    <div class="announcement-date">February 2026</div>
+                    <div class="announcement-date">Feb 2026</div>
                     <div class="announcement-text">
                         <strong>Welcome to our Residents’ Information Hub.</strong><br>
-                        This site provides updates, newsletters, events and important documents for our community.
+                        This site provides updates, newsletters, events, and important documents for our community.
                     </div>
                 </div>
 
@@ -54,12 +46,10 @@
                         Community Morning Tea – Friday 10am in the Village Hall.
                     </div>
                 </div>
-
             </div>
 
             <!-- SIDEBAR -->
             <div>
-
                 <div class="sidebar-widget">
                     <div class="widget-title">Quick Links</div>
                     <p><a href="#" onclick="showPage('newsletter')">Latest Newsletter</a></p>
@@ -72,34 +62,27 @@
                     <p>Monday – Friday</p>
                     <p>9:00am – 3:00pm</p>
                 </div>
-
             </div>
-
         </div>
     </div>
 
     <!-- NEWSLETTER PAGE -->
     <div id="newsletter" class="page-content">
         <h2 class="section-title">Newsletter</h2>
-
         <div class="doc-section">
-            <p>Latest newsletter available below:</p>
-            <a href="#" class="btn">Download February Newsletter (PDF)</a>
+            <p>Latest newsletter:</p>
+            <a href="https://drive.google.com/drive/folders/1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT?usp=share_link" target="_blank" class="btn">Open Newsletter Archive</a>
         </div>
     </div>
 
     <!-- EVENTS PAGE -->
     <div id="events" class="page-content">
-        <h2 class="section-title">Events</h2>
+        <h2 class="section-title">Events & Activities</h2>
 
-        <div class="content-section">
-            <h3>Community Morning Tea</h3>
-            <p>Friday 10:00am – Village Hall</p>
-        </div>
-
-        <div class="content-section">
-            <h3>Monthly Residents Meeting</h3>
-            <p>First Tuesday of each month</p>
+        <div class="embed-container" style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden;">
+            <iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" 
+                    style="border:0; position: absolute; top:0; left:0; width:100%; height:100%;" 
+                    frameborder="0" scrolling="yes"></iframe>
         </div>
     </div>
 
@@ -107,11 +90,54 @@
     <div id="documents" class="page-content">
         <h2 class="section-title">Important Documents</h2>
 
-        <div class="doc-section">
-            <p><a href="#">Village Rules (PDF)</a></p>
-            <p><a href="#">Emergency Contacts</a></p>
-            <p><a href="#">Maintenance Request Form</a></p>
+        <!-- QLD Government RV Act -->
+        <div>
+            <div onclick="toggleSection('qld-act')" class="doc-toggle">📜 QLD Government RV Act & Regulations ▼</div>
+            <div id="qld-act" class="doc-section" style="display:none;">
+                <a href="https://drive.google.com/drive/folders/1PcIMDqkXCdx-F07gYa5Kr-U-rcdnjMS4?usp=share_link" target="_blank">View Documents</a>
+            </div>
         </div>
+
+        <!-- Constitution & Bylaws -->
+        <div>
+            <div onclick="toggleSection('constitution')" class="doc-toggle">📜 Constitution & Bylaws ▼</div>
+            <div id="constitution" class="doc-section" style="display:none;">
+                <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=sharing" target="_blank">View Documents</a>
+            </div>
+        </div>
+
+        <!-- Financial Reports -->
+        <div>
+            <div onclick="toggleSection('financials')" class="doc-toggle">💰 Financial Reports & Budgets ▼</div>
+            <div id="financials" class="doc-section" style="display:none;">
+                <a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank">View Documents</a>
+            </div>
+        </div>
+
+        <!-- Meetings / Minutes -->
+        <div>
+            <div onclick="toggleSection('minutes')" class="doc-toggle">📝 Monthly Meetings – Agendas & Minutes ▼</div>
+            <div id="minutes" class="doc-section" style="display:none;">
+                <a href="https://drive.google.com/drive/folders/10kOi7clFyWaSlS7AYY1aArYw7Lh7mwIz?usp=share_link" target="_blank">View Documents</a>
+            </div>
+        </div>
+
+        <!-- AGM -->
+        <div>
+            <div onclick="toggleSection('agm')" class="doc-toggle">🏛️ AGM Documents ▼</div>
+            <div id="agm" class="doc-section" style="display:none;">
+                <a href="https://drive.google.com/drive/folders/1wr1gDDpHNYbQVSuWAT7MfoadwX-_xZQ9?usp=share_link" target="_blank">View Documents</a>
+            </div>
+        </div>
+
+        <!-- Aveo -->
+        <div>
+            <div onclick="toggleSection('aveo')" class="doc-toggle">🏢 Aveo Roundtable Communications ▼</div>
+            <div id="aveo" class="doc-section" style="display:none;">
+                <a href="https://drive.google.com/drive/folders/18zfk867xllx_KSlnbWO7xtB1P-j2kANY?usp=share_link" target="_blank">View Documents</a>
+            </div>
+        </div>
+
     </div>
 
     <!-- CONTACT PAGE -->
@@ -119,9 +145,9 @@
         <h2 class="section-title">Contact</h2>
 
         <div class="contact-card">
-            <p><strong>Village Office</strong></p>
-            <p>Phone: (07) 0000 0000</p>
-            <p>Email: info@bridgemandownsvillage.com.au</p>
+            <strong>Village Office</strong><br>
+            Phone: (07) 3862 9020<br>
+            Email: <a href="mailto:rabd.ctee@gmail.com">rabd.ctee@gmail.com</a>
         </div>
     </div>
 
@@ -132,32 +158,28 @@
 
 </div>
 
-<!-- SIMPLE PAGE SWITCHING SCRIPT -->
+<!-- JS FOR PAGE SWITCH + TOGGLE -->
 <script>
 function showPage(pageId, element) {
-
-    // Hide all pages
-    var pages = document.querySelectorAll('.page-content');
-    pages.forEach(function(page) {
-        page.classList.remove('active');
-    });
-
-    // Show selected page
+    document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
 
-    // Remove active nav state
-    var navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(function(item) {
-        item.classList.remove('active');
-    });
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    if(element) element.classList.add('active');
 
-    // Set active nav
-    if (element) {
-        element.classList.add('active');
+    window.scrollTo(0,0);
+}
+
+function toggleSection(id) {
+    const section = document.getElementById(id);
+    const toggle = section.previousElementSibling;
+    if(section.style.display === 'none' || section.style.display === '') {
+        section.style.display = 'block';
+        toggle.textContent = toggle.textContent.replace('▼','▲');
+    } else {
+        section.style.display = 'none';
+        toggle.textContent = toggle.textContent.replace('▲','▼');
     }
-
-    // Scroll to top (helpful on mobile)
-    window.scrollTo(0, 0);
 }
 </script>
 
