@@ -1,0 +1,171 @@
+/* ===============================
+   BASE RESET
+================================= */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  background-color: #f4f6f8;
+  color: #333;
+}
+
+/* ===============================
+   TYPOGRAPHY
+================================= */
+h1, h2, h3 {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+a {
+  color: #005a9c;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   LAYOUT CONTAINER
+================================= */
+.container {
+  padding: 1rem;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* ===============================
+   HEADER
+================================= */
+header {
+  background-color: #005a9c;
+  color: white;
+  padding: 1rem;
+}
+
+header h1 {
+  margin: 0;
+}
+
+nav {
+  margin-top: 0.5rem;
+}
+
+nav a {
+  display: inline-block;
+  margin-right: 1rem;
+  color: white;
+  font-weight: bold;
+  padding: 0.5rem 0;
+}
+
+/* ===============================
+   HERO SECTION
+================================= */
+.hero {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+}
+
+/* ===============================
+   CARDS
+================================= */
+.card {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+/* ===============================
+   BUTTONS
+================================= */
+.button {
+  display: inline-block;
+  padding: 0.6rem 1rem;
+  background-color: #005a9c;
+  color: white;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: #003f70;
+}
+
+/* ===============================
+   SECTIONS
+================================= */
+.section {
+  margin-bottom: 2rem;
+}
+
+/* ===============================
+   FOOTER
+================================= */
+footer {
+  background-color: #003f70;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* ===============================
+   RESPONSIVE BREAKPOINTS
+================================= */
+
+/* Tablet */
+@media screen and (min-width: 768px) {
+
+  .flex-2 {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .flex-2 > div {
+    flex: 1;
+  }
+}
+
+/* Desktop */
+@media screen and (min-width: 1024px) {
+
+  .flex-3 {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .flex-3 > div {
+    flex: 1;
+  }
+
+  nav {
+    margin-top: 0;
+  }
+}
