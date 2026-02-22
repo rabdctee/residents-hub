@@ -425,13 +425,38 @@
                     </div>
             
                     <div class="content-section">
-                        <h2 class="section-title">Quick Access</h2>
-                        <div style="background: #f8f9fa...">
-                            <button...>📋 Village Documents</button>
-                            <button...>📅 Upcoming Events</button>
-                            <button...>📰 Latest Newsletter</button>
-                        </div>
-                    </div>
+    <h2 class="section-title">Quick Access</h2>
+    <div style="background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px;">
+        
+        <div style="padding: 15px 0; border-bottom: 1px solid #e0e0e0;">
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 1.5em; margin-right: 10px;">📋</span>
+                <strong style="font-size: 1.1em; color: #202124;">Village Documents</strong>
+            </div>
+            <p style="color: #5f6368; font-size: 0.95em; margin-bottom: 10px; margin-left: 35px;">Constitution, finances, meeting minutes and AGM information</p>
+            <button class="btn" style="font-size: 14px; margin-left: 35px;" onclick="showPage('village-info')">View Documents</button>
+        </div>
+        
+        <div style="padding: 15px 0; border-bottom: 1px solid #e0e0e0;">
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 1.5em; margin-right: 10px;">📆</span>
+                <strong style="font-size: 1.1em; color: #202124;">Upcoming Events</strong>
+            </div>
+            <p style="color: #5f6368; font-size: 0.95em; margin-bottom: 10px; margin-left: 35px;">See what's happening and register for events</p>
+            <button class="btn" style="font-size: 14px; margin-left: 35px;" onclick="showPage('events')">View Calendar</button>
+        </div>
+        
+        <div style="padding: 15px 0;">
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 1.5em; margin-right: 10px;">📰</span>
+                <strong style="font-size: 1.1em; color: #202124;">Latest Newsletter</strong>
+            </div>
+            <p style="color: #5f6368; font-size: 0.95em; margin-bottom: 10px; margin-left: 35px;">Read the current edition</p>
+            <button class="btn" style="font-size: 14px; margin-left: 35px;" onclick="showPage('newsletter')">Read Now</button>
+        </div>
+        
+    </div>
+</div>
                         <!-- UPDATE ANNOUNCEMENTS HERE - Edit the text below as needed -->
                         <div class="announcement">
                             <div class="announcement-date"><img src="calendar.png" alt="" style="width: 60px; height: 60px; vertical-align: middle; margin-right: 3px;"> February 23, 2026</div>
