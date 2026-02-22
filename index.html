@@ -309,23 +309,27 @@ footer {
 </footer>
 
 <script>
-
 function showPage(pageId, link){
-    document.querySelectorAll('.page-content').forEach(p=>p.classList.remove('active'));
+
+    // Hide all pages
+    document.querySelectorAll('.page-content').forEach(function(page){
+        page.classList.remove('active');
+    });
+
+    // Show selected page
     document.getElementById(pageId).classList.add('active');
 
-    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-    link.classList.add('active');
+    // If link passed (nav click), update active state
+    if(link){
+        document.querySelectorAll('.nav-item').forEach(function(nav){
+            nav.classList.remove('active');
+        });
+        link.classList.add('active');
+    }
 
-    window.scrollTo({top:0, behavior:'smooth'});
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-function toggleDoc(el){
-    el.classList.toggle('active');
-    const section = el.nextElementSibling;
-    section.style.display = section.style.display === 'block' ? 'none' : 'block';
-}
-
 </script>
 
 </body>
