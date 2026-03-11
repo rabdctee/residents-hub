@@ -967,33 +967,78 @@ This page contains village documents and financial information for residents onl
 </div>
 <div id="qld-act" class="collapsible-content">
 <a href="https://drive.google.com/drive/folders/1PcIMDqkXCdx-F07gYa5Kr-U-rcdnjMS4?usp=share_link" target="_blank" class="doc-link">
-View QLD Government Retirement Villages Act & Regulations
+📄 View QLD Government Retirement Villages Act & Regulations
 </a>
 </div>
 
 <!-- 2. Constitution Section -->
 <div class="collapsible-header" onclick="toggleSection('constitution')">
-<span class="collapsible-title">📜 Village Constitution & Bylaws</span>
+<span class="collapsible-title">📜 Village Constitution</span>
 <span id="constitution-arrow" class="collapsible-arrow">▼</span>
 </div>
 <div id="constitution" class="collapsible-content">
 <a href="https://drive.google.com/drive/folders/1vKwV43gMIYMyBZFxLRvm3L5z_dQh2HkD?usp=share_link" target="_blank" class="doc-link">
-View Village Constitution & Bylaws
+📄 View Village Constitution
 </a>
 </div>
 
-<!-- 3. Meetings Section (AGM, Quarterly & Monthly) -->
+<!-- 3. Meetings Section -->
 <div class="collapsible-header" onclick="toggleSection('meetings')">
 <span class="collapsible-title">📝 AGM, Quarterly & Monthly Meetings</span>
 <span id="meetings-arrow" class="collapsible-arrow">▼</span>
 </div>
 <div id="meetings" class="collapsible-content">
+
 <div class="info-box">
 <strong>Next AGM:</strong> Tuesday, May 12, 2026 at 10:30 AM in the Melody Ridge Centre
 </div>
+
+<h4 style="margin-bottom:15px; color:#2c5aa0;">📄 View Meeting Documents</h4>
+
+<p style="color:#5f6368; margin-bottom:15px;">
+Select a meeting to view the agenda or minutes:
+</p>
+
+<select id="meeting-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
+<option value="">-- Select Meeting --</option>
+<optgroup label="2026 AGM">
+<option value="2026-agm-agenda">2026 AGM - Agenda</option>
+<option value="2026-agm-minutes">2026 AGM - Minutes</option>
+</optgroup>
+<optgroup label="2026 Quarterly Meetings">
+<option value="2026-q1-agenda">Q1 2026 - Agenda</option>
+<option value="2026-q1-minutes">Q1 2026 - Minutes</option>
+</optgroup>
+<optgroup label="2026 Monthly Meetings">
+<option value="2026-03-agenda">March 2026 - Agenda</option>
+<option value="2026-03-minutes">March 2026 - Minutes</option>
+<option value="2026-02-agenda">February 2026 - Agenda</option>
+<option value="2026-02-minutes">February 2026 - Minutes</option>
+<option value="2026-01-agenda">January 2026 - Agenda</option>
+<option value="2026-01-minutes">January 2026 - Minutes</option>
+</optgroup>
+<optgroup label="2025 Meetings">
+<option value="2025-agm-agenda">2025 AGM - Agenda</option>
+<option value="2025-agm-minutes">2025 AGM - Minutes</option>
+<option value="2025-12-agenda">December 2025 - Agenda</option>
+<option value="2025-12-minutes">December 2025 - Minutes</option>
+</optgroup>
+</select>
+
+<button onclick="viewMeetingDocument()" class="btn" style="width:100%; margin-bottom:10px;">
+📄 View Selected Document
+</button>
+
+<p style="color:#5f6368; font-size:0.9em; margin-top:10px;">
+💡 <strong>Tip:</strong> Documents open in a new window. Use your browser's print function to print.
+</p>
+
+<hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
+
 <a href="https://drive.google.com/drive/folders/1wr1gDDpHNYbQVSuWAT7MfoadwX-_xZQ9?usp=share_link" target="_blank" class="doc-link">
-View AGM, Quarterly & Monthly Meeting Documents
+📁 Browse All Meeting Documents
 </a>
+
 </div>
 
 <!-- 4. Community Finances Section -->
@@ -1048,9 +1093,26 @@ Select a reporting period below to view and print the financial report:
 <span id="aveo-arrow" class="collapsible-arrow">▼</span>
 </div>
 <div id="aveo" class="collapsible-content">
+
+<h4 style="margin-bottom:15px; color:#2c5aa0;">📄 View aveo Documents</h4>
+
+<select id="aveo-document" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
+<option value="">-- Select Document --</option>
+<option value="aveo-doc1">aveo Roundtable Minutes - March 2026</option>
+<option value="aveo-doc2">aveo Roundtable Minutes - December 2025</option>
+<option value="aveo-doc3">aveo Information Package</option>
+</select>
+
+<button onclick="viewAveoDocument()" class="btn" style="width:100%; margin-bottom:10px;">
+📄 View Selected Document
+</button>
+
+<hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
+
 <a href="https://drive.google.com/drive/folders/1BUxeN8inbHkEZWn5hgrYSMige6s1CqhZ?usp=share_link" target="_blank" class="doc-link">
-View aveo Documents
+📁 Browse All aveo Documents
 </a>
+
 </div>
 
 <!-- 6. Village Issues - Progress Section -->
@@ -1059,8 +1121,17 @@ View aveo Documents
 <span id="issues-arrow" class="collapsible-arrow">▼</span>
 </div>
 <div id="issues" class="collapsible-content">
+<a href="YOUR_DIRECT_LINK_TO_CURRENT_TRACKER" target="_blank" class="doc-link">
+📄 Current Issues Tracker (Updated: March 2026)
+</a>
+<p style="color:#5f6368; margin-top:10px; font-size:0.9em;">
+This tracker is updated regularly to show progress on community issues.
+</p>
+
+<hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
+
 <a href="https://drive.google.com/drive/folders/1XK9n5JB-wVgTo-qp0Zd7hcPm_WWCQhuC?usp=share_link" target="_blank" class="doc-link">
-View Village Issues & Progress Updates
+📁 View Issues Archive
 </a>
 </div>
 
@@ -1326,7 +1397,7 @@ location.reload();
 }
 }, 1800000); // 30 minutes = 1800000 milliseconds
 
-// Financial Report Viewer - Quarterly Reports
+// Financial Report Viewer - Quarterly Reports (ALREADY EXISTS - included for completeness)
 function viewFinancialReport() {
     var period = document.getElementById('financial-period').value;
     
@@ -1335,10 +1406,9 @@ function viewFinancialReport() {
         return;
     }
     
-    // Map each period to its Google Drive PDF URL
     var reportUrls = {
         // 2026 Quarterly Reports
-        '2026-Q1': 'https://drive.google.com/file/d/1BHq9oAE64o85Si-C9xNRv_2gTB6iF-89/view',
+        '2026-Q1': 'https://drive.google.com/file/d/1imhB6S3LNl-uBZ-zinnBdn4CcsCU2IB0/view',
         '2026-Q2': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q2/view',
         '2026-Q3': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q3/view',
         '2026-Q4': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q4/view',
@@ -1358,7 +1428,69 @@ function viewFinancialReport() {
     } else {
         alert('Report not yet available for this period. Please check back later.');
     }
-}    
+}
+
+// Meeting Documents Viewer
+function viewMeetingDocument() {
+    var meeting = document.getElementById('meeting-period').value;
+    
+    if (!meeting) {
+        alert('Please select a meeting first');
+        return;
+    }
+    
+    var meetingUrls = {
+        // 2026 AGM
+        '2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_AGM_AGENDA/view',
+        '2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_AGM_MINUTES/view',
+        
+        // 2026 Quarterly
+        '2026-q1-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q1_AGENDA/view',
+        '2026-q1-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q1_MINUTES/view',
+        
+        // 2026 Monthly
+        '2026-03-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_03_AGENDA/view',
+        '2026-03-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_03_MINUTES/view',
+        '2026-02-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_02_AGENDA/view',
+        '2026-02-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_02_MINUTES/view',
+        '2026-01-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_01_AGENDA/view',
+        '2026-01-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_01_MINUTES/view',
+        
+        // 2025 Meetings
+        '2025-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2025_AGM_AGENDA/view',
+        '2025-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2025_AGM_MINUTES/view',
+        '2025-12-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2025_12_AGENDA/view',
+        '2025-12-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2025_12_MINUTES/view'
+    };
+    
+    if (meetingUrls[meeting]) {
+        window.open(meetingUrls[meeting], '_blank');
+    } else {
+        alert('Document not yet available. Please check back later.');
+    }
+}
+
+// aveo Documents Viewer
+function viewAveoDocument() {
+    var doc = document.getElementById('aveo-document').value;
+    
+    if (!doc) {
+        alert('Please select a document first');
+        return;
+    }
+    
+    var aveoUrls = {
+        'aveo-doc1': 'https://drive.google.com/file/d/YOUR_FILE_ID_AVEO_1/view',
+        'aveo-doc2': 'https://drive.google.com/file/d/YOUR_FILE_ID_AVEO_2/view',
+        'aveo-doc3': 'https://drive.google.com/file/d/YOUR_FILE_ID_AVEO_3/view'
+    };
+    
+    if (aveoUrls[doc]) {
+        window.open(aveoUrls[doc], '_blank');
+    } else {
+        alert('Document not yet available. Please check back later.');
+    }
+}   
 </script>
 
 </body>
