@@ -984,48 +984,95 @@ This page contains village documents and financial information for residents onl
 <div id="meetings" class="collapsible-content">
 
 <div class="info-box">
-<strong>Next AGM:</strong> Tuesday, May 12, 2026 at 10:30 AM in the Melody Ridge Centre
+<strong>Upcoming AGMs:</strong><br>
+Residents Committee - Tuesday, May 12, 2026 at 10:30 AM in the Melody Ridge Centre<br>
+Social Club Committee - TBA 2027 at TBA in the Melody Ridge Centre
 </div>
 
 <h4 style="margin-bottom:15px; color:#2c5aa0;">📄 View Meeting Documents</h4>
+<p style="color:#5f6368; margin-bottom:25px;">Select a committee below to view their meeting documents:</p>
 
-<p style="color:#5f6368; margin-bottom:15px;">
-Select a meeting to view the agenda or minutes:
+<!-- RESIDENTS COMMITTEE -->
+<div class="collapsible-header" onclick="toggleSection('residents-meetings')" style="background:#f8f9fa; border-left:4px solid #2c5aa0;">
+<span class="collapsible-title">👥 Residents Committee</span>
+<span id="residents-meetings-arrow" class="collapsible-arrow">▼</span>
+</div>
+<div id="residents-meetings" class="collapsible-content" style="padding-left:20px; border-left:2px solid #e0e0e0;">
+
+<p style="color:#5f6368; margin-bottom:15px; font-size:0.95em;">
+<strong>Meeting Schedule:</strong> Monthly meetings (first Tuesday), Quarterly (Feb, May, Aug, Nov) AGM (replaces 2nd Quarterly meeting)
 </p>
 
-<select id="meeting-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
-<option value="">-- Select Meeting --</option>
+<select id="residents-meeting-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
+<option value="">-- Select Document --</option>
 <optgroup label="2026 AGM">
-<option value="2026-agm-agenda">2026 AGM - Agenda</option>
-<option value="2026-agm-minutes">2026 AGM - Minutes</option>
+<option value="residents-2026-agm-agenda">AGM Agenda</option>
+<option value="residents-2026-agm-minutes">AGM Minutes</option>
 </optgroup>
 <optgroup label="2026 Quarterly Meetings">
-<option value="2026-q1-agenda">Q1 2026 - Agenda</option>
-<option value="2026-q1-minutes">Q1 2026 - Minutes</option>
+<option value="residents-2026-q1-agenda">Q1 2026 - Agenda</option>
+<option value="residents-2026-q1-minutes">Q1 2026 - Minutes</option>
+<option value="residents-2026-q2-agenda">Q2 2026 - Agenda</option>
+<option value="residents-2026-q2-minutes">Q2 2026 - Minutes</option>
 </optgroup>
 <optgroup label="2026 Monthly Meetings">
-<option value="2026-03-agenda">March 2026 - Agenda</option>
-<option value="2026-03-minutes">March 2026 - Minutes</option>
-<option value="2026-02-agenda">February 2026 - Agenda</option>
-<option value="2026-02-minutes">February 2026 - Minutes</option>
-<option value="2026-01-agenda">January 2026 - Agenda</option>
-<option value="2026-01-minutes">January 2026 - Minutes</option>
+<option value="residents-2026-03-agenda">March 2026 - Agenda</option>
+<option value="residents-2026-03-minutes">March 2026 - Minutes</option>
+<option value="residents-2026-02-agenda">February 2026 - Agenda</option>
+<option value="residents-2026-02-minutes">February 2026 - Minutes</option>
+<option value="residents-2026-01-agenda">January 2026 - Agenda</option>
+<option value="residents-2026-01-minutes">January 2026 - Minutes</option>
 </optgroup>
 </select>
 
-<button onclick="viewMeetingDocument()" class="btn" style="width:100%; margin-bottom:10px;">
+<button onclick="viewResidentsMeeting()" class="btn" style="width:100%; margin-bottom:10px;">
 📄 View Selected Document
 </button>
 
-<p style="color:#5f6368; font-size:0.9em; margin-top:10px;">
-💡 <strong>Tip:</strong> Documents open in a new window. Use your browser's print function to print.
+</div>
+
+<!-- SOCIAL CLUB COMMITTEE -->
+<div class="collapsible-header" onclick="toggleSection('social-meetings')" style="background:#f8f9fa; border-left:4px solid #2c5aa0; margin-top:15px;">
+<span class="collapsible-title">🎉 Social Club Committee</span>
+<span id="social-meetings-arrow" class="collapsible-arrow">▼</span>
+</div>
+<div id="social-meetings" class="collapsible-content" style="padding-left:20px; border-left:2px solid #e0e0e0;">
+
+<p style="color:#5f6368; margin-bottom:15px; font-size:0.95em;">
+<strong>Meeting Schedule:</strong> Monthly meetings (second Tuesday), Annual AGM
 </p>
 
-<hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
+<select id="social-meeting-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
+<option value="">-- Select Document --</option>
+<optgroup label="2026 AGM">
+<option value="social-2026-agm-agenda">AGM Agenda</option>
+<option value="social-2026-agm-minutes">AGM Minutes</option>
+</optgroup>
+<optgroup label="2026 Monthly Meetings">
+<option value="social-2026-03-agenda">March 2026 - Agenda</option>
+<option value="social-2026-03-minutes">March 2026 - Minutes</option>
+<option value="social-2026-02-agenda">February 2026 - Agenda</option>
+<option value="social-2026-02-minutes">February 2026 - Minutes</option>
+<option value="social-2026-01-agenda">January 2026 - Agenda</option>
+<option value="social-2026-01-minutes">January 2026 - Minutes</option>
+</optgroup>
+</select>
+
+<button onclick="viewSocialMeeting()" class="btn" style="width:100%; margin-bottom:10px;">
+📄 View Selected Document
+</button>
+
+</div>
+
+<hr style="margin:25px 0 20px 0; border:none; border-top:1px solid #e0e0e0;">
 
 <a href="https://drive.google.com/drive/folders/1wr1gDDpHNYbQVSuWAT7MfoadwX-_xZQ9?usp=share_link" target="_blank" class="doc-link">
 📁 Browse All Meeting Documents
 </a>
+
+<p style="color:#5f6368; font-size:0.9em; margin-top:15px;">
+💡 <strong>Tip:</strong> Documents open in a new window. Use your browser's print function to print.
+</p>
 
 </div>
 
@@ -1442,31 +1489,63 @@ function viewFinancialReport() {
     }
 }
 
-// Meeting Documents Viewer
-function viewMeetingDocument() {
-    var meeting = document.getElementById('meeting-period').value;
+// Residents Committee Meeting Documents Viewer
+function viewResidentsMeeting() {
+    var meeting = document.getElementById('residents-meeting-period').value;
     
     if (!meeting) {
-        alert('Please select a meeting first');
+        alert('Please select a document first');
         return;
     }
     
     var meetingUrls = {
         // 2026 AGM
-        '2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_AGM_AGENDA/view',
-        '2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_AGM_MINUTES/view',
+        'residents-2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_AGM_AGENDA/view',
+        'residents-2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_AGM_MINUTES/view',
         
         // 2026 Quarterly
-        '2026-q1-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q1_AGENDA/view',
-        '2026-q1-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q1_MINUTES/view',
+        'residents-2026-q1-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q1_AGENDA/view',
+        'residents-2026-q1-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q1_MINUTES/view',
+        'residents-2026-q2-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q2_AGENDA/view',
+        'residents-2026-q2-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q2_MINUTES/view',
         
         // 2026 Monthly
-        '2026-03-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_03_AGENDA/view',
-        '2026-03-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_03_MINUTES/view',
-        '2026-02-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_02_AGENDA/view',
-        '2026-02-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_02_MINUTES/view',
-        '2026-01-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_01_AGENDA/view',
-        '2026-01-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_01_MINUTES/view'    
+        'residents-2026-03-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_03_AGENDA/view',
+        'residents-2026-03-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_03_MINUTES/view',
+        'residents-2026-02-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_02_AGENDA/view',
+        'residents-2026-02-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_02_MINUTES/view',
+        'residents-2026-01-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_01_AGENDA/view',
+        'residents-2026-01-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_01_MINUTES/view'
+    };
+    
+    if (meetingUrls[meeting]) {
+        window.open(meetingUrls[meeting], '_blank');
+    } else {
+        alert('Document not yet available. Please check back later.');
+    }
+}
+
+// Social Club Committee Meeting Documents Viewer
+function viewSocialMeeting() {
+    var meeting = document.getElementById('social-meeting-period').value;
+    
+    if (!meeting) {
+        alert('Please select a document first');
+        return;
+    }
+    
+    var meetingUrls = {
+        // 2026 AGM
+        'social-2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_AGM_AGENDA/view',
+        'social-2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_AGM_MINUTES/view',
+        
+        // 2026 Monthly
+        'social-2026-03-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_03_AGENDA/view',
+        'social-2026-03-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_03_MINUTES/view',
+        'social-2026-02-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_02_AGENDA/view',
+        'social-2026-02-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_02_MINUTES/view',
+        'social-2026-01-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_01_AGENDA/view',
+        'social-2026-01-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_01_MINUTES/view'
     };
     
     if (meetingUrls[meeting]) {
