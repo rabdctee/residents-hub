@@ -168,6 +168,11 @@ font-weight:600;
 font-size:0.9em;
 }
 
+.event-date:hover {
+    color: #2c5aa0 !important;
+    text-decoration: underline;
+}
+    
 .event-name{
 color:#202124;
 margin-top:3px;
@@ -569,15 +574,21 @@ color:#2c5aa0;
 <div class="widget-title"><img src="calendar.png" alt="Calendar" style="width:20px;height:20px;vertical-align:middle;margin-right:5px;"> Upcoming Events</div>
 <!-- UPDATE EVENTS HERE -->
 <div class="event-item">
-<div class="event-date">Sun, Mar 15</div>
+<a href="#" onclick="showPage('events', document.querySelector('.nav-item:nth-child(4)')); return false;" style="text-decoration:none; color:inherit;">
+<div class="event-date" style="cursor:pointer; transition: color 0.2s;">Sun, Mar 15</div>
+</a>
 <div class="event-name">Opera - My Fair Lady</div>
 </div>
 <div class="event-item">
-<div class="event-date">Fri, Mar 20</div>
+<a href="#" onclick="showPage('events', document.querySelector('.nav-item:nth-child(4)')); return false;" style="text-decoration:none; color:inherit;">
+<div class="event-date" style="cursor:pointer; transition: color 0.2s;">Fri, Mar 20</div>
+</a>
 <div class="event-name">Free Event - Rob Rosenlund</div>
 </div>
 <div class="event-item">
-<div class="event-date">Tues, Mar 24</div>
+<a href="#" onclick="showPage('events', document.querySelector('.nav-item:nth-child(4)')); return false;" style="text-decoration:none; color:inherit;">
+<div class="event-date" style="cursor:pointer; transition: color 0.2s;">Tues, Mar 24</div>
+</a>
 <div class="event-name">Ralph, Gail & Russell Singalong</div>
 </div>
 </div>
