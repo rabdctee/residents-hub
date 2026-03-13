@@ -594,7 +594,15 @@ color:#2c5aa0;
 </div>
 <!-- END OF EVENTS LIST -->
 </div>
-
+<!-- Quote of the Day Widget -->
+<div class="sidebar-widget">
+<div class="widget-title">💭 Quote of the Day</div>
+<div id="quote-display" style="padding:15px; font-style:italic; color:#4a4a4a; line-height:1.6;">
+Loading quote...
+</div>
+<div id="quote-author" style="text-align:right; color:#2c5aa0; font-weight:bold; margin-top:10px;">
+</div>
+</div>
 <!-- RED EMERGENCY BUTTON -->
 <div class="sidebar-widget" style="background:#d32f2f;border-color:#c62828;">
 <button class="btn" style="background:white;color:#d32f2f;font-size:16px;font-weight:bold;margin:0;" onclick="showPage('contact');setTimeout(function(){document.getElementById('emergency-contacts').scrollIntoView({behavior:'smooth',block:'start'});},100);">🚨 Emergency Contacts</button>
@@ -1566,7 +1574,49 @@ function viewSocialMeeting() {
         alert('Document not yet available. Please check back later.');
     }
 }
+    
+// Quote of the Day - Loads from external file
+var quotesData = [];
 
+// Load quotes from external file
+fetch('quotes.txt')
+    .then(response => response.text())
+    .then(data => {
+        // Parse the quotes file
+        var lines = data.split('\n');
+        quotesData = lines
+            .filter(line => line.trim() && line.includes('|'))
+            .map(line => {
+                var parts = line.split('|');
+                return {
+                    text: parts[0].trim(),
+                    author: parts[1].trim()
+                };
+            });
+        
+        // Display quote after loading
+        displayQuoteOfDay();
+    })
+    .catch(error => {
+        console.error('Error loading quotes:', error);
+        // Fallback quote if file can't be loaded
+        document.getElementById('quote-display').innerHTML = '"Life is about friends, laughter, and looking forward to things."';
+        document.getElementById('quote-author').innerHTML = '— Anonymous';
+    });
+
+function displayQuoteOfDay() {
+    if (quotesData.length === 0) return;
+    
+    // Get today's date and use it to select a quote
+    var today = new Date();
+    var dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+    var quoteIndex = dayOfYear % quotesData.length;
+    
+    // Display the quote
+    var quote = quotesData[quoteIndex];
+    document.getElementById('quote-display').innerHTML = '"' + quote.text + '"';
+    document.getElementById('quote-author').innerHTML = '— ' + quote.author;
+}
 </script>
 
 </body>
