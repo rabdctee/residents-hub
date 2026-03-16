@@ -536,6 +536,20 @@ color:#2c5aa0;
 <!-- HOME -->
 <div id="home" class="page-content active">
 
+<!-- ST. PATRICK'S DAY BANNER (auto-displays only on March 17) -->
+<div id="st-patricks-banner"></div>
+
+<script>
+// Show St. Patrick's Day banner only on March 17
+var today = new Date();
+var month = today.getMonth();
+var day = today.getDate();
+
+if (month === 2 && day === 17) {
+    document.getElementById('st-patricks-banner').innerHTML = '<div style="text-align:center; margin-bottom:20px;"><img src="st-patricks-day.png" alt="Happy St. Patrick\'s Day" style="max-width:100%; height:auto; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.1);"></div>';
+}
+</script>
+    
 <div class="welcome-box">
 <h2 style="text-align: center;">🌐 Welcome to Our Information Hub!</h2>  
 <p> We're excited to launch our new community information hub! Access newsletters, events and important documents all in one place. Click links to open. 💡 <strong>Tip:</strong> Bookmark this page!</p>
@@ -1605,15 +1619,36 @@ fetch('quotes.txt')
         document.getElementById('quote-author').innerHTML = '— Anonymous';
     });
 
-function displayQuoteOfDay() {
-    if (quotesData.length === 0) return;
+    if (quotesData.length === 0) {
+        // Show St. Patrick's Day quote even if quotes haven't loaded yet
+        var today = new Date();
+        var month = today.getMonth(); // 0-11 (March = 2)
+        var day = today.getDate();
+        
+        if (month === 2 && day === 17) {
+            document.getElementById('quote-display').innerHTML = '"May the Irish hills caress you. May her lakes and rivers bless you. May the luck of the Irish enfold you. May the blessings of Saint Patrick behold you."';
+            document.getElementById('quote-author').innerHTML = '— Irish Blessing';
+            return;
+        }
+        return;
+    }
     
-    // Get today's date and use it to select a quote
+    // Check if today is March 17 (St. Patrick's Day)
     var today = new Date();
+    var month = today.getMonth(); // 0-11 (March = 2)
+    var day = today.getDate();
+    
+    // If March 17, show St. Patrick's Day quote
+    if (month === 2 && day === 17) {
+        document.getElementById('quote-display').innerHTML = '"May the Irish hills caress you. May her lakes and rivers bless you. May the luck of the Irish enfold you. May the blessings of Saint Patrick behold you."';
+        document.getElementById('quote-author').innerHTML = '— Irish Blessing';
+        return;
+    }
+    
+    // Otherwise, show regular rotating quote
     var dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
     var quoteIndex = dayOfYear % quotesData.length;
     
-    // Display the quote
     var quote = quotesData[quoteIndex];
     document.getElementById('quote-display').innerHTML = '"' + quote.text + '"';
     document.getElementById('quote-author').innerHTML = '— ' + quote.author;
