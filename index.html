@@ -1619,6 +1619,7 @@ fetch('quotes.txt')
         document.getElementById('quote-author').innerHTML = '— Anonymous';
     });
 
+function displayQuoteOfDay() {
     if (quotesData.length === 0) {
         // Show St. Patrick's Day quote even if quotes haven't loaded yet
         var today = new Date();
@@ -1652,7 +1653,7 @@ fetch('quotes.txt')
     var quote = quotesData[quoteIndex];
     document.getElementById('quote-display').innerHTML = '"' + quote.text + '"';
     document.getElementById('quote-author').innerHTML = '— ' + quote.author;
-}
+}   
 </script>
 
 </body>
