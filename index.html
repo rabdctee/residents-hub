@@ -1675,15 +1675,21 @@ function loadAnnouncements() {
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             
-            const announcements = data.values
-                .map(row => ({
-                    timestamp: row[0],
-                    name: row[1],
-                    title: row[2],
-                    message: row[3],
-                    link: row[4],
-                    displayUntil: new Date(row[5])
-                }))
+           const announcements = data.values
+    .map(row => {
+        // Parse DD/MM/YYYY format correctly
+        const dateParts = row[5].split('/');
+        const displayUntil = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+        
+        return {
+            timestamp: row[0],
+            name: row[1],
+            title: row[2],
+            message: row[3],
+            link: row[4],
+            displayUntil: displayUntil
+        };
+    })
                 .filter(a => a.displayUntil >= today)
                 .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
                 .slice(0, 3);
@@ -1763,14 +1769,20 @@ function loadEvents() {
             today.setHours(0, 0, 0, 0);
             
             const events = data.values
-                .map(row => ({
-                    timestamp: row[0],
-                    name: row[1],
-                    eventName: row[2],
-                    eventDate: new Date(row[3]),
-                    eventTime: row[4],
-                    location: row[5]
-                }))
+    .map(row => {
+        // Parse DD/MM/YYYY format correctly
+        const dateParts = row[3].split('/');
+        const eventDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+        
+        return {
+            timestamp: row[0],
+            name: row[1],
+            eventName: row[2],
+            eventDate: eventDate,
+            eventTime: row[4],
+            location: row[5]
+        };
+    })
                 .filter(e => e.eventDate >= today)
                 .sort((a, b) => a.eventDate - b.eventDate)
                 .slice(0, 4);
