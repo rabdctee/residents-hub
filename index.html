@@ -1698,9 +1698,23 @@ function displayAnnouncements(announcements) {
     const container = document.querySelector('.home-grid > div:first-child');
     if (!container) return;
     
+    // Only update if we successfully got announcements from Google Sheets
+    if (!announcements || announcements.length === 0) {
+        console.log('No Google Sheets announcements - keeping manual fallback');
+        return; // Keep existing manual announcements
+    }
+    
+    console.log(`Loading ${announcements.length} announcements from Google Sheets`);
+    
     const heading = container.querySelector('h2');
-    container.innerHTML = '';
-    container.appendChild(heading);
+    
+    // Remove only existing announcement divs, keep heading
+    const oldAnnouncements = container.querySelectorAll('.announcement');
+    oldAnnouncements.forEach(ann => ann.remove());
+    
+    // Remove old emergency button if exists
+    const oldEmergency = container.querySelector('.sidebar-widget');
+    if (oldEmergency) oldEmergency.remove();
     
     announcements.forEach(announcement => {
         const div = document.createElement('div');
