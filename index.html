@@ -556,11 +556,10 @@ if (month === 2 && day === 17) {
 </div>
 
 <div class="home-grid">
-
 <div>
 <h2 style="margin-bottom:15px;">Latest Announcements</h2>
 
-<!-- UPDATE ANNOUNCEMENTS HERE -->
+<!-- MANUAL FALLBACK ANNOUNCEMENTS -->
 <div class="announcement">
 <div class="announcement-text">
 <strong>Letter from aveo's Chief Operating Officer:</strong> RE: Changes to the Queensland leadership team.
@@ -570,7 +569,6 @@ if (month === 2 && day === 17) {
 </a>
 </div>
 </div>
-
 
 <div class="announcement">
 <div class="announcement-text">
@@ -584,11 +582,14 @@ if (month === 2 && day === 17) {
 </div>
 </div>
 
-<!-- RED EMERGENCY BUTTON -->
+<!-- Emergency button stays here -->
 <div class="sidebar-widget" style="background:#d32f2f;border-color:#c62828;">
-<button class="btn" style="background:white;color:#d32f2f;font-size:16px;font-weight:bold;margin:0;" onclick="showPage('contact');setTimeout(function(){document.getElementById('emergency-contacts').scrollIntoView({behavior:'smooth',block:'start'});},100);">🚨 Emergency Contacts</button>
+<button class="btn" style="background:white;color:#d32f2f;font-size:16px;font-weight:bold;margin:0;" onclick="showPage('contact');setTimeout(function(){document.getElementById('emergency-contacts').scrollIntoView({behavior:'smooth',block:'start'});},100);">
+🚨 Emergency Contacts
+</button>
 </div>
-    
+
+</div>
 <!-- END OF ANNOUNCEMENTS SECTION -->
 </div>
 
