@@ -1781,10 +1781,17 @@ function loadEvents() {
         })
         .catch(error => console.error('Error loading events:', error));
 }
-
 function displayEvents(events) {
     const container = document.querySelector('.sidebar-widget .event-item');
     if (!container) return;
+    
+    // Only update if we successfully got events from Google Sheets
+    if (!events || events.length === 0) {
+        console.log('No Google Sheets events - keeping manual fallback');
+        return; // Keep existing manual events
+    }
+    
+    console.log(`Loading ${events.length} events from Google Sheets`);
     
     const parent = container.parentElement;
     const eventItems = parent.querySelectorAll('.event-item');
