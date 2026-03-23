@@ -590,7 +590,35 @@ if (month === 2 && day === 17) {
 <!-- END OF ANNOUNCEMENTS SECTION -->
 <!-- RIGHT COLUMN - SIDEBAR WIDGETS -->
 <div>
+<!-- Weather Widget - Compact -->
+<div class="sidebar-widget" style="padding:12px 20px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+            <div style="font-size:13px;color:#666;margin-bottom:3px;">🌤️ Bridgeman Downs</div>
+            <div style="font-size:24px;font-weight:bold;color:#2c5aa0;" id="weather-temp">--°</div>
+            <div style="font-size:13px;color:#666;" id="weather-minmax">-- | --</div>
+        </div>
+        <div style="text-align:right;">
+            <div style="font-size:15px;color:#333;font-weight:500;" id="weather-desc">Loading...</div>
+        </div>
+    </div>
+</div>
 
+<script>
+function loadWeather() {
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=-27.35&longitude=153.03&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=Australia/Brisbane')
+        .then(r => r.json())
+        .then(d => {
+            const codes = {0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Cloudy',45:'Foggy',51:'Drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',80:'Showers',95:'Storms'};
+            document.getElementById('weather-temp').textContent = Math.round(d.current.temperature_2m) + '°C';
+            document.getElementById('weather-desc').textContent = codes[d.current.weather_code] || 'Partly cloudy';
+            document.getElementById('weather-minmax').textContent = Math.round(d.daily.temperature_2m_min[0]) + '° | ' + Math.round(d.daily.temperature_2m_max[0]) + '°';
+        })
+        .catch(() => document.getElementById('weather-desc').textContent = 'Unavailable');
+}
+document.addEventListener('DOMContentLoaded', loadWeather);
+setInterval(loadWeather, 1800000);
+</script>
 <div class="sidebar-widget">
 <div class="widget-title"><img src="calendar.png" alt="Calendar" style="width:20px;height:20px;vertical-align:middle;margin-right:5px;"> Upcoming Events</div>
 <!-- UPDATE EVENTS HERE -->
