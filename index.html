@@ -1403,11 +1403,24 @@ function toggleMeetingFolder(key, btn) {
   }
 }
 
+// Document Registry Google Sheet ID
+var REGISTRY_SHEET_ID = '1Pb5VJYqjuAcXkU6jBRlA08mtmF-MPdpufOy7JZKR6-I';
+
+// Map folder keys to folder names (must match what's stored in the Sheet)
+var FOLDER_KEY_TO_NAME = {
+  'agm':          'Annual General Meetings',
+  'rc-monthly':   'Residents Committee - Monthly Meetings',
+  'rc-quarterly': 'Residents Quarterly Meetings',
+  'sc-monthly':   'Social Club Committee - Monthly Meetings',
+  'nl-2026':      'Newsletters'
+};
+
 function buildFileList(key) {
   var ul = document.getElementById(key + '-files');
   if (ul.children.length > 0) return; // Already built
 
-  var files = MEETING_FILES[key];
+  // First render the hardcoded files
+  var files = MEETING_FILES[key] || [];
   var folderId = FOLDER_IDS[key];
   var html = '';
 
@@ -1418,7 +1431,57 @@ function buildFileList(key) {
     html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
   });
 
-  ul.innerHTML = html;
+  ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
+
+  // Then fetch new documents from the registry sheet
+  var folderName = FOLDER_KEY_TO_NAME[key];
+  if (!folderName) return;
+
+  var url = 'https://docs.google.com/spreadsheets/d/' + REGISTRY_SHEET_ID +
+    '/gviz/tq?tqx=out:json&sheet=Documents';
+
+  fetch(url)
+    .then(function(response) { return response.text(); })
+    .then(function(text) {
+      // Strip Google's JSONP wrapper
+      var json = JSON.parse(text.replace(/^.*?({.*})\s*\);\s*$/, '$1'));
+      var rows = json.table.rows || [];
+
+      // Get hardcoded file IDs to avoid duplicates
+      var existingIds = (MEETING_FILES[key] || []).map(function(f) { return f.id; });
+
+      var newHtml = '';
+      rows.forEach(function(row) {
+        if (!row.c || row.c.length < 4) return;
+        var fileName  = row.c[1] ? row.c[1].v : null;
+        var fileId    = row.c[2] ? row.c[2].v : null;
+        var rowFolder = row.c[3] ? row.c[3].v : null;
+
+        // Only show files for this folder, not already hardcoded
+        if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
+          newHtml += '<li><a href="https://drive.google.com/file/d/' + fileId +
+            '/view" target="_blank">📄 ' + fileName + '</a></li>';
+        }
+      });
+
+      // Rebuild the list with hardcoded + new files
+      var baseHtml = '';
+      files.forEach(function(f) {
+        var href = f.id
+          ? 'https://drive.google.com/file/d/' + f.id + '/view'
+          : 'https://drive.google.com/drive/folders/' + folderId;
+        baseHtml += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+      });
+
+      ul.innerHTML = baseHtml + newHtml ||
+        '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
+    })
+    .catch(function() {
+      // Sheet not accessible — just show hardcoded files silently
+      if (!ul.innerHTML || ul.innerHTML.includes('Loading')) {
+        ul.innerHTML = html || '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
+      }
+    });
 }
 </script>
 
