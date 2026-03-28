@@ -1262,7 +1262,7 @@ This page contains village documents and financial information for residents onl
 <span style="font-size:14px;font-weight:400;color:#666;display:block;margin-top:5px;">Classifieds & notices</span>
 </button>
 
-<button onclick="showPage('committee')" style="padding:20px;background:#fff3cd;border:2px solid #856404;border-radius:8px;cursor:pointer;text-align:left;font-size:17px;font-weight:600;color:#1f3f73;transition:all 0.3s;">
+<button onclick="showPage('committee')" style="display:none;padding:20px;background:#fff3cd;border:2px solid #856404;border-radius:8px;cursor:pointer;text-align:left;font-size:17px;font-weight:600;color:#1f3f73;transition:all 0.3s;">
 👥 Committees<br>
 <span style="font-size:14px;font-weight:400;color:#666;">📤 Document upload</span>
 </button>
@@ -1753,11 +1753,22 @@ function showPage(pageId, element) {
         element.classList.add('active');
     }
     
+    // Update URL hash for bookmarking
+    window.location.hash = pageId;
+    
     // Update breadcrumbs
     updateBreadcrumbs(pageId);
     
     window.scrollTo(0, 0);
 }
+
+// Load page from URL hash on startup (allows bookmarking direct links)
+window.addEventListener('DOMContentLoaded', function() {
+    var hash = window.location.hash.replace('#', '');
+    if (hash && document.getElementById(hash)) {
+        showPage(hash);
+    }
+});
 
 // Update breadcrumbs based on current page
 function updateBreadcrumbs(pageId) {
