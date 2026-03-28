@@ -912,15 +912,36 @@ We're always looking to improve! If you have ideas or feedback about this websit
 <!-- NEWSLETTER -->
 <div id="newsletter" class="page-content">
 <h2 style="margin-bottom:20px;">Newsletter Archive</h2>
-<p style="color:#5f6368;margin-bottom:30px;">Access monthly newsletters current and past</p>
+<p style="color:#5f6368;margin-bottom:20px;">Click any newsletter below to view or download it.</p>
 
-<a href="https://drive.google.com/drive/folders/1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT?usp=share_link" target="_blank" class="doc-link">
-Open Newsletter Archive
-</a>
+<div id="newsletter-browser">
 
-<p style="color:#5f6368;margin-top:20px;font-size:0.95em;">
-📌 <strong>Tip:</strong> Click the link above to view all newsletters. The folder will open in a new tab where you can browse, view and download any newsletter.
+  <div class="folder-section">
+    <button class="folder-toggle" onclick="toggleMeetingFolder('nl-2026', this)">📰 2026 Newsletters</button>
+    <div id="nl-2026" class="folder-contents" style="display:none;">
+      <ul class="doc-list" id="nl-2026-files"></ul>
+    </div>
+  </div>
+
+</div>
+
+<p style="color:#5f6368;margin-top:15px;font-size:0.9em;">
+💡 <strong>Tip:</strong> Documents open in a new window. Use your browser's print function to print.
 </p>
+
+<script>
+// Add newsletter folder to MEETING_FILES and FOLDER_IDS
+// This runs after the main script has loaded
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof MEETING_FILES !== 'undefined') {
+    MEETING_FILES['nl-2026'] = [
+      { name: 'March 2026 - Social Club Newsletter', id: '1I8cSXJYkDq3MUvHYAK0otJ5Z-VV9n8Nj' },
+      { name: 'April 2026 - Social Club Newsletter',  id: '1nihFNB856-teO_fmpnn24IbUAJYIeFl2' }
+    ];
+    FOLDER_IDS['nl-2026'] = '1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT';
+  }
+});
+</script>
 </div>
 
 <!-- EVENTS -->
@@ -1243,7 +1264,7 @@ This page contains village documents and financial information for residents onl
 
 <button onclick="showPage('committee')" style="padding:20px;background:#fff3cd;border:2px solid #856404;border-radius:8px;cursor:pointer;text-align:left;font-size:17px;font-weight:600;color:#1f3f73;transition:all 0.3s;">
 👥 Committees<br>
-<span style="font-size:14px;font-weight:400;color:#666;">🔒 Committee members - work in progress</span>
+<span style="font-size:14px;font-weight:400;color:#666;">📤 Document upload</span>
 </button>
 </div>
 
@@ -1595,21 +1616,15 @@ Advocacy, advice and support for retirement village residents in Queensland
 <!-- COMMITTEE -->
 <div id="committee" class="page-content">
 
+<h2 style="margin-bottom:15px;">Committee Document Upload</h2>
+<p style="color:#5f6368;margin-bottom:30px;">Use the form below to upload documents to the correct folder in Google Drive. You must be signed in with your authorised Google account.</p>
 
-<div class="warning-box">
-<strong>🔒 COMMITTEES - Work in Progress</strong><br>
-Documents here are a work in progress and are only visible to committee members.
-</div>
-
-<h2 style="margin-bottom:15px;">Committee Resources</h2>
-<p style="color:#5f6368;margin-bottom:30px;">Internal committee documents and working materials</p>
-
-<h3 style="color:#202124;font-size:1.4em;margin-bottom:15px;margin-top:20px;">📚 Committee Documents</h3>
-<a href="https://drive.google.com/drive/folders/1e0v0Kr007uIE5E0RwIt8UzG6eJ-4fZRM?usp=sharing" target="_blank" class="doc-link">
-View Committee Documents
+<a href="https://docs.google.com/forms/d/1TI6N6koCWuGFoO3izDMI5PwOfmls8sep9b0HKwPA-t4/viewform" target="_blank" class="btn" style="display:inline-block;margin-bottom:20px;">
+📤 Upload a Document
 </a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">
-Includes: Committee manual, draft financials, draft correspondence and working files.
+
+<p style="color:#5f6368;font-size:0.9em;">
+💡 <strong>Tip:</strong> After submitting you will receive a confirmation email. If you experience any issues contact <a href="mailto:rabd.ctee@gmail.com">rabd.ctee@gmail.com</a>.
 </p>
 
 </div>
