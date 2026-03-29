@@ -1578,6 +1578,29 @@ Select a reporting period below to view and print the financial report:
 
 <hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
 
+<h4 style="margin-bottom:15px; color:#2c5aa0;">🏦 Bank Statements</h4>
+
+<p style="color:#5f6368; margin-bottom:15px;">
+Select a month below to view the bank statement:
+</p>
+
+<select id="bank-statement-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
+<option value="">-- Select Month --</option>
+<optgroup label="2026">
+<option value="2026-01">January 2026</option>
+</optgroup>
+</select>
+
+<button onclick="viewBankStatement()" class="btn" style="width:100%; margin-bottom:10px;">
+📄 View Selected Statement
+</button>
+
+<p style="color:#5f6368; font-size:0.9em; margin-top:10px;">
+💡 <strong>Tip:</strong> Statements open in a new window. Use your browser's print function (Ctrl+P or Cmd+P) to print.
+</p>
+
+<hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
+
 <a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank" class="doc-link">
 📁 Browse All Financial Reports Archive
 </a>
@@ -2032,7 +2055,27 @@ function viewFinancialReport() {
     }
 }
 
-// Residents Committee Meeting Documents Viewer
+// Bank Statement Viewer
+function viewBankStatement() {
+    var period = document.getElementById('bank-statement-period').value;
+
+    if (!period) {
+        alert('Please select a month first');
+        return;
+    }
+
+    var statementUrls = {
+        // 2026 — add new months here as statements become available
+        // Format: 'YYYY-MM': 'https://drive.google.com/file/d/FILE_ID/view'
+        '2026-01': 'https://drive.google.com/file/d/10mKFO6g8hf0DGJGGCjnMWP6US4mlfN0U/view'
+    };
+
+    if (statementUrls[period]) {
+        window.open(statementUrls[period], '_blank');
+    } else {
+        alert('Statement not yet available for this period. Please check back later.');
+    }
+}
 function viewResidentsMeeting() {
     var meeting = document.getElementById('residents-meeting-period').value;
     
