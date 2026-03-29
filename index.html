@@ -1433,36 +1433,38 @@ function buildFileList(key) {
 
   ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
 
-  // Then fetch new documents from the registry sheet
+  // Then fetch new documents from the published CSV registry
   var folderName = FOLDER_KEY_TO_NAME[key];
   if (!folderName) return;
 
-  var url = 'https://docs.google.com/spreadsheets/d/' + REGISTRY_SHEET_ID +
-    '/gviz/tq?tqx=out:json&sheet=Documents';
+  // Use the published CSV URL — works without any login or CORS issues
+  var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtAar-VwmAowIRfzJumkbIfSW82SM4xnwDk12RlVAfuLZZ-xeOJHAA3lb_UeK4as78WRp3u_GmpHLI/pub?gid=0&single=true&output=csv';
 
-  fetch(url)
+  fetch(csvUrl)
     .then(function(response) { return response.text(); })
-    .then(function(text) {
-      // Strip Google's JSONP wrapper
-      var json = JSON.parse(text.replace(/^.*?({.*})\s*\);\s*$/, '$1'));
-      var rows = json.table.rows || [];
-
-      // Get hardcoded file IDs to avoid duplicates
+    .then(function(csvText) {
+      // Parse CSV — split into rows, then columns
+      var lines = csvText.split('\n');
+      // Skip header row (index 0)
       var existingIds = (MEETING_FILES[key] || []).map(function(f) { return f.id; });
-
       var newHtml = '';
-      rows.forEach(function(row) {
-        if (!row.c || row.c.length < 4) return;
-        var fileName  = row.c[1] ? row.c[1].v : null;
-        var fileId    = row.c[2] ? row.c[2].v : null;
-        var rowFolder = row.c[3] ? row.c[3].v : null;
+
+      for (var i = 1; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line) continue;
+
+        // Parse CSV columns (handle quoted fields)
+        var cols = parseCSVLine(line);
+        var fileName  = cols[1] ? cols[1].trim() : null;
+        var fileId    = cols[2] ? cols[2].trim() : null;
+        var rowFolder = cols[3] ? cols[3].trim() : null;
 
         // Only show files for this folder, not already hardcoded
         if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
           newHtml += '<li><a href="https://drive.google.com/file/d/' + fileId +
             '/view" target="_blank">📄 ' + fileName + '</a></li>';
         }
-      });
+      }
 
       // Rebuild the list with hardcoded + new files
       var baseHtml = '';
@@ -1482,11 +1484,26 @@ function buildFileList(key) {
         ul.innerHTML = html || '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
       }
     });
+// Simple CSV line parser — handles quoted fields
+function parseCSVLine(line) {
+  var cols = [];
+  var current = '';
+  var inQuotes = false;
+  for (var i = 0; i < line.length; i++) {
+    var ch = line[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      cols.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  cols.push(current);
+  return cols;
 }
 </script>
-
-<style>
-.folder-section { margin-bottom: 6px; }
 .folder-toggle {
   width: 100%;
   text-align: left;
