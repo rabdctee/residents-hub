@@ -1545,26 +1545,18 @@ function parseCSVLine(line) {
 </div>
 <div id="financials" class="collapsible-content">
 
-<h4 style="margin-bottom:15px; color:#2c5aa0;">📊 View Financial Reports</h4>
+<h4 style="margin-bottom:15px; color:#2c5aa0;">📊 View Monthly Financial Reports</h4>
 
 <p style="color:#5f6368; margin-bottom:15px;">
-Select a reporting period below to view and print the financial report:
+Select a month below to view and print the financial report:
 </p>
 
 <select id="financial-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
-<option value="">-- Select Reporting Period --</option>
-<optgroup label="2026 Quarterly Reports">
-<option value="2026-Q1">Q1 2026 (Jan-Mar)</option>
-<option value="2026-Q2">Q2 2026 (Apr-Jun)</option>
-<option value="2026-Q3">Q3 2026 (Jul-Sep)</option>
-<option value="2026-Q4">Q4 2026 (Oct-Dec)</option>
-</optgroup>
-<optgroup label="2025 Reports">
-<option value="2025-Q4">Q4 2025 (Oct-Dec)</option>
-<option value="2025-Q3">Q3 2025 (Jul-Sep)</option>
-<option value="2025-Q2">Q2 2025 (Apr-Jun)</option>
-<option value="2025-Q1">Q1 2025 (Jan-Mar)</option>
-<option value="2025-annual">2025 Annual Report</option>
+<option value="">-- Select Month --</option>
+<optgroup label="2026">
+<option value="2026-03">March 2026</option>
+<option value="2026-02">February 2026</option>
+<option value="2026-01">January 2026</option>
 </optgroup>
 </select>
 
@@ -1588,6 +1580,8 @@ Select a month below to view the bank statement:
 <option value="">-- Select Month --</option>
 <optgroup label="2026">
 <option value="2026-01">January 2026</option>
+<option value="2026-02">February 2026</option>
+<option value="2026-03">March 2026</option>    
 </optgroup>
 </select>
 
@@ -1600,10 +1594,6 @@ Select a month below to view the bank statement:
 </p>
 
 <hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
-
-<a href="https://drive.google.com/drive/folders/1gtbaLBfpWu3K8JRYlXq42qe3GZVck_SS?usp=share_link" target="_blank" class="doc-link">
-📁 Browse All Financial Reports Archive
-</a>
 
 </div>
 
@@ -2032,20 +2022,11 @@ function viewFinancialReport() {
     }
     
     var reportUrls = {
-        // 2026 Quarterly Reports
-        '2026-Q1': 'https://drive.google.com/file/d/1-QhZhClBLoWBtSPA67LOw-q-U7FCnAO6/view',
-        '2026-Q2': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q2/view',
-        '2026-Q3': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q3/view',
-        '2026-Q4': 'https://drive.google.com/file/d/YOUR_FILE_ID_2026_Q4/view',
-        
-        // 2025 Quarterly Reports
-        '2025-Q4': 'https://drive.google.com/file/d/YOUR_FILE_ID_2025_Q4/view',
-        '2025-Q3': 'https://drive.google.com/file/d/YOUR_FILE_ID_2025_Q3/view',
-        '2025-Q2': 'https://drive.google.com/file/d/YOUR_FILE_ID_2025_Q2/view',
-        '2025-Q1': 'https://drive.google.com/file/d/YOUR_FILE_ID_2025_Q1/view',
-        
-        // 2025 Annual Report
-        '2025-annual': 'https://drive.google.com/file/d/YOUR_FILE_ID_2025_ANNUAL/view'
+        // 2026 Monthly Reports — add new months here as reports become available
+        // Format: 'YYYY-MM': 'https://drive.google.com/file/d/FILE_ID/view'
+        '2026-03': 'https://drive.google.com/file/d/1oBe-tdBl4ceHo1PDvnApi9rD8dDYmOqL/view',
+        '2026-02': 'https://drive.google.com/file/d/17hFmeL0bm1UoFPW3_osEL5mxJKLUSk-M/view',
+        '2026-01': 'https://drive.google.com/file/d/1-QhZhClBLoWBtSPA67LOw-q-U7FCnAO6/view'
     };
     
     if (reportUrls[period]) {
@@ -2067,7 +2048,9 @@ function viewBankStatement() {
     var statementUrls = {
         // 2026 — add new months here as statements become available
         // Format: 'YYYY-MM': 'https://drive.google.com/file/d/FILE_ID/view'
-        '2026-01': 'https://drive.google.com/file/d/10mKFO6g8hf0DGJGGCjnMWP6US4mlfN0U/view'
+        '2026-01': 'https://drive.google.com/file/d/10mKFO6g8hf0DGJGGCjnMWP6US4mlfN0U/view',
+        '2026-02': 'https://drive.google.com/file/d/17hFmeL0bm1UoFPW3_osEL5mxJKLUSk-M/view',
+        '2026-03': 'https://drive.google.com/file/d/1oBe-tdBl4ceHo1PDvnApi9rD8dDYmOqL/view',
     };
 
     if (statementUrls[period]) {
