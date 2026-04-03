@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help &amp; How To | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+
+    /* ===== Base — identical to index.html ===== */
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:20px;
+      line-height:1.7;
+      color:#222;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      background:white;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background:#2c5aa0;
+      color:white;
+      padding:30px 20px;
+      text-align:center;
+    }
+    header h1{ font-size:2em; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+
+    /* ===== Navigation ===== */
+    nav{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      background:#f5f5f5;
+      padding:15px 10px;
+      gap:8px;
+    }
+
+    .nav-item{
+      color:#1f3f73;
+      background:white;
+      padding:16px 28px;
+      text-decoration:none;
+      cursor:pointer;
+      font-weight:700;
+      border-radius:10px;
+      border:2px solid #e0e0e0;
+      transition:all 0.3s;
+      font-size:18px;
+      min-height:50px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .nav-item:hover{ background:#e8f4f8; border-color:#2c5aa0; color:#2c5aa0; }
+    .nav-item.active{ background:#2c5aa0; color:white; border-color:#2c5aa0; }
+
+    /* ===== Search — identical to index.html ===== */
+    .search-container{
+      padding:20px 25px;
+      background:#f8f9fa;
+      border-bottom:2px solid #e0e0e0;
+    }
+
+    .search-box{
+      position:relative;
+      max-width:600px;
+      margin:0 auto;
+    }
+
+    .search-input{
+      width:100%;
+      padding:15px 50px 15px 20px;
+      font-size:18px;
+      border:2px solid #2c5aa0;
+      border-radius:8px;
+      box-sizing:border-box;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .search-input:focus{
+      outline:none;
+      border-color:#1e4178;
+      box-shadow:0 0 0 3px rgba(44,90,160,0.1);
+    }
+
+    .search-button{
+      position:absolute;
+      right:5px;
+      top:50%;
+      transform:translateY(-50%);
+      background:#2c5aa0;
+      color:white;
+      border:none;
+      padding:10px 20px;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:18px;
+      font-weight:600;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .search-button:hover{ background:#1e4178; }
+
+    .search-results{
+      margin-top:15px;
+      padding:15px;
+      background:white;
+      border-radius:8px;
+      border:1px solid #e0e0e0;
+      display:none;
+    }
+
+    .search-result-item{
+      padding:12px;
+      border-bottom:1px solid #f0f0f0;
+      cursor:pointer;
+    }
+    .search-result-item:hover{ background:#e8f4f8; }
+    .search-result-item:last-child{ border-bottom:none; }
+
+    /* ===== Page content ===== */
+    .page-content{ padding:40px 25px; }
+
+    .back-home{
+      display:inline-block;
+      margin-bottom:25px;
+      color:#2c5aa0;
+      font-weight:600;
+      text-decoration:none;
+      cursor:pointer;
+    }
+    .back-home:hover{ text-decoration:underline; }
+
+    .section-heading{
+      font-size:1.5em;
+      color:#2c5aa0;
+      margin-bottom:20px;
+      padding-bottom:10px;
+      border-bottom:2px solid #e0e0e0;
+    }
+
+    .info-box{
+      background:#e8f4f8;
+      border-left:4px solid #2c5aa0;
+      padding:20px;
+      margin:0 0 30px;
+      border-radius:4px;
+    }
+
+    .tip-box{
+      background:#fff9e6;
+      border-left:4px solid #fbbc04;
+      padding:14px 18px;
+      margin:14px 0 4px;
+      border-radius:4px;
+      font-size:0.92em;
+    }
+
+    /* ===== Coming soon ===== */
+    .coming-soon-box{
+      border:2px dashed #e0e0e0;
+      border-radius:8px;
+      padding:28px 20px;
+      text-align:center;
+      color:#888;
+      margin-bottom:30px;
+    }
+    .coming-soon-box h3{ color:#2c5aa0; margin-bottom:8px; font-size:1.2em; }
+
+    /* ═══════════════════════════════════════════
+       LEVEL 1 — CATEGORY (e.g. Mobile Phone)
+       Styled like collapsible-header in index.html
+    ═══════════════════════════════════════════ */
+    .category-block{ margin-bottom:18px; }
+
+    .category-header{
+      background:#2c5aa0;
+      color:white;
+      padding:18px 22px;
+      border-radius:8px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      cursor:pointer;
+      transition:background 0.2s;
+      user-select:none;
+    }
+    .category-header:hover{ background:#1e4178; }
+    .category-header.open{ border-radius:8px 8px 0 0; }
+
+    .category-header-left{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .category-icon{ font-size:1.5em; }
+    .category-title-text{ font-size:1.1em; font-weight:700; }
+    .category-subtitle{ font-size:1.00em; font-weight:400; margin-top:2px; }
+
+    .category-arrow{
+      font-size:1.3em;
+      transition:transform 0.3s ease;
+      flex-shrink:0;
+    }
+    .category-header.open .category-arrow{ transform:rotate(180deg); }
+
+    .category-body{
+      display:none;
+      border:1px solid #2c5aa0;
+      border-top:none;
+      border-radius:0 0 8px 8px;
+      overflow:hidden;
+    }
+    .category-body.open{ display:block; }
+
+    /* ═══════════════════════════════════════════
+       TAB BAR (Android / iPhone)
+    ═══════════════════════════════════════════ */
+    .tab-bar{
+      display:flex;
+      background:#f5f5f5;
+      border-bottom:2px solid #e0e0e0;
+    }
+
+    .tab-btn{
+      flex:1;
+      padding:14px 16px;
+      background:none;
+      border:none;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:18px;
+      font-weight:700;
+      color:#1f3f73;
+      cursor:pointer;
+      border-bottom:3px solid transparent;
+      margin-bottom:-2px;
+      transition:all 0.2s;
+    }
+    .tab-btn.active{ background:white; color:#2c5aa0; border-bottom:3px solid #2c5aa0; }
+    .tab-btn:hover:not(.active){ background:#e8f4f8; color:#2c5aa0; }
+
+    .tab-panel{ display:none; }
+    .tab-panel.active{ display:block; }
+
+    /* ═══════════════════════════════════════════
+       LEVEL 2 — FAQ QUESTION / ANSWER
+    ═══════════════════════════════════════════ */
+    .faq-item{ border-bottom:1px solid #e0e0e0; }
+    .faq-item:last-child{ border-bottom:none; }
+
+    .faq-question{
+      width:100%;
+      background:#f8f9fa;
+      border:none;
+      border-top:1px solid #e0e0e0;
+      text-align:left;
+      padding:16px 20px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:18px;
+      font-weight:600;
+      color:#202124;
+      cursor:pointer;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      transition:background 0.2s;
+      line-height:1.4;
+    }
+    .faq-question:hover{ background:#e8eaed; }
+    .faq-question.open{ background:#e8f4f8; color:#2c5aa0; }
+
+    .faq-arrow{
+      color:#5f6368;
+      font-size:1.2em;
+      transition:transform 0.3s ease;
+      flex-shrink:0;
+    }
+    .faq-question.open .faq-arrow{ transform:rotate(180deg); color:#2c5aa0; }
+
+    .faq-answer{
+      display:none;
+      padding:18px 22px 22px;
+      background:white;
+      font-size:18px;
+      line-height:1.75;
+      color:#222;
+    }
+    .faq-answer.open{ display:block; }
+    .faq-answer ol, .faq-answer ul{ margin:10px 0 10px 24px; }
+    .faq-answer li{ margin-bottom:7px; }
+
+    /* ===== Ask a Question ===== */
+    .ask-section{
+      background:#2c5aa0;
+      border-radius:8px;
+      padding:30px 25px;
+      margin-bottom:30px;
+      color:white;
+    }
+    .ask-section h2{ font-size:1.3em; margin-bottom:8px; }
+    .ask-section > p{ font-size:0.95em; opacity:0.88; margin-bottom:20px; }
+
+    .ask-label{ display:block; font-size:0.88em; opacity:0.8; margin-bottom:5px; }
+
+    .ask-input, .ask-textarea{
+      width:100%;
+      padding:12px 15px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:17px;
+      border:2px solid rgba(255,255,255,0.3);
+      border-radius:5px;
+      background:rgba(255,255,255,0.12);
+      color:white;
+      margin-bottom:14px;
+      transition:border-color 0.2s;
+    }
+    .ask-input::placeholder, .ask-textarea::placeholder{ color:rgba(255,255,255,0.55); }
+    .ask-input:focus, .ask-textarea:focus{
+      outline:none; border-color:white; background:rgba(255,255,255,0.18);
+    }
+    .ask-textarea{ resize:vertical; min-height:100px; }
+
+    .ask-btn{
+      background:white;
+      color:#2c5aa0;
+      border:none;
+      padding:12px 28px;
+      border-radius:5px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:17px;
+      font-weight:700;
+      cursor:pointer;
+      transition:background 0.2s;
+    }
+    .ask-btn:hover{ background:#e8f4f8; }
+
+    .ask-success{
+      display:none;
+      background:rgba(255,255,255,0.15);
+      border:1px solid rgba(255,255,255,0.35);
+      border-radius:5px;
+      padding:16px 20px;
+      font-size:0.97em;
+      text-align:center;
+    }
+
+    /* ===== Highlight for search matches ===== */
+    .search-highlight{
+      background:#fff176;
+      border-radius:3px;
+      padding:0 2px;
+    }
+
+    /* ===== Responsive ===== */
+    @media(max-width:768px){
+      .nav-item{ font-size:14px; padding:10px 18px; }
+      .tab-btn{ font-size:15px; padding:11px 10px; }
+      .faq-question{ font-size:16px; padding:14px 16px; }
+      .faq-answer{ font-size:16px; padding:14px 16px 18px; }
+      .category-title-text{ font-size:1em; }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+  </header>
+
+  <!-- ===== NAV ===== -->
+  <nav>
+    <a class="nav-item" href="index.html">🏠 Home</a>
+    <a class="nav-item" href="index.html#announcements">📢 Announcements</a>
+    <a class="nav-item" href="index.html#events">📅 Events</a>
+    <a class="nav-item" href="index.html#documents">📄 Documents</a>
+    <a class="nav-item active" href="how-to.html">💡 Help &amp; How To</a>
+    <a class="nav-item" href="index.html#contact">📞 Contacts</a>
+  </nav>
+
+  <!-- ===== SEARCH BAR ===== -->
+  <div class="search-container">
+    <div class="search-box">
+      <input type="text" id="searchInput" class="search-input"
+             placeholder="🔍 Search for help topics, e.g. Wi-Fi, iView, volume..."
+             onkeyup="if(event.key==='Enter') performSearch(); else if(this.value.length===0) clearSearch();">
+      <button class="search-button" onclick="performSearch()">Search</button>
+    </div>
+    <div id="searchResults" class="search-results"></div>
+  </div>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <a class="back-home" href="index.html">← Back to Home</a>
+
+    <h2 class="section-heading">💡 Help &amp; How To</h2>
+
+    <div class="info-box">
+      Plain-English answers to everyday questions — written especially for Residents of Bridgeman Downs Retirement Village.
+      Click any topic below to expand it, then click a question to see the answer.
+      Or use the <strong>search bar above</strong> to jump straight to what you need.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         CATEGORY 1 — MOBILE PHONE
+    ══════════════════════════════════════════ -->
+    <div class="category-block" id="cat-phone">
+
+      <div class="category-header" onclick="toggleCategory('phone-body', this)">
+        <div class="category-header-left">
+          <span class="category-icon">📱</span>
+          <div>
+            <div class="category-title-text">Using Your Mobile Phone</div>
+            <div class="category-subtitle">Got a new phone or not sure how to use the one you have? <strong>Start here.</strong> </div>
+          </div>
+        </div>
+        <span class="category-arrow">▼</span>
+      </div>
+
+      <div id="phone-body" class="category-body">
+        <div class="info-box" style="margin:20px 20px 0; border-radius:4px;">
+          The most popular phone brands are: <strong>Apple iPhone</strong>, <strong>Samsung Galaxy</strong>,
+          <strong>Google Pixel</strong>, <strong>OPPO</strong>, <strong>Motorola</strong> and <strong>Nokia</strong>.<br><br>
+          Apple iPhones use an operating system called <strong>iOS</strong>. All other brands use
+          <strong>Android</strong> — an operating system developed by Google.<br><br>
+          <strong>Not sure which you have?</strong> If it says "iPhone" on the back, it is an Apple.
+          If not, it is almost certainly Android. Once you know, choose the matching tab below.
+        </div>
+
+        <!-- TAB BAR -->
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab(this,'android')">🤖 &nbsp;Android Phone</button>
+          <button class="tab-btn" onclick="switchTab(this,'iphone')">🍎 &nbsp;iPhone</button>
+        </div>
+
+        <!-- ANDROID -->
+        <div id="android" class="tab-panel active">
+
+          <div class="faq-item" data-keywords="turn on off power android phone">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I turn my Android phone on and off?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>Look for a button on the <strong>right-hand side</strong> of your phone — that is the Power button. It is usually the largest button on that side.</p>
+              <ol>
+                <li><strong>To turn it ON:</strong> Press and hold the Power button for about 2–3 seconds until the screen lights up.</li>
+                <li><strong>To turn it OFF:</strong> Press and hold the Power button for 2–3 seconds, then tap <em>"Power off"</em> when the menu appears.</li>
+                <li><strong>To just turn the screen off</strong> (without shutting the phone down): Give the Power button a quick single press.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> You do not need to turn your phone off every night. But remember to plug it in to your charger.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="make receive phone call android ring answer decline">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I make and receive a phone call?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p><strong>To make a call:</strong></p>
+              <ol>
+                <li>There are two easy ways to make a call. Using <strong>Contacts</strong> or dialing a number on the <strong>Keypad</strong></li>
+              <p>To use <strong>Contacts</strong></p>
+                <li>Tap the <strong>Contacts app</strong> on your screen. You can usually find the Contacts icon on your main screen or in one of the other screens — Scroll or search for the contact you want to call.</li>
+                <li>Once you find the person you want to call, tap on <strong>their name</strong> to open their contact details.</li>
+                <li>You will see an option to call the person. Tap on the <strong>call button</strong> to make the call.</li>
+                <li>When you are done, tap the <strong>red button</strong> to hang up.</li>
+                <li>To use the <strong>Keypad</strong></li>
+                <li>Find the <strong>green telephone icon</strong> on your screen and tap it — this opens the Phone app.</li>
+                <li>Tap the <strong>keypad icon</strong> (looks like a pattern of dots) and type in the number you want to call.</li>
+                <li>Tap the <strong>green call button</strong> to start the call.</li>
+                <li>When you are finished, tap the <strong>red button</strong> to hang up.</li>
+              </ol>
+              <p style="margin-top:12px;"><strong>To answer an incoming call:</strong></p>
+              <ol>
+                <li>When your phone rings, you will see the caller's name or number on screen.</li>
+                <li><strong>Swipe up</strong> on the green button to answer, or <strong>swipe down</strong> on the red button to decline.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> If your phone is already unlocked when it rings, you may just see a green <em>"Answer"</em> button and a red <em>"Decline"</em> button — just tap the one you want.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="send text message sms android messages">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I send a text message?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <ol>
+                <li>There are also two easy ways to send a text message. Using <strong>Contacts</strong> or typing a number on the <strong>Keyboard</strong></li>
+                <li>To use <strong>Contacts</strong></li>
+                <li>Tap the <strong>Contacts app</strong> on your screen. You can usually find the Contacts icon on your main screen or in one of the other screens — Scroll or search for the contact you want to call.</li>
+                <li>Once you find the person you want to call, tap on <strong>their name</strong> to open their contact details.</li>
+                <li>You will see an option to send a message to the person. Tap on the <strong>the message button</strong> then type you message in the large empty box at the bottom of the screen.</li>
+                <li>Tap the <strong>send button</strong> (usually an arrow pointing right) to send it.</li>
+                <li>To use the <strong>Keyboard</strong></li>
+                <li>Find the <strong>Messages app</strong> on your screen — it usually looks like a speech bubble 💬.</li>
+                <li>Tap the <strong>pencil or "+" icon</strong> to start a new message.</li>
+                <li>In the "To:" box, type the name or phone number of the person you want to message.</li>
+                <li>Tap the large empty box at the bottom of the screen and type your message.</li>
+                <li>Tap the <strong>send button</strong> (usually an arrow pointing right) to send it.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> Don't worry about making mistakes — you can delete letters with the backspace key (looks like an arrow with an X) before you send.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="bigger text font size larger display android accessibility">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I make the text bigger so it is easier to read?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <ol>
+                <li>Find and tap the <strong>Settings</strong> (on your screen-looks like this ⚙️).</li>
+                <li>Scroll down and tap <strong>"Display"</strong> or <strong>"Accessibility"</strong>.</li>
+                <li>Look for <strong>"Font size"</strong> or <strong>"Text size"</strong> and drag the slider to make text larger.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> You can also make everything bigger — look for <strong>"Display size"</strong> or <strong>"Screen zoom"</strong> in the same area. This makes all icons and buttons larger too.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="wifi wi-fi connect internet wireless network android password">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I connect to the Wi-Fi?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <ol>
+                <li>Find and tap <strong>Settings</strong> (on your screen-looks like this ⚙️).</li>
+                <li>Tap <strong>"Wi-Fi"</strong> or <strong>"Connections"</strong> then <strong>"Wi-Fi"</strong>.</li>
+                <li>Make sure Wi-Fi is switched <strong>ON</strong> (the switch should be blue or green).</li>
+                <li>You will see a list of available networks by name. Tap the name of the Wi-Fi network you want to connect to.</li>
+                <li>If it has a lock symbol next to the name that looks like this 🔒 then you will need a <strong>password </strong>before you can connect.</li>
+                <li>If you have <strong>Wi-Fi in your unit</strong> and are trying to connect to it, then look for the information that was given to you when your <strong>Wi-Fi </strong> was first setup.</li> 
+                <li>It might be a little rectangular card stuck on your fridge that looks like this 
+                <svg width="60" height="38" viewBox="0 0 120 75" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle; display:inline-block; margin: 0 4px;">
+                  <rect x="0" y="0" width="120" height="75" rx="6" fill="#c0003c"/>
+                  <rect x="0" y="0" width="120" height="75" rx="6" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="0.8"/>
+                  <text x="60" y="14" style="font-family:sans-serif;font-size:6.5px;font-weight:bold;fill:#fff;text-anchor:middle;">Your Wi-Fi Details</text>
+                  <rect x="8" y="18" width="104" height="0.6" fill="rgba(255,255,255,0.3)"/>
+                  <text x="10" y="30" style="font-family:sans-serif;font-size:6px;fill:rgba(255,255,255,0.75);">Wi-Fi Name</text>
+                  <rect x="10" y="32" width="100" height="14" rx="2" fill="rgba(255,255,255,0.15)"/>
+                  <text x="14" y="42" style="font-family:monospace;font-size:7px;fill:#fff;">Wi-Fi Name</text>
+                  <text x="10" y="54" style="font-family:sans-serif;font-size:6px;fill:rgba(255,255,255,0.75);">Wi-Fi Password</text>
+                  <rect x="10" y="56" width="100" height="14" rx="2" fill="rgba(255,255,255,0.15)"/>
+                  <text x="14" y="66" style="font-family:monospace;font-size:7px;fill:#fff;">Wi-Fi Password</text>
+                </svg>
+                — the Wi-Fi name and password are printed on it.</li>
+                <li>Tap the name of your home Wi-Fi network.</li>
+                <li>Type in your Wi-Fi password and tap <strong>"Connect"</strong>.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> Your Wi-Fi name and password is usually on a sticker on your internet router box — it may be labelled "WPA Key", "Password" or "Network Key".</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="volume loud quiet sound ring android silent">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I adjust the volume?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>Look on the <strong>left side</strong> of your phone — there should be two buttons stacked on top of each other.</p>
+              <ul>
+                <li>The <strong>top button (+)</strong> makes sound louder.</li>
+                <li>The <strong>bottom button (−)</strong> makes sound quieter.</li>
+              </ul>
+              <p style="margin-top:10px;">Press them while a call is active to adjust the call volume, or press them at any other time to adjust the main phone volume.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> If you cannot hear your phone ringing, the volume may be turned right down — or the phone may be on Silent mode. Try pressing the Volume Up button a few times.</div>
+            </div>
+          </div>
+
+        </div><!-- end android -->
+
+        <!-- IPHONE -->
+        <div id="iphone" class="tab-panel">
+
+          <div class="faq-item" data-keywords="turn on off power iphone apple side button">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I turn my iPhone on and off?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>On most iPhones, the Power button (called the <strong>Side button</strong>) is on the <strong>right-hand side</strong> of the phone.</p>
+              <ol>
+                <li><strong>To turn it ON:</strong> Press and hold the Side button for 2–3 seconds until the Apple logo (🍎) appears on screen.</li>
+                <li><strong>To turn it OFF:</strong> Press and hold the Side button AND one of the Volume buttons together for a few seconds, then slide the "Power Off" slider to the right.</li>
+                <li><strong>To just lock the screen:</strong> Give the Side button a single quick press.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> You do not need to switch your iPhone off every night. But remember to plug it in to your charger.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="make receive phone call iphone apple ring answer decline accept">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I make and receive a phone call?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p><strong>To make a call:</strong></p>
+              <ol>
+                <li>There are two easy ways to make a call. Using <strong>Contacts</strong> or dialing a number on the <strong>Keypad</strong></li>
+              <p>To use <strong>Contacts</strong></p>
+                <li>Tap the <strong>Contacts app</strong> on your screen. You can usually find the Contacts icon on your main screen or in one of the other screens — Scroll or search for the contact you want to call.</li>
+                <li>Once you find the person you want to call, tap either the  <strong>their name</strong> to open their contact details.</li>
+                <li>You will see a few options to call the person. Tap either the <strong>📞 or the phone number</strong> to make the call.</li>
+                <li>When you are done, tap the <strong>red button</strong> to hang up.</li>
+                <li>To use the <strong>Keypad</strong></li>
+                <li>Find the <strong>green telephone icon</strong> on your screen and tap it — this opens the Phone app.</li>
+                <li>Tap the <strong>keypad icon</strong> (looks like a pattern of dots) and type in the number you want to call.</li>
+                <li>Tap the <strong>green call button</strong> to start the call.</li>
+                <li>When you are finished, tap the <strong>red button</strong> to hang up.</li>
+              </ol>
+              <p style="margin-top:12px;"><strong>To answer an incoming call:</strong></p>
+              <ol>
+                <li>When your phone rings, you will see the caller's name or number on screen.</li>
+                <li><strong>Swipe up</strong> on the green button to answer, or <strong>swipe down</strong> on the red button to decline.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> To decline a call without answering, tap the red <strong>"Decline"</strong> button — the caller will be directed to your voicemail.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="send text message imessage sms iphone apple blue green bubble">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I send a text message?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <ol>
+                <li>Tap the <strong>Messages app</strong> — it looks like a green icon with a white bubble inside.</li>
+                <li>Tap the <strong>pencil icon</strong> in the bottom right corner to write a new message.</li>
+                <li>In the "To:" box, type the name of the person (if they are in your contacts) or their phone number.</li>
+                <li>Tap the empty box at the bottom that says <em>"iMessage"</em> or <em>"Text Message"</em> and type your message.</li>
+                <li>Tap the <strong>blue arrow button</strong> to send.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> Blue bubbles mean the message was sent as an iMessage (free over Wi-Fi). Green bubbles mean it was sent as a regular SMS text message.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="bigger text font size larger display iphone accessibility zoom">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I make the text bigger so it is easier to read?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <ol>
+                <li>Open <strong>Settings</strong> (the grey gear icon).</li>
+                <li>Tap <strong>"Display &amp; Brightness"</strong>.</li>
+                <li>Tap <strong>"Text Size"</strong> and drag the slider to make text larger.</li>
+              </ol>
+              <p style="margin-top:10px;">For even larger text and bigger buttons throughout the whole phone:</p>
+              <ol>
+                <li>Go back to <strong>Settings</strong> and tap <strong>"Accessibility"</strong>.</li>
+                <li>Tap <strong>"Display &amp; Text Size"</strong> then <strong>"Larger Text"</strong>.</li>
+                <li>Turn on <strong>"Larger Accessibility Sizes"</strong> and drag the slider.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> There is also a "Zoom" feature in Accessibility settings that lets you magnify any part of the screen by double-tapping with three fingers.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="wifi wi-fi connect internet wireless iphone apple password join">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I connect to the Wi-Fi?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <ol>
+                      <li>Find and tap <strong>Settings</strong> (on your screen-looks like this ⚙️).</li>
+                <li>Tap <strong>"Wi-Fi"</strong> near the top of the list.</li>
+                <li>Make sure Wi-Fi is switched <strong>ON</strong> (the switch should be blue or green).</li>
+                <li>You will see a list of available networks by name. Tap the name of the Wi-Fi network you want to connect to.</li>
+                <li>If it has a lock symbol next to the name that looks like this 🔒 then you will need a <strong>password </strong>before you can connect.</li>
+                <li>If you have <strong>Wi-Fi in your unit</strong> and are trying to connect to it, then look for the information that was given to you when your <strong>Wi-Fi </strong> was first setup.</li> 
+                <li>It might be a little rectangular card stuck on your fridge that looks like this 
+                <svg width="60" height="38" viewBox="0 0 120 75" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle; display:inline-block; margin: 0 4px;">
+                  <rect x="0" y="0" width="120" height="75" rx="6" fill="#c0003c"/>
+                  <rect x="0" y="0" width="120" height="75" rx="6" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="0.8"/>
+                  <text x="60" y="14" style="font-family:sans-serif;font-size:6.5px;font-weight:bold;fill:#fff;text-anchor:middle;">Your Wi-Fi Details</text>
+                  <rect x="8" y="18" width="104" height="0.6" fill="rgba(255,255,255,0.3)"/>
+                  <text x="10" y="30" style="font-family:sans-serif;font-size:6px;fill:rgba(255,255,255,0.75);">Wi-Fi Name</text>
+                  <rect x="10" y="32" width="100" height="14" rx="2" fill="rgba(255,255,255,0.15)"/>
+                  <text x="14" y="42" style="font-family:monospace;font-size:7px;fill:#fff;">Wi-Fi Name</text>
+                  <text x="10" y="54" style="font-family:sans-serif;font-size:6px;fill:rgba(255,255,255,0.75);">Wi-Fi Password</text>
+                  <rect x="10" y="56" width="100" height="14" rx="2" fill="rgba(255,255,255,0.15)"/>
+                  <text x="14" y="66" style="font-family:monospace;font-size:7px;fill:#fff;">Wi-Fi Password</text>
+                </svg>
+                — the Wi-Fi name and password are printed on it.</li>
+                <li>Tap the name of your home Wi-Fi network.</li>
+                <li>Type in your Wi-Fi password and tap <strong>"Join"</strong>.</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> Once connected, your iPhone will remember the network and connect automatically next time — you will not need to type the password again.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="volume loud quiet sound ring iphone apple silent switch orange">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I adjust the volume?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>The volume buttons are on the <strong>left side</strong> of your iPhone.</p>
+              <ul>
+                <li>The <strong>top button (+)</strong> makes it sound louder.</li>
+                <li>The <strong>bottom button (−)</strong> makes it sound quieter.</li>
+              </ul>
+              <p style="margin-top:10px;">Just above the volume buttons is a small switch — this is the <strong>Silent switch</strong>. If you can see a small orange stripe, your phone is on silent. Flick it the other way to turn the sound back on.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> If your phone is not ringing for incoming calls, the Silent switch is the first thing to check — it is very easy to knock by accident.</div>
+            </div>
+          </div>
+
+        </div><!-- end iphone -->
+      </div><!-- end phone-body -->
+    </div><!-- end cat-phone -->
+
+
+    <!-- ══════════════════════════════════════════
+         CATEGORY 2 — TV
+    ══════════════════════════════════════════ -->
+    <div class="category-block" id="cat-tv">
+
+      <div class="category-header" onclick="toggleCategory('tv-body', this)">
+        <div class="category-header-left">
+          <span class="category-icon">📺</span>
+          <div>
+            <div class="category-title-text">Using Your TV</div>
+            <div class="category-subtitle">Normal TV, Smart TVs, streaming and more — explained in plain English.</div>
+          </div>
+        </div>
+        <span class="category-arrow">▼</span>
+      </div>
+
+      <div id="tv-body" class="category-body">
+
+        <!-- Q1 -->
+        <div class="faq-item" data-keywords="normal tv antenna aerial channels watch free internet needed">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Do I need the internet to watch normal TV?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p><strong>No — not for normal TV channels.</strong> The regular free-to-air channels you have always watched (ABC, SBS, Seven, Nine, Ten and their sister channels) come through your TV aerial or antenna, exactly as they always have. You do not need the internet for these.</p>
+            <p style="margin-top:12px;">The internet only becomes relevant when you want to watch <strong>on-demand or catch-up programs</strong> — for example, going back to watch something you missed, or using services like ABC iView.</p>
+            <div class="tip-box">💡 <strong>Tip:</strong> If your regular channels have stopped working, the most common causes are a loose antenna cable at the back of the TV, or your TV needing a channel re-scan. Neither of these has anything to do with the internet.</div>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="faq-item" data-keywords="smart tv normal tv difference internet apps what is connected">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            What is a Smart TV and how is it different from a normal TV?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>A <strong>normal TV</strong> simply receives free-to-air channels through your antenna. That is all it does.</p>
+            <p style="margin-top:12px;">A <strong>Smart TV</strong> does everything a normal TV does, <em>plus</em> it can connect to the internet. Once connected, it can run apps such as ABC iView, SBS On Demand, Netflix and YouTube, letting you watch programs whenever you choose rather than only when they are broadcast.</p>
+            <p style="margin-top:12px;">Most TVs sold in Australia since around 2015 are Smart TVs. You can usually tell because the remote control has extra buttons for apps or a Home screen, and the TV's menu will include a Wi-Fi or Network setting.</p>
+            <div class="tip-box">💡 <strong>Tip:</strong> Having a Smart TV does not mean you have to use the internet features. You can simply continue watching normal TV channels as you always have — the smart features are just there if and when you want them.</div>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="faq-item" data-keywords="internet how to get home wifi broadband nbn provider isp connect">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            How do I get the internet in my unit?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>To use the internet from your unit, you need two things:</p>
+            <ol>
+              <li><strong>An internet plan</strong> — this is a monthly service you sign up for with a provider such as Telstra, Optus, TPG or other providers. Most Australian homes now connect via the <strong>NBN</strong> (National Broadband Network). Prices vary but a basic plan typically costs around $50–$80 per month.</li>
+              <li><strong>A modem/router</strong> — a small box (usually provided by your internet service provider) that plugs into the wall and creates your a Wi-Fi network in your unit. This is what your TV, phone and any other devices like a (laptop, desktop or tablet computer) all connect to wirelessly.</li>
+            </ol>
+            <p style="margin-top:12px;">If you already have Wi-Fi in your unit — for example, if you use it on your phone or tablet — then you already have the internet and your Smart TV can connect to it straight away.</p>
+            <div class="tip-box">💡 <strong>Tip:</strong> If you are not sure whether you have the internet in your unit, check whether your mobile phone can connect to a Wi-Fi network while you are in your unit. If it can, you are already set up. The Wi-Fi name and password are usually printed on a sticker on your router box.</div>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="faq-item" data-keywords="streaming services what are netflix stan binge iview on demand catch up watch anytime">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            What are streaming services?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>Streaming services let you watch TV programs, movies and documentaries <strong>whenever you like</strong> — rather than having to be in front of the TV at a set time. The programs are delivered to your TV over the internet, which is why you need a connection to use them.</p>
+            <p style="margin-top:12px;">There are two types:</p>
+            <p style="margin-top:10px;"><strong>Free streaming services</strong> (no subscription needed):</p>
+            <ul>
+              <li>📺 <strong>ABC iView</strong> — ABC programs, news, documentaries</li>
+              <li>📺 <strong>SBS On Demand</strong> — SBS programs, world cinema, foreign-language content</li>
+              <li>📺 <strong>9Now</strong> — Channel 9 programs</li>
+              <li>📺 <strong>7Plus</strong> — Channel 7 programs</li>
+              <li>📺 <strong>10 Play</strong> — Channel 10 programs</li>
+              <li>📺 <strong>YouTube</strong> — Free videos on virtually any topic</li>
+            </ul>
+            <p style="margin-top:12px;"><strong>Paid streaming services</strong> (monthly subscription):</p>
+            <ul>
+              <li>🎬 <strong>Netflix</strong> — Movies and TV series from around the world (~$10–$22/month)</li>
+              <li>🎬 <strong>Prime</strong> — Movies and TV series from around the world (~$15–$18/month)</li>
+              <li>🎬 <strong>Stan</strong> — Australian and international shows (~$12–$18/month)</li>
+              <li>🎬 <strong>Binge</strong> — HBO and other premium content (~$10–$18/month)</li>
+              <li>🎬 <strong>Disney+</strong> — Disney, Marvel, Star Wars and National Geographic (~$14/month)</li>
+            </ul>
+            <div class="tip-box">💡 <strong>Tip:</strong> The free services are a great place to start — you may find there is more than enough to watch without needing a paid subscription. Short ads will appear occasionally, just like normal television.</div>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="faq-item" data-keywords="iview abc watch tv smart streaming free app install download catchup">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            How do I get ABC iView on my TV?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-answer">
+            <p>ABC iView is free and lets you watch ABC programs whenever you like. How you get it depends on your TV.</p>
+
+            <p style="margin-top:14px;"><strong>Option 1 — Smart TV app store</strong></p>
+            <ol>
+              <li>Press the <strong>Home or Menu button</strong> on your remote.</li>
+              <li>Look for an <strong>App Store</strong> or <strong>Apps</strong> section.</li>
+              <li>Search for <strong>"ABC iView"</strong>, select it, and choose <strong>"Install"</strong>.</li>
+              <li>Once installed it will appear on your Home screen — just open it to start watching.</li>
+            </ol>
+            <div class="tip-box">💡 <strong>Note:</strong> Your TV needs to be connected to the Wi-Fi in your unit for this to work.</div>
+
+            <p style="margin-top:16px;"><strong>Option 2 — Built-in iView button on the remote</strong></p>
+            <p>Some TVs have a dedicated <strong>ABC iView button</strong> on the remote. Just press it — no setup needed!</p>
+
+            <p style="margin-top:16px;"><strong>Option 3 — Streaming device (Apple TV, Chromecast, Fetch TV)</strong></p>
+            <p>If you have a small box or stick plugged into your TV, search for "iView" in its App Store or channel list.</p>
+
+            <p style="margin-top:16px;"><strong>Option 4 — Older TVs without internet</strong></p>
+            <p>You can watch iView on a tablet, laptop, or phone instead. Or consider an inexpensive streaming stick (such as a Google Chromecast or Amazon Fire Stick) that plugs into your TV's HDMI port and adds Smart TV features.</p>
+            <div class="tip-box">💡 <strong>Tip:</strong> iView is completely free and you do not need to create an account to watch most programs.</div>
+          </div>
+        </div>
+
+      </div><!-- end tv-body -->
+    </div><!-- end cat-tv -->
+
+
+    <!-- COMING SOON -->
+    <div class="coming-soon-box">
+      <h3>🔒 Staying Safe Online — <em>Coming Soon</em></h3>
+      <p>We are working on a plain-English guide covering passwords, recognising scams and safe internet browsing. Check back soon!</p>
+    </div>
+
+
+    <!-- HAVE A QUESTION -->
+    <div class="ask-section" id="ask">
+      <h2>🙋 Have a Question?</h2>
+      <p>Can't find what you're looking for? Send us your question and we will do our best to answer it — and add it to this page for other residents too.</p>
+      <div id="questionForm">
+        <label class="ask-label" for="q-name">Your name (optional)</label>
+        <input class="ask-input" type="text" id="q-name" placeholder="e.g. Margaret from Unit 14">
+        <label class="ask-label" for="q-text">Your question</label>
+        <textarea class="ask-textarea" id="q-text" placeholder="e.g. I can't receive phone calls on my phone. What do I need to do?"></textarea>
+        <button class="ask-btn" onclick="submitQuestion()">Send My Question →</button>
+      </div>
+      <div class="ask-success" id="askSuccess">
+        ✅ Thank you! Your question has been received. We will look into it and add an answer to this page soon.
+      </div>
+    </div>
+
+  </div><!-- end page-content -->
+</div><!-- end container -->
+
+<script>
+
+  /* ══════════════════════════════════════════
+     LEVEL 1 — CATEGORY TOGGLE
+  ══════════════════════════════════════════ */
+  function toggleCategory(bodyId, headerEl) {
+    var body = document.getElementById(bodyId);
+    var isOpen = body.classList.contains('open');
+    body.classList.toggle('open');
+    headerEl.classList.toggle('open');
+  }
+
+
+  /* ══════════════════════════════════════════
+     TAB SWITCHING (Android / iPhone)
+  ══════════════════════════════════════════ */
+  function switchTab(btn, panelId) {
+    var tabBar = btn.closest('.tab-bar');
+    var categoryBody = btn.closest('.category-body');
+    tabBar.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    categoryBody.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById(panelId).classList.add('active');
+  }
+
+
+  /* ══════════════════════════════════════════
+     LEVEL 2 — FAQ ACCORDION
+  ══════════════════════════════════════════ */
+  function toggleFaq(btn) {
+    var answer = btn.nextElementSibling;
+    var isOpen = btn.classList.contains('open');
+    // Close all open FAQs in the same tab panel or category body
+    var panel = btn.closest('.tab-panel') || btn.closest('.category-body');
+    panel.querySelectorAll('.faq-question.open').forEach(function(q){
+      q.classList.remove('open');
+      q.nextElementSibling.classList.remove('open');
+    });
+    if (!isOpen) {
+      btn.classList.add('open');
+      answer.classList.add('open');
+    }
+  }
+
+
+  /* ══════════════════════════════════════════
+     SEARCH
+     Scans data-keywords on each faq-item and
+     the category titles. Opens matching category
+     and highlights the matching questions.
+  ══════════════════════════════════════════ */
+  function performSearch() {
+    var query = document.getElementById('searchInput').value.toLowerCase().trim();
+    var resultsDiv = document.getElementById('searchResults');
+
+    if (query.length < 2) {
+      resultsDiv.style.display = 'none';
+      resultsDiv.innerHTML = '';
+      return;
+    }
+
+    // Build index from faq-items
+    var items = document.querySelectorAll('.faq-item');
+    var matches = [];
+
+    items.forEach(function(item) {
+      var questionEl = item.querySelector('.faq-question');
+      var questionText = questionEl ? questionEl.textContent.trim() : '';
+      var keywords = (item.getAttribute('data-keywords') || '').toLowerCase();
+      var categoryHeader = item.closest('.category-body');
+      var categoryTitleEl = categoryHeader
+        ? categoryHeader.previousElementSibling.querySelector('.category-title-text')
+        : null;
+      var categoryName = categoryTitleEl ? categoryTitleEl.textContent.trim() : '';
+
+      if (questionText.toLowerCase().includes(query) || keywords.includes(query)) {
+        matches.push({
+          questionText: questionText,
+          categoryName: categoryName,
+          bodyId: categoryHeader ? categoryHeader.id : null,
+          header: categoryHeader ? categoryHeader.previousElementSibling : null,
+          questionBtn: questionEl
+        });
+      }
+    });
+
+    if (matches.length === 0) {
+      resultsDiv.innerHTML = '<div style="padding:15px;color:#666;">No results found for "<strong>' + query + '</strong>". Try different words, or use the "Have a Question?" form below.</div>';
+      resultsDiv.style.display = 'block';
+      return;
+    }
+
+    var html = '<div style="padding:10px 12px;color:#666;font-weight:600;">Found ' + matches.length + ' result' + (matches.length > 1 ? 's' : '') + ' for "<strong>' + query + '</strong>":</div>';
+
+    matches.forEach(function(m, i) {
+      html += '<div class="search-result-item" data-match-index="' + i + '">' +
+              '<span style="color:#5f6368;font-size:0.85em;">' + m.categoryName + ' &rsaquo; </span>' +
+              m.questionText +
+              '</div>';
+    });
+
+    resultsDiv.innerHTML = html;
+    resultsDiv.style.display = 'block';
+
+    // Attach click handlers to results
+    resultsDiv.querySelectorAll('.search-result-item').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var idx = parseInt(el.getAttribute('data-match-index'));
+        var m = matches[idx];
+
+        // Open the category
+        if (m.bodyId) {
+          var body = document.getElementById(m.bodyId);
+          if (body && !body.classList.contains('open')) {
+            body.classList.add('open');
+            if (m.header) m.header.classList.add('open');
+          }
+        }
+
+        // Switch to correct tab if needed
+        var panel = m.questionBtn ? m.questionBtn.closest('.tab-panel') : null;
+        if (panel) {
+          var categoryBody = panel.closest('.category-body');
+          var tabBar = categoryBody ? categoryBody.querySelector('.tab-bar') : null;
+          if (tabBar) {
+            var panelId = panel.id;
+            // Find matching tab button
+            tabBar.querySelectorAll('.tab-btn').forEach(function(b){
+              b.classList.remove('active');
+              if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + panelId + "'")) {
+                b.classList.add('active');
+              }
+            });
+            categoryBody.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+            panel.classList.add('active');
+          }
+        }
+
+        // Open the FAQ answer
+        if (m.questionBtn) {
+          // Close others first
+          var container = m.questionBtn.closest('.tab-panel') || m.questionBtn.closest('.category-body');
+          if (container) {
+            container.querySelectorAll('.faq-question.open').forEach(function(q){
+              q.classList.remove('open');
+              q.nextElementSibling.classList.remove('open');
+            });
+          }
+          m.questionBtn.classList.add('open');
+          var ans = m.questionBtn.nextElementSibling;
+          if (ans) ans.classList.add('open');
+
+          // Scroll to the question
+          setTimeout(function(){
+            m.questionBtn.scrollIntoView({ behavior:'smooth', block:'center' });
+          }, 150);
+        }
+
+        // Clear search UI
+        resultsDiv.style.display = 'none';
+        document.getElementById('searchInput').value = '';
+      });
+    });
+  }
+
+  function clearSearch() {
+    var resultsDiv = document.getElementById('searchResults');
+    resultsDiv.style.display = 'none';
+    resultsDiv.innerHTML = '';
+  }
+
+  // Close search results when clicking outside
+  document.addEventListener('click', function(event) {
+    var searchContainer = document.querySelector('.search-container');
+    var resultsDiv = document.getElementById('searchResults');
+    if (searchContainer && !searchContainer.contains(event.target)) {
+      resultsDiv.style.display = 'none';
+    }
+  });
+
+
+  /* ══════════════════════════════════════════
+     QUESTION SUBMISSION
+     Replace YOUR_GOOGLE_APPS_SCRIPT_URL_HERE
+     with your real Google Apps Script URL.
+  ══════════════════════════════════════════ */
+  function submitQuestion() {
+    var name     = document.getElementById('q-name').value.trim();
+    var question = document.getElementById('q-text').value.trim();
+
+    if (!question) {
+      alert('Please type your question before sending.');
+      return;
+    }
+
+    var SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+    if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+      document.getElementById('questionForm').style.display = 'none';
+      document.getElementById('askSuccess').style.display  = 'block';
+      return;
+    }
+
+    fetch(SCRIPT_URL, {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({ name: name, question: question, timestamp: new Date().toISOString() })
+    })
+    .then(function(){
+      document.getElementById('questionForm').style.display = 'none';
+      document.getElementById('askSuccess').style.display  = 'block';
+    })
+    .catch(function(){
+      alert('Sorry, there was a problem sending your question. Please try again later.');
+    });
+  }
+
+</script>
+
+</body>
+</html>
