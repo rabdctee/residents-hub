@@ -660,6 +660,68 @@ transform:scale(1.02);
 box-shadow:0 6px 8px rgba(211,47,47,0.4);
 }
 
+/* ===== Have a Question Block ===== */
+.ask-section{
+background:#2c5aa0;
+border-radius:8px;
+padding:30px 25px;
+margin-bottom:30px;
+color:white;
+}
+
+.ask-section h2{ font-size:1.3em; margin-bottom:8px; }
+.ask-section > p{ font-size:0.95em; opacity:0.88; margin-bottom:20px; }
+
+.ask-label{ display:block; font-size:0.88em; opacity:0.8; margin-bottom:5px; }
+
+.ask-input, .ask-textarea{
+width:100%;
+padding:12px 15px;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+font-size:17px;
+border:2px solid #1e4178;
+border-radius:5px;
+background:white;
+color:#222;
+margin-bottom:14px;
+transition:border-color 0.2s;
+}
+
+.ask-input::placeholder, .ask-textarea::placeholder{ color:#aaa; }
+
+.ask-input:focus, .ask-textarea:focus{
+outline:none;
+border-color:#1e4178;
+background:white;
+}
+
+.ask-textarea{ resize:vertical; min-height:100px; }
+
+.ask-btn{
+background:white;
+color:#2c5aa0;
+border:none;
+padding:12px 28px;
+border-radius:5px;
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+font-size:17px;
+font-weight:700;
+cursor:pointer;
+transition:background 0.2s;
+}
+
+.ask-btn:hover{ background:#e8f4f8; }
+
+.ask-success{
+display:none;
+background:rgba(255,255,255,0.15);
+border:1px solid rgba(255,255,255,0.35);
+border-radius:5px;
+padding:16px 20px;
+font-size:0.97em;
+text-align:center;
+}
+
 /* ===== Print-Friendly Styles ===== */
 @media print {
 /* Hide navigation and non-essential elements */
@@ -821,6 +883,7 @@ Work is due to commence on 13th April 2026.
 </button>
 </div>
 
+
 </div>
 <!-- END OF ANNOUNCEMENTS SECTION -->
 <!-- RIGHT COLUMN - SIDEBAR WIDGETS -->
@@ -893,6 +956,23 @@ setInterval(loadWeather, 1800000);
 
 </div>
 </div>
+
+<!-- HAVE A QUESTION — full width below the grid -->
+<div class="ask-section" style="margin-top:10px;">
+  <h2>🙋 Have a Question?</h2>
+  <p>Can't find what you're looking for on this site? Send us your question and we will do our best to help.</p>
+  <div id="homeQuestionForm">
+    <label class="ask-label" for="hq-name">Your name (optional)</label>
+    <input class="ask-input" type="text" id="hq-name" placeholder="e.g. Margaret from Unit 14">
+    <label class="ask-label" for="hq-text">Your question</label>
+    <textarea class="ask-textarea" id="hq-text" placeholder="e.g. Where do I find the Social Club calendar?"></textarea>
+    <button class="ask-btn" onclick="submitHomeQuestion()">Send My Question →</button>
+  </div>
+  <div class="ask-success" id="homeAskSuccess">
+    ✅ Thank you! Your question has been received. We will look into it and get back to you soon.
+  </div>
+</div>
+
 </div>
 <!-- ABOUT PAGE -->
 <div id="about" class="page-content">
@@ -2212,6 +2292,36 @@ function displayQuoteOfDay() {
 }
 
 // ============================================
+// HAVE A QUESTION — HOME PAGE FORM
+// ============================================
+
+function submitHomeQuestion() {
+  var name     = document.getElementById('hq-name').value.trim();
+  var question = document.getElementById('hq-text').value.trim();
+
+  if (!question) {
+    alert('Please type your question before sending.');
+    return;
+  }
+
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmqaHurZKAbFBeZhkjK7NCooih2A2RWStX1M6NulS37Ed0YeIqk38-LLC7lsU-v1yatw/exec';
+
+  fetch(SCRIPT_URL, {
+    method : 'POST',
+    mode   : 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body   : JSON.stringify({ name: name, question: question, timestamp: new Date().toISOString() })
+  })
+  .then(function(){
+    document.getElementById('homeQuestionForm').style.display = 'none';
+    document.getElementById('homeAskSuccess').style.display   = 'block';
+  })
+  .catch(function(){
+    alert('Sorry, there was a problem sending your question. Please try again later.');
+  });
+}
+
+// ============================================
 // GOOGLE SHEETS AUTO-UPDATE SYSTEM
 // ============================================
 
@@ -2393,6 +2503,32 @@ setInterval(function() {
     loadAnnouncements();
     loadEvents();
 }, 300000);
+
+function submitHomeQuestion() {
+  var name     = document.getElementById('hq-name').value.trim();
+  var question = document.getElementById('hq-text').value.trim();
+
+  if (!question) {
+    alert('Please type your question before sending.');
+    return;
+  }
+
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmqaHurZKAbFBeZhkjK7NCooih2A2RWStX1M6NulS37Ed0YeIqk38-LLC7lsU-v1yatw/exec';
+
+  fetch(SCRIPT_URL, {
+    method : 'POST',
+    mode   : 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body   : JSON.stringify({ name: name, question: question, timestamp: new Date().toISOString() })
+  })
+  .then(function(){
+    document.getElementById('homeQuestionForm').style.display = 'none';
+    document.getElementById('homeAskSuccess').style.display   = 'block';
+  })
+  .catch(function(){
+    alert('Sorry, there was a problem sending your question. Please try again later.');
+  });
+}
 
 </script>
 </body>
