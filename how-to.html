@@ -38,11 +38,25 @@
     header{
       background:#2c5aa0;
       color:white;
-      padding:30px 20px;
+      padding:36px 20px 30px;
       text-align:center;
     }
     header h1{ font-size:2em; }
     header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.15em;
+      opacity:1;
+      font-weight:600;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(255,255,255,0.18);
+      border-radius:6px;
+      padding:6px 20px;
+    }
+
+    html{ scroll-behavior:smooth; }
 
     /* ===== Navigation ===== */
     nav{
@@ -408,17 +422,16 @@
   <header>
     <h1>Bridgeman Downs Retirement Village</h1>
     <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>💡 Help &amp; How To</span></p>
   </header>
 
   <!-- ===== NAV ===== -->
   <nav>
   <a class="nav-item" href="index.html">🏠 Home</a>
-  <a class="nav-item" href="index.html">📰 News</a>
-  <a class="nav-item" href="index.html">🎉 Events</a>
-  <a class="nav-item" href="index.html">🚶 Activities</a>
-  <a class="nav-item" href="index.html">ℹ️ Community<br>&nbsp;&nbsp;&nbsp;&nbsp;Information</a>
-  <a class="nav-item active" href="how-to.html">💡 Help &amp; How To</a>
-  <a class="nav-item" href="index.html">📞 Contacts</a>
+    <a class="nav-item" href="#group-getting-started">🚀 Getting Started</a>
+    <a class="nav-item" href="#group-apps-services">📱 Apps &amp; Services</a>
+    <a class="nav-item" href="#group-staying-safe">🔒 Staying Safe</a>
+    <a class="nav-item" href="#group-new-tech">🤖 New Technology</a>
   </nav>
 
   <!-- ===== SEARCH BAR ===== -->
@@ -435,10 +448,6 @@
   <!-- ===== PAGE CONTENT ===== -->
   <div class="page-content">
 
-    <a class="back-home" href="index.html">← Back to Home</a>
-
-    <h2 class="section-heading">💡 Help &amp; How To</h2>
-
     <div class="info-box">
       Plain-English answers to everyday questions.
       Click any topic below to expand it, then click a question to see the answer.
@@ -446,7 +455,7 @@
     </div>
 
     <!-- GROUP: GETTING STARTED -->
-    <div class="group-label">
+    <div class="group-label" id="group-getting-started">
       <div class="group-label-line"></div>
       <div class="group-label-text">🚀 Getting Started</div>
       <div class="group-label-line"></div>
@@ -1061,7 +1070,7 @@
 
 
     <!-- GROUP: APPS & SERVICES -->
-    <div class="group-label">
+    <div class="group-label" id="group-apps-services">
       <div class="group-label-line"></div>
       <div class="group-label-text">📱 Apps &amp; Services</div>
       <div class="group-label-line"></div>
@@ -1566,7 +1575,7 @@
 
 
     <!-- GROUP: STAYING SAFE -->
-    <div class="group-label">
+    <div class="group-label" id="group-staying-safe">
       <div class="group-label-line"></div>
       <div class="group-label-text">🔒 Staying Safe</div>
       <div class="group-label-line"></div>
@@ -1953,7 +1962,7 @@
 
 
     <!-- GROUP: NEW TECHNOLOGY -->
-    <div class="group-label">
+    <div class="group-label" id="group-new-tech">
       <div class="group-label-line"></div>
       <div class="group-label-text">🤖 New Technology</div>
       <div class="group-label-line"></div>
