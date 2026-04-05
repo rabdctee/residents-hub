@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Down Memory Lane | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+
+    /* ===== Base ===== */
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:20px;
+      line-height:1.7;
+      color:#222;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      background:white;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background:#2c5aa0;
+      color:white;
+      padding:36px 20px 30px;
+      text-align:center;
+    }
+    header h1{ font-size:2em; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.15em;
+      font-weight:600;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(255,255,255,0.18);
+      border-radius:6px;
+      padding:6px 20px;
+    }
+
+    /* ===== Navigation ===== */
+    nav{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      background:#f5f5f5;
+      padding:15px 10px;
+      gap:8px;
+    }
+
+    .nav-item{
+      color:#1f3f73;
+      background:white;
+      padding:16px 28px;
+      text-decoration:none;
+      cursor:pointer;
+      font-weight:700;
+      border-radius:10px;
+      border:2px solid #e0e0e0;
+      transition:all 0.3s;
+      font-size:18px;
+      min-height:50px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .nav-item:hover{ background:#e8f4f8; border-color:#2c5aa0; color:#2c5aa0; }
+    .nav-item.active{ background:#2c5aa0; color:white; border-color:#2c5aa0; }
+
+    /* ===== Page content ===== */
+    .page-content{ padding:40px 25px; }
+
+    .info-box{
+      background:#e8f4f8;
+      border-left:4px solid #2c5aa0;
+      padding:20px;
+      margin:0 0 30px;
+      border-radius:4px;
+    }
+
+    .tip-box{
+      background:#fff9e6;
+      border-left:4px solid #fbbc04;
+      padding:14px 18px;
+      margin:14px 0 4px;
+      border-radius:4px;
+      font-size:0.92em;
+    }
+
+    /* ===== Section divider ===== */
+    .section-divider{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:35px 0 18px;
+    }
+    .section-divider-line{
+      flex:1;
+      height:1px;
+      background:#dde3ea;
+    }
+    .section-divider-text{
+      font-size:0.78em;
+      font-weight:700;
+      letter-spacing:0.09em;
+      text-transform:uppercase;
+      color:#8a96a3;
+      white-space:nowrap;
+    }
+
+    /* ===== Story cards ===== */
+    .stories-intro{
+      font-size:1em;
+      color:#444;
+      margin-bottom:24px;
+    }
+
+    .story-card{
+      background:#f8f9fa;
+      border:1px solid #e0e0e0;
+      border-radius:10px;
+      padding:28px 30px;
+      margin-bottom:24px;
+      position:relative;
+    }
+
+    .story-card::before{
+      content:'\201C';
+      font-size:5em;
+      color:#2c5aa0;
+      opacity:0.15;
+      position:absolute;
+      top:10px;
+      left:18px;
+      line-height:1;
+      font-family:Georgia,serif;
+    }
+
+    .story-author{
+      font-weight:700;
+      color:#2c5aa0;
+      font-size:1em;
+      margin-bottom:6px;
+    }
+
+    .story-era{
+      font-size:0.82em;
+      color:#888;
+      margin-bottom:14px;
+    }
+
+    .story-text{
+      color:#333;
+      line-height:1.8;
+      font-size:0.96em;
+    }
+
+    .story-text p{ margin-bottom:10px; }
+    .story-text p:last-child{ margin-bottom:0; }
+
+    .story-prompt-label{
+      font-size:0.78em;
+      font-weight:700;
+      color:#2c5aa0;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      margin:14px 0 4px;
+    }
+
+    /* ===== Contribute form ===== */
+    .contribute-section{
+      background:#2c5aa0;
+      border-radius:10px;
+      padding:36px 30px;
+      margin-bottom:30px;
+      color:white;
+    }
+
+    .contribute-section h2{
+      font-size:1.4em;
+      margin-bottom:10px;
+    }
+
+    .contribute-section > p{
+      font-size:0.95em;
+      opacity:0.88;
+      margin-bottom:24px;
+    }
+
+    /* ===== Form fields ===== */
+    .form-group{
+      margin-bottom:20px;
+    }
+
+    .form-label{
+      display:block;
+      font-size:0.9em;
+      font-weight:600;
+      opacity:0.9;
+      margin-bottom:6px;
+    }
+
+    .form-label .optional{
+      font-weight:400;
+      opacity:0.65;
+      font-size:0.88em;
+    }
+
+    .form-input,
+    .form-textarea{
+      width:100%;
+      padding:12px 16px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:17px;
+      border:2px solid #1e4178;
+      border-radius:6px;
+      background:white;
+      color:#222;
+      transition:border-color 0.2s;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus{
+      outline:none;
+      border-color:#1e4178;
+      background:white;
+    }
+
+    .form-textarea{
+      resize:vertical;
+      min-height:90px;
+    }
+
+    /* ===== Prompt group ===== */
+    .prompt-group{
+      background:rgba(255,255,255,0.1);
+      border-radius:8px;
+      padding:20px 22px;
+      margin-bottom:20px;
+    }
+
+    .prompt-group-title{
+      font-size:0.88em;
+      font-weight:700;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      opacity:0.75;
+      margin-bottom:14px;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(255,255,255,0.2);
+    }
+
+    /* ===== Checkbox ===== */
+    .checkbox-row{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      background:rgba(255,255,255,0.12);
+      border-radius:8px;
+      padding:16px 18px;
+      margin-bottom:20px;
+      cursor:pointer;
+    }
+
+    .checkbox-row input[type="checkbox"]{
+      width:22px;
+      height:22px;
+      flex-shrink:0;
+      margin-top:3px;
+      cursor:pointer;
+      accent-color:#fff;
+    }
+
+    .checkbox-row label{
+      font-size:0.95em;
+      cursor:pointer;
+      line-height:1.5;
+    }
+
+    .checkbox-row label strong{
+      display:block;
+      margin-bottom:3px;
+    }
+
+    /* ===== Submit button ===== */
+    .submit-btn{
+      background:white;
+      color:#2c5aa0;
+      border:none;
+      padding:14px 32px;
+      border-radius:6px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+      transition:background 0.2s;
+    }
+    .submit-btn:hover{ background:#e8f4f8; }
+
+    /* ===== Success message ===== */
+    .form-success{
+      display:none;
+      background:rgba(255,255,255,0.15);
+      border:1px solid rgba(255,255,255,0.35);
+      border-radius:8px;
+      padding:20px 24px;
+      font-size:1em;
+      text-align:center;
+      line-height:1.7;
+    }
+
+    /* ===== Photo note ===== */
+    .photo-note{
+      background:rgba(255,255,255,0.12);
+      border-radius:8px;
+      padding:16px 20px;
+      font-size:0.88em;
+      opacity:0.9;
+      line-height:1.6;
+      margin-bottom:20px;
+    }
+    .photo-note strong{ display:block; margin-bottom:4px; font-size:1em; }
+
+    /* ===== Responsive ===== */
+    @media(max-width:768px){
+      .nav-item{ font-size:14px; padding:10px 18px; }
+      .contribute-section{ padding:24px 18px; }
+      .story-card{ padding:22px 20px; }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>🕰️ Down Memory Lane</span></p>
+  </header>
+
+  <!-- ===== NAV ===== -->
+  <nav>
+    <a class="nav-item" href="index.html">🏠 Home</a>
+    <a class="nav-item" href="how-to.html">💡 Help &amp; How To</a>
+    <a class="nav-item active" href="memories.html">🕰️ Down Memory Lane</a>
+  </nav>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <div class="info-box">
+      <strong>Welcome to Down Memory Lane</strong> — a place for residents of our community to record life stories, 
+      reflections and precious memories. Whether it is a cherished childhood moment, a funny teenage memory, or a piece of 
+      wisdom earned over a lifetime — every story is worth telling.
+      Although, there is a space for you to enter your name, you do not have to. You can choose to remain anonymous. There are no right or wrong words and no obligation to respond to every question. Share as much or as little as you feel comfortable with.
+      You can choose to keep your story private as a personal or family keepsake, or if you wish, you can consent to share -with your community- some or all of what you record.
+      <br><br> — the choice is entirely yours.
+    </div>
+
+
+    <!-- ══════════════════════════════════
+         SHARED STORIES
+    ══════════════════════════════════ -->
+    <div class="section-divider">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">📖 Residents' Stories</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <p class="stories-intro">Stories shared by your fellow residents — with their permission.</p>
+
+    <!-- ─── PLACEHOLDER STORY (replace with real submissions) ─── -->
+    <div class="story-card">
+      <div class="story-author">Maggie M. — Unit 42</div>
+      <div class="story-era">Growing up in country Queensland, 1950s</div>
+      <div class="story-text">
+        <div class="story-prompt-label">Where did you grow up?</div>
+        <p>I grew up on a wheat farm outside Dalby, the youngest of five children. We did not have television until I was eleven, so we made our own entertainment — cubby houses in the paddock, swimming in the dam, and listening to the wireless on Saturday nights for the hit parade.</p>
+        <div class="story-prompt-label">What did you want to be when you grew up?</div>
+        <p>A nurse. I eventually became one — forty years at the Royal Brisbane and never a dull moment. Though I suspect the nursing uniform was part of the appeal when I was seven!</p>
+      </div>
+    </div>
+    <!-- ─── END PLACEHOLDER — remove this card once real stories are submitted ─── -->
+
+
+    <!-- ══════════════════════════════════
+         CONTRIBUTE YOUR STORY
+    ══════════════════════════════════ -->
+    <div class="section-divider">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">✍️ Share Your Story</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="contribute-section">
+      <h2>✍️ Your Story</h2>
+      <p>Answer as many or as few of the questions below as you like — in as much or as little detail as feels right. You don't have to stick to the questions; feel free to so your own thing and say what you like.
+         Nothing is made public without your express consent.</p>
+
+      <div id="memoryForm">
+
+        <!-- YOUR NAME -->
+        <div class="form-group">
+          <label class="form-label" for="m-name">
+            Your name <span class="optional">(optional — see sharing options below)</span>
+          </label>
+          <input class="form-input" type="text" id="m-name"
+                 placeholder="e.g. Margaret S., or leave blank to remain anonymous">
+        </div>
+
+        <!-- ── EARLY LIFE ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">👶 Early Life</div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-baby">
+              How did your parents describe what you were like as a baby?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-baby"
+                      placeholder="Share anything you were told about your earliest days..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-books">
+              Can you remember any books that were read to you before you could read?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-books"
+                      placeholder="Titles, stories, or the memory of being read to..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-childhood">
+              What was your favourite thing to do as a child?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-childhood"
+                      placeholder="Games, places, activities, friendships..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-dream">
+              When you were a kid, what did you want to be when you grew up?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-dream"
+                      placeholder="Your childhood ambition — did it come true?"></textarea>
+          </div>
+        </div>
+
+        <!-- ── TEENAGE YEARS ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">🎸 Teenage Years</div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-teen-words">
+              What three words or phrases come to mind when you think back to your teenage years?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-teen-words"
+                      placeholder="e.g. Carefree. Too much homework. The beach."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-teen-culture">
+              Name a few songs, TV shows or films you remember from that era.
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-teen-culture"
+                      placeholder="The music, shows and films that defined your teenage years..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-music">
+              Who were your favourite recording artists or bands, and what kind of music did you love?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-music"
+                      placeholder="Your musical heroes and the songs that still take you back..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-teen-wisdom">
+              What could the teenage version of you teach you today?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-teen-wisdom"
+                      placeholder="What did your younger self know that you sometimes forget?"></textarea>
+          </div>
+        </div>
+
+        <!-- ── LIFE ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">🌟 Life</div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-events">
+              What are some of the most memorable events in your life so far?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-events"
+                      placeholder="The moments — big or small — that shaped who you are..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-changes">
+              What has changed most in your lifetime that still amazes you?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-changes"
+                      placeholder="Technology, society, the world around you..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-advice">
+              What advice would you give your younger self?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-advice"
+                      placeholder="The wisdom you wish you'd had earlier..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="m-people">
+              How did you meet your partner, or who has been most important in your life?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="m-people"
+                      placeholder="The people who mattered most — and why..."></textarea>
+          </div>
+        </div>
+
+        <!-- SHARING OPTIONS -->
+        <div class="checkbox-row" onclick="document.getElementById('m-share').click(); event.stopPropagation();">
+          <input type="checkbox" id="m-share">
+          <label for="m-share" onclick="event.stopPropagation();">
+            <strong>Yes — I am happy to share my story with other residents</strong>
+            I understand my story will be published on this page.
+            If I leave my name blank, my story will appear anonymously.
+          </label>
+        </div>
+
+        <div class="checkbox-row" onclick="document.getElementById('m-keepsake').click(); event.stopPropagation();">
+          <input type="checkbox" id="m-keepsake">
+          <label for="m-keepsake" onclick="event.stopPropagation();">
+            <strong>I would like a copy sent to me or my family</strong>
+            If you tick this box, please make sure you include your name and a contact email address or unit number above
+            so we can get it to you.
+          </label>
+        </div>
+
+        <!-- PHOTO NOTE -->
+        <div class="photo-note">
+          📷 <strong>Would you like to include a photo?</strong>
+          We would love to display an old photo alongside your story! It doesn't have to be a photo of you...something that carries your memories will be lovely. Simply email your photo to
+          <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="96e4f7f4f2b8f5fef7ffe4d6f1fbf7fffab8f5f9fb">[email&#160;protected]</a></strong> with your name and "Down Memory Lane" in the subject line.
+          We will match it to your submission.
+        </div>
+
+        <button class="submit-btn" onclick="submitMemory()">Send My Story →</button>
+
+      </div><!-- end memoryForm -->
+
+      <div class="form-success" id="memorySuccess">
+        🕰️ <strong>Thank you for sharing your story!</strong><br><br>
+        Your memories have been received. 
+        If you chose to share publicly, your story will appear on this page soon.<br><br>
+        If you asked for a copy to be sent to you or your family, we will be in touch.
+      </div>
+
+    </div><!-- end contribute-section -->
+
+  </div><!-- end page-content -->
+</div><!-- end container -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
+  /* ══════════════════════════════════════════
+     MEMORY FORM SUBMISSION
+     Replace YOUR_GOOGLE_APPS_SCRIPT_URL_HERE
+     with a new Apps Script URL for this form.
+     (Set up a second Sheet: "Memories")
+  ══════════════════════════════════════════ */
+  function submitMemory() {
+
+    var name       = document.getElementById('m-name').value.trim();
+    var baby       = document.getElementById('m-baby').value.trim();
+    var books      = document.getElementById('m-books').value.trim();
+    var childhood  = document.getElementById('m-childhood').value.trim();
+    var dream      = document.getElementById('m-dream').value.trim();
+    var teenWords  = document.getElementById('m-teen-words').value.trim();
+    var teenCult   = document.getElementById('m-teen-culture').value.trim();
+    var music      = document.getElementById('m-music').value.trim();
+    var teenWisdom = document.getElementById('m-teen-wisdom').value.trim();
+    var events     = document.getElementById('m-events').value.trim();
+    var changes    = document.getElementById('m-changes').value.trim();
+    var advice     = document.getElementById('m-advice').value.trim();
+    var people     = document.getElementById('m-people').value.trim();
+    var share      = document.getElementById('m-share').checked;
+    var keepsake   = document.getElementById('m-keepsake').checked;
+
+    /* Check at least one field has been filled in */
+    var hasContent = baby || books || childhood || dream || teenWords ||
+                     teenCult || music || teenWisdom || events || changes ||
+                     advice || people;
+
+    if (!hasContent) {
+      alert('Please share at least one memory before sending — even just a sentence or two is wonderful!');
+      return;
+    }
+
+    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfA7kQVfNgjhkY-Nb9ONvnt5CaVlzfTx18J9MIAsmyLEZ8YFYQPrvhvh03rEFHcvh-/exec';
+
+    fetch(SCRIPT_URL, {
+      method : 'POST',
+      mode   : 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body   : JSON.stringify({
+        timestamp  : new Date().toISOString(),
+        name       : name || 'Anonymous',
+        share      : share ? 'Yes' : 'No',
+        keepsake   : keepsake ? 'Yes' : 'No',
+        baby       : baby,
+        books      : books,
+        childhood  : childhood,
+        dream      : dream,
+        teenWords  : teenWords,
+        teenCulture: teenCult,
+        music      : music,
+        teenWisdom : teenWisdom,
+        events     : events,
+        changes    : changes,
+        advice     : advice,
+        people     : people
+      })
+    })
+    .then(function(){
+      document.getElementById('memoryForm').style.display    = 'none';
+      document.getElementById('memorySucces
