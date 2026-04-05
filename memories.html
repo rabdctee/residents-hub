@@ -629,31 +629,3 @@
       return;
     }
 
-    var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfA7kQVfNgjhkY-Nb9ONvnt5CaVlzfTx18J9MIAsmyLEZ8YFYQPrvhvh03rEFHcvh-/exec';
-
-    fetch(SCRIPT_URL, {
-      method : 'POST',
-      mode   : 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body   : JSON.stringify({
-        timestamp  : new Date().toISOString(),
-        name       : name || 'Anonymous',
-        share      : share ? 'Yes' : 'No',
-        keepsake   : keepsake ? 'Yes' : 'No',
-        baby       : baby,
-        books      : books,
-        childhood  : childhood,
-        dream      : dream,
-        teenWords  : teenWords,
-        teenCulture: teenCult,
-        music      : music,
-        teenWisdom : teenWisdom,
-        events     : events,
-        changes    : changes,
-        advice     : advice,
-        people     : people
-      })
-    })
-    .then(function(){
-      document.getElementById('memoryForm').style.display    = 'none';
-      document.getElementById('memorySucces
