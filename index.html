@@ -22,6 +22,7 @@
 
 /* ===== Base ===== */
 *{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
 
 body{
 font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
@@ -1341,36 +1342,28 @@ Our grey tabby cat "Smokey" has been missing since Wednesday evening. Very frien
 This page contains village documents and financial information for residents only.
 </div>
 
-<h2 style="margin-bottom:15px;">ℹ️ Information Hub</h2>
-<p style="color:#5f6368;margin-bottom:20px;">Quick access to all Community Information</p>
+<!-- PAGE TAGLINE -->
+<div style="text-align:center;margin-bottom:22px;">
+  <span style="display:inline-block;background:#2c5aa0;color:white;font-size:1.15em;font-weight:600;padding:8px 28px;border-radius:6px;">ℹ️ Community Information</span>
+</div>
 
-<!-- QUICK NAVIGATION SECTION -->
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px;margin-bottom:35px;">
-<button onclick="showPage('about')" style="padding:20px;background:#e8f4f8;border:2px solid #2c5aa0;border-radius:8px;cursor:pointer;text-align:center;font-size:17px;font-weight:600;color:#1f3f73;transition:all 0.3s;">
-📖 About This Website<br>
-<span style="font-size:14px;font-weight:400;color:#666;display:block;margin-top:5px;">What is it for?</span>
-</button>
-
-<button onclick="showPage('useful-links')" style="padding:20px;background:#e8f4f8;border:2px solid #2c5aa0;border-radius:8px;cursor:pointer;text-align:center;font-size:17px;font-weight:600;color:#1f3f73;transition:all 0.3s;">
-🔗 Useful Links<br>
-<span style="font-size:14px;font-weight:400;color:#666;display:block;margin-top:5px;">Helpful websites</span>
-</button>
-
-<button onclick="showPage('noticeboard')" style="padding:20px;background:#e8f4f8;border:2px solid #2c5aa0;border-radius:8px;cursor:pointer;text-align:center;font-size:17px;font-weight:600;color:#1f3f73;transition:all 0.3s;">
-📌 Notice Board<br>
-<span style="font-size:14px;font-weight:400;color:#666;display:block;margin-top:5px;">Classifieds & notices</span>
-</button>
-
-<button onclick="showPage('committee')" style="display:none;padding:20px;background:#fff3cd;border:2px solid #856404;border-radius:8px;cursor:pointer;text-align:left;font-size:17px;font-weight:600;color:#1f3f73;transition:all 0.3s;">
-👥 Committees<br>
-<span style="font-size:14px;font-weight:400;color:#666;">📤 Document upload</span>
-</button>
+<!-- JUMP-LINK NAV BUTTONS -->
+<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:30px;">
+  <a href="#ci-legislation" onclick="return jumpTo('ci-legislation')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">📜 Legislation</a>
+  <a href="#ci-meetings" onclick="return jumpTo('ci-meetings')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">📝 Meetings</a>
+  <a href="#ci-finances" onclick="return jumpTo('ci-finances')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">💰 Finances</a>
+  <a href="#ci-aveo" onclick="return jumpTo('ci-aveo')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">🏢 Aveo Documents</a>
+  <a href="#ci-issues" onclick="return jumpTo('ci-issues')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">📊 Village Issues</a>
+  <a href="#ci-resources" onclick="return jumpTo('ci-resources')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">🏘️ Resources</a>
+  <a href="#ci-safety" onclick="return jumpTo('ci-safety')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">🔒 Safety</a>
+  <a href="#ci-local" onclick="return jumpTo('ci-local')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">📚 Local Services</a>
 </div>
 
 <h3 style="margin-bottom:15px;color:#2c5aa0;">📁 Village Documents</h3>
-<p style="color:#5f6368;margin-bottom:30px;">Click any section below to view documents</p>
+<p style="color:#5f6368;margin-bottom:20px;">Click any section below to expand it</p>
 
 <!-- 1. QLD Act Section -->
+<div id="ci-legislation"></div>
 <div class="collapsible-header" onclick="toggleSection('qld-act')">
 <span class="collapsible-title">📜 QLD Government - RV Act & Regulations</span>
 <span id="qld-act-arrow" class="collapsible-arrow">▼</span>
@@ -1399,6 +1392,7 @@ This page contains village documents and financial information for residents onl
 </div>
 
 <!-- 3. Meetings Section -->
+<div id="ci-meetings"></div>
 <div class="collapsible-header" onclick="toggleSection('meetings')"> <span class="collapsible-title">📝 AGM, Quarterly &amp; Monthly Meetings</span> <span id="meetings-arrow" class="collapsible-arrow">▼</span> </div>
 <div class="collapsible-content" id="meetings">
 
@@ -1640,6 +1634,7 @@ function parseCSVLine(line) {
 .browse-all { margin-top: 6px; font-size: 0.85em; }
 </style>
 
+<div id="ci-finances"></div>
 <!-- 4. Community Finances Section -->
 <div class="collapsible-header" onclick="toggleSection('financials')">
 <span class="collapsible-title">💰 Community Finances</span>
@@ -1700,6 +1695,7 @@ Select a month below to view the bank statement:
 </div>
 
 <!-- 5. Aveo Section -->
+<div id="ci-aveo"></div>
 <div class="collapsible-header" onclick="toggleSection('aveo')">
 <span class="collapsible-title">🏢 aveo Documents</span>
 <span id="aveo-arrow" class="collapsible-arrow">▼</span>
@@ -1728,6 +1724,7 @@ Select a month below to view the bank statement:
 </div>
 
 <!-- 6. Village Issues - Progress Section -->
+<div id="ci-issues"></div>
 <div class="collapsible-header" onclick="toggleSection('issues')">
 <span class="collapsible-title">📊 Village Issues - Progress</span>
 <span id="issues-arrow" class="collapsible-arrow">▼</span>
@@ -1757,6 +1754,7 @@ This tracker is updated regularly to show progress on community issues.
 <p style="color:#5f6368;margin-bottom:30px;">Click any section below to view links</p>
 
 <!-- Government Services Section -->
+<div id="ci-resources"></div>
 <div class="collapsible-header" onclick="toggleSection('gov-services')">
 <span class="collapsible-title">🏛️ Government Services</span>
 <span id="gov-services-arrow" class="collapsible-arrow">▼</span>
@@ -1781,6 +1779,7 @@ Advocacy, advice and support for retirement village residents in Queensland
 </div>
 
 <!-- Safety & Information Section -->
+<div id="ci-safety"></div>
 <div class="collapsible-header" onclick="toggleSection('safety')">
 <span class="collapsible-title">🔒 Safety Information</span>
 <span id="safety-arrow" class="collapsible-arrow">▼</span>
@@ -1792,6 +1791,7 @@ Advocacy, advice and support for retirement village residents in Queensland
 </div>
 
 <!-- Local Services Section -->
+<div id="ci-local"></div>
 <div class="collapsible-header" onclick="toggleSection('local-services')">
 <span class="collapsible-title">📚 Local Services</span>
 <span id="local-services-arrow" class="collapsible-arrow">▼</span>
@@ -1933,6 +1933,18 @@ Contact: Contact: rabd.ctee@gmail.com | Emergency: 000
 <script>
 
 // Navigation
+// ── Community Information jump-link navigation ──────────────
+function jumpTo(anchorId) {
+  // Make sure the village-info page is showing
+  showPage('village-info', document.querySelector('[onclick*="village-info"]'));
+  // Scroll to anchor after short delay to allow page to become visible
+  setTimeout(function() {
+    var el = document.getElementById(anchorId);
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }, 120);
+  return false;
+}
+
 function showPage(pageId, element) {
     var pages = document.querySelectorAll('.page-content');
     pages.forEach(function(page) {
