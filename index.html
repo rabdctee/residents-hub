@@ -1344,7 +1344,8 @@ This page contains village documents and financial information for residents onl
 
 <!-- JUMP-LINK NAV BUTTONS -->
 <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:30px;">
-  <a href="#ci-legislation" onclick="return jumpTo('ci-legislation')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">📜 Legislation</a>
+  <a href="https://rabdctee.github.io/residents-hub/" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">🏠 Home</a>
+<a href="#ci-legislation" onclick="return jumpTo('ci-legislation')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">📜 Legislation</a>
   <a href="#ci-meetings" onclick="return jumpTo('ci-meetings')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">📝 Meetings</a>
   <a href="#ci-finances" onclick="return jumpTo('ci-finances')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">💰 Finances</a>
   <a href="#ci-aveo" onclick="return jumpTo('ci-aveo')" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">🏢 Aveo Documents</a>
@@ -1930,13 +1931,16 @@ Contact: Contact: rabd.ctee@gmail.com | Emergency: 000
 // Navigation
 // ── Community Information jump-link navigation ──────────────
 function jumpTo(anchorId) {
-  // Make sure the village-info page is showing
-  showPage('village-info', document.querySelector('[onclick*="village-info"]'));
-  // Scroll to anchor after short delay to allow page to become visible
+  var page = document.getElementById('village-info');
+  if (page && !page.classList.contains('active')) {
+    var pages = document.querySelectorAll('.page-content');
+    pages.forEach(function(p) { p.classList.remove('active'); });
+    page.classList.add('active');
+  }
   setTimeout(function() {
     var el = document.getElementById(anchorId);
     if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  }, 120);
+  }, 150);
   return false;
 }
 
