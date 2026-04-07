@@ -516,18 +516,26 @@
     }
   }
 
-  function jumpToSection(sectionId, anchorId) {
-    // Open the section if not already open
+function jumpToSection(sectionId, anchorId) {
+    // Close ALL sections first
+    var allSections = ['qld-act','constitution','meetings','financials',
+                       'aveo','issues','gov-services','rv-resources',
+                       'safety','local-services'];
+    allSections.forEach(function(id) {
+      var el  = document.getElementById(id);
+      var arr = document.getElementById(id + '-arrow');
+      if (el)  el.classList.remove('open');
+      if (arr) arr.classList.remove('open');
+    });
+    // Open only the chosen section
     var content = document.getElementById(sectionId);
     var arrow   = document.getElementById(sectionId + '-arrow');
-    if (content && !content.classList.contains('open')) {
-      content.classList.add('open');
-      if (arrow) arrow.classList.add('open');
-    }
-    // Scroll to the anchor
+    if (content) content.classList.add('open');
+    if (arrow)   arrow.classList.add('open');
+    // Scroll to it
     setTimeout(function() {
       var anchor = document.getElementById(anchorId);
-      if (anchor) { anchor.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
   }
 
