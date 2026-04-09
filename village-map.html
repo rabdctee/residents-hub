@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Village Map | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+
+    /* ===== Base ===== */
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:18px;
+      line-height:1.7;
+      color:#1a1a1a;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      background:#ffffff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.12);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background:#1F4E79;
+      color:white;
+      padding:36px 20px 30px;
+      text-align:center;
+    }
+    header h1{ font-size:2em; font-weight:700; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.15em;
+      font-weight:700;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(255,255,255,0.18);
+      border-radius:6px;
+      padding:6px 22px;
+      color:#fff;
+    }
+
+    /* ===== Navigation ===== */
+    nav{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      background:#E7F1FB;
+      padding:14px 10px;
+      gap:8px;
+      border-bottom:2px solid #c5d8ee;
+    }
+
+    .nav-item{
+      color:#1F4E79;
+      background:#ffffff;
+      padding:12px 16px;
+      text-decoration:none;
+      cursor:pointer;
+      font-weight:700;
+      border-radius:8px;
+      border:2px solid #c5d8ee;
+      transition:all 0.2s;
+      font-size:15px;
+      min-height:44px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+    .nav-item:hover{ background:#E7F1FB; border-color:#1F4E79; color:#1F4E79; }
+    .nav-item.active{ background:#1F4E79; color:white; border-color:#1F4E79; }
+
+    /* ===== Page content ===== */
+    .page-content{ padding:30px 25px 50px; }
+
+    /* ===== Info box ===== */
+    .info-box{
+      background:#E7F1FB;
+      border-left:4px solid #1F4E79;
+      padding:14px 18px;
+      margin:0 0 24px;
+      border-radius:0 4px 4px 0;
+      font-size:0.92em;
+    }
+
+    /* ===== Map container ===== */
+    .map-wrapper{
+      background:#f8fbff;
+      border:2px solid #c5d8ee;
+      border-radius:10px;
+      overflow:hidden;
+      margin-bottom:24px;
+    }
+
+    .map-wrapper img{
+      width:100%;
+      height:auto;
+      display:block;
+      cursor:zoom-in;
+      transition:transform 0.2s;
+    }
+
+    .map-wrapper img.zoomed{
+      cursor:zoom-out;
+      transform:scale(1.8);
+      transform-origin:var(--zoom-x, 50%) var(--zoom-y, 50%);
+    }
+
+    /* ===== Zoom hint ===== */
+    .zoom-hint{
+      display:block;
+      text-align:center;
+      background:#E7F1FB;
+      color:#1F4E79;
+      font-size:0.82em;
+      font-weight:600;
+      padding:8px 14px;
+      border-top:1px solid #c5d8ee;
+      transition:opacity 0.3s;
+    }
+    .map-wrapper img.zoomed ~ .zoom-hint{
+      opacity:0.4;
+    }
+
+    /* ===== Download button ===== */
+    .map-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:28px;
+    }
+
+    .btn-primary{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#1F4E79;
+      color:white;
+      padding:11px 20px;
+      border-radius:7px;
+      text-decoration:none;
+      font-weight:700;
+      font-size:0.92em;
+      border:none;
+      cursor:pointer;
+      transition:background 0.2s;
+    }
+    .btn-primary:hover{ background:#163d60; }
+
+    .btn-secondary{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:white;
+      color:#1F4E79;
+      padding:11px 20px;
+      border-radius:7px;
+      text-decoration:none;
+      font-weight:700;
+      font-size:0.92em;
+      border:2px solid #c5d8ee;
+      cursor:pointer;
+      transition:all 0.2s;
+    }
+    .btn-secondary:hover{ background:#E7F1FB; border-color:#1F4E79; }
+
+    /* ===== Legend ===== */
+    .legend{
+      background:#f8fbff;
+      border:1px solid #c5d8ee;
+      border-radius:8px;
+      padding:20px 22px;
+      margin-bottom:28px;
+    }
+
+    .legend h3{
+      font-size:1em;
+      font-weight:700;
+      color:#1F4E79;
+      margin-bottom:14px;
+      padding-bottom:8px;
+      border-bottom:1px solid #E7F1FB;
+    }
+
+    .legend-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+      gap:10px;
+    }
+
+    .legend-item{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:0.88em;
+      font-weight:600;
+      color:#333;
+    }
+
+    .legend-swatch{
+      width:24px;
+      height:24px;
+      border-radius:4px;
+      flex-shrink:0;
+      border:1px solid rgba(0,0,0,0.1);
+    }
+
+    .swatch-villa    { background:#6d6d6d; }
+    .swatch-apartment{ background:#7ba7d4; }
+    .swatch-facility { background:#2d7a3e; }
+    .swatch-sales    { background:#c9a44a; }
+    .swatch-parking  { background:#1F4E79; }
+
+    /* ===== Responsive ===== */
+    @media(max-width:768px){
+      .nav-item{ font-size:13px; padding:10px 12px; }
+      header h1{ font-size:1.6em; }
+      .page-content{ padding:22px 16px 40px; }
+      .map-wrapper img.zoomed{ transform:scale(2.5); }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>🗺️ Village Map</span></p>
+  </header>
+
+  <!-- ===== NAV ===== -->
+  <nav>
+    <a class="nav-item" href="index.html">🏠 Home</a>
+    <a class="nav-item active" href="village-map.html">🗺️ Village Map</a>
+    <a class="nav-item" href="useful-links.html">🔗 Useful Links</a>
+    <a class="nav-item" href="how-to.html">💡 Help &amp; How To</a>
+  </nav>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <div class="info-box">
+      A map of Bridgeman Downs Retirement Village showing unit locations, apartment buildings,
+      community facilities and parking areas.
+      <strong>Tap or click the map to zoom in</strong> for a closer look, then tap again to zoom out.
+    </div>
+
+    <!-- MAP -->
+    <div class="map-wrapper">
+      <img
+        src="Village_Map_-_Bridgeman_Downs__-_CURRENT.png"
+        alt="Bridgeman Downs Retirement Village map showing villas, apartments, facilities and parking"
+        id="villageMap"
+        onclick="toggleZoom(event, this)"
+      >
+      <div class="zoom-hint">🔍 Tap to zoom in</div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="map-actions">
+      <a href="Village_Map_-_Bridgeman_Downs__-_CURRENT.png"
+         download="Bridgeman_Downs_Village_Map.png"
+         class="btn-primary">
+        ⬇️ Download Map
+      </a>
+      <a href="Village_Map_-_Bridgeman_Downs__-_CURRENT.png"
+         target="_blank"
+         class="btn-secondary">
+        🔗 Open Full Size
+      </a>
+    </div>
+
+    <!-- LEGEND -->
+    <div class="legend">
+      <h3>📋 Map Legend</h3>
+      <div class="legend-grid">
+        <div class="legend-item">
+          <div class="legend-swatch swatch-villa"></div>
+          Villas
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch swatch-apartment"></div>
+          Apartments &amp; Community Buildings
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch swatch-facility"></div>
+          Facilities &amp; Reception
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch swatch-sales"></div>
+          Sales Office &amp; Visitor Car Park
+        </div>
+        <div class="legend-item">
+          <div class="legend-swatch swatch-parking"></div>
+          Parking (P)
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      💡 <strong>Tip:</strong> The main entrance to the village is on <strong>Ridley Road</strong>,
+      on the eastern side of the map. Visitor parking is located near the Sales Office
+      (shown in gold).
+    </div>
+
+  </div><!-- end page-content -->
+</div><!-- end container -->
+
+<script>
+  function toggleZoom(event, img) {
+    if (img.classList.contains('zoomed')) {
+      img.classList.remove('zoomed');
+    } else {
+      var rect  = img.getBoundingClientRect();
+      var xPct  = ((event.clientX - rect.left) / rect.width  * 100).toFixed(1) + '%';
+      var yPct  = ((event.clientY - rect.top)  / rect.height * 100).toFixed(1) + '%';
+      img.style.setProperty('--zoom-x', xPct);
+      img.style.setProperty('--zoom-y', yPct);
+      img.classList.add('zoomed');
+    }
+  }
+</script>
+
+</body>
+</html>
