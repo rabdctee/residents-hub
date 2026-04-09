@@ -201,6 +201,7 @@
   <nav>
     <a class="nav-item" href="index.html">🏠 Home</a>
     <a class="nav-item" onclick="jumpToSection('gov-services','sec-govt')">🏛️ Government Services</a>
+    <a class="nav-item" onclick="jumpToSection('using-govt','sec-using-govt')">🖥️ Using Gov Services</a>
     <a class="nav-item" onclick="jumpToSection('rv-resources','sec-rv')">🏘️ Retirement Village Info</a>
     <a class="nav-item" onclick="jumpToSection('safety','sec-safety')">🛡️ Safety</a>
     <a class="nav-item" onclick="jumpToSection('local-services','sec-local')">📚 Local Services</a>
@@ -232,12 +233,110 @@
       <a href="https://my.gov.au" target="_blank" class="doc-link">🔗 MyGov — Access government services online</a>
       <a href="https://www.myagedcare.gov.au" target="_blank" class="doc-link">🔗 My Aged Care — Aged care services and support</a>
       <a href="https://www.qld.gov.au" target="_blank" class="doc-link">🔗 QLD Government — State government services</a>
-      <a href="https://www.dss.gov.au/older-australians" target="_blank" class="doc-link">🔗 Department of Social Services — Older Australians</a>
-      <p style="margin-top:12px;font-size:0.88em;color:#444;">
-        💡 For a step-by-step guide to using myGov, Medicare and Centrelink online, see the
-        <a href="how-to.html#group-staying-safe" style="color:#1F4E79;font-weight:700;">Government Services Online</a>
-        section in our Help &amp; How To page.
+     <a href="https://www.dss.gov.au/older-australians" target="_blank" class="doc-link">🔗 Department of Social Services — Older Australians</a>
+    </div>
+
+
+    <!-- ══════════════════
+         USING GOVERNMENT SERVICES ONLINE
+    ══════════════════════ -->
+    <div id="sec-using-govt"></div>
+    <div class="collapsible-header" onclick="toggleSection('using-govt')">
+      <span class="collapsible-title">🖥️ Using Government Services Online</span>
+      <span id="using-govt-arrow" class="collapsible-arrow">▼</span>
+    </div>
+    <div id="using-govt" class="collapsible-content">
+      <p style="color:#444;font-size:0.88em;margin-bottom:16px;">
+        Step-by-step guides to accessing myGov, Medicare and Centrelink from your phone, tablet or computer.
       </p>
+
+      <details style="margin-bottom:10px;">
+        <summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+          What is myGov and what can I use it for? <span>▼</span>
+        </summary>
+        <div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+          <p><strong>myGov</strong> (my.gov.au) is a secure Australian Government website that gives you access to a range of government services in one place — using a single username and password.</p>
+          <p style="margin-top:10px;">Once you have a myGov account, you can link it to:</p>
+          <ul style="margin:8px 0 8px 20px;">
+            <li><strong>Medicare</strong> — view your card, check claims, update bank details for rebates</li>
+            <li><strong>Centrelink</strong> — manage Age Pension payments, update your details</li>
+            <li><strong>ATO</strong> — lodge your tax return, view assessments</li>
+            <li><strong>My Health Record</strong> — view your medical history and prescriptions</li>
+            <li><strong>Aged Care</strong> — access My Aged Care information</li>
+          </ul>
+          <p style="margin-top:10px;font-size:0.88em;color:#555;">💡 You only need one myGov account to access all of these services.</p>
+        </div>
+      </details>
+
+      <details style="margin-bottom:10px;">
+        <summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+          How do I create a myGov account? <span>▼</span>
+        </summary>
+        <div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+          <p>Creating a myGov account is free and takes around 10 minutes. You will need your email address and mobile phone.</p>
+          <ol style="margin:10px 0 10px 20px;">
+            <li>Go to <strong>my.gov.au</strong> — type this directly into your browser.</li>
+            <li>Click <strong>"Create a myGov account"</strong>.</li>
+            <li>Enter your email address and create a password.</li>
+            <li>Enter the confirmation code sent to your email.</li>
+            <li>Set a secret question for account recovery.</li>
+            <li>Once created, link your services from the myGov home page.</li>
+          </ol>
+          <p style="font-size:0.88em;color:#555;">💡 The myGov help line is <strong>132 307</strong> (Option 1) — Monday to Friday.</p>
+        </div>
+      </details>
+
+      <details style="margin-bottom:10px;">
+        <summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+          What can I do with Medicare online? <span>▼</span>
+        </summary>
+        <div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+          <p>Once Medicare is linked to myGov, you can manage most Medicare needs without visiting a service centre:</p>
+          <ul style="margin:8px 0 8px 20px;">
+            <li>View and download your <strong>Medicare card</strong></li>
+            <li><strong>Update your bank account details</strong> for rebates</li>
+            <li>View your <strong>claim history</strong> and PBS medication history</li>
+            <li>Access your <strong>My Health Record</strong></li>
+            <li>Manage <strong>organ and tissue donation</strong> registration</li>
+          </ul>
+          <p style="font-size:0.88em;color:#555;">💡 If your doctor bulk bills, your rebate is processed automatically. If you pay upfront, submit a claim through myGov — rebates usually arrive within 2–3 business days.</p>
+        </div>
+      </details>
+
+      <details style="margin-bottom:10px;">
+        <summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+          What can I do with Centrelink online? <span>▼</span>
+        </summary>
+        <div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+          <p>Linking Centrelink to myGov gives you access to <strong>my Centrelink</strong>, where you can:</p>
+          <ul style="margin:8px 0 8px 20px;">
+            <li>View your <strong>payment details and history</strong></li>
+            <li><strong>Update your bank account details</strong> for payments</li>
+            <li>View and manage your <strong>Concession Card</strong></li>
+            <li>Upload documents Centrelink has requested</li>
+            <li>Send and receive <strong>messages</strong> — avoiding phone wait times</li>
+            <li>Update your <strong>address and contact details</strong></li>
+          </ul>
+          <p style="font-size:0.88em;color:#555;">💡 Managing routine tasks online is much quicker than calling and is available 24 hours a day.</p>
+        </div>
+      </details>
+
+      <details style="margin-bottom:10px;">
+        <summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+          How do I stay safe when using myGov? <span>▼</span>
+        </summary>
+        <div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+          <ul style="margin:8px 0 8px 20px;">
+            <li><strong>Always type my.gov.au directly</strong> into your browser — never click a link in an email or text</li>
+            <li><strong>myGov will never ask for your password</strong> by email, text or phone — if someone does, it is a scam</li>
+            <li><strong>Check the web address</strong> shows <strong>my.gov.au</strong> with the padlock icon before logging in</li>
+            <li><strong>Enable two-factor authentication</strong> for extra security</li>
+            <li>Report suspicious messages to Scamwatch at <strong>scamwatch.gov.au</strong></li>
+          </ul>
+          <p style="font-size:0.88em;color:#555;">💡 myGov sends notifications to your <strong>myGov Inbox</strong> — not to your personal email. Always log in directly to check for messages.</p>
+        </div>
+      </details>
+
     </div>
 
 
@@ -316,7 +415,7 @@
   }
 
   function jumpToSection(sectionId, anchorId) {
-    var allSections = ['gov-services','rv-resources','safety','local-services'];
+    var allSections = ['gov-services','using-govt','rv-resources','safety','local-services'];
     allSections.forEach(function(id) {
       var el  = document.getElementById(id);
       var arr = document.getElementById(id + '-arrow');
