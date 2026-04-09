@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life in Our Community | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+
+    /* ===== Base ===== */
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:18px;
+      line-height:1.7;
+      color:#1a1a1a;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      background:#ffffff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.12);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background:#1F4E79;
+      color:white;
+      padding:36px 20px 30px;
+      text-align:center;
+    }
+    header h1{ font-size:2em; font-weight:700; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.15em;
+      font-weight:700;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(255,255,255,0.18);
+      border-radius:6px;
+      padding:6px 22px;
+      color:#fff;
+    }
+
+    /* ===== Navigation ===== */
+    nav{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      background:#E7F1FB;
+      padding:14px 10px;
+      gap:8px;
+      border-bottom:2px solid #c5d8ee;
+    }
+
+    .nav-item{
+      color:#1F4E79;
+      background:#ffffff;
+      padding:12px 16px;
+      text-decoration:none;
+      cursor:pointer;
+      font-weight:700;
+      border-radius:8px;
+      border:2px solid #c5d8ee;
+      transition:all 0.2s;
+      font-size:15px;
+      min-height:44px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+    .nav-item:hover{ background:#E7F1FB; border-color:#1F4E79; color:#1F4E79; }
+    .nav-item.active{ background:#1F4E79; color:white; border-color:#1F4E79; }
+
+    /* ===== Page content ===== */
+    .page-content{ padding:30px 25px 50px; }
+
+    /* ===== Info box ===== */
+    .info-box{
+      background:#E7F1FB;
+      border-left:4px solid #1F4E79;
+      padding:14px 18px;
+      margin:0 0 28px;
+      border-radius:0 4px 4px 0;
+      font-size:0.92em;
+    }
+
+    /* ===== Section dividers ===== */
+    .section-divider{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:40px 0 20px;
+    }
+    .section-divider-line{
+      flex:1;
+      height:2px;
+      background:#E7F1FB;
+    }
+    .section-divider-text{
+      font-size:1.1em;
+      font-weight:700;
+      color:#1F4E79;
+      white-space:nowrap;
+    }
+
+    /* ===== Contribute button ===== */
+    .contribute-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#1F4E79;
+      color:white;
+      padding:10px 20px;
+      border-radius:7px;
+      text-decoration:none;
+      font-weight:700;
+      font-size:0.88em;
+      border:none;
+      cursor:pointer;
+      transition:background 0.2s;
+      margin-bottom:20px;
+    }
+    .contribute-btn:hover{ background:#163d60; }
+
+    /* ===== Photo grid ===== */
+    .photo-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .photo-card{
+      border:1px solid #c5d8ee;
+      border-radius:8px;
+      overflow:hidden;
+      background:#f8fbff;
+      transition:box-shadow 0.2s;
+    }
+    .photo-card:hover{ box-shadow:0 3px 12px rgba(31,78,121,0.12); }
+
+    .photo-card img{
+      width:100%;
+      height:200px;
+      object-fit:cover;
+      display:block;
+    }
+
+    .photo-card-caption{
+      padding:10px 14px;
+      font-size:0.85em;
+      color:#444;
+      font-style:italic;
+    }
+
+    .photo-card-author{
+      font-size:0.8em;
+      font-weight:700;
+      color:#1F4E79;
+      font-style:normal;
+      display:block;
+      margin-top:4px;
+    }
+
+    /* ===== Placeholder card ===== */
+    .placeholder-card{
+      border:2px dashed #c5d8ee;
+      border-radius:8px;
+      padding:32px 20px;
+      text-align:center;
+      color:#888;
+      font-size:0.88em;
+      background:#fafcff;
+      margin-bottom:20px;
+    }
+    .placeholder-card .placeholder-icon{
+      font-size:2.5em;
+      display:block;
+      margin-bottom:10px;
+      opacity:0.5;
+    }
+    .placeholder-card strong{
+      display:block;
+      color:#1F4E79;
+      font-size:1em;
+      margin-bottom:6px;
+    }
+
+    /* ===== Poem / writing cards ===== */
+    .writing-card{
+      background:#fafcff;
+      border:1px solid #c5d8ee;
+      border-left:4px solid #1F4E79;
+      border-radius:0 8px 8px 0;
+      padding:20px 24px;
+      margin-bottom:16px;
+    }
+    .writing-card h4{
+      font-size:1em;
+      font-weight:700;
+      color:#1F4E79;
+      margin-bottom:6px;
+    }
+    .writing-card .writing-body{
+      font-family:Georgia,'Times New Roman',serif;
+      font-size:0.95em;
+      line-height:1.9;
+      color:#333;
+      white-space:pre-line;
+    }
+    .writing-card .writing-author{
+      font-size:0.82em;
+      font-weight:700;
+      color:#888;
+      margin-top:12px;
+      text-align:right;
+    }
+
+    /* ===== Trivia ===== */
+    .trivia-card{
+      background:#1F4E79;
+      border-radius:10px;
+      padding:26px 28px;
+      margin-bottom:20px;
+      color:white;
+    }
+    .trivia-card h3{
+      font-size:1em;
+      font-weight:700;
+      opacity:0.75;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      margin-bottom:12px;
+    }
+    .trivia-question{
+      font-size:1.1em;
+      font-weight:700;
+      margin-bottom:20px;
+      line-height:1.5;
+    }
+    .trivia-options{
+      list-style:none;
+      margin-bottom:18px;
+    }
+    .trivia-options li{
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.2);
+      border-radius:6px;
+      padding:10px 16px;
+      margin-bottom:8px;
+      cursor:pointer;
+      transition:background 0.2s;
+      font-size:0.92em;
+    }
+    .trivia-options li:hover{ background:rgba(255,255,255,0.2); }
+    .trivia-options li.correct{ background:rgba(74,143,92,0.5); border-color:#4A8F5C; }
+    .trivia-options li.incorrect{ background:rgba(185,74,72,0.4); border-color:#B94A48; }
+    .trivia-result{
+      display:none;
+      font-size:0.92em;
+      padding:12px 16px;
+      border-radius:6px;
+      margin-top:8px;
+      font-weight:600;
+    }
+    .trivia-result.correct-msg{ background:rgba(74,143,92,0.3); }
+    .trivia-result.incorrect-msg{ background:rgba(185,74,72,0.25); }
+    .trivia-archive-link{
+      font-size:0.82em;
+      opacity:0.75;
+      text-decoration:underline;
+      cursor:pointer;
+      color:white;
+    }
+
+    /* ===== Recipe cards ===== */
+    .recipe-card{
+      border:1px solid #c5d8ee;
+      border-radius:8px;
+      overflow:hidden;
+      margin-bottom:16px;
+      background:#f8fbff;
+    }
+    .recipe-card-header{
+      background:#E7F1FB;
+      padding:14px 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      cursor:pointer;
+      border-bottom:1px solid #c5d8ee;
+    }
+    .recipe-card-header:hover{ background:#cfe0f5; }
+    .recipe-title{
+      font-weight:700;
+      color:#1F4E79;
+      font-size:1em;
+    }
+    .recipe-meta{
+      font-size:0.78em;
+      color:#666;
+      margin-top:2px;
+    }
+    .recipe-arrow{
+      color:#1F4E79;
+      font-weight:700;
+      transition:transform 0.3s;
+    }
+    .recipe-arrow.open{ transform:rotate(180deg); }
+    .recipe-body{
+      display:none;
+      padding:18px 20px;
+    }
+    .recipe-body.open{ display:block; }
+    .recipe-body h4{
+      font-size:0.88em;
+      font-weight:700;
+      color:#1F4E79;
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+      margin:14px 0 8px;
+    }
+    .recipe-body h4:first-child{ margin-top:0; }
+    .recipe-body ul, .recipe-body ol{
+      margin-left:20px;
+      font-size:0.92em;
+      color:#333;
+    }
+    .recipe-body li{ margin-bottom:5px; }
+    .recipe-contributor{
+      font-size:0.82em;
+      font-weight:700;
+      color:#888;
+      margin-top:14px;
+      padding-top:10px;
+      border-top:1px solid #E7F1FB;
+    }
+
+    /* ===== Responsive ===== */
+    @media(max-width:768px){
+      .nav-item{ font-size:13px; padding:10px 12px; }
+      header h1{ font-size:1.6em; }
+      .page-content{ padding:22px 16px 40px; }
+      .photo-grid{ grid-template-columns:1fr; }
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>🌻 Life in Our Community</span></p>
+  </header>
+
+  <!-- ===== NAV ===== -->
+  <nav>
+    <a class="nav-item" href="index.html">🏠 Home</a>
+    <a class="nav-item" href="#arts">🎨 Arts &amp; Crafts</a>
+    <a class="nav-item" href="#poetry">✍️ Poetry &amp; Writing</a>
+    <a class="nav-item" href="#music">🎵 Music &amp; Dance</a>
+    <a class="nav-item" href="#trivia">🧠 Trivia</a>
+    <a class="nav-item" href="#recipes">🍽️ Recipes</a>
+    <a class="nav-item" href="#village-life">📸 Village Life</a>
+  </nav>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <div class="info-box">
+      <strong>Welcome to Life in Our Community</strong> — a celebration of the talent, creativity and spirit
+      of the people who make Bridgeman Downs such a special place to live.<br><br>
+      Everything here has been contributed by residents. If you would like to share your artwork,
+      a poem, a joke, a favourite recipe or a photo, we would love to hear from you.
+      Look for the <strong>"Share yours →"</strong> buttons in each section.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         ARTS & CRAFTS
+    ══════════════════════════════════════════ -->
+    <div class="section-divider" id="arts">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">🎨 Arts &amp; Crafts</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+      Paintings, drawings, textile work, pottery, woodwork and more — created by the talented
+      residents of Bridgeman Downs.
+    </p>
+
+    <a class="contribute-btn"
+       href="mailto:rabd.chair@gmail.com?subject=Life in Our Community — Arts %26 Crafts&body=Hi,%0A%0AI would like to share a photo of my artwork.%0A%0ATitle of the work:%0AYour name (or 'Anonymous'):%0AUnit number (optional):%0A%0APlease attach your photo to this email.%0A%0AThank you!">
+      📷 Share your artwork →
+    </a>
+
+    <!-- Add photo cards here as contributions arrive. Example format:
+    <div class="photo-grid">
+      <div class="photo-card">
+        <img src="images/arts/resident-artwork-1.jpg" alt="Watercolour painting of Moreton Bay fig">
+        <div class="photo-card-caption">
+          "Moreton Bay Fig" — watercolour on paper
+          <span class="photo-card-author">Margaret S., Unit 14</span>
+        </div>
+      </div>
+    </div>
+    -->
+
+    <div class="placeholder-card">
+      <span class="placeholder-icon">🎨</span>
+      <strong>Artwork coming soon</strong>
+      Be the first to share your artwork! Email a photo to
+      <strong>rabd.chair@gmail.com</strong> with "Arts &amp; Crafts" in the subject line.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         POETRY & WRITING
+    ══════════════════════════════════════════ -->
+    <div class="section-divider" id="poetry">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">✍️ Poetry &amp; Writing</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+      Poems, short stories, reflections and other written pieces from our residents.
+      All styles and lengths welcome — from a haiku to a short story.
+    </p>
+
+    <a class="contribute-btn"
+       href="mailto:rabd.chair@gmail.com?subject=Life in Our Community — Poetry %26 Writing&body=Hi,%0A%0AI would like to share a piece of writing.%0A%0ATitle:%0AYour name (or 'Anonymous'):%0AUnit number (optional):%0A%0APaste your poem or piece of writing below:%0A%0A%0AThank you!">
+      ✍️ Share your writing →
+    </a>
+
+    <!-- Add writing cards here as contributions arrive. Example format:
+    <div class="writing-card">
+      <h4>The Old Poinciana</h4>
+      <div class="writing-body">Under the old poinciana tree
+We gathered every afternoon,
+Its branches wide as memory,
+Its shade a borrowed room.</div>
+      <div class="writing-author">— Margaret S., Unit 14</div>
+    </div>
+    -->
+
+    <div class="placeholder-card">
+      <span class="placeholder-icon">✍️</span>
+      <strong>Poems and writing coming soon</strong>
+      Share a poem, a short story or a personal reflection — any style, any length.
+      Email it to <strong>rabd.chair@gmail.com</strong> with "Poetry &amp; Writing" in the subject line.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         MUSIC & DANCE
+    ══════════════════════════════════════════ -->
+    <div class="section-divider" id="music">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">🎵 Music &amp; Dance</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+      Line dancing, choir, musical performances and other events that bring our community together
+      through music and movement.
+    </p>
+
+    <a class="contribute-btn"
+       href="mailto:rabd.chair@gmail.com?subject=Life in Our Community — Music %26 Dance&body=Hi,%0A%0AI would like to share a photo or note about a performance or music event.%0A%0AEvent or activity name:%0ADate (if known):%0AYour name (or 'Anonymous'):%0A%0APlease attach any photos to this email.%0A%0AThank you!">
+      📷 Share a photo or moment →
+    </a>
+
+    <div class="placeholder-card">
+      <span class="placeholder-icon">🎵</span>
+      <strong>Photos and updates coming soon</strong>
+      Got a photo from Line Dancing, choir or a recent performance?
+      Email it to <strong>rabd.chair@gmail.com</strong> with "Music &amp; Dance" in the subject line.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         TRIVIA & QUIZZES
+    ══════════════════════════════════════════ -->
+    <div class="section-divider" id="trivia">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">🧠 Trivia &amp; Quizzes</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <p style="color:#444;font-size:0.92em;margin-bottom:18px;">
+      A new question each week — just for fun. Can you get it right without peeking?
+    </p>
+
+    <!-- ══════════════════════════════════════════
+         TRIVIA CONFIGURATION — UPDATE WEEKLY
+         To change the question, edit the lines below:
+         - QUESTION: the question text
+         - OPTIONS: four answer choices (A, B, C, D)
+         - CORRECT: the index of the correct answer (0=A, 1=B, 2=C, 3=D)
+         - EXPLANATION: shown after answering
+         - WEEK: the week label shown on the card
+    ══════════════════════════════════════════ -->
+    <div class="trivia-card" id="triviaCard">
+      <h3>🧠 Question of the Week</h3>
+      <div class="trivia-question" id="triviaQuestion"></div>
+      <ul class="trivia-options" id="triviaOptions"></ul>
+      <div class="trivia-result" id="triviaResult"></div>
+      <div style="margin-top:14px;font-size:0.8em;opacity:0.65;" id="triviaWeek"></div>
+    </div>
+
+    <a class="contribute-btn"
+       href="mailto:rabd.chair@gmail.com?subject=Life in Our Community — Trivia Question Suggestion&body=Hi,%0A%0AI have a trivia question suggestion!%0A%0AQuestion:%0AOption A:%0AOption B:%0AOption C:%0AOption D:%0ACorrect answer:%0AInteresting fact about the answer (optional):%0A%0AThank you!">
+      💡 Suggest a trivia question →
+    </a>
+
+
+    <!-- ══════════════════════════════════════════
+         RECIPES
+    ══════════════════════════════════════════ -->
+    <div class="section-divider" id="recipes">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">🍽️ Recipes</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+      Favourite recipes from Bridgeman Downs residents — tried, tested and delicious.
+      Each recipe can also be included in a personal keepsake journal on request.
+    </p>
+
+    <a class="contribute-btn"
+       href="mailto:rabd.chair@gmail.com?subject=Life in Our Community — Recipe&body=Hi,%0A%0AI would like to share a favourite recipe!%0A%0ARecipe name:%0AServes:%0AYour name (or 'Anonymous'):%0AUnit number (optional):%0A%0AINGREDIENTS:%0A(list each ingredient on a new line)%0A%0AMETHOD:%0A(list each step on a new line)%0A%0AAny tips or notes:%0A%0AThank you!">
+      🍽️ Share your recipe →
+    </a>
+
+    <!-- Add recipe cards here as contributions arrive. Example format:
+    <div class="recipe-card">
+      <div class="recipe-card-header" onclick="toggleRecipe(this)">
+        <div>
+          <div class="recipe-title">Nan's Anzac Biscuits</div>
+          <div class="recipe-meta">Makes 24 · contributed by Dorothy B., Unit 7</div>
+        </div>
+        <span class="recipe-arrow">▼</span>
+      </div>
+      <div class="recipe-body">
+        <h4>Ingredients</h4>
+        <ul>
+          <li>1 cup rolled oats</li>
+          <li>1 cup plain flour</li>
+          <li>1 cup desiccated coconut</li>
+          <li>¾ cup brown sugar</li>
+          <li>125g butter</li>
+          <li>2 tbsp golden syrup</li>
+          <li>1½ tsp bicarbonate of soda</li>
+          <li>2 tbsp boiling water</li>
+        </ul>
+        <h4>Method</h4>
+        <ol>
+          <li>Preheat oven to 160°C. Line two baking trays.</li>
+          <li>Combine oats, flour, coconut and sugar in a bowl.</li>
+          <li>Melt butter and golden syrup together in a saucepan.</li>
+          <li>Mix bicarb with boiling water and add to butter mixture.</li>
+          <li>Stir wet ingredients into dry. Roll into balls and flatten.</li>
+          <li>Bake 12–15 minutes until golden. Cool on trays.</li>
+        </ol>
+        <h4>Tips</h4>
+        <p style="font-size:0.92em;color:#444;">Don't overbake — they firm up as they cool!</p>
+        <div class="recipe-contributor">Recipe shared by Dorothy B., Unit 7</div>
+      </div>
+    </div>
+    -->
+
+    <div class="placeholder-card">
+      <span class="placeholder-icon">🍽️</span>
+      <strong>Recipes coming soon</strong>
+      Share a favourite recipe — a family classic, a crowd-pleaser, or something you make every week.
+      Email it to <strong>rabd.chair@gmail.com</strong> with "Recipe" in the subject line.
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         VILLAGE LIFE
+    ══════════════════════════════════════════ -->
+    <div class="section-divider" id="village-life">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">📸 Village Life</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+      Photos from events, outings, celebrations and everyday moments that capture life at
+      Bridgeman Downs. All photos are shared with the permission of those pictured.
+    </p>
+
+    <a class="contribute-btn"
+       href="mailto:rabd.chair@gmail.com?subject=Life in Our Community — Village Life Photo&body=Hi,%0A%0AI would like to share a photo of village life.%0A%0ADescription of the photo:%0ADate taken (if known):%0ANames of people pictured (if happy to be named):%0AYour name:%0A%0APlease attach your photo to this email.%0A%0AThank you!">
+      📷 Share a photo →
+    </a>
+
+    <!-- Add photo cards here as contributions arrive. Example format:
+    <div class="photo-grid">
+      <div class="photo-card">
+        <img src="images/village-life/event-photo-1.jpg" alt="Residents enjoying the Christmas party">
+        <div class="photo-card-caption">
+          Christmas Party 2025 — Melody Ridge Centre
+          <span class="photo-card-author">Photo by the Social Club Committee</span>
+        </div>
+      </div>
+    </div>
+    -->
+
+    <div class="placeholder-card">
+      <span class="placeholder-icon">📸</span>
+      <strong>Photos coming soon</strong>
+      Got a great photo from a recent event or outing? We would love to share it here.
+      Email it to <strong>rabd.chair@gmail.com</strong> with "Village Life" in the subject line.
+    </div>
+
+  </div><!-- end page-content -->
+</div><!-- end container -->
+
+<script>
+
+  /* ══════════════════════════════════════════
+     TRIVIA — UPDATE THIS SECTION EACH WEEK
+  ══════════════════════════════════════════ */
+  var TRIVIA = {
+    week:        'Week of 10 April 2026',
+    question:    'Australia\'s oldest city, Sydney, was founded in what year?',
+    options:     ['1770', '1788', '1793', '1801'],
+    correct:     1,   // index — 0=first option, 1=second, 2=third, 3=fourth
+    explanation: 'Correct! Sydney was founded on 26 January 1788 when the First Fleet arrived at Sydney Cove under the command of Governor Arthur Phillip.'
+  };
+
+  /* ══════════════════════════════════════════
+     BUILD THE TRIVIA CARD
+  ══════════════════════════════════════════ */
+  (function() {
+    document.getElementById('triviaQuestion').textContent = TRIVIA.question;
+    document.getElementById('triviaWeek').textContent     = TRIVIA.week;
+
+    var ul = document.getElementById('triviaOptions');
+    var labels = ['A', 'B', 'C', 'D'];
+    var answered = false;
+
+    TRIVIA.options.forEach(function(opt, i) {
+      var li = document.createElement('li');
+      li.textContent = labels[i] + '.  ' + opt;
+      li.addEventListener('click', function() {
+        if (answered) return;
+        answered = true;
+
+        var items = ul.querySelectorAll('li');
+        var result = document.getElementById('triviaResult');
+
+        if (i === TRIVIA.correct) {
+          li.classList.add('correct');
+          result.textContent = '✅ ' + TRIVIA.explanation;
+          result.className = 'trivia-result correct-msg';
+        } else {
+          li.classList.add('incorrect');
+          items[TRIVIA.correct].classList.add('correct');
+          result.textContent = '❌ Not quite — the correct answer is ' +
+            labels[TRIVIA.correct] + '. ' + TRIVIA.explanation;
+          result.className = 'trivia-result incorrect-msg';
+        }
+        result.style.display = 'block';
+      });
+      ul.appendChild(li);
+    });
+  })();
+
+
+  /* ══════════════════════════════════════════
+     RECIPE TOGGLE
+  ══════════════════════════════════════════ */
+  function toggleRecipe(header) {
+    var body  = header.nextElementSibling;
+    var arrow = header.querySelector('.recipe-arrow');
+    var isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (arrow) arrow.classList.toggle('open', !isOpen);
+  }
+
+</script>
+
+</body>
+</html>
