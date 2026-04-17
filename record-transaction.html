@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Record a Transaction — Social Club Finances</title>
+<style>
+  :root {
+    --navy: #1a3a6b;
+    --navy-light: #2a4f8f;
+    --gold: #c8a84b;
+    --green: #2e7d32;
+    --red: #c62828;
+    --bg: #f4f6f9;
+    --white: #ffffff;
+    --border: #d0d7e3;
+    --text: #222222;
+    --muted: #666666;
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  header .back-link {
+    color: var(--gold);
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+  }
+  header .back-link:hover { opacity: 1; }
+
+  header h1 {
+    font-size: 20px;
+    font-weight: normal;
+    letter-spacing: 0.3px;
+  }
+
+  header .subtitle {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 3px;
+  }
+
+  .container {
+    max-width: 620px;
+    margin: 36px auto;
+    padding: 0 20px 60px;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: var(--navy);
+    color: white;
+    padding: 16px 24px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .card-body { padding: 28px 24px; }
+
+  .form-group {
+    margin-bottom: 22px;
+  }
+
+  label {
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 7px;
+  }
+
+  label .hint {
+    font-weight: normal;
+    color: var(--muted);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 11px;
+    margin-left: 6px;
+  }
+
+  input[type="date"],
+  input[type="number"],
+  input[type="text"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(26,58,107,0.12);
+  }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a3a6b' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  .type-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .type-btn {
+    padding: 14px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .type-btn:hover { border-color: var(--navy); }
+
+  .type-btn.selected-income {
+    background: #e8f5e9;
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .type-btn.selected-expense {
+    background: #ffebee;
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .amount-wrap { position: relative; }
+  .amount-wrap .dollar {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .amount-wrap input { padding-left: 28px; }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+  }
+
+  .btn {
+    padding: 13px 28px;
+    border-radius: var(--radius);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--navy);
+    color: white;
+    flex: 1;
+  }
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: white;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+  }
+  .btn-secondary:hover { background: var(--bg); }
+
+  /* Review screen */
+  .review-card { display: none; }
+
+  .review-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  .review-row:last-child { border-bottom: none; }
+  .review-row .rlabel {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 110px;
+  }
+  .review-row .rvalue {
+    font-weight: bold;
+    text-align: right;
+  }
+  .review-row .rvalue.income { color: var(--green); }
+  .review-row .rvalue.expense { color: var(--red); }
+
+  .review-amount {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px 0 10px;
+    font-family: Georgia, serif;
+  }
+  .review-amount.income { color: var(--green); }
+  .review-amount.expense { color: var(--red); }
+
+  /* Success screen */
+  .success-card { display: none; }
+  .success-icon {
+    text-align: center;
+    font-size: 48px;
+    padding: 20px 0 10px;
+  }
+  .success-msg {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: var(--green);
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .success-sub {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .error-msg {
+    background: #ffebee;
+    border: 1px solid #ef9a9a;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: var(--red);
+    margin-top: 16px;
+    display: none;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <a href="committees.html" class="back-link">← Back to Committees</a>
+    <h1>Record a Transaction</h1>
+    <div class="subtitle">Bridgeman Downs Social Club — Financial Data Entry</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ENTRY FORM -->
+  <div class="card" id="formCard">
+    <div class="card-header">New Transaction</div>
+    <div class="card-body">
+
+      <div class="form-group">
+        <label>Date <span class="hint">Defaults to today — change only if transaction occurred on a different date</span></label>
+        <input type="date" id="txDate">
+      </div>
+
+      <div class="form-group">
+        <label>Type</label>
+        <div class="type-buttons">
+          <button class="type-btn" id="btnIncome" onclick="selectType('Income')">💰 Income</button>
+          <button class="type-btn" id="btnExpense" onclick="selectType('Expense')">💸 Expense</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <select id="txCategory">
+          <option value="">— Loading categories —</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Description <span class="hint">Brief description of the transaction</span></label>
+        <input type="text" id="txDesc" placeholder="e.g. Happy Hour 17/4, Finger food">
+      </div>
+
+      <div class="form-group">
+        <label>Amount</label>
+        <div class="amount-wrap">
+          <span class="dollar">$</span>
+          <input type="number" id="txAmount" min="0.01" step="0.01" placeholder="0.00">
+        </div>
+      </div>
+
+      <div class="error-msg" id="formError"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="showReview()">Review →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- REVIEW SCREEN -->
+  <div class="card review-card" id="reviewCard">
+    <div class="card-header">Review Before Submitting</div>
+    <div class="card-body">
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:var(--muted);margin-bottom:16px;">
+        Please check the details below carefully before confirming.
+      </p>
+
+      <div class="review-amount" id="reviewAmount"></div>
+
+      <div class="review-row">
+        <span class="rlabel">Date</span>
+        <span class="rvalue" id="reviewDate"></span>
+      </div>
+      <div class="review-row">
+        <span class="rlabel">Type</span>
+        <span class="rvalue" id="reviewType"></span>
+      </div>
+      <div class="review-row">
+        <span class="rlabel">Category</span>
+        <span class="rvalue" id="reviewCategory"></span>
+      </div>
+      <div class="review-row">
+        <span class="rlabel">Description</span>
+        <span class="rvalue" id="reviewDesc"></span>
+      </div>
+
+      <div class="error-msg" id="submitError"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goBack()">← Go Back</button>
+        <button class="btn btn-primary" id="confirmBtn" onclick="submitTransaction()">✓ Confirm &amp; Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="card success-card" id="successCard">
+    <div class="card-body">
+      <div class="success-icon">✅</div>
+      <div class="success-msg">Transaction recorded successfully</div>
+      <div class="success-sub" id="successDetail"></div>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn btn-primary" onclick="resetForm()">Record Another Transaction</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Configuration ──────────────────────────────────────────────
+const SHEET_ID = '1dsR4wrWUtm1367KIxKTvhQk0w5yRx4T1QaHPwcMprlA';
+const RESPONSES_SHEET = 'Form Responses 1';
+
+// Published CSV of Data List sheet for categories
+const DATA_LIST_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKCTWAGXRw_S2baTXaj6UYZQlh6Mn7ih_PGkAxXDxIVKonae5zlE2cwhH0z3mvkcyw-pPd/pub?gid=YOUR_DATA_LIST_GID&single=true&output=csv';
+
+// Google Apps Script Web App URL (deploy separately — see setup notes)
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrHyJ4ysP1S4lGEPpQeamQtZr51lj3H-HFGCy-Z0QkDIt41XQCODFwPsFtKu3ypaXT/exec';
+
+// ── State ──────────────────────────────────────────────────────
+let selectedType = '';
+
+// ── Initialise ─────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  // Default date to today
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('txDate').value = yyyy + '-' + mm + '-' + dd;
+
+  loadCategories();
+});
+
+function loadCategories() {
+  // Categories are hardcoded from Data List sheet to avoid CORS issues
+  // Update this list if new categories are added to the Data List sheet
+  const categories = [
+    'Australia Day',
+    'Anzac Day',
+    'Bar Expenses',
+    'Bar Takings',
+    'Bank Fees',
+    'Community Morning Tea',
+    'Containers for Change',
+    'Craft Fair',
+    'Donations',
+    'Fashion Show',
+    'Happy Hour',
+    'Miscellaneous',
+    'Movie Afternoon',
+    'Pantry Expenses',
+    'Pizza Lunch',
+    'Raffles',
+    'Show Day BBQ',
+    'Xmas Lunch'
+  ];
+
+  const sel = document.getElementById('txCategory');
+  sel.innerHTML = '<option value="">— Select a category —</option>';
+  categories.forEach(function(cat) {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    sel.appendChild(opt);
+  });
+}
+
+function selectType(type) {
+  selectedType = type;
+  const incBtn = document.getElementById('btnIncome');
+  const expBtn = document.getElementById('btnExpense');
+  incBtn.className = 'type-btn' + (type === 'Income' ? ' selected-income' : '');
+  expBtn.className = 'type-btn' + (type === 'Expense' ? ' selected-expense' : '');
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+  return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function formatAUD(val) {
+  return '$' + parseFloat(val).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideError(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+function showReview() {
+  hideError('formError');
+
+  const date     = document.getElementById('txDate').value;
+  const category = document.getElementById('txCategory').value;
+  const desc     = document.getElementById('txDesc').value.trim();
+  const amount   = document.getElementById('txAmount').value;
+
+  if (!date)         return showError('formError', 'Please enter a date.');
+  if (!selectedType) return showError('formError', 'Please select Income or Expense.');
+  if (!category)     return showError('formError', 'Please select a category.');
+  if (!desc)         return showError('formError', 'Please enter a description.');
+  if (!amount || parseFloat(amount) <= 0) return showError('formError', 'Please enter a valid amount greater than zero.');
+
+  // Populate review
+  const amtEl = document.getElementById('reviewAmount');
+  amtEl.textContent = (selectedType === 'Income' ? '+' : '-') + formatAUD(amount);
+  amtEl.className = 'review-amount ' + selectedType.toLowerCase();
+
+  document.getElementById('reviewDate').textContent     = formatDate(date);
+  const typeEl = document.getElementById('reviewType');
+  typeEl.textContent  = selectedType;
+  typeEl.className    = 'rvalue ' + selectedType.toLowerCase();
+  document.getElementById('reviewCategory').textContent = category;
+  document.getElementById('reviewDesc').textContent     = desc;
+
+  document.getElementById('formCard').style.display   = 'none';
+  document.getElementById('reviewCard').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  hideError('submitError');
+  document.getElementById('reviewCard').style.display = 'none';
+  document.getElementById('formCard').style.display   = 'block';
+  window.scrollTo(0, 0);
+}
+
+function submitTransaction() {
+  hideError('submitError');
+  const btn = document.getElementById('confirmBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+  const dateStr  = document.getElementById('txDate').value;
+  const parts    = dateStr.split('-');
+  const d        = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+  const months   = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+  const monthName = months[d.getMonth()];
+  const year      = d.getFullYear();
+
+  const payload = {
+    action: 'recordTransaction',
+    timestamp:   new Date().toISOString(),
+    type:        selectedType,
+    date:        dateStr,
+    month:       monthName,
+    year:        year,
+    category:    document.getElementById('txCategory').value,
+    description: document.getElementById('txDesc').value.trim(),
+    amount:      parseFloat(document.getElementById('txAmount').value)
+  };
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.status === 'ok') {
+      document.getElementById('successDetail').textContent =
+        selectedType + ' of ' + formatAUD(payload.amount) +
+        ' — ' + payload.description + ' — recorded for ' + formatDate(dateStr);
+      document.getElementById('reviewCard').style.display  = 'none';
+      document.getElementById('successCard').style.display = 'block';
+      window.scrollTo(0, 0);
+    } else {
+      throw new Error(data.message || 'Unknown error');
+    }
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    btn.innerHTML = '✓ Confirm &amp; Submit';
+    showError('submitError', 'Submission failed: ' + err.message + '. Please try again or contact Rick.');
+  });
+}
+
+function resetForm() {
+  selectedType = '';
+  document.getElementById('btnIncome').className  = 'type-btn';
+  document.getElementById('btnExpense').className = 'type-btn';
+  document.getElementById('txCategory').value = '';
+  document.getElementById('txDesc').value     = '';
+  document.getElementById('txAmount').value   = '';
+
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm   = String(today.getMonth() + 1).padStart(2, '0');
+  const dd   = String(today.getDate()).padStart(2, '0');
+  document.getElementById('txDate').value = yyyy + '-' + mm + '-' + dd;
+
+  document.getElementById('successCard').style.display = 'none';
+  document.getElementById('formCard').style.display    = 'block';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

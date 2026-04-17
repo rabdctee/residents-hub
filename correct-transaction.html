@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Correct a Transaction — Social Club Finances</title>
+<style>
+  :root {
+    --navy: #1a3a6b;
+    --navy-light: #2a4f8f;
+    --gold: #c8a84b;
+    --green: #2e7d32;
+    --red: #c62828;
+    --amber: #e65100;
+    --amber-light: #fff3e0;
+    --bg: #f4f6f9;
+    --white: #ffffff;
+    --border: #d0d7e3;
+    --text: #222222;
+    --muted: #666666;
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 18px 32px;
+    border-bottom: 3px solid var(--gold);
+  }
+  header .back-link {
+    color: var(--gold); text-decoration: none;
+    font-family: Arial, sans-serif; font-size: 13px;
+    display: inline-flex; align-items: center; gap: 6px;
+    opacity: 0.9; transition: opacity 0.2s;
+  }
+  header .back-link:hover { opacity: 1; }
+  header h1 { font-size: 20px; font-weight: normal; margin-top: 4px; }
+  header .subtitle { font-family: Arial, sans-serif; font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 3px; }
+
+  .container { max-width: 720px; margin: 36px auto; padding: 0 20px 60px; }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .card-header {
+    background: var(--navy);
+    color: white;
+    padding: 14px 24px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .card-header.amber { background: var(--amber); }
+
+  .card-body { padding: 24px; }
+
+  .instructions {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+    padding: 14px 16px;
+    background: #f0f4ff;
+    border-left: 3px solid var(--navy);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  /* Transaction list */
+  .tx-search {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    font-family: Arial, sans-serif; font-size: 14px; margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .tx-search:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,58,107,0.1); }
+
+  .tx-list { max-height: 320px; overflow-y: auto; border: 1.5px solid var(--border); border-radius: var(--radius); }
+
+  .tx-item {
+    display: flex; align-items: center; padding: 12px 16px;
+    border-bottom: 1px solid var(--border); cursor: pointer;
+    transition: background 0.15s; gap: 14px;
+  }
+  .tx-item:last-child { border-bottom: none; }
+  .tx-item:hover { background: #f0f4ff; }
+  .tx-item.selected { background: var(--amber-light); border-left: 3px solid var(--amber); }
+
+  .tx-badge {
+    font-family: Arial, sans-serif; font-size: 10px; font-weight: bold;
+    padding: 3px 8px; border-radius: 20px; white-space: nowrap; min-width: 60px; text-align: center;
+  }
+  .tx-badge.income { background: #e8f5e9; color: var(--green); }
+  .tx-badge.expense { background: #ffebee; color: var(--red); }
+
+  .tx-info { flex: 1; min-width: 0; }
+  .tx-desc { font-family: Arial, sans-serif; font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tx-meta { font-family: Arial, sans-serif; font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .tx-amount { font-family: Georgia, serif; font-size: 14px; font-weight: bold; white-space: nowrap; }
+  .tx-amount.income { color: var(--green); }
+  .tx-amount.expense { color: var(--red); }
+
+  .loading { padding: 24px; text-align: center; font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); }
+  .no-results { padding: 20px; text-align: center; font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); }
+
+  /* Selected transaction box */
+  .selected-tx-box {
+    display: none;
+    background: var(--amber-light);
+    border: 2px solid var(--amber);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 16px 0 0;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+  }
+  .selected-tx-box .stx-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--amber); font-weight: bold; margin-bottom: 8px; }
+  .selected-tx-box .stx-detail { font-size: 15px; font-weight: bold; margin-bottom: 4px; }
+  .selected-tx-box .stx-meta { color: var(--muted); font-size: 12px; }
+
+  /* Corrections section */
+  .corrections-section { margin-top: 24px; }
+  .corrections-title {
+    font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;
+    color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border);
+  }
+
+  .hint-note {
+    font-family: Arial, sans-serif; font-size: 12px; color: var(--muted);
+    font-style: italic; margin-bottom: 18px;
+  }
+
+  .corrections-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 520px) { .corrections-grid { grid-template-columns: 1fr; } }
+
+  .form-group { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-family: Arial, sans-serif; font-size: 12px; font-weight: bold;
+    color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 7px;
+  }
+  label .hint { font-weight: normal; color: var(--muted); text-transform: none; letter-spacing: 0; font-size: 11px; margin-left: 4px; }
+
+  input[type="date"], input[type="number"], input[type="text"], select, textarea {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--border); border-radius: var(--radius);
+    font-family: Arial, sans-serif; font-size: 13px; color: var(--text);
+    background: white; transition: border-color 0.2s;
+    -webkit-appearance: none; appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(26,58,107,0.1);
+  }
+  input::placeholder, textarea::placeholder { color: #bbb; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a3a6b' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+  }
+
+  .amount-wrap { position: relative; }
+  .amount-wrap .dollar { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); pointer-events: none; }
+  .amount-wrap input { padding-left: 26px; }
+
+  .reason-group { margin-top: 16px; }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 24px; }
+  .btn { padding: 13px 28px; border-radius: var(--radius); font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-primary { background: var(--navy); color: white; flex: 1; }
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+  .btn-secondary { background: white; color: var(--navy); border: 2px solid var(--navy); }
+  .btn-secondary:hover { background: var(--bg); }
+
+  .error-msg { background: #ffebee; border: 1px solid #ef9a9a; border-radius: var(--radius); padding: 12px 16px; font-family: Arial, sans-serif; font-size: 13px; color: var(--red); margin-top: 16px; display: none; }
+
+  /* Review — before/after comparison */
+  .comparison-table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 13px; margin: 16px 0; }
+  .comparison-table th { background: var(--navy); color: white; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+  .comparison-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .comparison-table tr:last-child td { border-bottom: none; }
+  .comparison-table tr:nth-child(even) td { background: #f5f7fa; }
+  .comparison-table .field-name { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .comparison-table .old-val { color: var(--muted); text-decoration: line-through; }
+  .comparison-table .new-val { color: var(--navy); font-weight: bold; }
+  .comparison-table .unchanged { color: var(--muted); font-style: italic; }
+  .changed-row td { background: #fffde7 !important; }
+
+  /* Success */
+  .success-icon { text-align: center; font-size: 48px; padding: 20px 0 10px; }
+  .success-msg { text-align: center; font-family: Arial, sans-serif; font-size: 15px; color: var(--green); font-weight: bold; margin-bottom: 8px; }
+  .success-sub { text-align: center; font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<header>
+  <a href="committees.html" class="back-link">← Back to Committees</a>
+  <h1>Correct a Transaction</h1>
+  <div class="subtitle">Bridgeman Downs Social Club — Update an incorrectly recorded entry</div>
+</header>
+
+<div class="container">
+
+  <!-- STEP 1 + 2 combined: Select + Enter corrections -->
+  <div class="card" id="step1Card">
+    <div class="card-header">Step 1 — Select the Transaction to Correct</div>
+    <div class="card-body">
+
+      <div class="instructions">
+        Find the transaction in the list below and click on it to select it. The correction fields will then appear below.
+      </div>
+
+      <input type="text" class="tx-search" id="txSearch" placeholder="🔍  Filter by description, category or amount…" oninput="filterTransactions()">
+
+      <div class="tx-list" id="txList">
+        <div class="loading">Loading transactions…</div>
+      </div>
+
+      <div class="selected-tx-box" id="selectedBox">
+        <div class="stx-title">✓ Selected for correction</div>
+        <div class="stx-detail" id="selectedDetail"></div>
+        <div class="stx-meta" id="selectedMeta"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Correction fields — shown after selection -->
+  <div class="card" id="correctionsCard" style="display:none;">
+    <div class="card-header amber">Step 2 — Enter the Corrections</div>
+    <div class="card-body">
+
+      <p class="hint-note">Only fill in the fields that need to change. Leave everything else blank and it will stay the same.</p>
+
+      <div class="corrections-grid">
+
+        <div class="form-group">
+          <label>New Date <span class="hint">Leave blank if date is correct</span></label>
+          <input type="date" id="newDate">
+        </div>
+
+        <div class="form-group">
+          <label>New Type <span class="hint">Leave as-is if correct</span></label>
+          <select id="newType">
+            <option value="No change">— No change —</option>
+            <option value="Income">Income</option>
+            <option value="Expense">Expense</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>New Category <span class="hint">Leave as-is if correct</span></label>
+          <select id="newCategory">
+            <option value="No change">— No change —</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>New Amount <span class="hint">Leave blank if amount is correct</span></label>
+          <div class="amount-wrap">
+            <span class="dollar">$</span>
+            <input type="number" id="newAmount" min="0.01" step="0.01" placeholder="Leave blank if unchanged">
+          </div>
+        </div>
+
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label>New Description <span class="hint">Leave blank if description is correct</span></label>
+          <input type="text" id="newDesc" placeholder="Leave blank if unchanged">
+        </div>
+
+      </div>
+
+      <div class="reason-group form-group">
+        <label>Reason for Correction <span class="hint">Required</span></label>
+        <textarea id="corrReason" placeholder="Briefly explain what was wrong and what has been corrected…"></textarea>
+      </div>
+
+      <div class="error-msg" id="step2Error"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="showReview()">Review Changes →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- REVIEW -->
+  <div class="card" id="reviewCard" style="display:none;">
+    <div class="card-header amber">Review — Confirm Correction</div>
+    <div class="card-body">
+
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:var(--muted);margin-bottom:16px;">
+        Highlighted rows show what will change. Please confirm these corrections are right before submitting.
+      </p>
+
+      <table class="comparison-table">
+        <tr>
+          <th>Field</th>
+          <th>Current Value</th>
+          <th>New Value</th>
+        </tr>
+        <tbody id="comparisonBody"></tbody>
+      </table>
+
+      <div style="font-family:Arial,sans-serif;font-size:13px;margin-top:8px;">
+        <strong>Reason:</strong> <span id="revReason" style="color:var(--muted);"></span>
+      </div>
+
+      <div class="error-msg" id="reviewError"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goBackToStep2()">← Go Back</button>
+        <button class="btn btn-primary" id="confirmBtn" onclick="submitCorrection()">✓ Confirm Correction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="card" id="successCard" style="display:none;">
+    <div class="card-body">
+      <div class="success-icon">✅</div>
+      <div class="success-msg">Correction submitted successfully</div>
+      <div class="success-sub" id="successDetail"></div>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn btn-primary" onclick="resetAll()">Correct Another Transaction</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzrHyJ4ysP1S4lGEPpQeamQtZr51lj3H-HFGCy-Z0QkDIt41XQCODFwPsFtKu3ypaXT/exec';
+const TX_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKCTWAGXRw_S2baTXaj6UYZQlh6Mn7ih_PGkAxXDxIVKonae5zlE2cwhH0z3mvkcyw-pPd/pub?gid=1143538720&single=true&output=csv';
+
+const CATEGORIES = [
+  'Australia Day','Anzac Day','Bar Expenses','Bar Takings','Bank Fees',
+  'Community Morning Tea','Containers for Change','Craft Fair','Donations',
+  'Fashion Show','Happy Hour','Miscellaneous','Movie Afternoon',
+  'Pantry Expenses','Pizza Lunch','Raffles','Show Day BBQ','Xmas Lunch'
+];
+
+let allTransactions = [];
+let selectedTx = null;
+let selectedIdx = null;
+
+window.addEventListener('DOMContentLoaded', function() {
+  loadTransactions();
+  loadCategories();
+});
+
+function loadCategories() {
+  const sel = document.getElementById('newCategory');
+  CATEGORIES.forEach(function(cat) {
+    const opt = document.createElement('option');
+    opt.value = cat; opt.textContent = cat;
+    sel.appendChild(opt);
+  });
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(function(h) { return h.replace(/"/g,'').trim(); });
+  return lines.slice(1).map(function(line) {
+    const vals = line.match(/(".*?"|[^,]+)(?=,|$)/g) || [];
+    const obj = {};
+    headers.forEach(function(h, i) {
+      obj[h] = (vals[i] || '').replace(/^"|"$/g,'').trim();
+    });
+    return obj;
+  });
+}
+
+function loadTransactions() {
+  fetch(TX_CSV_URL)
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
+      const rows = parseCSV(text);
+      const cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - 60);
+      allTransactions = rows.filter(function(r) {
+        if (!r['Date'] || !r['Type']) return false;
+        const d = new Date(r['Date']);
+        return !isNaN(d.getTime()) && d >= cutoff;
+      }).sort(function(a, b) { return new Date(b['Date']) - new Date(a['Date']); });
+      renderTransactions(allTransactions);
+    })
+    .catch(function() {
+      document.getElementById('txList').innerHTML =
+        '<div class="loading">Could not load transactions. Please check your connection and try again.</div>';
+    });
+}
+
+function formatDateDisplay(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function toInputDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function formatAUD(val) {
+  const n = parseFloat(val);
+  if (isNaN(n)) return val;
+  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function renderTransactions(txs) {
+  const list = document.getElementById('txList');
+  if (txs.length === 0) {
+    list.innerHTML = '<div class="no-results">No transactions found.</div>';
+    return;
+  }
+  list.innerHTML = txs.map(function(tx, i) {
+    const isIncome  = (tx['Type'] || '').toLowerCase() === 'income';
+    const typeClass = isIncome ? 'income' : 'expense';
+    const sign      = isIncome ? '+' : '-';
+    const isSelected = selectedTx && tx['Date'] === selectedTx['Date'] && tx['Description'] === selectedTx['Description'] && tx['Amount'] === selectedTx['Amount'];
+    return '<div class="tx-item' + (isSelected ? ' selected' : '') + '" onclick="selectTransaction(' + i + ')" id="txItem' + i + '">' +
+      '<span class="tx-badge ' + typeClass + '">' + (tx['Type'] || '') + '</span>' +
+      '<div class="tx-info">' +
+        '<div class="tx-desc">' + (tx['Description'] || '') + '</div>' +
+        '<div class="tx-meta">' + formatDateDisplay(tx['Date']) + ' &nbsp;·&nbsp; ' + (tx['Detailed Category'] || '') + '</div>' +
+      '</div>' +
+      '<span class="tx-amount ' + typeClass + '">' + sign + formatAUD(tx['Amount']) + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function filterTransactions() {
+  const q = document.getElementById('txSearch').value.toLowerCase();
+  const filtered = q ? allTransactions.filter(function(tx) {
+    return (tx['Description'] || '').toLowerCase().includes(q) ||
+           (tx['Detailed Category'] || '').toLowerCase().includes(q) ||
+           (tx['Amount'] || '').includes(q);
+  }) : allTransactions;
+  renderTransactions(filtered);
+}
+
+function selectTransaction(idx) {
+  const q = document.getElementById('txSearch').value.toLowerCase();
+  const displayed = q ? allTransactions.filter(function(tx) {
+    return (tx['Description'] || '').toLowerCase().includes(q) ||
+           (tx['Detailed Category'] || '').toLowerCase().includes(q) ||
+           (tx['Amount'] || '').includes(q);
+  }) : allTransactions;
+
+  selectedTx  = displayed[idx];
+  selectedIdx = idx;
+
+  document.querySelectorAll('.tx-item').forEach(function(el) { el.classList.remove('selected'); });
+  const el = document.getElementById('txItem' + idx);
+  if (el) el.classList.add('selected');
+
+  // Show selected box
+  document.getElementById('selectedBox').style.display = 'block';
+  document.getElementById('selectedDetail').textContent =
+    (selectedTx['Type'] === 'Income' ? '+' : '-') + formatAUD(selectedTx['Amount']) +
+    ' — ' + (selectedTx['Description'] || '');
+  document.getElementById('selectedMeta').textContent =
+    formatDateDisplay(selectedTx['Date']) + ' · ' + (selectedTx['Detailed Category'] || '');
+
+  // Show corrections card
+  document.getElementById('correctionsCard').style.display = 'block';
+
+  // Reset corrections fields
+  document.getElementById('newDate').value     = '';
+  document.getElementById('newType').value     = 'No change';
+  document.getElementById('newCategory').value = 'No change';
+  document.getElementById('newAmount').value   = '';
+  document.getElementById('newDesc').value     = '';
+  document.getElementById('corrReason').value  = '';
+
+  document.getElementById('correctionsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showReview() {
+  const errEl = document.getElementById('step2Error');
+  errEl.style.display = 'none';
+
+  if (!selectedTx) {
+    errEl.textContent = 'Please select a transaction first.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const newDate     = document.getElementById('newDate').value;
+  const newType     = document.getElementById('newType').value;
+  const newCategory = document.getElementById('newCategory').value;
+  const newAmount   = document.getElementById('newAmount').value;
+  const newDesc     = document.getElementById('newDesc').value.trim();
+  const reason      = document.getElementById('corrReason').value.trim();
+
+  // Check at least one field is being changed
+  const anyChange = newDate || newType !== 'No change' || newCategory !== 'No change' || newAmount || newDesc;
+  if (!anyChange) {
+    errEl.textContent = 'Please enter at least one correction.';
+    errEl.style.display = 'block';
+    return;
+  }
+  if (!reason) {
+    errEl.textContent = 'Please enter a reason for the correction.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // Build comparison table
+  const fields = [
+    { name: 'Date',        orig: formatDateDisplay(selectedTx['Date']),        newVal: newDate     ? formatDateDisplay(newDate) : null },
+    { name: 'Type',        orig: selectedTx['Type'] || '',                      newVal: newType !== 'No change' ? newType : null },
+    { name: 'Category',    orig: selectedTx['Detailed Category'] || '',         newVal: newCategory !== 'No change' ? newCategory : null },
+    { name: 'Description', orig: selectedTx['Description'] || '',               newVal: newDesc || null },
+    { name: 'Amount',      orig: formatAUD(selectedTx['Amount']),               newVal: newAmount ? formatAUD(newAmount) : null }
+  ];
+
+  const tbody = document.getElementById('comparisonBody');
+  tbody.innerHTML = fields.map(function(f) {
+    const changed = f.newVal !== null;
+    return '<tr' + (changed ? ' class="changed-row"' : '') + '>' +
+      '<td class="field-name">' + f.name + '</td>' +
+      '<td class="' + (changed ? 'old-val' : 'unchanged') + '">' + f.orig + '</td>' +
+      '<td class="' + (changed ? 'new-val' : 'unchanged') + '">' + (changed ? f.newVal : '— no change —') + '</td>' +
+    '</tr>';
+  }).join('');
+
+  document.getElementById('revReason').textContent = reason;
+
+  document.getElementById('step1Card').style.display      = 'none';
+  document.getElementById('correctionsCard').style.display = 'none';
+  document.getElementById('reviewCard').style.display     = 'block';
+  window.scrollTo(0, 0);
+}
+
+function goBackToStep2() {
+  document.getElementById('reviewCard').style.display      = 'none';
+  document.getElementById('step1Card').style.display       = 'block';
+  document.getElementById('correctionsCard').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function submitCorrection() {
+  const btn = document.getElementById('confirmBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+  const newDate     = document.getElementById('newDate').value;
+  const newType     = document.getElementById('newType').value;
+  const newCategory = document.getElementById('newCategory').value;
+  const newAmount   = document.getElementById('newAmount').value;
+  const newDesc     = document.getElementById('newDesc').value.trim();
+
+  const payload = {
+    action:       'correctTransaction',
+    origDate:     selectedTx['Date'],
+    origDesc:     selectedTx['Description'],
+    origAmount:   selectedTx['Amount'],
+    newDate:      newDate     || '',
+    newType:      newType     !== 'No change' ? newType     : 'No change',
+    newCategory:  newCategory !== 'No change' ? newCategory : 'No change',
+    newAmount:    newAmount   ? parseFloat(newAmount) : '',
+    newDesc:      newDesc     || '',
+    reason:       document.getElementById('corrReason').value.trim()
+  };
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.status === 'ok') {
+      document.getElementById('successDetail').textContent =
+        'Correction for "' + selectedTx['Description'] + '" has been submitted and will be processed shortly.';
+      document.getElementById('reviewCard').style.display  = 'none';
+      document.getElementById('successCard').style.display = 'block';
+      window.scrollTo(0, 0);
+    } else {
+      throw new Error(data.message || 'Unknown error');
+    }
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    btn.innerHTML = '✓ Confirm Correction';
+    const errEl = document.getElementById('reviewError');
+    errEl.textContent = 'Submission failed: ' + err.message + '. Please try again or contact Rick.';
+    errEl.style.display = 'block';
+  });
+}
+
+function resetAll() {
+  selectedTx = null;
+  selectedIdx = null;
+  document.getElementById('txSearch').value    = '';
+  document.getElementById('corrReason').value  = '';
+  document.getElementById('selectedBox').style.display        = 'none';
+  document.getElementById('correctionsCard').style.display    = 'none';
+  renderTransactions(allTransactions);
+  document.getElementById('successCard').style.display = 'none';
+  document.getElementById('step1Card').style.display   = 'block';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
