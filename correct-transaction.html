@@ -462,13 +462,28 @@ function parseCSV(text) {
 // Google Sheets stores dates as serial numbers (days since 30 Dec 1899)
 // e.g. 46083 = 2 Mar 2026. Convert to a JS Date object.
 function sheetSerialToDate(val) {
-  var n = parseFloat(val);
-  if (isNaN(n)) return null;
-  if (String(val).includes('-') || String(val).includes('/')) {
-    var d = new Date(val);
-    return isNaN(d.getTime()) ? null : d;
+  if (!val) return null;
+  var s = String(val).trim();
+
+  // Australian DD/MM/YYYY format (what Google Sheets CSV delivers)
+  var auMatch = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (auMatch) {
+    return new Date(parseInt(auMatch[3]), parseInt(auMatch[2]) - 1, parseInt(auMatch[1]));
   }
-  return new Date(Date.UTC(1899, 11, 30) + n * 86400000);
+
+  // ISO format YYYY-MM-DD
+  var isoMatch = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    return new Date(parseInt(isoMatch[1]), parseInt(isoMatch[2]) - 1, parseInt(isoMatch[3]));
+  }
+
+  // Google Sheets serial number (days since 30 Dec 1899)
+  var n = parseFloat(s);
+  if (!isNaN(n) && n > 1000) {
+    return new Date(Date.UTC(1899, 11, 30) + n * 86400000);
+  }
+
+  return null;
 }
 
 function loadTransactions() {
