@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html lang="en"
+<html lang="en">
 <head>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);
+      function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-V5X3VEVK8R');
     </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Residents' Information Hub</title>
-    <!-- rest of your code continues... -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bridgeman Downs Retirement Village Residents' Information Hub</title>
 
 <style>
@@ -654,25 +650,45 @@ font-size:19px;
 
 /* ===== Breadcrumbs ===== */
 .breadcrumbs{
-padding:15px 25px;
-background:#f8f9fa;
+padding:12px 25px;
+background:#E7F1FB;
 font-size:16px;
-border-bottom:1px solid #e0e0e0;
+border-bottom:2px solid #c5d8ee;
+display:flex;
+align-items:center;
+flex-wrap:wrap;
+gap:4px;
 }
 
 .breadcrumbs a{
 color:#1F4E79;
 text-decoration:none;
-font-weight:600;
+font-weight:700;
+background:white;
+border:1px solid #c5d8ee;
+border-radius:6px;
+padding:5px 12px;
+transition:all 0.15s;
+font-size:15px;
 }
 
 .breadcrumbs a:hover{
-text-decoration:underline;
+background:#1F4E79;
+color:white;
+border-color:#1F4E79;
 }
 
 .breadcrumbs span{
-color:#666;
-margin:0 8px;
+color:#aaa;
+font-size:14px;
+margin:0 2px;
+}
+
+.breadcrumbs strong{
+color:#444;
+font-weight:600;
+font-size:15px;
+padding:5px 4px;
 }
 
 /* ===== Search Box ===== */
@@ -1528,9 +1544,6 @@ This page contains village documents and financial information for residents onl
 <a href="https://drive.google.com/file/d/16KJXXdMD7h5zkxYN0WcYPPiZhiw2aR-I/view" target="_blank" class="doc-link">
 📄 Retirement Villages Regulation 2018 (current as at June 2024)
 </a>
-<a href="https://drive.google.com/drive/folders/1PcIMDqkXCdx-F07gYa5Kr-U-rcdnjMS4?usp=share_link" target="_blank" class="doc-link">
-📁 Browse All
-</a>
 </div>
 
 <!-- 2. Constitution Section -->
@@ -1673,9 +1686,9 @@ function buildFileList(key) {
 
   files.forEach(function(f) {
     var href = f.id
-      ? 'https://drive.google.com/file/d/' + f.id + '/view'
-      : 'https://drive.google.com/drive/folders/' + folderId;
-    html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+      ? 'https://drive.google.com/file/d/' + f.id + '/preview'
+      : null;
+    if (href) html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
   });
 
   ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
@@ -1709,7 +1722,7 @@ function buildFileList(key) {
         // Only show files for this folder, not already hardcoded
         if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
           newHtml += '<li><a href="https://drive.google.com/file/d/' + fileId +
-            '/view" target="_blank">📄 ' + fileName + '</a></li>';
+            '/preview" target="_blank">📄 ' + fileName + '</a></li>';
         }
       }
 
@@ -1717,9 +1730,9 @@ function buildFileList(key) {
       var baseHtml = '';
       files.forEach(function(f) {
         var href = f.id
-          ? 'https://drive.google.com/file/d/' + f.id + '/view'
-          : 'https://drive.google.com/drive/folders/' + folderId;
-        baseHtml += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+          ? 'https://drive.google.com/file/d/' + f.id + '/preview'
+          : null;
+        if (href) baseHtml += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
       });
 
       ul.innerHTML = baseHtml + newHtml ||
@@ -1870,10 +1883,6 @@ Select a month below to view the bank statement:
 
 <hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
 
-<a href="https://drive.google.com/drive/folders/1BUxeN8inbHkEZWn5hgrYSMige6s1CqhZ?usp=share_link" target="_blank" class="doc-link">
-📁 Browse All aveo Documents
-</a>
-
 </div>
 
 <!-- 6. Village Issues - Progress Section -->
@@ -1889,12 +1898,6 @@ Select a month below to view the bank statement:
 <p style="color:#5f6368; margin-top:10px; font-size:0.9em;">
 This tracker is updated regularly to show progress on community issues.
 </p>
-
-<hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
-
-<a href="https://drive.google.com/drive/folders/1XK9n5JB-wVgTo-qp0Zd7hcPm_WWCQhuC?usp=share_link" target="_blank" class="doc-link">
-📁 View Issues Archive
-</a>
 </div>
 
 </div>
@@ -2144,30 +2147,44 @@ function toggleMenu() {
   label.textContent = open ? 'Menu' : 'Close';
 }
 
+// ── Navigation history & breadcrumbs ──────────────────────────
+var pageHistory = [];  // stack of page IDs visited
+
+var PAGE_TITLES = {
+    'home':             '🏠 Home',
+    'about':            '📖 About',
+    'newsletter':       '📰 News',
+    'events':           '🎉 Events',
+    'activity-contacts':'🚶 Activities',
+    'noticeboard':      '📌 Notice Board',
+    'village-info':     '🔒 Resident-Only',
+    'useful-links':     '🔗 Useful Links',
+    'committee':        '👥 Committees',
+    'contact':          '📞 Contacts'
+};
+
 function showPage(pageId, element) {
     var pages = document.querySelectorAll('.page-content');
-    pages.forEach(function(page) {
-        page.classList.remove('active');
-    });
+    pages.forEach(function(page) { page.classList.remove('active'); });
     
     var navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(function(item) {
-        item.classList.remove('active');
-    });
+    navItems.forEach(function(item) { item.classList.remove('active'); });
     
     document.getElementById(pageId).classList.add('active');
-    
-    if (element) {
-        element.classList.add('active');
-    }
+    if (element) element.classList.add('active');
+
+    // Track history — don't push duplicates of the current top
+    var currentTop = pageHistory[pageHistory.length - 1];
+    if (currentTop !== pageId) pageHistory.push(pageId);
     
     // Update URL hash for bookmarking
     window.location.hash = pageId;
     
-    // Update breadcrumbs
+    // Update breadcrumbs & back button
     updateBreadcrumbs(pageId);
     
     window.scrollTo(0, 0);
+
     // Close menu panel if open
     var mp = document.getElementById('menuPanel');
     if (mp) mp.classList.remove('open');
@@ -2175,37 +2192,68 @@ function showPage(pageId, element) {
     if (ml) ml.textContent = 'Menu';
 }
 
+function goBack() {
+    // Pop current page, navigate to previous
+    pageHistory.pop();
+    var prev = pageHistory[pageHistory.length - 1] || 'home';
+    // Don't push again — navigate directly
+    var pages = document.querySelectorAll('.page-content');
+    pages.forEach(function(p) { p.classList.remove('active'); });
+    document.getElementById(prev).classList.add('active');
+    window.location.hash = prev;
+    updateBreadcrumbs(prev);
+    window.scrollTo(0, 0);
+}
+
 // Load page from URL hash on startup (allows bookmarking direct links)
 window.addEventListener('DOMContentLoaded', function() {
     var hash = window.location.hash.replace('#', '');
     if (hash && document.getElementById(hash)) {
+        pageHistory = ['home', hash];
         showPage(hash);
+    } else {
+        pageHistory = ['home'];
+        updateBreadcrumbs('home');
     }
 });
 
-// Update breadcrumbs based on current page
+// Update breadcrumbs + back button based on current page
 function updateBreadcrumbs(pageId) {
     var breadcrumbsDiv = document.getElementById('breadcrumbs');
-    var pageTitles = {
-        'home': '🏠 Home',
-        'about': '📖 About',
-        'newsletter': '📰 News',
-        'events': '🎉 Events',
-        'activity-contacts': '🚶 Activities',
-        'noticeboard': '📌 Notice Board',
-        'village-info': '🔒 Resident-Only',
-        'useful-links': '🔗 Useful Links',
-        'committee': '👥 Committees',
-        'contact': '📞 Contacts'
-    };
     
     if (pageId === 'home') {
         breadcrumbsDiv.style.display = 'none';
-    } else {
-        breadcrumbsDiv.style.display = 'block';
-        var pageTitle = pageTitles[pageId] || pageId;
-        breadcrumbsDiv.innerHTML = '<a href="#" onclick="showPage(\'home\'); return false;">🏠 Home</a><span>›</span>' + pageTitle;
+        return;
     }
+
+    var pageTitle = PAGE_TITLES[pageId] || pageId;
+
+    // Build trail — show up to the last 2 steps before current page
+    var trail = '';
+    var histLen = pageHistory.length;
+
+    if (histLen >= 2) {
+        var prevId    = pageHistory[histLen - 2];
+        var prevTitle = PAGE_TITLES[prevId] || prevId;
+        if (prevId === 'home') {
+            trail = '<a href="#" onclick="goBack(); return false;">← Back to Home</a>';
+    } else {
+            trail = '<a href="#" onclick="goBack(); return false;">← Back to ' + prevTitle + '</a>';
+        }
+        trail += '<span> › </span>';
+        if (histLen >= 3) {
+            // Show Home at the start of a longer trail
+            trail = '<a href="#" onclick="showPage(\'home\'); pageHistory=[\'home\']; return false;">🏠 Home</a>' +
+                    '<span> › </span>' + trail;
+        }
+    } else {
+        trail = '<a href="#" onclick="showPage(\'home\'); return false;">🏠 Home</a><span> › </span>';
+    }
+
+    trail += '<strong>' + pageTitle + '</strong>';
+
+    breadcrumbsDiv.style.display = 'block';
+    breadcrumbsDiv.innerHTML = trail;
 }
 
 // Search functionality
@@ -2219,16 +2267,20 @@ function performSearch() {
     }
     
 var searchableContent = [
-    {page: 'events', title: '🗓️ Events Calendar', keywords: 'events calendar activities schedule social what on'},
-    {page: 'activity-contacts', title: '🎉 Activities & Groups', keywords: 'activities groups clubs fitness walking art craft rummykub rumikub cards games social bridge mahjong swimming pool exercise'},
-    {page: 'contact', title: '📞 Emergency Contacts', keywords: 'emergency ambulance fire police doctor medical urgent help 000'},
-    {page: 'contact', title: '📞 Office Contacts', keywords: 'office reception manager maintenance admin phone call'},
-    {page: 'newsletter', title: '📰 Newsletter', keywords: 'news newsletter announcements notices updates information'},
-    {page: 'village-info', title: '🔒 Resident-Only Information', keywords: 'aveo finance finances issues progress documents constitution act regulations meetings minutes agm financial reports budget'},
-    {page: 'committee', title: '👥 Committees', keywords: 'committee board residents social club who members'},
-    {page: 'useful-links', title: '🔗 Useful Websites', keywords: 'links websites resources government health myGov centrelink'},
-    {page: 'noticeboard', title: '📌 Community Board', keywords: 'classifieds buy sell wanted notice board community ads'},
-    {page: 'about', title: '📖 About', keywords: 'about website help information how guide'}
+    {page: 'events', title: '🗓️ Events Calendar', keywords: 'events calendar activities schedule social what on anzac day gunfire breakfast singalong opera ballet show upcoming'},
+    {page: 'activity-contacts', title: '🎉 Activities & Groups', keywords: 'activities groups clubs fitness walking art craft rummykub rumikub cards games social bridge mahjong swimming pool exercise bingo canasta bowls carpet bowls kelly pool scrabble trivia poetry singing line dancing book club morning tea movies'},
+    {page: 'contact', title: '📞 Emergency Contacts', keywords: 'emergency ambulance fire police doctor medical urgent help 000 energex maintenance after hours'},
+    {page: 'contact', title: '📞 Committee Contacts', keywords: 'office reception manager maintenance admin phone call committee email rick fay jocelyn kathy marie judy chairperson treasurer secretary convenor feedback'},
+    {page: 'newsletter', title: '📰 Newsletter', keywords: 'news newsletter announcements notices updates information social club march april'},
+    {page: 'village-info', title: '🔒 Resident-Only Information', keywords: 'aveo finance finances issues progress documents constitution act regulations meetings minutes agm financial reports budget bank statement quarterly residents only'},
+    {page: 'village-info', title: '🔒 Meeting Documents', keywords: 'agenda minutes meeting residents committee social club quarterly agm annual general'},
+    {page: 'village-info', title: '🔒 Financial Reports', keywords: 'financial report income expenditure budget social club finances january february march'},
+    {page: 'village-info', title: '🔒 Bank Statements', keywords: 'bank statement account balance'},
+    {page: 'committee', title: '👥 Committees', keywords: 'committee upload documents record transaction finances social club delete correct'},
+    {page: 'useful-links', title: '🔗 Useful Websites', keywords: 'links websites resources government health myGov centrelink aged care qld retirement village translink library brisbane safety online'},
+    {page: 'noticeboard', title: '📌 Community Board', keywords: 'classifieds buy sell wanted notice board community ads post'},
+    {page: 'about', title: '📖 About This Website', keywords: 'about website help information how guide feedback suggestions improve'},
+    {page: 'home', title: '🏠 Home', keywords: 'home welcome announcements latest news bookmark start'}
 ];
     
     var results = searchableContent.filter(function(item) {
@@ -2310,74 +2362,41 @@ location.reload();
 // aveo Documents Viewer
 function viewAveoDocument() {
     var doc = document.getElementById('aveo-document').value;
-    
-    if (!doc) {
-        alert('Please select a document first');
-        return;
-    }
-    
+    if (!doc) { alert('Please select a document first'); return; }
     var aveoUrls = {
-        'aveo-doc1': 'https://drive.google.com/file/d/1uLTwCNHLecssMYlcQb3_73-AO0B0gw0w/view',
-        'aveo-doc2': 'https://drive.google.com/file/d/1cyxwbj5QwaKNUSp8aQ97sVCK8qYvkjRd/view',
-        'aveo-doc3': 'https://drive.google.com/file/d/12vuHRozWiBNUb_e50nUUYY2Nh2daSBnQ/view'
+        'aveo-doc1': 'https://drive.google.com/file/d/1uLTwCNHLecssMYlcQb3_73-AO0B0gw0w/preview',
+        'aveo-doc2': 'https://drive.google.com/file/d/1cyxwbj5QwaKNUSp8aQ97sVCK8qYvkjRd/preview',
+        'aveo-doc3': 'https://drive.google.com/file/d/12vuHRozWiBNUb_e50nUUYY2Nh2daSBnQ/preview'
     };
-    
-    if (aveoUrls[doc]) {
-        window.open(aveoUrls[doc], '_blank');
-    } else {
-        alert('Document not yet available. Please check back later.');
-    }
+    if (aveoUrls[doc]) { window.open(aveoUrls[doc], '_blank'); }
+    else { alert('Document not yet available. Please check back later.'); }
 }
 
 
 // Financial Report Viewer - Monthly Reports
 function viewFinancialReport() {
     var period = document.getElementById('financial-period').value;
-    
-    if (!period) {
-        alert('Please select a reporting period first');
-        return;
-    }
-    
+    if (!period) { alert('Please select a reporting period first'); return; }
     var reportUrls = {
-        // 2026 Monthly Reports — add new months here as reports become available
-        // Format: 'YYYY-MM': 'https://drive.google.com/file/d/FILE_ID/view'
-        '2026-03': 'https://drive.google.com/file/d/1mfDCWftz-elBWtlgYeHACgm9lVVv-HP9/view',
-        '2026-02': 'https://drive.google.com/file/d/1aizd-IvazCu2OlctTBVrK2i4SpgKfRZF/view',
-        '2026-01': 'https://drive.google.com/file/d/1Chsi6lTa4p-nennZ61Ylj-iWDSkh4aW0/view',
+        '2026-03': 'https://drive.google.com/file/d/1mfDCWftz-elBWtlgYeHACgm9lVVv-HP9/preview',
+        '2026-02': 'https://drive.google.com/file/d/1aizd-IvazCu2OlctTBVrK2i4SpgKfRZF/preview',
+        '2026-01': 'https://drive.google.com/file/d/1Chsi6lTa4p-nennZ61Ylj-iWDSkh4aW0/preview',
     };
-    
-    if (reportUrls[period]) {
-        window.open(reportUrls[period], '_blank');
-    } else {
-        alert('Report not yet available for this period. Please check back later.');
-    }
+    if (reportUrls[period]) { window.open(reportUrls[period], '_blank'); }
+    else { alert('Report not yet available for this period. Please check back later.'); }
 }
 
 // Bank Statement Viewer
 function viewBankStatement() {
     var period = document.getElementById('bank-statement-period').value;
-
-    if (!period) {
-        alert('Please select a month first');
-        return;
-    }
-
+    if (!period) { alert('Please select a month first'); return; }
     var statementUrls = {
-        // 2026 — add new months here as statements become available
-        // Format: 'YYYY-MM': 'https://drive.google.com/file/d/FILE_ID/view'
-        '2026-03': 'https://drive.google.com/file/d/1OMz8h1AfKdIBepDXduJiwE6j0oFeXhlk/view',
-        '2026-02': 'https://drive.google.com/file/d/1SE1NzMd8sH4Mj5JHc7pHhwkMj2NbGSxu/view',
-        '2026-01': 'https://drive.google.com/file/d/10mKFO6g8hf0DGJGGCjnMWP6US4mlfN0U/view',
-        
-        
+        '2026-03': 'https://drive.google.com/file/d/1OMz8h1AfKdIBepDXduJiwE6j0oFeXhlk/preview',
+        '2026-02': 'https://drive.google.com/file/d/1SE1NzMd8sH4Mj5JHc7pHhwkMj2NbGSxu/preview',
+        '2026-01': 'https://drive.google.com/file/d/10mKFO6g8hf0DGJGGCjnMWP6US4mlfN0U/preview',
     };
- 
-    if (statementUrls[period]) {
-        window.open(statementUrls[period], '_blank');
-    } else {
-        alert('Statement not yet available for this period. Please check back later.');
-    }
+    if (statementUrls[period]) { window.open(statementUrls[period], '_blank'); }
+    else { alert('Statement not yet available for this period. Please check back later.'); }
 }
 function viewResidentsMeeting() {
     var meeting = document.getElementById('residents-meeting-period').value;
@@ -2389,23 +2408,23 @@ function viewResidentsMeeting() {
     
     var meetingUrls = {
         // 2026 AGM
-        'residents-2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_AGM_AGENDA/view',
-        'residents-2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_AGM_MINUTES/view',
+        'residents-2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_AGM_AGENDA/preview',
+        'residents-2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_AGM_MINUTES/preview',
         
         // 2026 Quarterly
-        'residents-2026-q1-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q1_AGENDA/view',
-        'residents-2026-q1-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q1_MINUTES/view',
-        'residents-2026-q2-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q2_AGENDA/view',
-        'residents-2026-q2-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q2_MINUTES/view',
+        'residents-2026-q1-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q1_AGENDA/preview',
+        'residents-2026-q1-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q1_MINUTES/preview',
+        'residents-2026-q2-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q2_AGENDA/preview',
+        'residents-2026-q2-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q2_MINUTES/preview',
         
         // 2026 Monthly
-        'residents-2026-04-agenda': 'https://drive.google.com/file/d/1OZ6nzBM8m-aJ9ZQDDCVa8c475hM-hzQC/view',
-        'residents-2026-03-agenda': 'https://drive.google.com/file/d/1XR4f_qobQoYIDeBjgVtlf9xJ1zyvycY/view',
-        'residents-2026-03-minutes': 'https://drive.google.com/file/d/1Da6IDrsaAYlY_1rGw0Jyok1oGjhPVIrr/view',
-        'residents-2026-02-agenda': 'https://drive.google.com/file/d/1qjkOmvGreavw9spxfCwhoCZuCYNJKFk2/view',
-        'residents-2026-02-minutes': 'https://drive.google.com/file/d/1Ikv33wkMqHY69F3x-yKwPse4WMw00u37/view',
-        'residents-2026-01-agenda': 'https://drive.google.com/file/d/15es-OAJ7psn5ZQYdveRqLhq317RN0oSq/view',
-        'residents-2026-01-minutes': 'https://drive.google.com/file/d/1WrWpQBImHLLprOeQI2wrWvUeE0vBut59/view'
+        'residents-2026-04-agenda': 'https://drive.google.com/file/d/1OZ6nzBM8m-aJ9ZQDDCVa8c475hM-hzQC/preview',
+        'residents-2026-03-agenda': 'https://drive.google.com/file/d/1XR4f_qobQoYIDeBjgVtlf9xJ1zyvycY/preview',
+        'residents-2026-03-minutes': 'https://drive.google.com/file/d/1Da6IDrsaAYlY_1rGw0Jyok1oGjhPVIrr/preview',
+        'residents-2026-02-agenda': 'https://drive.google.com/file/d/1qjkOmvGreavw9spxfCwhoCZuCYNJKFk2/preview',
+        'residents-2026-02-minutes': 'https://drive.google.com/file/d/1Ikv33wkMqHY69F3x-yKwPse4WMw00u37/preview',
+        'residents-2026-01-agenda': 'https://drive.google.com/file/d/15es-OAJ7psn5ZQYdveRqLhq317RN0oSq/preview',
+        'residents-2026-01-minutes': 'https://drive.google.com/file/d/1WrWpQBImHLLprOeQI2wrWvUeE0vBut59/preview'
     };
     
     if (meetingUrls[meeting]) {
@@ -2426,14 +2445,14 @@ function viewSocialMeeting() {
     
     var meetingUrls = {
         // 2026 AGM
-        'social-2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_AGM_AGENDA/view',
-        'social-2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_AGM_MINUTES/view',
+        'social-2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_AGM_AGENDA/preview',
+        'social-2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_AGM_MINUTES/preview',
         
         // 2026 Monthly
-        'social-2026-02-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_02_AGENDA/view',
-        'social-2026-02-minutes': 'https://drive.google.com/file/d/1Lh2lOoFNAmFd8JcmsQiwEfHXwVdmlWKy/view',
-        'social-2026-01-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_01_AGENDA/view',
-        'social-2026-01-minutes': 'https://drive.google.com/file/d/1e7tqN541For2m1li68wZVGdhcJb1fRIO/view'
+        'social-2026-02-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_02_AGENDA/preview',
+        'social-2026-02-minutes': 'https://drive.google.com/file/d/1Lh2lOoFNAmFd8JcmsQiwEfHXwVdmlWKy/preview',
+        'social-2026-01-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_01_AGENDA/preview',
+        'social-2026-01-minutes': 'https://drive.google.com/file/d/1e7tqN541For2m1li68wZVGdhcJb1fRIO/preview'
     };
     
     if (meetingUrls[meeting]) {
