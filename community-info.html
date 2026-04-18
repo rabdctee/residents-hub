@@ -324,9 +324,28 @@
     </div>
 
     <h3 class="section-heading">📁 Documents &amp; Information</h3>
-    <p style="color:#444;margin-bottom:20px;font-size:0.92em;">
+    <p style="color:#444;margin-bottom:16px;font-size:0.92em;">
       Click any section below to expand it, or use the buttons above to jump directly to a section.
     </p>
+
+    <!-- SECTION SEARCH -->
+    <div style="margin-bottom:20px;">
+      <div style="position:relative;max-width:100%;">
+        <input type="text" id="sectionSearch"
+          placeholder="🔍  Search sections… e.g. minutes, finances, aveo"
+          oninput="searchSections()"
+          style="width:100%;padding:12px 44px 12px 16px;font-size:16px;
+                 border:2px solid #1F4E79;border-radius:8px;
+                 font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+                 box-sizing:border-box;transition:box-shadow 0.2s;"
+          onfocus="this.style.boxShadow='0 0 0 3px rgba(31,78,121,0.15)'"
+          onblur="this.style.boxShadow='none'">
+        <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;">🔍</span>
+      </div>
+      <div id="sectionSearchResults" style="display:none;margin-top:8px;background:white;
+           border:1px solid #c5d8ee;border-radius:8px;overflow:hidden;
+           box-shadow:0 4px 12px rgba(0,0,0,0.08);"></div>
+    </div>
 
 
     <!-- 1. VILLAGE CONSTITUTION -->
@@ -471,6 +490,69 @@
 </div><!-- end container -->
 
 <script>
+
+  function searchSections() {
+    var query = document.getElementById('sectionSearch').value.toLowerCase().trim();
+    var resultsDiv = document.getElementById('sectionSearchResults');
+
+    if (query.length < 2) { resultsDiv.style.display = 'none'; return; }
+
+    var sections = [
+      { id: 'constitution', anchor: 'sec-constitution', title: '📜 Village Constitution',             keywords: 'constitution rules village governing document' },
+      { id: 'meetings',     anchor: 'sec-meetings',     title: '📝 Meetings & Minutes',               keywords: 'meetings minutes agenda agm quarterly annual general residents committee social club' },
+      { id: 'financials',   anchor: 'sec-finances',     title: '💰 Finances & Reports',               keywords: 'finances financial reports bank statement income expenditure budget monthly quarterly' },
+      { id: 'issues',       anchor: 'sec-issues',       title: '📊 Village Issues & Progress',        keywords: 'issues progress tracker maintenance updates village problems' },
+      { id: 'aveo',         anchor: 'sec-aveo',         title: '🏛️ Aveo Documents & Presentations',   keywords: 'aveo documents presentations roundtable pet policy solar' }
+    ];
+
+    var matches = sections.filter(function(s) {
+      return s.title.toLowerCase().includes(query) || s.keywords.toLowerCase().includes(query);
+    });
+
+    if (matches.length === 0) {
+      resultsDiv.innerHTML = '<div style="padding:14px 16px;color:#888;font-family:\'Segoe UI\',sans-serif;font-size:15px;">No sections found for "' + query + '"</div>';
+      resultsDiv.style.display = 'block';
+      return;
+    }
+
+    var html = '<div style="padding:10px 16px;color:#666;font-size:13px;font-family:\'Segoe UI\',sans-serif;font-weight:600;border-bottom:1px solid #e8eef5;">Found ' + matches.length + ' section(s):</div>';
+    matches.forEach(function(s) {
+      html += '<div onclick="openAndScrollTo(\'' + s.id + '\',\'' + s.anchor + '\')" ' +
+        'style="padding:13px 16px;cursor:pointer;font-family:\'Segoe UI\',sans-serif;font-size:16px;' +
+        'border-bottom:1px solid #f0f4f8;color:#1F4E79;font-weight:600;transition:background 0.15s;" ' +
+        'onmouseover="this.style.background=\'#E7F1FB\'" onmouseout="this.style.background=\'white\'">' +
+        s.title + '</div>';
+    });
+    resultsDiv.innerHTML = html;
+    resultsDiv.style.display = 'block';
+  }
+
+  function openAndScrollTo(sectionId, anchorId) {
+    // Open the section if not already open
+    var content = document.getElementById(sectionId);
+    var arrow   = document.getElementById(sectionId + '-arrow');
+    if (content && !content.classList.contains('open')) {
+      content.classList.add('open');
+      if (arrow) arrow.classList.add('open');
+    }
+    // Scroll to anchor
+    setTimeout(function() {
+      var anchor = document.getElementById(anchorId);
+      if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+    // Clear search
+    document.getElementById('sectionSearch').value = '';
+    document.getElementById('sectionSearchResults').style.display = 'none';
+  }
+
+  // Close search results when clicking outside
+  document.addEventListener('click', function(e) {
+    var box = document.getElementById('sectionSearch');
+    var res = document.getElementById('sectionSearchResults');
+    if (box && res && !box.contains(e.target) && !res.contains(e.target)) {
+      res.style.display = 'none';
+    }
+  });
 
   function toggleSection(id) {
     var content = document.getElementById(id);

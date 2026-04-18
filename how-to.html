@@ -2314,7 +2314,9 @@
 
     items.forEach(function(item) {
       var questionEl = item.querySelector('.faq-question');
+      var answerEl   = item.querySelector('.faq-answer');
       var questionText = questionEl ? questionEl.textContent.trim() : '';
+      var answerText   = answerEl   ? answerEl.textContent.trim()   : '';
       var keywords = (item.getAttribute('data-keywords') || '').toLowerCase();
       var categoryHeader = item.closest('.category-body');
       var categoryTitleEl = categoryHeader
@@ -2322,7 +2324,9 @@
         : null;
       var categoryName = categoryTitleEl ? categoryTitleEl.textContent.trim() : '';
 
-      if (questionText.toLowerCase().includes(query) || keywords.includes(query)) {
+      if (questionText.toLowerCase().includes(query) ||
+          answerText.toLowerCase().includes(query) ||
+          keywords.includes(query)) {
         matches.push({
           questionText: questionText,
           categoryName: categoryName,

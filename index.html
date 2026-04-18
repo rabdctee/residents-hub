@@ -2267,20 +2267,28 @@ function performSearch() {
     }
     
 var searchableContent = [
-    {page: 'events', title: '🗓️ Events Calendar', keywords: 'events calendar activities schedule social what on anzac day gunfire breakfast singalong opera ballet show upcoming'},
-    {page: 'activity-contacts', title: '🎉 Activities & Groups', keywords: 'activities groups clubs fitness walking art craft rummykub rumikub cards games social bridge mahjong swimming pool exercise bingo canasta bowls carpet bowls kelly pool scrabble trivia poetry singing line dancing book club morning tea movies'},
-    {page: 'contact', title: '📞 Emergency Contacts', keywords: 'emergency ambulance fire police doctor medical urgent help 000 energex maintenance after hours'},
-    {page: 'contact', title: '📞 Committee Contacts', keywords: 'office reception manager maintenance admin phone call committee email rick fay jocelyn kathy marie judy chairperson treasurer secretary convenor feedback'},
-    {page: 'newsletter', title: '📰 Newsletter', keywords: 'news newsletter announcements notices updates information social club march april'},
-    {page: 'village-info', title: '🔒 Resident-Only Information', keywords: 'aveo finance finances issues progress documents constitution act regulations meetings minutes agm financial reports budget bank statement quarterly residents only'},
-    {page: 'village-info', title: '🔒 Meeting Documents', keywords: 'agenda minutes meeting residents committee social club quarterly agm annual general'},
-    {page: 'village-info', title: '🔒 Financial Reports', keywords: 'financial report income expenditure budget social club finances january february march'},
-    {page: 'village-info', title: '🔒 Bank Statements', keywords: 'bank statement account balance'},
-    {page: 'committee', title: '👥 Committees', keywords: 'committee upload documents record transaction finances social club delete correct'},
-    {page: 'useful-links', title: '🔗 Useful Websites', keywords: 'links websites resources government health myGov centrelink aged care qld retirement village translink library brisbane safety online'},
-    {page: 'noticeboard', title: '📌 Community Board', keywords: 'classifieds buy sell wanted notice board community ads post'},
-    {page: 'about', title: '📖 About This Website', keywords: 'about website help information how guide feedback suggestions improve'},
-    {page: 'home', title: '🏠 Home', keywords: 'home welcome announcements latest news bookmark start'}
+    // ── Top-level pages ──────────────────────────────────────
+    {page: 'events',            section: null, title: '🗓️ Events Calendar',           keywords: 'events calendar activities schedule social what on anzac day gunfire breakfast singalong opera ballet show upcoming'},
+    {page: 'activity-contacts', section: null, title: '🎉 Activities & Groups',        keywords: 'activities groups clubs fitness walking art craft rummykub rumikub cards games social bridge mahjong swimming pool exercise bingo canasta bowls carpet bowls kelly pool scrabble trivia poetry singing line dancing book club morning tea movies'},
+    {page: 'contact',           section: null, title: '📞 Emergency Contacts',         keywords: 'emergency ambulance fire police doctor medical urgent help 000 energex maintenance after hours'},
+    {page: 'contact',           section: null, title: '📞 Committee Contacts',         keywords: 'office reception manager maintenance admin phone call committee email rick fay jocelyn kathy marie judy chairperson treasurer secretary convenor feedback'},
+    {page: 'newsletter',        section: null, title: '📰 Newsletter',                 keywords: 'news newsletter announcements notices updates information social club march april'},
+    {page: 'committee',         section: null, title: '👥 Committees',                 keywords: 'committee upload documents record transaction finances social club delete correct'},
+    {page: 'useful-links',      section: null, title: '🔗 Useful Websites',            keywords: 'links websites resources government health myGov centrelink aged care qld retirement village translink library brisbane safety online'},
+    {page: 'noticeboard',       section: null, title: '📌 Community Board',            keywords: 'classifieds buy sell wanted notice board community ads post'},
+    {page: 'about',             section: null, title: '📖 About This Website',         keywords: 'about website help information how guide feedback suggestions improve'},
+    {page: 'home',              section: null, title: '🏠 Home',                       keywords: 'home welcome announcements latest news bookmark start'},
+    // ── Resident-Only sections (village-info) ────────────────
+    {page: 'village-info', section: 'qld-act',    title: '🔒 QLD Act & Regulations',      keywords: 'qld act regulations retirement villages legislation law 1999 2018'},
+    {page: 'village-info', section: 'constitution', title: '🔒 Village Constitution',      keywords: 'constitution rules village governing document'},
+    {page: 'village-info', section: 'meetings',   title: '🔒 Meeting Documents',           keywords: 'agenda minutes meeting residents committee social club quarterly agm annual general'},
+    {page: 'village-info', section: 'financials', title: '🔒 Financial Reports & Statements', keywords: 'financial report income expenditure budget social club finances january february march bank statement account balance'},
+    {page: 'village-info', section: 'aveo',       title: '🔒 Aveo Documents',              keywords: 'aveo documents presentations roundtable pet policy solar'},
+    {page: 'village-info', section: 'issues',     title: '🔒 Village Issues & Progress',   keywords: 'issues progress tracker maintenance updates village problems'},
+    {page: 'village-info', section: 'gov-services', title: '🔒 Government Services',       keywords: 'government mygov centrelink aged care qld state services'},
+    {page: 'village-info', section: 'rv-resources', title: '🔒 Retirement Village Info',   keywords: 'retirement village arq association residents queensland advocacy'},
+    {page: 'village-info', section: 'safety',     title: '🔒 Safety Information',          keywords: 'safety online esafety emergency dashboard brisbane council energy bill'},
+    {page: 'village-info', section: 'local-services', title: '🔒 Local Services',          keywords: 'translink bus library brisbane entertainment cinema events arts culture local'}
 ];
     
     var results = searchableContent.filter(function(item) {
@@ -2294,8 +2302,18 @@ var searchableContent = [
     } else {
         var html = '<div style="padding:10px;color:#666;font-weight:600;">Found ' + results.length + ' result(s):</div>';
         results.forEach(function(result) {
-            html += '<div class="search-result-item" onclick="showPage(\'' + result.page + '\'); document.getElementById(\'searchResults\').style.display=\'none\'; document.getElementById(\'searchInput\').value=\'\';">' +
-                    result.title + '</div>';
+            var onclick = 'showPage(\'' + result.page + '\');';
+            if (result.section) {
+                // Navigate to page then open the matching section
+                onclick += 'setTimeout(function(){' +
+                    'var el=document.getElementById(\'' + result.section + '\');' +
+                    'var arr=document.getElementById(\'' + result.section + '-arrow\');' +
+                    'if(el&&!el.classList.contains(\'open\')){el.classList.add(\'open\');if(arr)arr.classList.add(\'open\');}' +
+                    'if(el)el.scrollIntoView({behavior:\'smooth\',block:\'start\'});' +
+                    '},200);';
+            }
+            onclick += 'document.getElementById(\'searchResults\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\';';
+            html += '<div class="search-result-item" onclick="' + onclick + '">' + result.title + '</div>';
         });
         resultsDiv.innerHTML = html;
         resultsDiv.style.display = 'block';
