@@ -465,10 +465,14 @@ function sheetSerialToDate(val) {
   if (!val) return null;
   var s = String(val).trim();
 
-  // Australian DD/MM/YYYY format (what Google Sheets CSV delivers)
-  var auMatch = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (auMatch) {
-    return new Date(parseInt(auMatch[3]), parseInt(auMatch[2]) - 1, parseInt(auMatch[1]));
+  // Google Sheets CSV short format: D/M/YY or DD/MM/YY or D/M/YYYY
+  var slashMatch = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+  if (slashMatch) {
+    var day   = parseInt(slashMatch[1]);
+    var month = parseInt(slashMatch[2]) - 1;
+    var year  = parseInt(slashMatch[3]);
+    if (year < 100) year += 2000;
+    return new Date(year, month, day);
   }
 
   // ISO format YYYY-MM-DD
@@ -521,7 +525,7 @@ function toInputDate(dateStr) {
 }
 
 function formatAUD(val) {
-  const n = parseFloat(val);
+  const n = parseFloat(String(val).replace(/[$,]/g, ''));
   if (isNaN(n)) return val;
   return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
