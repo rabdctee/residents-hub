@@ -351,6 +351,7 @@
       <div class="error-msg" id="step2Error"></div>
 
       <div class="btn-row">
+        <a href="https://rabdctee.github.io/residents-hub/#committee" class="btn btn-secondary" style="text-align:center;text-decoration:none;">✕ Cancel</a>
         <button class="btn btn-primary" onclick="showReview()">Review Changes →</button>
       </div>
 
@@ -458,6 +459,18 @@ function parseCSV(text) {
   });
 }
 
+// Google Sheets stores dates as serial numbers (days since 30 Dec 1899)
+// e.g. 46083 = 2 Mar 2026. Convert to a JS Date object.
+function sheetSerialToDate(val) {
+  var n = parseFloat(val);
+  if (isNaN(n)) return null;
+  if (String(val).includes('-') || String(val).includes('/')) {
+    var d = new Date(val);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  return new Date(Date.UTC(1899, 11, 30) + n * 86400000);
+}
+
 function loadTransactions() {
   fetch(TX_CSV_URL)
     .then(function(r) { return r.text(); })
@@ -467,9 +480,9 @@ function loadTransactions() {
       cutoff.setDate(cutoff.getDate() - 60);
       allTransactions = rows.filter(function(r) {
         if (!r['Date'] || !r['Type']) return false;
-        const d = new Date(r['Date']);
-        return !isNaN(d.getTime()) && d >= cutoff;
-      }).sort(function(a, b) { return new Date(b['Date']) - new Date(a['Date']); });
+        const d = sheetSerialToDate(r['Date']);
+        return d && !isNaN(d.getTime()) && d >= cutoff;
+      }).sort(function(a, b) { return sheetSerialToDate(b['Date']) - sheetSerialToDate(a['Date']); });
       renderTransactions(allTransactions);
     })
     .catch(function() {
@@ -480,15 +493,15 @@ function loadTransactions() {
 
 function formatDateDisplay(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return dateStr;
+  const d = sheetSerialToDate(dateStr);
+  if (!d || isNaN(d.getTime())) return dateStr;
   return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
 function toInputDate(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return '';
+  const d = sheetSerialToDate(dateStr);
+  if (!d || isNaN(d.getTime())) return '';
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 
@@ -642,9 +655,12 @@ function submitCorrection() {
   const newAmount   = document.getElementById('newAmount').value;
   const newDesc     = document.getElementById('newDesc').value.trim();
 
+  const rawDate = sheetSerialToDate(selectedTx['Date']);
+  const isoDate = rawDate ? rawDate.toISOString().split('T')[0] : selectedTx['Date'];
+
   const payload = {
     action:       'correctTransaction',
-    origDate:     selectedTx['Date'],
+    origDate:     isoDate,
     origDesc:     selectedTx['Description'],
     origAmount:   selectedTx['Amount'],
     newDate:      newDate     || '',
