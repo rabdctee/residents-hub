@@ -446,8 +446,6 @@
       and resident-raised concerns.</p>
       <a href="https://docs.google.com/spreadsheets/d/19KgFNmrC171lg8sKe937PgZeN7mSRdYr0wJP8k7iEBM/view" target="_blank" class="doc-link">📄 Current Issues Tracker (Updated: 01 Apr 2026)</a>
       <p style="color:#555;margin-top:6px;font-size:0.85em;">This tracker is updated regularly to show progress on community issues.</p>
-      <hr style="margin:14px 0;border:none;border-top:1px solid #E7F1FB;">
-      <a href="https://drive.google.com/drive/folders/1XK9n5JB-wVgTo-qp0Zd7hcPm_WWCQhuC?usp=share_link" target="_blank" class="doc-link">📁 View Issues Archive</a>
     </div>
 
 
@@ -467,8 +465,6 @@
         <option value="aveo-doc3">Aveo Solar Presentation</option>
       </select>
       <button onclick="viewAveoDocument()" class="btn">📄 View Selected Document</button>
-      <hr style="margin:16px 0;border:none;border-top:1px solid #E7F1FB;">
-      <a href="https://drive.google.com/drive/folders/1BUxeN8inbHkEZWn5hgrYSMige6s1CqhZ?usp=share_link" target="_blank" class="doc-link">📁 Browse All Aveo Documents</a>
     </div>
 
   </div><!-- end page-content -->
@@ -565,14 +561,10 @@
   function buildFileList(key) {
     var ul = document.getElementById(key + '-files');
     if (ul.children.length > 0) return;
-    var files    = MEETING_FILES[key] || [];
-    var folderId = FOLDER_IDS[key];
-    var html     = '';
+    var files = MEETING_FILES[key] || [];
+    var html  = '';
     files.forEach(function(f) {
-      var href = f.id
-        ? 'https://drive.google.com/file/d/' + f.id + '/view'
-        : 'https://drive.google.com/drive/folders/' + folderId;
-      html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+      if (f.id) html += '<li><a href="https://drive.google.com/file/d/' + f.id + '/preview" target="_blank">📄 ' + f.name + '</a></li>';
     });
     ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
     var folderName = FOLDER_KEY_TO_NAME[key];
@@ -593,15 +585,12 @@
           var rowFolder = cols[3] ? cols[3].trim() : null;
           if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
             newHtml += '<li><a href="https://drive.google.com/file/d/' + fileId +
-              '/view" target="_blank">📄 ' + fileName + '</a></li>';
+              '/preview" target="_blank">📄 ' + fileName + '</a></li>';
           }
         }
         var baseHtml = '';
         files.forEach(function(f) {
-          var href = f.id
-            ? 'https://drive.google.com/file/d/' + f.id + '/view'
-            : 'https://drive.google.com/drive/folders/' + folderId;
-          baseHtml += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+          if (f.id) baseHtml += '<li><a href="https://drive.google.com/file/d/' + f.id + '/preview" target="_blank">📄 ' + f.name + '</a></li>';
         });
         ul.innerHTML = baseHtml + newHtml ||
           '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
@@ -630,9 +619,9 @@
     var doc = document.getElementById('aveo-document').value;
     if (!doc) { alert('Please select a document first'); return; }
     var aveoUrls = {
-      'aveo-doc1': 'https://drive.google.com/file/d/1uLTwCNHLecssMYlcQb3_73-AO0B0gw0w/view',
-      'aveo-doc2': 'https://drive.google.com/file/d/1cyxwbj5QwaKNUSp8aQ97sVCK8qYvkjRd/view',
-      'aveo-doc3': 'https://drive.google.com/file/d/12vuHRozWiBNUb_e50nUUYY2Nh2daSBnQ/view'
+      'aveo-doc1': 'https://drive.google.com/file/d/1uLTwCNHLecssMYlcQb3_73-AO0B0gw0w/preview',
+      'aveo-doc2': 'https://drive.google.com/file/d/1cyxwbj5QwaKNUSp8aQ97sVCK8qYvkjRd/preview',
+      'aveo-doc3': 'https://drive.google.com/file/d/12vuHRozWiBNUb_e50nUUYY2Nh2daSBnQ/preview'
     };
     if (aveoUrls[doc]) { window.open(aveoUrls[doc], '_blank'); }
     else { alert('Document not yet available. Please check back later.'); }
@@ -642,9 +631,9 @@
     var period = document.getElementById('financial-period').value;
     if (!period) { alert('Please select a reporting period first'); return; }
     var reportUrls = {
-      '2026-03': 'https://drive.google.com/file/d/18hoLzU2A-rGb8UCsnd1Bh1O-X4U5pKSF/view',
-      '2026-02': 'https://drive.google.com/file/d/1-pHEekWsJbxEFDsroAuhbUy1xsah9w-w/view',
-      '2026-01': 'https://drive.google.com/file/d/1um5EUFddhoLXzOijuPOMSJ2cK6S_E4dO/view'
+      '2026-03': 'https://drive.google.com/file/d/18hoLzU2A-rGb8UCsnd1Bh1O-X4U5pKSF/preview',
+      '2026-02': 'https://drive.google.com/file/d/1-pHEekWsJbxEFDsroAuhbUy1xsah9w-w/preview',
+      '2026-01': 'https://drive.google.com/file/d/1um5EUFddhoLXzOijuPOMSJ2cK6S_E4dO/preview'
     };
     if (reportUrls[period]) { window.open(reportUrls[period], '_blank'); }
     else { alert('Report not yet available for this period. Please check back later.'); }
@@ -654,9 +643,9 @@
     var period = document.getElementById('bank-statement-period').value;
     if (!period) { alert('Please select a month first'); return; }
     var statementUrls = {
-      '2026-03': 'https://drive.google.com/file/d/1OMz8h1AfKdIBepDXduJiwE6j0oFeXhlk/view',
-      '2026-02': 'https://drive.google.com/file/d/1tJP3lAI2poeomS_8QmI4C4mVgNsfmgAZ/view',
-      '2026-01': 'https://drive.google.com/file/d/10mKFO6g8hf0DGJGGCjnMWP6US4mlfN0U/view'
+      '2026-03': 'https://drive.google.com/file/d/1OMz8h1AfKdIBepDXduJiwE6j0oFeXhlk/preview',
+      '2026-02': 'https://drive.google.com/file/d/1tJP3lAI2poeomS_8QmI4C4mVgNsfmgAZ/preview',
+      '2026-01': 'https://drive.google.com/file/d/10mKFO6g8hf0DGJGGCjnMWP6US4mlfN0U/preview'
     };
     if (statementUrls[period]) { window.open(statementUrls[period], '_blank'); }
     else { alert('Statement not yet available for this period. Please check back later.'); }
