@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Update Bank Balance — Social Club Finances</title>
+<style>
+  :root {
+    --navy: #1a3a6b;
+    --navy-light: #2a4f8f;
+    --gold: #c8a84b;
+    --green: #2e7d32;
+    --red: #c62828;
+    --bg: #f4f6f9;
+    --white: #ffffff;
+    --border: #d0d7e3;
+    --text: #222222;
+    --muted: #666666;
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  header .back-link {
+    color: var(--gold);
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+  }
+  header .back-link:hover { opacity: 1; }
+  header h1 { font-size: 20px; font-weight: normal; letter-spacing: 0.3px; }
+  header .subtitle { font-family: Arial, sans-serif; font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 3px; }
+
+  .container {
+    max-width: 520px;
+    margin: 36px auto;
+    padding: 0 20px 60px;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: var(--navy);
+    color: white;
+    padding: 16px 24px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .card-body { padding: 28px 24px; }
+
+  .info-box {
+    background: #f0f4ff;
+    border-left: 3px solid var(--navy);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 14px 16px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .form-group { margin-bottom: 22px; }
+
+  label {
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 7px;
+  }
+  label .hint {
+    font-weight: normal;
+    color: var(--muted);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 11px;
+    margin-left: 6px;
+  }
+
+  input[type="date"],
+  input[type="number"] {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(26,58,107,0.12);
+  }
+
+  .amount-wrap { position: relative; }
+  .amount-wrap .dollar {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .amount-wrap input { padding-left: 28px; }
+
+  .btn-row { display: flex; gap: 12px; margin-top: 28px; }
+
+  .btn {
+    padding: 13px 28px;
+    border-radius: var(--radius);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    text-align: center;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--navy); color: white; flex: 1; }
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+  .btn-secondary { background: white; color: var(--navy); border: 2px solid var(--navy); }
+  .btn-secondary:hover { background: var(--bg); }
+
+  .error-msg {
+    background: #ffebee;
+    border: 1px solid #ef9a9a;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    color: var(--red);
+    margin-top: 16px;
+    display: none;
+  }
+
+  /* Review screen */
+  .review-amount {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px 0 6px;
+    font-family: Georgia, serif;
+    color: var(--navy);
+  }
+  .review-label {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+  }
+  .review-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  .review-row:last-child { border-bottom: none; }
+  .rlabel { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .rvalue { font-weight: bold; }
+
+  /* Success screen */
+  .success-icon { text-align: center; font-size: 48px; padding: 20px 0 10px; }
+  .success-msg { text-align: center; font-family: Arial, sans-serif; font-size: 15px; color: var(--green); font-weight: bold; margin-bottom: 8px; }
+  .success-sub { text-align: center; font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4); border-top-color: white;
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+    margin-right: 8px; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* PIN overlay */
+  #pinOverlay {
+    position: fixed; inset: 0;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  .pin-box {
+    background: white; border-radius: 12px;
+    padding: 40px 36px; max-width: 360px; width: 90%;
+    text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .pin-box .pin-logo { font-size: 36px; margin-bottom: 12px; }
+  .pin-box h2 { font-size: 18px; color: var(--navy); margin-bottom: 6px; }
+  .pin-box p { font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+  .pin-input {
+    width: 100%; padding: 14px; font-size: 24px; letter-spacing: 10px;
+    text-align: center; border: 2px solid var(--border); border-radius: var(--radius);
+    font-family: Arial, sans-serif; margin-bottom: 16px; transition: border-color 0.2s;
+  }
+  .pin-input:focus { outline: none; border-color: var(--navy); }
+  .pin-btn {
+    width: 100%; padding: 14px; background: var(--navy); color: white;
+    border: none; border-radius: var(--radius);
+    font-family: Arial, sans-serif; font-size: 15px; font-weight: bold;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .pin-btn:hover { background: var(--navy-light); }
+  .pin-error { color: var(--red); font-family: Arial, sans-serif; font-size: 13px; margin-top: 12px; display: none; }
+</style>
+</head>
+<body>
+
+<!-- PIN OVERLAY -->
+<div id="pinOverlay">
+  <div class="pin-box">
+    <div class="pin-logo">🔒</div>
+    <h2>Authorised Access Only</h2>
+    <p>This page is for Social Club committee use only.<br>Please enter your PIN to continue.</p>
+    <input type="password" class="pin-input" id="pinInput" maxlength="4"
+           placeholder="••••" inputmode="numeric" onkeydown="if(event.key==='Enter')checkPin()">
+    <button class="pin-btn" onclick="checkPin()">Enter</button>
+    <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
+  </div>
+</div>
+
+<header>
+  <div>
+    <a href="https://rabdctee.github.io/residents-hub/#committee" class="back-link">← Back to Committees</a>
+    <h1>Update Bank Balance</h1>
+    <div class="subtitle">Bridgeman Downs Social Club — Record actual bank balance from statement</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ENTRY FORM -->
+  <div class="card" id="formCard">
+    <div class="card-header">New Bank Balance Entry</div>
+    <div class="card-body">
+
+      <div class="info-box">
+        Enter the actual bank balance as shown on the bank statement. This updates the Financial Dashboard and monthly reports.
+      </div>
+
+      <div class="form-group">
+        <label>Statement Date <span class="hint">The date of the bank statement</span></label>
+        <input type="date" id="stmtDate">
+      </div>
+
+      <div class="form-group">
+        <label>Bank Balance</label>
+        <div class="amount-wrap">
+          <span class="dollar">$</span>
+          <input type="number" id="bankBalance" min="0" step="0.01" placeholder="0.00">
+        </div>
+      </div>
+
+      <div class="error-msg" id="formError"></div>
+
+      <div class="btn-row">
+        <a href="https://rabdctee.github.io/residents-hub/#committee" class="btn btn-secondary">✕ Cancel</a>
+        <button class="btn btn-primary" onclick="showReview()">Review →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- REVIEW SCREEN -->
+  <div class="card" id="reviewCard" style="display:none;">
+    <div class="card-header">Review Before Submitting</div>
+    <div class="card-body">
+
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:var(--muted);margin-bottom:16px;">
+        Please check the details below carefully before confirming.
+      </p>
+
+      <div class="review-amount" id="reviewAmount"></div>
+      <div class="review-label">Bank Balance</div>
+
+      <div class="review-row">
+        <span class="rlabel">Statement Date</span>
+        <span class="rvalue" id="reviewDate"></span>
+      </div>
+      <div class="review-row">
+        <span class="rlabel">Entered</span>
+        <span class="rvalue" id="reviewTimestamp"></span>
+      </div>
+
+      <div class="error-msg" id="submitError"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-secondary" onclick="goBack()">← Go Back</button>
+        <button class="btn btn-primary" id="confirmBtn" onclick="submitBalance()">✓ Confirm &amp; Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="card" id="successCard" style="display:none;">
+    <div class="card-body">
+      <div class="success-icon">✅</div>
+      <div class="success-msg">Bank balance updated successfully</div>
+      <div class="success-sub" id="successDetail"></div>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn btn-primary" onclick="resetForm()">Enter Another Balance</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEBAPP_URL';
+
+// ── PIN ────────────────────────────────────────────────────────
+function checkPin() {
+  var val = document.getElementById('pinInput').value;
+  if (val === '5304') {
+    document.getElementById('pinOverlay').style.display = 'none';
+    document.getElementById('pinInput').value = '';
+  } else {
+    var err = document.getElementById('pinError');
+    err.style.display = 'block';
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').focus();
+    setTimeout(function() { err.style.display = 'none'; }, 3000);
+  }
+}
+
+// ── Initialise — default date to today ────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  var today = new Date();
+  var yyyy  = today.getFullYear();
+  var mm    = String(today.getMonth() + 1).padStart(2, '0');
+  var dd    = String(today.getDate()).padStart(2, '0');
+  document.getElementById('stmtDate').value = yyyy + '-' + mm + '-' + dd;
+});
+
+// ── Helpers ────────────────────────────────────────────────────
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  var parts = dateStr.split('-');
+  var d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+  return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+function formatAUD(val) {
+  var n = parseFloat(val);
+  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function showError(id, msg) {
+  var el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function hideError(id) {
+  document.getElementById(id).style.display = 'none';
+}
+
+// ── Review screen ──────────────────────────────────────────────
+function showReview() {
+  hideError('formError');
+
+  var date    = document.getElementById('stmtDate').value;
+  var balance = document.getElementById('bankBalance').value;
+
+  if (!date)                            return showError('formError', 'Please enter the statement date.');
+  if (!balance || parseFloat(balance) < 0) return showError('formError', 'Please enter a valid bank balance.');
+
+  document.getElementById('reviewAmount').textContent    = formatAUD(balance);
+  document.getElementById('reviewDate').textContent      = formatDate(date);
+  document.getElementById('reviewTimestamp').textContent = new Date().toLocaleString('en-AU', {
+    day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+
+  document.getElementById('formCard').style.display   = 'none';
+  document.getElementById('reviewCard').style.display = 'block';
+  window.scrollTo(0, 0);
+}
+
+function goBack() {
+  hideError('submitError');
+  document.getElementById('reviewCard').style.display = 'none';
+  document.getElementById('formCard').style.display   = 'block';
+  window.scrollTo(0, 0);
+}
+
+// ── Submit ─────────────────────────────────────────────────────
+function submitBalance() {
+  hideError('submitError');
+  var btn = document.getElementById('confirmBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+
+  var date    = document.getElementById('stmtDate').value;
+  var balance = parseFloat(document.getElementById('bankBalance').value);
+
+  var payload = {
+    action:      'updateBankBalance',
+    timestamp:   new Date().toISOString(),
+    date:        date,
+    bankBalance: balance
+  };
+
+  fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.status === 'ok') {
+      document.getElementById('successDetail').textContent =
+        'Bank balance of ' + formatAUD(balance) +
+        ' recorded for ' + formatDate(date) + '.';
+      document.getElementById('reviewCard').style.display  = 'none';
+      document.getElementById('successCard').style.display = 'block';
+      window.scrollTo(0, 0);
+    } else {
+      throw new Error(data.message || 'Unknown error');
+    }
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    btn.innerHTML = '✓ Confirm &amp; Submit';
+    showError('submitError', 'Submission failed: ' + err.message + '. Please try again or contact Rick.');
+  });
+}
+
+// ── Reset ──────────────────────────────────────────────────────
+function resetForm() {
+  document.getElementById('bankBalance').value = '';
+
+  var today = new Date();
+  var yyyy  = today.getFullYear();
+  var mm    = String(today.getMonth() + 1).padStart(2, '0');
+  var dd    = String(today.getDate()).padStart(2, '0');
+  document.getElementById('stmtDate').value = yyyy + '-' + mm + '-' + dd;
+
+  document.getElementById('successCard').style.display = 'none';
+  document.getElementById('formCard').style.display    = 'block';
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
