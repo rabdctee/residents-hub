@@ -484,7 +484,7 @@ function loadTransactions() {
     .then(function(text) {
       const rows = parseCSV(text);
       const cutoff = new Date();
-      cutoff.setDate(cutoff.getDate() - 60);
+      cutoff.setDate(cutoff.getDate() - 90);
 
       allTransactions = rows.filter(function(r) {
         if (!r['Date'] || !r['Type']) return false;
