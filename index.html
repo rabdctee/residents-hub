@@ -1817,11 +1817,6 @@ Select a reporting period below to view and print the financial report:
 
 <select id="financial-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
 <option value="">-- Select Month --</option>
-<optgroup label="2026">
-<option value="2026-03">March 2026</option>
-<option value="2026-02">February 2026</option>
-<option value="2026-01">January 2026</option>
-</optgroup>
 </select>
 
 <button onclick="viewFinancialReport()" class="btn" style="width:100%; margin-bottom:10px;">
@@ -1842,11 +1837,6 @@ Select a month below to view the bank statement:
 
 <select id="bank-statement-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
 <option value="">-- Select Month --</option>
-<optgroup label="2026">
-<option value="2026-03">March 2026</option>
-<option value="2026-02">February 2026</option>
-<option value="2026-01">January 2026</option>
-</optgroup>
 </select>
 
 <button onclick="viewBankStatement()" class="btn" style="width:100%; margin-bottom:10px;">
@@ -1869,13 +1859,10 @@ Select a month below to view the bank statement:
 </div>
 <div id="aveo" class="collapsible-content">
 
-<h4 style="margin-bottom:15px; color:#1F4E79;">📄 View aveo Documents</h4>
+<h4 style="margin-bottom:15px; color:#1F4E79;">📄 View Aveo Documents</h4>
 
 <select id="aveo-document" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
 <option value="">-- Select Document --</option>
-<option value="aveo-doc1">aveo Roundtable Presentation - March 2026</option>
-<option value="aveo-doc2">aveo Pet Policy</option>
-<option value="aveo-doc3">aveo Solar Presentation</option>
 </select>
 
 <button onclick="viewAveoDocument()" class="btn" style="width:100%; margin-bottom:10px;">
@@ -2023,14 +2010,6 @@ Advocacy, advice and support for retirement village residents in Queensland
     Record the actual balance from the bank statement
   </span>
 </a>
-
-  <a href="view-transactions.html" class="doc-link">
-    📋 View & Print Transactions
-    <span style="display:block;font-weight:400;font-size:0.85em;
-                 color:#555;margin-top:2px;">
-      Browse all recorded transactions — use this to find exact details before correcting or deleting
-    </span>
-  </a>
 </div>
 </div>
 
@@ -2395,29 +2374,105 @@ location.reload();
 
 
 // aveo Documents Viewer
+var aveoDocUrls = {};
 function viewAveoDocument() {
     var doc = document.getElementById('aveo-document').value;
     if (!doc) { alert('Please select a document first'); return; }
-    var aveoUrls = {
-        'aveo-doc1': 'https://drive.google.com/file/d/1uLTwCNHLecssMYlcQb3_73-AO0B0gw0w/preview',
-        'aveo-doc2': 'https://drive.google.com/file/d/1cyxwbj5QwaKNUSp8aQ97sVCK8qYvkjRd/preview',
-        'aveo-doc3': 'https://drive.google.com/file/d/12vuHRozWiBNUb_e50nUUYY2Nh2daSBnQ/preview'
-    };
-    if (aveoUrls[doc]) { window.open(aveoUrls[doc], '_blank'); }
+    var url = aveoDocUrls[doc];
+    if (url) { window.open(url, '_blank'); }
     else { alert('Document not yet available. Please check back later.'); }
 }
 
 
-// Financial Report Viewer - Monthly Reports
+// ── Dynamic Financial Reports & Bank Statements ──────────────────────
+// Both dropdowns are populated from the Document Registry CSV.
+// Folder name values used in the Registry:
+//   'Monthly Financial Reports'  →  financial-period dropdown
+//   'Bank Statements'            →  bank-statement-period dropdown
+
+var REGISTRY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtAar-VwmAowIRfzJumkbIfSW82SM4xnwDk12RlVAfuLZZ-xeOJHAA3lb_UeK4as78WRp3u_GmpHLI/pub?gid=0&single=true&output=csv';
+
+// Store loaded URLs keyed by dropdown value (filename used as key)
+var financialReportUrls  = {};
+var bankStatementUrls    = {};
+
+function loadFinancialDropdowns() {
+  fetch(REGISTRY_CSV_URL)
+    .then(function(r) { return r.text(); })
+    .then(function(csvText) {
+      var lines = csvText.split('\n');
+      var reportSelect    = document.getElementById('financial-period');
+      var statementSelect = document.getElementById('bank-statement-period');
+      var aveoSelect      = document.getElementById('aveo-document');
+
+      var reports    = [];
+      var statements = [];
+      var aveoDocs   = [];
+
+      for (var i = 1; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line) continue;
+        var cols       = parseCSVLine(line);
+        var fileName   = cols[1] ? cols[1].trim() : '';
+        var fileId     = cols[2] ? cols[2].trim() : '';
+        var folderName = cols[3] ? cols[3].trim() : '';
+        if (!fileName || !fileId) continue;
+
+        if (folderName === 'Monthly Financial Reports') {
+          reports.push({ name: fileName, id: fileId });
+        } else if (folderName === 'Bank Statements') {
+          statements.push({ name: fileName, id: fileId });
+        } else if (folderName === 'Aveo Documents') {
+          aveoDocs.push({ name: fileName, id: fileId });
+        }
+      }
+
+      // Populate Financial Reports dropdown (newest first)
+      if (reports.length > 0) {
+        reports.reverse();
+        var rHtml = '<option value="">-- Select Month --</option>';
+        reports.forEach(function(doc) {
+          var key = doc.id;
+          financialReportUrls[key] = 'https://drive.google.com/file/d/' + doc.id + '/preview';
+          rHtml += '<option value="' + key + '">' + doc.name + '</option>';
+        });
+        reportSelect.innerHTML = rHtml;
+      }
+
+      // Populate Bank Statements dropdown (newest first)
+      if (statements.length > 0) {
+        statements.reverse();
+        var sHtml = '<option value="">-- Select Month --</option>';
+        statements.forEach(function(doc) {
+          var key = doc.id;
+          bankStatementUrls[key] = 'https://drive.google.com/file/d/' + doc.id + '/preview';
+          sHtml += '<option value="' + key + '">' + doc.name + '</option>';
+        });
+        statementSelect.innerHTML = sHtml;
+      }
+
+      // Populate Aveo Documents dropdown
+      if (aveoDocs.length > 0) {
+        var aHtml = '<option value="">-- Select Document --</option>';
+        aveoDocs.forEach(function(doc) {
+          var key = doc.id;
+          aveoDocUrls[key] = 'https://drive.google.com/file/d/' + doc.id + '/preview';
+          aHtml += '<option value="' + key + '">' + doc.name + '</option>';
+        });
+        aveoSelect.innerHTML = aHtml;
+      }
+    })
+    .catch(function() {
+      console.log('Document Registry unavailable — dropdowns not populated');
+    });
+}
+
+// Financial Report Viewer
 function viewFinancialReport() {
     var period = document.getElementById('financial-period').value;
     if (!period) { alert('Please select a reporting period first'); return; }
-    var reportUrls = {
-        '2026-03': 'https://drive.google.com/file/d/1mfDCWftz-elBWtlgYeHACgm9lVVv-HP9/preview',
-        '2026-02': 'https://drive.google.com/file/d/1aizd-IvazCu2OlctTBVrK2i4SpgKfRZF/preview',
-        '2026-01': 'https://drive.google.com/file/d/1Chsi6lTa4p-nennZ61Ylj-iWDSkh4aW0/preview',
-    };
-    if (reportUrls[period]) { window.open(reportUrls[period], '_blank'); }
+  var url = financialReportUrls[period];
+  if (url) { window.open(url, '_blank'); }
     else { alert('Report not yet available for this period. Please check back later.'); }
 }
 
@@ -2425,12 +2480,8 @@ function viewFinancialReport() {
 function viewBankStatement() {
     var period = document.getElementById('bank-statement-period').value;
     if (!period) { alert('Please select a month first'); return; }
-    var statementUrls = {
-        '2026-03': 'https://drive.google.com/file/d/1OMz8h1AfKdIBepDXduJiwE6j0oFeXhlk/preview',
-        '2026-02': 'https://drive.google.com/file/d/1SE1NzMd8sH4Mj5JHc7pHhwkMj2NbGSxu/preview',
-        '2026-01': 'https://drive.google.com/file/d/10mKFO6g8hf0DGJGGCjnMWP6US4mlfN0U/preview',
-    };
-    if (statementUrls[period]) { window.open(statementUrls[period], '_blank'); }
+  var url = bankStatementUrls[period];
+  if (url) { window.open(url, '_blank'); }
     else { alert('Statement not yet available for this period. Please check back later.'); }
 }
 function viewResidentsMeeting() {
@@ -2767,6 +2818,7 @@ function displayEvents(events) {
 document.addEventListener('DOMContentLoaded', function() {
     loadAnnouncements();
     loadEvents();
+    loadFinancialDropdowns();
 });
 
 // Refresh every 5 minutes
