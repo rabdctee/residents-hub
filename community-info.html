@@ -356,7 +356,7 @@
     </div>
     <div id="constitution" class="collapsible-content">
       <p class="section-desc">Bridgeman Downs Retirement Village Constitution.</p>
-      <a href="https://drive.google.com/file/d/1dA97VG7HlEFrXO3Kzqxf2UuygP7vdT7D/view" target="_blank" class="doc-link">📄 View Village Constitution</a>
+      <a href="view-document.html?id=1dA97VG7HlEFrXO3Kzqxf2UuygP7vdT7D&title=Village%20Constitution&back=community-info.html" target="_blank" class="doc-link">📄 View Village Constitution</a>
     </div>
 
 
@@ -424,11 +424,6 @@
       <p style="color:#444;margin-bottom:12px;font-size:0.85em;">Select a reporting period to view the financial report:</p>
       <select id="financial-period">
         <option value="">-- Select Month --</option>
-        <optgroup label="2026">
-          <option value="2026-03">March 2026</option>
-          <option value="2026-02">February 2026</option>
-          <option value="2026-01">January 2026</option>
-        </optgroup>
       </select>
       <button onclick="viewFinancialReport()" class="btn">📄 View Selected Report</button>
       <p style="color:#555;font-size:0.82em;margin-top:6px;margin-bottom:18px;">
@@ -441,11 +436,6 @@
       <p style="color:#444;margin-bottom:12px;font-size:0.85em;">Select a month to view the bank statement:</p>
       <select id="bank-statement-period">
         <option value="">-- Select Month --</option>
-        <optgroup label="2026">
-          <option value="2026-03">March 2026</option>
-          <option value="2026-02">February 2026</option>
-          <option value="2026-01">January 2026</option>
-        </optgroup>
       </select>
       <button onclick="viewBankStatement()" class="btn">📄 View Selected Statement</button>
       <p style="color:#555;font-size:0.82em;margin-top:6px;">
@@ -479,9 +469,6 @@
       operational guidelines, notices and policies.</p>
       <select id="aveo-document">
         <option value="">-- Select Document --</option>
-        <option value="aveo-doc1">Aveo Roundtable Presentation — March 2026</option>
-        <option value="aveo-doc2">Aveo Pet Policy</option>
-        <option value="aveo-doc3">Aveo Solar Presentation</option>
       </select>
       <button onclick="viewAveoDocument()" class="btn">📄 View Selected Document</button>
     </div>
@@ -647,7 +634,10 @@
     var files = MEETING_FILES[key] || [];
     var html  = '';
     files.forEach(function(f) {
-      if (f.id) html += '<li><a href="https://drive.google.com/file/d/' + f.id + '/preview" target="_blank">📄 ' + f.name + '</a></li>';
+      if (f.id) {
+        var wrapHref = 'view-document.html?id=' + encodeURIComponent(f.id) + '&title=' + encodeURIComponent(f.name) + '&back=community-info.html';
+        html += '<li><a href="' + wrapHref + '" target="_blank">📄 ' + f.name + '</a></li>';
+      }
     });
     ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
     var folderName = FOLDER_KEY_TO_NAME[key];
@@ -673,7 +663,10 @@
         }
         var baseHtml = '';
         files.forEach(function(f) {
-          if (f.id) baseHtml += '<li><a href="https://drive.google.com/file/d/' + f.id + '/preview" target="_blank">📄 ' + f.name + '</a></li>';
+          if (f.id) {
+          var wrapBase = 'view-document.html?id=' + encodeURIComponent(f.id) + '&title=' + encodeURIComponent(f.name) + '&back=community-info.html';
+          baseHtml += '<li><a href="' + wrapBase + '" target="_blank">📄 ' + f.name + '</a></li>';
+        }
         });
         ul.innerHTML = baseHtml + newHtml ||
           '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
@@ -698,41 +691,66 @@
     return cols;
   }
 
+  var aveoDocUrls = {};
   function viewAveoDocument() {
-    var doc = document.getElementById('aveo-document').value;
-    if (!doc) { alert('Please select a document first'); return; }
-    var aveoUrls = {
-      'aveo-doc1': 'https://drive.google.com/file/d/1uLTwCNHLecssMYlcQb3_73-AO0B0gw0w/preview',
-      'aveo-doc2': 'https://drive.google.com/file/d/1cyxwbj5QwaKNUSp8aQ97sVCK8qYvkjRd/preview',
-      'aveo-doc3': 'https://drive.google.com/file/d/12vuHRozWiBNUb_e50nUUYY2Nh2daSBnQ/preview'
-    };
-    if (aveoUrls[doc]) { window.open(aveoUrls[doc], '_blank'); }
-    else { alert('Document not yet available. Please check back later.'); }
+    var fileId = document.getElementById('aveo-document').value;
+    if (!fileId) { alert('Please select a document first'); return; }
+    var select = document.getElementById('aveo-document');
+    var label  = select.options[select.selectedIndex].text;
+    window.open('view-document.html?id=' + encodeURIComponent(fileId) + '&title=' + encodeURIComponent(label) + '&back=community-info.html', '_blank');
   }
 
+  var financialReportUrls = {};
   function viewFinancialReport() {
-    var period = document.getElementById('financial-period').value;
-    if (!period) { alert('Please select a reporting period first'); return; }
-    var reportUrls = {
-      '2026-03': 'https://drive.google.com/file/d/18hoLzU2A-rGb8UCsnd1Bh1O-X4U5pKSF/preview',
-      '2026-02': 'https://drive.google.com/file/d/1-pHEekWsJbxEFDsroAuhbUy1xsah9w-w/preview',
-      '2026-01': 'https://drive.google.com/file/d/1um5EUFddhoLXzOijuPOMSJ2cK6S_E4dO/preview'
-    };
-    if (reportUrls[period]) { window.open(reportUrls[period], '_blank'); }
-    else { alert('Report not yet available for this period. Please check back later.'); }
+    var fileId = document.getElementById('financial-period').value;
+    if (!fileId) { alert('Please select a reporting period first'); return; }
+    var select = document.getElementById('financial-period');
+    var label  = select.options[select.selectedIndex].text;
+    window.open('view-document.html?id=' + encodeURIComponent(fileId) + '&title=' + encodeURIComponent('Financial Report — ' + label) + '&back=community-info.html', '_blank');
   }
 
+  var bankStatementUrls = {};
   function viewBankStatement() {
-    var period = document.getElementById('bank-statement-period').value;
-    if (!period) { alert('Please select a month first'); return; }
-    var statementUrls = {
-      '2026-03': 'https://drive.google.com/file/d/1OMz8h1AfKdIBepDXduJiwE6j0oFeXhlk/preview',
-      '2026-02': 'https://drive.google.com/file/d/1tJP3lAI2poeomS_8QmI4C4mVgNsfmgAZ/preview',
-      '2026-01': 'https://drive.google.com/file/d/10mKFO6g8hf0DGJGGCjnMWP6US4mlfN0U/preview'
-    };
-    if (statementUrls[period]) { window.open(statementUrls[period], '_blank'); }
-    else { alert('Statement not yet available for this period. Please check back later.'); }
+    var fileId = document.getElementById('bank-statement-period').value;
+    if (!fileId) { alert('Please select a month first'); return; }
+    var select = document.getElementById('bank-statement-period');
+    var label  = select.options[select.selectedIndex].text;
+    window.open('view-document.html?id=' + encodeURIComponent(fileId) + '&title=' + encodeURIComponent('Bank Statement — ' + label) + '&back=community-info.html', '_blank');
   }
+
+
+  // ── Registry-driven dropdowns ─────────────────────────────────────────
+  var REGISTRY_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtAar-VwmAowIRfzJumkbIfSW82SM4xnwDk12RlVAfuLZZ-xeOJHAA3lb_UeK4as78WRp3u_GmpHLI/pub?gid=0&single=true&output=csv';
+
+  function loadDropdowns() {
+    fetch(REGISTRY_CSV)
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var lines = csv.split('\n');
+        var reports = [], statements = [], aveo = [];
+        for (var i = 1; i < lines.length; i++) {
+          var cols = parseCSVLine(lines[i].trim());
+          var name   = cols[1] ? cols[1].trim() : '';
+          var fileId = cols[2] ? cols[2].trim() : '';
+          var folder = cols[3] ? cols[3].trim() : '';
+          if (!name || !fileId) continue;
+          if (folder === 'Monthly Financial Reports') reports.push({name:name, id:fileId});
+          else if (folder === 'Bank Statements')       statements.push({name:name, id:fileId});
+          else if (folder === 'Aveo Documents')        aveo.push({name:name, id:fileId});
+        }
+        function buildOpts(items, placeholder) {
+          items.reverse();
+          return '<option value="">' + placeholder + '</option>' +
+            items.map(function(d){ return '<option value="' + d.id + '">' + d.name + '</option>'; }).join('');
+        }
+        if (reports.length)    document.getElementById('financial-period').innerHTML    = buildOpts(reports,    '-- Select Month --');
+        if (statements.length) document.getElementById('bank-statement-period').innerHTML = buildOpts(statements, '-- Select Month --');
+        if (aveo.length)       document.getElementById('aveo-document').innerHTML       = buildOpts(aveo,       '-- Select Document --');
+      })
+      .catch(function(){ console.log('Registry unavailable'); });
+  }
+
+  document.addEventListener('DOMContentLoaded', loadDropdowns);
 
 </script>
 
