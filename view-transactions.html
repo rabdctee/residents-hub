@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction Review | Bridgeman Downs Residents Hub</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; }
+
+    .top-bar {
+      background:#1F4E79;
+      padding:12px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .top-bar-title {
+      color:white;
+      font-size:1em;
+      font-weight:700;
+    }
+
+    .top-bar-sub {
+      color:rgba(255,255,255,0.75);
+      font-size:0.82em;
+      margin-top:2px;
+    }
+
+    .back-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      background:white;
+      color:#1F4E79;
+      padding:9px 18px;
+      border-radius:7px;
+      text-decoration:none;
+      font-weight:700;
+      font-size:0.9em;
+      border:2px solid white;
+      transition:all 0.2s;
+      white-space:nowrap;
+    }
+    .back-btn:hover { background:#E7F1FB; }
+
+    .info-bar {
+      background:#E7F1FB;
+      border-bottom:2px solid #c5d8ee;
+      padding:10px 20px;
+      font-size:0.85em;
+      color:#1F4E79;
+    }
+
+    .sheet-frame {
+      width:100%;
+      height:calc(100vh - 110px);
+      border:none;
+      display:block;
+      background:white;
+    }
+
+    @media(max-width:600px) {
+      .top-bar { padding:10px 14px; }
+      .top-bar-title { font-size:0.9em; }
+      .sheet-frame { height:calc(100vh - 130px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div>
+      <div class="top-bar-title">📋 Transaction Review</div>
+      <div class="top-bar-sub">Bridgeman Downs Social Club — read only</div>
+    </div>
+    <a class="back-btn" href="index.html#committee">← Return to Committee Page</a>
+  </div>
+
+  <div class="info-bar">
+    💡 Use this view to find the exact date, description and amount before making a correction or deletion. This list is read-only — no changes can be made here.
+  </div>
+
+  <iframe
+    class="sheet-frame"
+    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKCTWAGXRw_S2baTXaj6UYZQlh6Mn7ih_PGkAxXDxIVKonae5zlE2cwhH0z3mvkcyw-pPd/pubhtml?gid=1140606109&single=true&widget=false&headers=false"
+    title="Social Club Transaction Review">
+  </iframe>
+
+</body>
+</html>
