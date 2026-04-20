@@ -1538,10 +1538,10 @@ This page contains village documents and financial information for residents onl
 <span id="qld-act-arrow" class="collapsible-arrow">▼</span>
 </div>
 <div id="qld-act" class="collapsible-content">
-<a href="https://drive.google.com/file/d/1FuSYYJkOKGMtnAMNaRy35DGvUbxNGBH8/view" target="_blank" class="doc-link">
+<a href="view-document.html?id=1FuSYYJkOKGMtnAMNaRy35DGvUbxNGBH8&title=Retirement%20Villages%20Act%201999&back=community-info" target="_blank" class="doc-link">
 📄 Retirement Villages Act 1999
 </a>
-<a href="https://drive.google.com/file/d/16KJXXdMD7h5zkxYN0WcYPPiZhiw2aR-I/view" target="_blank" class="doc-link">
+<a href="view-document.html?id=16KJXXdMD7h5zkxYN0WcYPPiZhiw2aR-I&title=Retirement%20Villages%20Regulation%202018&back=community-info" target="_blank" class="doc-link">
 📄 Retirement Villages Regulation 2018 (current as at June 2024)
 </a>
 </div>
@@ -1552,7 +1552,7 @@ This page contains village documents and financial information for residents onl
 <span id="constitution-arrow" class="collapsible-arrow">▼</span>
 </div>
 <div id="constitution" class="collapsible-content">
-<a href="https://drive.google.com/file/d/1dA97VG7HlEFrXO3Kzqxf2UuygP7vdT7D/view" target="_blank" class="doc-link">
+<a href="view-document.html?id=1dA97VG7HlEFrXO3Kzqxf2UuygP7vdT7D&title=Village%20Constitution&back=community-info" target="_blank" class="doc-link">
 📄 View Village Constitution
 </a>
 </div>
@@ -1686,10 +1686,12 @@ function buildFileList(key) {
   var html = '';
 
   files.forEach(function(f) {
-    var href = f.id
-      ? 'https://drive.google.com/file/d/' + f.id + '/preview'
-      : null;
-    if (href) html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+    if (f.id) {
+      var href = 'view-document.html?id=' + encodeURIComponent(f.id) +
+        '&title=' + encodeURIComponent(f.name) +
+        '&back=community-info';
+      html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+    }
   });
 
   ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
@@ -1722,18 +1724,21 @@ function buildFileList(key) {
 
         // Only show files for this folder, not already hardcoded
         if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
-          newHtml += '<li><a href="https://drive.google.com/file/d/' + fileId +
-            '/preview" target="_blank">📄 ' + fileName + '</a></li>';
+          newHtml += '<li><a href="view-document.html?id=' + encodeURIComponent(fileId) +
+            '&title=' + encodeURIComponent(fileName) +
+            '&back=community-info" target="_blank">📄 ' + fileName + '</a></li>';
         }
       }
 
       // Rebuild the list with hardcoded + new files
       var baseHtml = '';
       files.forEach(function(f) {
-        var href = f.id
-          ? 'https://drive.google.com/file/d/' + f.id + '/preview'
-          : null;
-        if (href) baseHtml += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+        if (f.id) {
+          var href = 'view-document.html?id=' + encodeURIComponent(f.id) +
+            '&title=' + encodeURIComponent(f.name) +
+            '&back=community-info';
+          baseHtml += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+        }
       });
 
       ul.innerHTML = baseHtml + newHtml ||
@@ -1976,7 +1981,7 @@ Advocacy, advice and support for retirement village residents in Queensland
   </h3>
   <p style="font-size:0.88em;color:#555;margin-bottom:16px;line-height:1.5;">
     Use the links below to record, delete or correct Social Club financial 
-    transactions. A PIN is required. Contact Rick if you need the PIN.
+    transactions. A PIN is required.
   </p>
 
   <a href="record-transaction.html" class="doc-link">
@@ -2384,11 +2389,13 @@ location.reload();
 // aveo Documents Viewer
 var aveoDocUrls = {};
 function viewAveoDocument() {
-    var doc = document.getElementById('aveo-document').value;
-    if (!doc) { alert('Please select a document first'); return; }
-    var url = aveoDocUrls[doc];
-    if (url) { window.open(url, '_blank'); }
-    else { alert('Document not yet available. Please check back later.'); }
+    var fileId = document.getElementById('aveo-document').value;
+    if (!fileId) { alert('Please select a document first'); return; }
+    var select = document.getElementById('aveo-document');
+    var label  = select.options[select.selectedIndex].text;
+    window.open('view-document.html?id=' + encodeURIComponent(fileId) +
+      '&title=' + encodeURIComponent(label) +
+      '&back=community-info', '_blank');
 }
 
 
@@ -2479,50 +2486,54 @@ function loadFinancialDropdowns() {
 function viewFinancialReport() {
     var period = document.getElementById('financial-period').value;
     if (!period) { alert('Please select a reporting period first'); return; }
-  var url = financialReportUrls[period];
-  if (url) { window.open(url, '_blank'); }
-    else { alert('Report not yet available for this period. Please check back later.'); }
+  var fileId = period; // period value IS the file ID
+  var select = document.getElementById('financial-period');
+  var label  = select.options[select.selectedIndex].text;
+  if (fileId) {
+    window.open('view-document.html?id=' + encodeURIComponent(fileId) +
+      '&title=' + encodeURIComponent('Financial Report — ' + label) +
+      '&back=community-info', '_blank');
+  } else { alert('Report not yet available for this period. Please check back later.'); }
 }
 
 // Bank Statement Viewer
 function viewBankStatement() {
     var period = document.getElementById('bank-statement-period').value;
     if (!period) { alert('Please select a month first'); return; }
-  var url = bankStatementUrls[period];
-  if (url) { window.open(url, '_blank'); }
-    else { alert('Statement not yet available for this period. Please check back later.'); }
+  var fileId = period;
+  var select = document.getElementById('bank-statement-period');
+  var label  = select.options[select.selectedIndex].text;
+  if (fileId) {
+    window.open('view-document.html?id=' + encodeURIComponent(fileId) +
+      '&title=' + encodeURIComponent('Bank Statement — ' + label) +
+      '&back=community-info', '_blank');
+  } else { alert('Statement not yet available for this period. Please check back later.'); }
 }
 function viewResidentsMeeting() {
     var meeting = document.getElementById('residents-meeting-period').value;
-    
-    if (!meeting) {
-        alert('Please select a document first');
-        return;
-    }
-    
+    if (!meeting) { alert('Please select a document first'); return; }
+    var select = document.getElementById('residents-meeting-period');
+    var label  = select.options[select.selectedIndex].text;
     var meetingUrls = {
-        // 2026 AGM
-        'residents-2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_AGM_AGENDA/preview',
-        'residents-2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_AGM_MINUTES/preview',
-        
-        // 2026 Quarterly
-        'residents-2026-q1-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q1_AGENDA/preview',
-        'residents-2026-q1-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q1_MINUTES/preview',
-        'residents-2026-q2-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q2_AGENDA/preview',
-        'residents-2026-q2-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_RESIDENTS_2026_Q2_MINUTES/preview',
-        
-        // 2026 Monthly
-        'residents-2026-04-agenda': 'https://drive.google.com/file/d/1OZ6nzBM8m-aJ9ZQDDCVa8c475hM-hzQC/preview',
-        'residents-2026-03-agenda': 'https://drive.google.com/file/d/1XR4f_qobQoYIDeBjgVtlf9xJ1zyvycY/preview',
-        'residents-2026-03-minutes': 'https://drive.google.com/file/d/1Da6IDrsaAYlY_1rGw0Jyok1oGjhPVIrr/preview',
-        'residents-2026-02-agenda': 'https://drive.google.com/file/d/1qjkOmvGreavw9spxfCwhoCZuCYNJKFk2/preview',
-        'residents-2026-02-minutes': 'https://drive.google.com/file/d/1Ikv33wkMqHY69F3x-yKwPse4WMw00u37/preview',
-        'residents-2026-01-agenda': 'https://drive.google.com/file/d/15es-OAJ7psn5ZQYdveRqLhq317RN0oSq/preview',
-        'residents-2026-01-minutes': 'https://drive.google.com/file/d/1WrWpQBImHLLprOeQI2wrWvUeE0vBut59/preview'
+        'residents-2026-agm-agenda': 'YOUR_FILE_ID_RESIDENTS_2026_AGM_AGENDA',
+        'residents-2026-agm-minutes': 'YOUR_FILE_ID_RESIDENTS_2026_AGM_MINUTES',
+        'residents-2026-q1-agenda': 'YOUR_FILE_ID_RESIDENTS_2026_Q1_AGENDA',
+        'residents-2026-q1-minutes': 'YOUR_FILE_ID_RESIDENTS_2026_Q1_MINUTES',
+        'residents-2026-q2-agenda': 'YOUR_FILE_ID_RESIDENTS_2026_Q2_AGENDA',
+        'residents-2026-q2-minutes': 'YOUR_FILE_ID_RESIDENTS_2026_Q2_MINUTES',
+        'residents-2026-04-agenda': '1OZ6nzBM8m-aJ9ZQDDCVa8c475hM-hzQC',
+        'residents-2026-03-agenda': '1XR4f_qobQoYIDeBjgVtlf9xJ1zyvycY',
+        'residents-2026-03-minutes': '1Da6IDrsaAYlY_1rGw0Jyok1oGjhPVIrr',
+        'residents-2026-02-agenda': '1qjkOmvGreavw9spxfCwhoCZuCYNJKFk2',
+        'residents-2026-02-minutes': '1Ikv33wkMqHY69F3x-yKwPse4WMw00u37',
+        'residents-2026-01-agenda': '15es-OAJ7psn5ZQYdveRqLhq317RN0oSq',
+        'residents-2026-01-minutes': '1WrWpQBImHLLprOeQI2wrWvUeE0vBut59'
     };
-    
-    if (meetingUrls[meeting]) {
-        window.open(meetingUrls[meeting], '_blank');
+    var fileId = meetingUrls[meeting];
+    if (fileId && fileId.indexOf('YOUR_FILE') === -1) {
+        window.open('view-document.html?id=' + encodeURIComponent(fileId) +
+          '&title=' + encodeURIComponent(label) +
+          '&back=community-info', '_blank');
     } else {
         alert('Document not yet available. Please check back later.');
     }
@@ -2531,26 +2542,22 @@ function viewResidentsMeeting() {
 // Social Club Committee Meeting Documents Viewer
 function viewSocialMeeting() {
     var meeting = document.getElementById('social-meeting-period').value;
-    
-    if (!meeting) {
-        alert('Please select a document first');
-        return;
-    }
-    
+    if (!meeting) { alert('Please select a document first'); return; }
+    var select = document.getElementById('social-meeting-period');
+    var label  = select.options[select.selectedIndex].text;
     var meetingUrls = {
-        // 2026 AGM
-        'social-2026-agm-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_AGM_AGENDA/preview',
-        'social-2026-agm-minutes': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_AGM_MINUTES/preview',
-        
-        // 2026 Monthly
-        'social-2026-02-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_02_AGENDA/preview',
-        'social-2026-02-minutes': 'https://drive.google.com/file/d/1Lh2lOoFNAmFd8JcmsQiwEfHXwVdmlWKy/preview',
-        'social-2026-01-agenda': 'https://drive.google.com/file/d/YOUR_FILE_ID_SOCIAL_2026_01_AGENDA/preview',
-        'social-2026-01-minutes': 'https://drive.google.com/file/d/1e7tqN541For2m1li68wZVGdhcJb1fRIO/preview'
+        'social-2026-agm-agenda': 'YOUR_FILE_ID_SOCIAL_2026_AGM_AGENDA',
+        'social-2026-agm-minutes': 'YOUR_FILE_ID_SOCIAL_2026_AGM_MINUTES',
+        'social-2026-02-agenda': 'YOUR_FILE_ID_SOCIAL_2026_02_AGENDA',
+        'social-2026-02-minutes': '1Lh2lOoFNAmFd8JcmsQiwEfHXwVdmlWKy',
+        'social-2026-01-agenda': 'YOUR_FILE_ID_SOCIAL_2026_01_AGENDA',
+        'social-2026-01-minutes': '1e7tqN541For2m1li68wZVGdhcJb1fRIO'
     };
-    
-    if (meetingUrls[meeting]) {
-        window.open(meetingUrls[meeting], '_blank');
+    var fileId = meetingUrls[meeting];
+    if (fileId && fileId.indexOf('YOUR_FILE') === -1) {
+        window.open('view-document.html?id=' + encodeURIComponent(fileId) +
+          '&title=' + encodeURIComponent(label) +
+          '&back=community-info', '_blank');
     } else {
         alert('Document not yet available. Please check back later.');
     }
