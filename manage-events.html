@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Events | Bridgeman Downs Residents Hub</title>
+  <style>
+    :root {
+      --navy:       #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid:   #c5d8ee;
+      --gold:       #C9A44A;
+      --green:      #1a6b3a;
+      --green-bg:   #e8f5ee;
+      --red:        #c0392b;
+      --red-bg:     #fdf2f2;
+      --grey:       #5f6368;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; min-height:100vh; }
+
+    /* ── Top bar ── */
+    .top-bar {
+      background:var(--navy); padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px; position:sticky; top:0; z-index:50;
+    }
+    .top-bar-title { color:white; font-size:1em; font-weight:700; }
+    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      background:white; color:var(--navy); padding:9px 16px;
+      border-radius:7px; text-decoration:none; font-weight:700;
+      font-size:0.88em; border:2px solid white; white-space:nowrap;
+    }
+    .back-btn:hover { background:var(--navy-light); }
+
+    /* ── Content ── */
+    .content { max-width:700px; margin:0 auto; padding:20px 16px 60px; }
+
+    /* ── Cards ── */
+    .card {
+      background:white; border-radius:10px;
+      border:2px solid var(--navy-light);
+      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+      margin-bottom:20px; overflow:hidden;
+    }
+    .card-header {
+      background:var(--navy); padding:12px 18px;
+      color:white; font-weight:700; font-size:0.95em;
+    }
+    .card-body { padding:18px; }
+
+    /* ── Event list ── */
+    .event-item {
+      border:1px solid var(--navy-light);
+      border-radius:8px; padding:12px 14px;
+      margin-bottom:10px; background:white;
+      display:flex; align-items:flex-start;
+      justify-content:space-between; gap:10px;
+    }
+    .event-item:last-child { margin-bottom:0; }
+    .event-info { flex:1; min-width:0; }
+    .event-name { font-weight:700; color:var(--navy); font-size:0.95em; margin-bottom:3px; }
+    .event-meta { font-size:0.83em; color:var(--grey); line-height:1.6; }
+    .event-actions { display:flex; gap:6px; flex-shrink:0; }
+    .btn-edit {
+      padding:6px 14px; border-radius:6px; font-size:0.82em;
+      font-weight:700; cursor:pointer; border:2px solid var(--navy);
+      background:white; color:var(--navy); transition:all 0.15s;
+    }
+    .btn-edit:hover { background:var(--navy-light); }
+    .btn-delete {
+      padding:6px 14px; border-radius:6px; font-size:0.82em;
+      font-weight:700; cursor:pointer; border:2px solid var(--red);
+      background:white; color:var(--red); transition:all 0.15s;
+    }
+    .btn-delete:hover { background:var(--red-bg); }
+
+    .no-events {
+      text-align:center; color:#aaa; font-style:italic;
+      font-size:0.9em; padding:20px;
+    }
+
+    /* ── Form ── */
+    .form-group { margin-bottom:16px; }
+    label {
+      display:block; font-weight:600; font-size:0.88em;
+      color:var(--navy); margin-bottom:5px;
+    }
+    input, select {
+      width:100%; padding:11px 13px; font-size:0.95em;
+      border:2px solid var(--navy-mid); border-radius:7px;
+      background:white; color:#333; font-family:inherit;
+      transition:border-color 0.15s;
+    }
+    input:focus, select:focus {
+      outline:none; border-color:var(--navy);
+    }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media(max-width:480px){ .form-row { grid-template-columns:1fr; } }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      display:inline-flex; align-items:center; gap:8px;
+      background:var(--navy); color:white; padding:12px 24px;
+      border-radius:8px; font-weight:700; font-size:0.95em;
+      border:none; cursor:pointer; width:100%;
+      justify-content:center; transition:background 0.2s;
+    }
+    .btn-primary:hover { background:#17406a; }
+    .btn-primary:disabled { background:#aaa; cursor:not-allowed; }
+    .btn-secondary {
+      display:inline-flex; align-items:center; gap:8px;
+      background:white; color:var(--navy); padding:11px 20px;
+      border-radius:8px; font-weight:700; font-size:0.9em;
+      border:2px solid var(--navy); cursor:pointer;
+      justify-content:center; transition:all 0.2s; width:100%;
+    }
+    .btn-secondary:hover { background:var(--navy-light); }
+    .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:4px; }
+
+    /* ── Alerts ── */
+    .alert {
+      padding:11px 14px; border-radius:7px;
+      font-size:0.88em; margin-bottom:14px; display:none;
+    }
+    .alert-success { background:var(--green-bg); color:var(--green); border:1px solid #a8d5b8; }
+    .alert-error   { background:var(--red-bg);   color:var(--red);   border:1px solid #f1b0a8; }
+    .alert.show { display:block; }
+
+    /* ── Loading ── */
+    .loading-msg { text-align:center; color:#aaa; font-style:italic; font-size:0.88em; padding:16px; }
+
+    /* ── Divider ── */
+    .divider { border:none; border-top:2px solid var(--navy-light); margin:18px 0; }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div>
+    <div class="top-bar-title">🗓️ Manage Events</div>
+    <div class="top-bar-sub">Social Club — Event Coordination</div>
+  </div>
+  <a class="back-btn" href="index.html#committee">← Back</a>
+</div>
+
+<div class="content">
+
+  <!-- Current Events -->
+  <div class="card">
+    <div class="card-header">📋 Current Events</div>
+    <div class="card-body">
+      <div id="alertList" class="alert"></div>
+      <div id="eventList"><div class="loading-msg">Loading events...</div></div>
+    </div>
+  </div>
+
+  <!-- Add / Edit Form -->
+  <div class="card">
+    <div class="card-header" id="formTitle">➕ Add New Event</div>
+    <div class="card-body">
+      <div id="alertForm" class="alert"></div>
+
+      <input type="hidden" id="editRow" value="">
+
+      <div class="form-group">
+        <label for="evtName">Event Name</label>
+        <input type="text" id="evtName" placeholder="e.g. Happy Hour">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="evtDate">Event Date</label>
+          <input type="date" id="evtDate">
+        </div>
+        <div class="form-group">
+          <label for="evtTime">Time</label>
+          <input type="time" id="evtTime">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="evtLocation">Location</label>
+        <input type="text" id="evtLocation" placeholder="e.g. MRC, Manor, PDR">
+      </div>
+
+      <div class="form-group">
+        <label for="evtEmail">Coordinator Email</label>
+        <input type="email" id="evtEmail" placeholder="e.g. bdsc.convenor@gmail.com" value="bdsc.convenor@gmail.com">
+      </div>
+
+      <hr class="divider">
+
+      <div class="btn-row" id="formBtns">
+        <button class="btn-primary" id="submitBtn" onclick="submitForm()">✓ Add Event</button>
+        <button class="btn-secondary" id="cancelBtn" onclick="cancelEdit()" style="display:none;">✕ Cancel</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUcetKOKOyNwn1SSqI54xBIGTHV2YVTXcD1o2UTFo7uKGoqCts-nUqFSMEhLxXanK0CA/exec';
+
+  // ── Helpers ──────────────────────────────────────────────────
+  function showAlert(id, type, msg) {
+    var el = document.getElementById(id);
+    el.className = 'alert alert-' + type + ' show';
+    el.textContent = msg;
+    setTimeout(function(){ el.classList.remove('show'); }, 5000);
+  }
+
+  function fmtDate(dateStr) {
+    if (!dateStr) return '';
+    // Accepts DD/MM/YYYY or YYYY-MM-DD
+    var parts;
+    if (dateStr.includes('/')) {
+      parts = dateStr.split('/');
+      return parts[0] + '/' + parts[1] + '/' + parts[2];
+    }
+    parts = dateStr.split('-');
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+
+  function toInputDate(dateStr) {
+    // Convert DD/MM/YYYY to YYYY-MM-DD for input[type=date]
+    if (!dateStr) return '';
+    if (dateStr.includes('-')) return dateStr;
+    var p = dateStr.split('/');
+    return p[2] + '-' + p[1].padStart(2,'0') + '-' + p[0].padStart(2,'0');
+  }
+
+  function fmtTime(timeStr) {
+    if (!timeStr) return '';
+    // Convert HH:MM to 12-hour display
+    var parts = timeStr.split(':');
+    var h = parseInt(parts[0]);
+    var m = parts[1];
+    var ampm = h >= 12 ? 'pm' : 'am';
+    h = h % 12 || 12;
+    return h + ':' + m + ' ' + ampm;
+  }
+
+  // ── Load events ──────────────────────────────────────────────
+  function loadEvents() {
+    document.getElementById('eventList').innerHTML =
+      '<div class="loading-msg">Loading events...</div>';
+
+    fetch(SCRIPT_URL + '?action=getEvents')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (!data.events || data.events.length === 0) {
+          document.getElementById('eventList').innerHTML =
+            '<div class="no-events">No events currently scheduled.</div>';
+          return;
+        }
+        var html = '';
+        data.events.forEach(function(ev) {
+          html += '<div class="event-item">' +
+            '<div class="event-info">' +
+              '<div class="event-name">' + escHtml(ev.name) + '</div>' +
+              '<div class="event-meta">' +
+                '📅 ' + fmtDate(ev.date) + ' &nbsp;|&nbsp; ' +
+                '🕐 ' + fmtTime(ev.time) + ' &nbsp;|&nbsp; ' +
+                '📍 ' + escHtml(ev.location) + '<br>' +
+                '📧 ' + escHtml(ev.email) +
+              '</div>' +
+            '</div>' +
+            '<div class="event-actions">' +
+              '<button class="btn-edit" onclick=\'editEvent(' + JSON.stringify(ev) + ')\'>Edit</button>' +
+              '<button class="btn-delete" onclick="deleteEvent(' + ev.row + ',\'' + escHtml(ev.name) + '\')">Delete</button>' +
+            '</div>' +
+          '</div>';
+        });
+        document.getElementById('eventList').innerHTML = html;
+      })
+      .catch(function(){
+        document.getElementById('eventList').innerHTML =
+          '<div class="no-events">Could not load events. Please try refreshing.</div>';
+      });
+  }
+
+  // ── Edit ─────────────────────────────────────────────────────
+  function editEvent(ev) {
+    document.getElementById('formTitle').textContent = '✏️ Edit Event';
+    document.getElementById('editRow').value = ev.row;
+    document.getElementById('evtName').value     = ev.name;
+    document.getElementById('evtDate').value     = toInputDate(ev.date);
+    document.getElementById('evtTime').value     = ev.time;
+    document.getElementById('evtLocation').value = ev.location;
+    document.getElementById('evtEmail').value    = ev.email;
+    document.getElementById('submitBtn').textContent = '✓ Save Changes';
+    document.getElementById('cancelBtn').style.display = '';
+    document.getElementById('cancelBtn').style.display = 'flex';
+    // Scroll to form
+    document.querySelector('.card:last-child').scrollIntoView({behavior:'smooth'});
+  }
+
+  function cancelEdit() {
+    document.getElementById('formTitle').textContent = '➕ Add New Event';
+    document.getElementById('editRow').value = '';
+    document.getElementById('evtName').value     = '';
+    document.getElementById('evtDate').value     = '';
+    document.getElementById('evtTime').value     = '';
+    document.getElementById('evtLocation').value = '';
+    document.getElementById('evtEmail').value    = 'bdsc.convenor@gmail.com';
+    document.getElementById('submitBtn').textContent = '✓ Add Event';
+    document.getElementById('cancelBtn').style.display = 'none';
+  }
+
+  // ── Submit (add or edit) ──────────────────────────────────────
+  function submitForm() {
+    var name     = document.getElementById('evtName').value.trim();
+    var date     = document.getElementById('evtDate').value;
+    var time     = document.getElementById('evtTime').value;
+    var location = document.getElementById('evtLocation').value.trim();
+    var email    = document.getElementById('evtEmail').value.trim();
+    var row      = document.getElementById('editRow').value;
+
+    if (!name || !date || !time || !location || !email) {
+      showAlert('alertForm', 'error', 'Please fill in all fields before saving.');
+      return;
+    }
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    var payload = {
+      action:   row ? 'editEvent' : 'addEvent',
+      row:      row,
+      name:     name,
+      date:     fmtDate(date),   // send as DD/MM/YYYY
+      time:     time,
+      location: location,
+      email:    email
+    };
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      btn.disabled = false;
+      btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
+      if (data.status === 'ok') {
+        showAlert('alertForm', 'success',
+          row ? 'Event updated successfully.' : 'Event added successfully.');
+        cancelEdit();
+        loadEvents();
+      } else {
+        showAlert('alertForm', 'error', 'Error: ' + (data.message || 'Please try again.'));
+      }
+    })
+    .catch(function(){
+      btn.disabled = false;
+      btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
+      showAlert('alertForm', 'error', 'Could not save. Please try again or contact Rick.');
+    });
+  }
+
+  // ── Delete ───────────────────────────────────────────────────
+  function deleteEvent(row, name) {
+    if (!confirm('Delete "' + name + '"? This cannot be undone.')) return;
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'deleteEvent', row: row })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if (data.status === 'ok') {
+        showAlert('alertList', 'success', '"' + name + '" has been deleted.');
+        loadEvents();
+      } else {
+        showAlert('alertList', 'error', 'Could not delete. Please try again.');
+      }
+    })
+    .catch(function(){
+      showAlert('alertList', 'error', 'Could not delete. Please try again or contact Rick.');
+    });
+  }
+
+  // ── Escape HTML ───────────────────────────────────────────────
+  function escHtml(str) {
+    return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Init ──────────────────────────────────────────────────────
+  loadEvents();
+</script>
+
+</body>
+</html>
