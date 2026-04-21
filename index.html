@@ -1962,69 +1962,171 @@ Advocacy, advice and support for retirement village residents in Queensland
 <!-- COMMITTEE -->
 <div id="committee" class="page-content">
 
-<h2 style="margin-bottom:15px;">Upload Documents - Committee use only</h2>
-<p style="color:#5f6368;margin-bottom:30px;">Use the form below to upload documents. You must be signed in with your authorised functional account.</p>
-
-<a href="https://docs.google.com/forms/d/1TI6N6koCWuGFoO3izDMI5PwOfmls8sep9b0HKwPA-t4/viewform" target="_blank" class="btn" style="display:inline-block;margin-bottom:20px;">
-📤 Upload a Document
-</a>
-
-<p style="color:#5f6368;font-size:0.9em;">
-💡 <strong>Tip:</strong> After submitting the form you will receive a confirmation email. If you experience any issues contact <a href="mailto:rabd.ctee@gmail.com">rabd.ctee@gmail.com</a>.
+<h2 style="margin-bottom:6px;">Committee Area</h2>
+<p style="color:#5f6368;margin-bottom:22px;font-size:0.9em;">
+  For authorised committee members only. Select your committee below.
 </p>
-<!-- ── Social Club Financial Data Entry ── -->
-<div style="margin-top:28px;">
-  <h3 style="color:#1F4E79;font-size:1.1em;font-weight:700;
-             border-bottom:2px solid #E7F1FB;padding-bottom:8px;
-             margin-bottom:16px;">
-    💰 Social Club — Financial Data Entry
-  </h3>
-  <p style="font-size:0.88em;color:#555;margin-bottom:16px;line-height:1.5;">
-    Use the links below to record, delete or correct Social Club financial 
-    transactions. A PIN is required.
-  </p>
 
+<style>
+.ctee-section {
+  border:2px solid #E7F1FB;
+  border-radius:10px;
+  margin-bottom:14px;
+  overflow:hidden;
+}
+.ctee-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 16px;
+  cursor:pointer;
+  user-select:none;
+  background:#1F4E79;
+  transition:background 0.2s;
+}
+.ctee-header:hover { background:#17406a; }
+.ctee-header-title {
+  color:white;
+  font-weight:700;
+  font-size:1.05em;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.ctee-header-arrow {
+  color:rgba(255,255,255,0.8);
+  font-size:0.85em;
+  transition:transform 0.25s;
+}
+.ctee-header-arrow.open { transform:rotate(180deg); }
+.ctee-body {
+  display:none;
+  padding:16px;
+  background:white;
+}
+.ctee-body.open { display:block; }
+.ctee-subsection { margin-bottom:18px; }
+.ctee-subsection:last-child { margin-bottom:0; }
+.ctee-sub-title {
+  font-size:0.82em;
+  font-weight:700;
+  color:#888;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  margin-bottom:10px;
+  padding-bottom:6px;
+  border-bottom:1px solid #E7F1FB;
+}
+.ctee-tip {
+  background:#E7F1FB;
+  border-radius:6px;
+  padding:9px 12px;
+  font-size:0.82em;
+  color:#1F4E79;
+  margin-top:10px;
+}
+</style>
+
+<!-- Residents Committee -->
+<div class="ctee-section">
+  <div class="ctee-header" onclick="toggleCtee('rc')">
+    <div class="ctee-header-title">🏛️ Residents Committee</div>
+    <div class="ctee-header-arrow" id="rc-arrow">▼</div>
+  </div>
+  <div class="ctee-body" id="rc-body">
+
+    <div class="ctee-subsection">
+      <div class="ctee-sub-title">📁 Documents</div>
+      <a href="https://docs.google.com/forms/d/1TI6N6koCWuGFoO3izDMI5PwOfmls8sep9b0HKwPA-t4/viewform" target="_blank" class="doc-link">
+📤 Upload a Document
+        <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">
+          Upload agendas, minutes, reports and other Residents Ccmmittee documents
+        </span>
+      </a>
+      <div class="ctee-tip">💡 You must be signed in with your authorised committee account. You will receive a confirmation email after uploading.</div>
+    </div>
+
+    <div class="ctee-subsection">
+      <div class="ctee-sub-title">💡 Information Sessions</div>
+      <a href="info-sessions.html" target="_blank" class="doc-link">
+        🎓 Suggest an Information Topic
+        <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">
+          View current sessions or email Rick to suggest a new topic
+        </span>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Social Club Committee -->
+<div class="ctee-section">
+  <div class="ctee-header" onclick="toggleCtee('sc')">
+    <div class="ctee-header-title">🎉 Social Club Committee</div>
+    <div class="ctee-header-arrow" id="sc-arrow">▼</div>
+  </div>
+  <div class="ctee-body" id="sc-body">
+
+    <div class="ctee-subsection">
+      <div class="ctee-sub-title">📁 Documents</div>
+      <a href="https://docs.google.com/forms/d/1TI6N6koCWuGFoO3izDMI5PwOfmls8sep9b0HKwPA-t4/viewform" target="_blank" class="doc-link">
+        📤 Upload a Document
+        <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">
+          Upload agendas, minutes and other Social Club documents
+        </span>
+      </a>
+      <div class="ctee-tip">💡 You must be signed in with your authorised committee account. You will receive a confirmation email after uploading.</div>
+    </div>
+
+    <div class="ctee-subsection">
+      <div class="ctee-sub-title">📅 Event Coordination</div>
+      <a href="view-registrations.html" class="doc-link">
+        👥 View Event Registrations
+        <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">
+          See who has registered for upcoming events — names, numbers and dietary requirements
+        </span>
+      </a>
+      <div class="ctee-tip">💡 Registrations update automatically as residents submit the form. No login required to view.</div>
+    </div>
+
+    <div class="ctee-subsection">
+      <div class="ctee-sub-title">💰 Financial Data Entry <span style="font-weight:400;color:#aaa;">(PIN required)</span></div>
   <a href="record-transaction.html" class="doc-link">
     📝 Record a Transaction
-    <span style="display:block;font-weight:400;font-size:0.85em;
-                 color:#555;margin-top:2px;">
-      Enter a new income or expense transaction
-    </span>
+        <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Enter a new income or expense transaction</span>
   </a>
-
   <a href="delete-transaction.html" class="doc-link">
     🗑️ Delete a Transaction
-    <span style="display:block;font-weight:400;font-size:0.85em;
-                 color:#555;margin-top:2px;">
-      Remove a duplicate or incorrectly entered transaction
-    </span>
+        <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Remove a duplicate or incorrectly entered transaction</span>
   </a>
-
   <a href="correct-transaction.html" class="doc-link">
     ✏️ Correct a Transaction
-    <span style="display:block;font-weight:400;font-size:0.85em;
-                 color:#555;margin-top:2px;">
-      Fix an error in a previously recorded transaction
-    </span>
+        <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Fix an error in a previously recorded transaction</span>
   </a>
-
 <a href="update-bank-balance.html" class="doc-link">
   🏦 Update Bank Balance
-  <span style="display:block;font-weight:400;font-size:0.85em;
-               color:#555;margin-top:2px;">
-    Record the actual balance from the bank statement
-  </span>
+        <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Record the actual balance from the bank statement</span>
 </a>
-
   <a href="view-transactions.html" class="doc-link">
-    📋 View & Print Transactions
-    <span style="display:block;font-weight:400;font-size:0.85em;
-                 color:#555;margin-top:2px;">
-      Browse all recorded transactions — use this to find exact details before correcting or deleting
-    </span>
+        📋 View &amp; Print Transactions
+        <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Browse all recorded transactions — find exact details before correcting or deleting</span>
   </a>
+    </div>
+
 </div>
 </div>
+
+</div>
+
+<script>
+function toggleCtee(id) {
+  var body  = document.getElementById(id + '-body');
+  var arrow = document.getElementById(id + '-arrow');
+  var isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  arrow.classList.toggle('open', !isOpen);
+}
+</script>
 
 <!-- CONTACT -->
 <div id="contact" class="page-content">
