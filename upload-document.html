@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload a Document | Bridgeman Downs Residents Hub</title>
+  <style>
+    :root {
+      --navy:      #1F4E79;
+      --navy-light:#E7F1FB;
+      --navy-mid:  #c5d8ee;
+      --gold:      #C9A44A;
+      --grey:      #5f6368;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; min-height:100vh; }
+
+    /* ── Top bar ── */
+    .top-bar {
+      background:var(--navy); padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px;
+    }
+    .top-bar-title { color:white; font-size:1em; font-weight:700; }
+    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      background:white; color:var(--navy); padding:9px 16px;
+      border-radius:7px; text-decoration:none; font-weight:700;
+      font-size:0.88em; border:2px solid white; white-space:nowrap;
+      transition:background 0.2s;
+    }
+    .back-btn:hover { background:var(--navy-light); }
+
+    /* ── Content ── */
+    .content { max-width:600px; margin:40px auto; padding:0 16px 60px; }
+
+    .card {
+      background:white; border-radius:12px;
+      border:2px solid var(--navy-light);
+      box-shadow:0 2px 8px rgba(0,0,0,0.07);
+      overflow:hidden;
+    }
+    .card-header {
+      background:var(--navy); padding:16px 20px;
+      color:white; font-weight:700; font-size:1em;
+    }
+    .card-body { padding:24px; }
+
+    .intro {
+      font-size:0.92em; color:var(--grey);
+      line-height:1.6; margin-bottom:20px;
+    }
+
+    /* ── Steps ── */
+    .steps { margin-bottom:24px; }
+    .step {
+      display:flex; gap:14px; align-items:flex-start;
+      margin-bottom:14px;
+    }
+    .step:last-child { margin-bottom:0; }
+    .step-num {
+      background:var(--navy); color:white;
+      width:26px; height:26px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:700; font-size:0.82em; flex-shrink:0;
+      margin-top:1px;
+    }
+    .step-text { font-size:0.9em; color:#333; line-height:1.55; }
+    .step-text strong { color:var(--navy); }
+
+    /* ── Upload button ── */
+    .upload-btn {
+      display:flex; align-items:center; justify-content:center;
+      gap:10px; background:var(--navy); color:white;
+      padding:15px 24px; border-radius:9px; font-weight:700;
+      font-size:1em; text-decoration:none; width:100%;
+      transition:background 0.2s; margin-bottom:14px;
+    }
+    .upload-btn:hover { background:#17406a; }
+
+    /* ── Tip ── */
+    .tip {
+      background:var(--navy-light); border-radius:7px;
+      padding:11px 14px; font-size:0.83em; color:var(--navy);
+      line-height:1.55;
+    }
+
+    /* ── Naming guide ── */
+    .naming {
+      margin-top:20px; padding-top:18px;
+      border-top:2px solid var(--navy-light);
+    }
+    .naming-title {
+      font-size:0.85em; font-weight:700; color:var(--navy);
+      margin-bottom:10px;
+    }
+    .naming-row {
+      display:flex; justify-content:space-between;
+      font-size:0.82em; padding:6px 0;
+      border-bottom:1px solid var(--navy-light);
+      gap:10px;
+    }
+    .naming-row:last-child { border-bottom:none; }
+    .naming-label { color:var(--grey); flex-shrink:0; }
+    .naming-example { color:#333; font-style:italic; text-align:right; }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <div>
+      <div class="top-bar-title">📤 Upload a Document</div>
+      <div class="top-bar-sub">Bridgeman Downs Retirement Village — Committee use only</div>
+    </div>
+    <a class="back-btn" href="index.html#committee">← Back</a>
+  </div>
+
+  <div class="content">
+    <div class="card">
+      <div class="card-header">📋 Before you upload</div>
+      <div class="card-body">
+
+        <p class="intro">
+          Documents are uploaded using a secure Google Form. Follow the steps below,
+          then click the button to open the form. When you are done, close the form tab
+          to return here.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-text">
+              <strong>Save your document as a PDF</strong> if it is not already in that format.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-text">
+              <strong>Name the file clearly</strong> — see the naming guide below.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-text">
+              <strong>Sign in with your committee Google account</strong> before opening the form.
+              For security, the form will not accept uploads from personal accounts.
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-text">
+              <strong>Click the button below</strong> to open the upload form in a new tab.
+              When finished, close that tab to return to this page.
+            </div>
+          </div>
+        </div>
+
+        <a class="upload-btn"
+           href="https://docs.google.com/forms/d/1TI6N6koCWuGFoO3izDMI5PwOfmls8sep9b0HKwPA-t4/viewform"
+           target="_blank">
+          📤 Open Upload Form
+        </a>
+
+        <div class="tip">
+          💡 You will receive a confirmation email once your upload is complete.
+          If you do not receive one within a few minutes, check your committee
+          email inbox. Contact Rick if you experience any issues.
+        </div>
+
+        <div class="naming">
+          <div class="naming-title">📝 File naming guide</div>
+          <div class="naming-row">
+            <span class="naming-label">RC Monthly Meeting</span>
+            <span class="naming-example">Apr 2026 - Minutes.pdf</span>
+          </div>
+          <div class="naming-row">
+            <span class="naming-label">RC Monthly Meeting</span>
+            <span class="naming-example">Apr 2026 - Agenda.pdf</span>
+          </div>
+          <div class="naming-row">
+            <span class="naming-label">SC Monthly Meeting</span>
+            <span class="naming-example">Apr 2026 - SC Minutes.pdf</span>
+          </div>
+          <div class="naming-row">
+            <span class="naming-label">Quarterly Meeting</span>
+            <span class="naming-example">Q2 2026 - Quarterly Meeting.pdf</span>
+          </div>
+          <div class="naming-row">
+            <span class="naming-label">AGM</span>
+            <span class="naming-example">2026 AGM - Minutes.pdf</span>
+          </div>
+          <div class="naming-row">
+            <span class="naming-label">Newsletter</span>
+            <span class="naming-example">May 2026 - Newsletter.pdf</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
