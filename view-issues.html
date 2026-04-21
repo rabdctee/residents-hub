@@ -6,20 +6,12 @@
   <title>Village Issues & Progress | Bridgeman Downs Residents Hub</title>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; min-height:100vh; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; display:flex; flex-direction:column; height:100vh; }
 
-    /* ── Top bar ── */
     .top-bar {
-      background:#1F4E79;
-      padding:12px 20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      gap:10px;
-      position:sticky;
-      top:0;
-      z-index:100;
+      background:#1F4E79; padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px; flex-shrink:0;
     }
     .top-bar-title { color:white; font-size:1em; font-weight:700; }
     .top-bar-sub { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
@@ -42,133 +34,37 @@
     }
     .print-btn:hover { background:rgba(255,255,255,0.25); }
 
-    /* ── Info bar ── */
+    .tab-bar {
+      background:#163d5f; padding:0 16px;
+      display:flex; gap:4px; flex-shrink:0; overflow-x:auto;
+    }
+    .tab-btn {
+      padding:10px 16px; color:rgba(255,255,255,0.7);
+      font-size:0.88em; font-weight:600; cursor:pointer;
+      border:none; background:transparent;
+      border-bottom:3px solid transparent;
+      white-space:nowrap; transition:all 0.2s;
+    }
+    .tab-btn:hover { color:white; }
+    .tab-btn.active { color:white; border-bottom-color:#C9A44A; }
+
     .info-bar {
-      background:#E7F1FB;
-      border-bottom:2px solid #c5d8ee;
-      padding:8px 20px;
-      font-size:0.83em;
-      color:#1F4E79;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      gap:6px;
-    }
-    .last-updated { color:#555; font-size:0.82em; font-style:italic; }
-
-    /* ── Content ── */
-    .content { max-width:960px; margin:0 auto; padding:20px 16px 40px; }
-
-    /* ── Section accordion ── */
-    .section-card {
-      background:white;
-      border-radius:10px;
-      border:2px solid #E7F1FB;
-      margin-bottom:16px;
-      overflow:hidden;
-      box-shadow:0 1px 4px rgba(0,0,0,0.06);
-    }
-    .section-header {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:14px 18px;
-      cursor:pointer;
-      background:#1F4E79;
-      transition:background 0.2s;
-    }
-    .section-header:hover { background:#17406a; }
-    .section-title { color:white; font-weight:700; font-size:1em; }
-    .section-arrow {
-      color:rgba(255,255,255,0.8);
-      font-size:0.85em;
-      transition:transform 0.25s;
-    }
-    .section-arrow.open { transform:rotate(180deg); }
-    .section-body { display:none; padding:0; overflow-x:auto; }
-    .section-body.open { display:block; }
-
-    /* ── Loading / error states ── */
-    .loading {
-      padding:24px;
-      text-align:center;
-      color:#888;
-      font-size:0.9em;
-      font-style:italic;
-    }
-    .error-msg {
-      padding:16px 20px;
-      color:#c0392b;
-      font-size:0.88em;
-      background:#fdf2f2;
-      border-top:1px solid #fad7d7;
+      background:#E7F1FB; border-bottom:2px solid #c5d8ee;
+      padding:7px 20px; font-size:0.82em; color:#1F4E79; flex-shrink:0;
     }
 
-    /* ── Table ── */
-    .data-table {
-      width:100%;
-      border-collapse:collapse;
-      font-size:0.88em;
-    }
-    .data-table th {
-      background:#1F4E79;
-      color:white;
-      padding:10px 12px;
-      text-align:left;
-      font-weight:600;
-      white-space:nowrap;
-      position:sticky;
-      top:56px;
-    }
-    .data-table td {
-      padding:9px 12px;
-      border-bottom:1px solid #E7F1FB;
-      vertical-align:top;
-      color:#333;
-      line-height:1.45;
-    }
-    .data-table tr:last-child td { border-bottom:none; }
-    .data-table tr:nth-child(even) td { background:#f8fbff; }
-    .data-table tr:hover td { background:#E7F1FB; }
-
-    /* Status badges */
-    .badge {
-      display:inline-block;
-      padding:3px 9px;
-      border-radius:12px;
-      font-size:0.8em;
-      font-weight:700;
-      white-space:nowrap;
-    }
-    .badge-open     { background:#fff3cd; color:#856404; }
-    .badge-progress { background:#cce5ff; color:#004085; }
-    .badge-resolved { background:#d4edda; color:#155724; }
-    .badge-closed   { background:#e2e3e5; color:#383d41; }
-    .badge-pending  { background:#f8d7da; color:#721c24; }
-
-    /* Empty state */
-    .empty-state {
-      padding:24px;
-      text-align:center;
-      color:#aaa;
-      font-style:italic;
-      font-size:0.9em;
+    .sheet-frame {
+      flex:1; width:100%; border:none; display:block;
+      background:white; min-height:0;
     }
 
     @media(max-width:600px){
       .top-bar { padding:10px 14px; }
       .back-btn, .print-btn { font-size:0.8em; padding:8px 12px; }
-      .content { padding:14px 10px 30px; }
-      .data-table { font-size:0.82em; }
-      .data-table th, .data-table td { padding:8px 9px; }
+      .tab-btn { padding:8px 12px; font-size:0.82em; }
     }
-
     @media print {
-      .top-bar, .info-bar, .back-btn, .print-btn { display:none !important; }
-      .section-body { display:block !important; }
-      .section-header { background:#1F4E79 !important; -webkit-print-color-adjust:exact; }
-      .data-table th { background:#1F4E79 !important; -webkit-print-color-adjust:exact; }
+      .top-bar, .tab-bar, .info-bar { display:none !important; }
     }
   </style>
 </head>
@@ -176,218 +72,40 @@
 
   <div class="top-bar">
     <div>
-      <div class="top-bar-title">📊 Village Issues &amp; Progress</div>
-      <div class="top-bar-sub">Bridgeman Downs Retirement Village</div>
+      <div class="top-bar-title">&#128202; Village Issues &amp; Progress</div>
+      <div class="top-bar-sub">Bridgeman Downs Retirement Village &#8212; read only</div>
     </div>
     <div class="btn-group">
-      <button class="print-btn" onclick="printAll()">🖨️ Print</button>
-      <a class="back-btn" href="community-info.html">← Back</a>
+      <button class="print-btn" onclick="window.print()">&#128424;&#65039; Print</button>
+      <a class="back-btn" href="community-info.html">&#8592; Back</a>
     </div>
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active"  onclick="showTab(this,'320932933')">&#128203; Progress Board</button>
+    <button class="tab-btn"         onclick="showTab(this,'1978582396')">&#128269; Issues</button>
+    <button class="tab-btn"         onclick="showTab(this,'744455173')">&#128065;&#65039; At a Glance</button>
+    <button class="tab-btn"         onclick="showTab(this,'1044575149')">&#128640; Initiatives</button>
   </div>
 
   <div class="info-bar">
-    <span>💡 All sections are shown on this page — no tabs to navigate. Click any section heading to expand or collapse it.</span>
-    <span class="last-updated" id="lastUpdated">Loading...</span>
+    &#128161; Use the buttons above to switch between sections. Content updates automatically when the tracker is changed.
   </div>
 
-  <div class="content">
-
-    <div class="section-card" id="card-progress">
-      <div class="section-header" onclick="toggleSection('progress')">
-        <span class="section-title">📋 Progress Board</span>
-        <span class="section-arrow open" id="arrow-progress">▼</span>
-      </div>
-      <div class="section-body open" id="body-progress">
-        <div class="loading" id="loading-progress">Loading data...</div>
-      </div>
-    </div>
-
-    <div class="section-card" id="card-issues">
-      <div class="section-header" onclick="toggleSection('issues')">
-        <span class="section-title">🔍 Issues</span>
-        <span class="section-arrow" id="arrow-issues">▼</span>
-      </div>
-      <div class="section-body" id="body-issues">
-        <div class="loading" id="loading-issues">Loading data...</div>
-      </div>
-    </div>
-
-    <div class="section-card" id="card-glance">
-      <div class="section-header" onclick="toggleSection('glance')">
-        <span class="section-title">👁️ At a Glance</span>
-        <span class="section-arrow" id="arrow-glance">▼</span>
-      </div>
-      <div class="section-body" id="body-glance">
-        <div class="loading" id="loading-glance">Loading data...</div>
-      </div>
-    </div>
-
-    <div class="section-card" id="card-initiatives">
-      <div class="section-header" onclick="toggleSection('initiatives')">
-        <span class="section-title">🚀 Initiatives</span>
-        <span class="section-arrow" id="arrow-initiatives">▼</span>
-      </div>
-      <div class="section-body" id="body-initiatives">
-        <div class="loading" id="loading-initiatives">Loading data...</div>
-      </div>
-    </div>
-
-  </div>
+  <iframe
+    id="sheetFrame"
+    class="sheet-frame"
+    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0zn_YGht1WjyIMAHr5cueFGcpXwTPOeD8gSDvbNguhp27fD6MhPHqxa8sN0aNFTFYNZkm1wupcMW/pubhtml?gid=320932933&single=true&widget=false&headers=false"
+    title="Village Issues and Progress Tracker">
+  </iframe>
 
 <script>
-  var BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0zn_YGht1WjyIMAHr5cueFGcpXwTPOeD8gSDvbNguhp27fD6MhPHqxa8sN0aNFTFYNZkm1wupcMW/pub';
-
-  var TABS = [
-    { id: 'progress',    gid: '320932933',  label: 'Progress Board' },
-    { id: 'issues',      gid: '1978582396', label: 'Issues' },
-    { id: 'glance',      gid: '744455173',  label: 'At a Glance' },
-    { id: 'initiatives', gid: '1044575149', label: 'Initiatives' }
-  ];
-
-  // ── Toggle accordion ──────────────────────────────────────────
-  function toggleSection(id) {
-    var body  = document.getElementById('body-' + id);
-    var arrow = document.getElementById('arrow-' + id);
-    var isOpen = body.classList.contains('open');
-    body.classList.toggle('open', !isOpen);
-    arrow.classList.toggle('open', !isOpen);
+  var BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQt0zn_YGht1WjyIMAHr5cueFGcpXwTPOeD8gSDvbNguhp27fD6MhPHqxa8sN0aNFTFYNZkm1wupcMW/pubhtml?single=true&widget=false&headers=false&gid=';
+  function showTab(btn, gid) {
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('sheetFrame').src = BASE + gid;
   }
-
-  // ── Parse CSV (handles quoted fields) ────────────────────────
-  function parseCSV(text) {
-    var rows = [];
-    var lines = text.split('\n');
-    for (var i = 0; i < lines.length; i++) {
-      var line = lines[i].trim();
-      if (!line) continue;
-      var cols = [], cur = '', inQ = false;
-      for (var j = 0; j < line.length; j++) {
-        var ch = line[j];
-        if (ch === '"') { inQ = !inQ; }
-        else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
-        else { cur += ch; }
-      }
-      cols.push(cur);
-      rows.push(cols);
-    }
-    return rows;
-  }
-
-  // ── Status badge ──────────────────────────────────────────────
-  function badgeClass(val) {
-    var v = (val || '').toLowerCase();
-    if (v.includes('open'))        return 'badge badge-open';
-    if (v.includes('progress') || v.includes('in progress')) return 'badge badge-progress';
-    if (v.includes('resolved') || v.includes('complete'))    return 'badge badge-resolved';
-    if (v.includes('closed'))      return 'badge badge-closed';
-    if (v.includes('pending'))     return 'badge badge-pending';
-    return '';
-  }
-
-  // ── Render a tab's CSV into a table ──────────────────────────
-  function renderTable(id, csvText) {
-    var body = document.getElementById('body-' + id);
-    var rows = parseCSV(csvText);
-
-    // Filter out completely empty rows
-    rows = rows.filter(function(r) {
-      return r.some(function(c) { return c.trim() !== ''; });
-    });
-
-    if (rows.length < 2) {
-      body.innerHTML = '<div class="empty-state">No data available for this section yet.</div>';
-      return;
-    }
-
-    var headers = rows[0];
-    var dataRows = rows.slice(1);
-
-    // Find which column might be a status column
-    var statusCols = headers.map(function(h) {
-      return (h || '').toLowerCase().includes('status');
-    });
-
-    var html = '<table class="data-table"><thead><tr>';
-    headers.forEach(function(h) {
-      if (h.trim()) html += '<th>' + escHtml(h.trim()) + '</th>';
-    });
-    html += '</tr></thead><tbody>';
-
-    dataRows.forEach(function(row) {
-      // Skip rows where all visible cells are empty
-      var hasContent = row.some(function(c, i) {
-        return headers[i] && headers[i].trim() && c.trim();
-      });
-      if (!hasContent) return;
-
-      html += '<tr>';
-      headers.forEach(function(h, i) {
-        if (!h.trim()) return;
-        var val = (row[i] || '').trim();
-        var cls = statusCols[i] ? badgeClass(val) : '';
-        if (cls) {
-          html += '<td><span class="' + cls + '">' + escHtml(val) + '</span></td>';
-        } else {
-          html += '<td>' + escHtml(val) + '</td>';
-        }
-      });
-      html += '</tr>';
-    });
-
-    html += '</tbody></table>';
-    body.innerHTML = html;
-  }
-
-  // ── Escape HTML ───────────────────────────────────────────────
-  function escHtml(str) {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  // ── Load all tabs ─────────────────────────────────────────────
-  function loadAllTabs() {
-    var loadCount = 0;
-
-    TABS.forEach(function(tab) {
-      var url = BASE + '?gid=' + tab.gid + '&single=true&output=csv';
-      fetch(url)
-        .then(function(r) {
-          if (!r.ok) throw new Error('HTTP ' + r.status);
-          return r.text();
-        })
-        .then(function(csv) {
-          renderTable(tab.id, csv);
-          loadCount++;
-          if (loadCount === TABS.length) {
-            document.getElementById('lastUpdated').textContent =
-              'Data loaded: ' + new Date().toLocaleString('en-AU', {
-                day:'numeric', month:'short', year:'numeric',
-                hour:'2-digit', minute:'2-digit'
-              });
-          }
-        })
-        .catch(function(err) {
-          var body = document.getElementById('body-' + tab.id);
-          body.innerHTML = '<div class="error-msg">⚠️ Could not load ' + tab.label +
-            ' data. Please try refreshing the page.</div>';
-        });
-    });
-  }
-
-  // ── Print — expand all sections first ─────────────────────────
-  function printAll() {
-    TABS.forEach(function(tab) {
-      document.getElementById('body-' + tab.id).classList.add('open');
-      document.getElementById('arrow-' + tab.id).classList.add('open');
-    });
-    setTimeout(function() { window.print(); }, 200);
-  }
-
-  // ── Init ──────────────────────────────────────────────────────
-  loadAllTabs();
 </script>
 
 </body>
