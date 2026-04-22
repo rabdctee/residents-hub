@@ -186,8 +186,14 @@
     return cols;
   }
 
+  function parseAmount(val) {
+    if (!val) return NaN;
+    // Strip dollar signs, spaces, commas before parsing
+    return parseFloat(val.toString().replace(/[$,\s]/g, ''));
+  }
+
   function formatAUD(val) {
-    var n = parseFloat(val);
+    var n = parseAmount(val);
     if (isNaN(n)) return '';
     return '$' + Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
@@ -212,7 +218,7 @@
             var hCols = parseCSVLine(lines[i]);
             hCols.forEach(function(h, idx) {
               var k = h.toLowerCase().trim();
-              if (k.includes('amount'))      COL.amount = idx;
+              if (k.includes('amount') || k.includes('dollar')) COL.amount = idx;
               else if (k.includes('desc'))   COL.desc   = idx;
               else if (k.includes('categ'))  COL.cat    = idx;
               else if (k.includes('type') || k.includes('incom')) COL.type = idx;
@@ -242,6 +248,9 @@
           return;
         }
 
+        // Debug: log column detection and first row
+        console.log('COL indices:', JSON.stringify(COL));
+        if (allRows.length > 0) console.log('First data row:', JSON.stringify(allRows[0]));
         renderTable(allRows);
         renderSummary(allRows);
         document.getElementById('printDate').textContent =
@@ -286,7 +295,7 @@
     var totalIncome = 0, totalExpense = 0;
     rows.forEach(function(cols) {
       var type   = (cols[COL.type]   || '').toLowerCase();
-      var amount = parseFloat(cols[COL.amount]) || 0;
+      var amount = parseAmount(cols[COL.amount]) || 0;
       if (type.includes('income')) totalIncome += amount;
       else totalExpense += amount;
     });
