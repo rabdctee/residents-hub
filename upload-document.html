@@ -6,16 +6,18 @@
   <title>Upload a Document | Bridgeman Downs Residents Hub</title>
   <style>
     :root {
-      --navy:      #1F4E79;
-      --navy-light:#E7F1FB;
-      --navy-mid:  #c5d8ee;
-      --gold:      #C9A44A;
-      --grey:      #5f6368;
+      --navy:       #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid:   #c5d8ee;
+      --gold:       #C9A44A;
+      --green:      #1a6b3a;
+      --green-bg:   #e8f5ee;
+      --red:        #c0392b;
+      --red-bg:     #fdf2f2;
+      --grey:       #5f6368;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; min-height:100vh; }
-
-    /* ── Top bar ── */
     .top-bar {
       background:var(--navy); padding:12px 20px;
       display:flex; align-items:center; justify-content:space-between;
@@ -31,174 +33,344 @@
       transition:background 0.2s;
     }
     .back-btn:hover { background:var(--navy-light); }
-
-    /* ── Content ── */
-    .content { max-width:600px; margin:40px auto; padding:0 16px 60px; }
-
+    .content { max-width:620px; margin:0 auto; padding:24px 16px 60px; }
     .card {
       background:white; border-radius:12px;
       border:2px solid var(--navy-light);
       box-shadow:0 2px 8px rgba(0,0,0,0.07);
-      overflow:hidden;
+      overflow:hidden; margin-bottom:16px;
     }
-    .card-header {
-      background:var(--navy); padding:16px 20px;
-      color:white; font-weight:700; font-size:1em;
+    .card-header { background:var(--navy); padding:14px 20px; color:white; font-weight:700; font-size:0.95em; }
+    .card-body { padding:22px; }
+    .form-group { margin-bottom:18px; }
+    .form-group:last-child { margin-bottom:0; }
+    label { display:block; font-weight:600; font-size:0.88em; color:var(--navy); margin-bottom:6px; }
+    label .required { color:var(--red); margin-left:2px; }
+    select, input[type="text"], input[type="email"] {
+      width:100%; padding:11px 13px; font-size:0.95em;
+      border:2px solid var(--navy-mid); border-radius:7px;
+      background:white; color:#333; font-family:inherit;
+      transition:border-color 0.15s; appearance:none;
     }
-    .card-body { padding:24px; }
-
-    .intro {
-      font-size:0.92em; color:var(--grey);
-      line-height:1.6; margin-bottom:20px;
+    select:focus, input:focus { outline:none; border-color:var(--navy); }
+    .drop-zone {
+      border:2px dashed var(--navy-mid); border-radius:9px; padding:28px 20px;
+      text-align:center; cursor:pointer; transition:all 0.2s; background:#fafcff;
+      position:relative;
     }
-
-    /* ── Steps ── */
-    .steps { margin-bottom:24px; }
-    .step {
-      display:flex; gap:14px; align-items:flex-start;
-      margin-bottom:14px;
-    }
-    .step:last-child { margin-bottom:0; }
-    .step-num {
-      background:var(--navy); color:white;
-      width:26px; height:26px; border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      font-weight:700; font-size:0.82em; flex-shrink:0;
-      margin-top:1px;
-    }
-    .step-text { font-size:0.9em; color:#333; line-height:1.55; }
-    .step-text strong { color:var(--navy); }
-
-    /* ── Upload button ── */
-    .upload-btn {
-      display:flex; align-items:center; justify-content:center;
-      gap:10px; background:var(--navy); color:white;
-      padding:15px 24px; border-radius:9px; font-weight:700;
-      font-size:1em; text-decoration:none; width:100%;
-      transition:background 0.2s; margin-bottom:14px;
-    }
-    .upload-btn:hover { background:#17406a; }
-
-    /* ── Tip ── */
-    .tip {
+    .drop-zone:hover, .drop-zone.dragover { border-color:var(--navy); background:var(--navy-light); }
+    .drop-zone input[type="file"] { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+    .drop-icon { font-size:2em; margin-bottom:8px; }
+    .drop-text { font-size:0.9em; color:var(--grey); line-height:1.5; }
+    .drop-text strong { color:var(--navy); }
+    .file-selected {
+      display:none; margin-top:12px; padding:10px 14px;
       background:var(--navy-light); border-radius:7px;
-      padding:11px 14px; font-size:0.83em; color:var(--navy);
-      line-height:1.55;
+      font-size:0.85em; color:var(--navy); font-weight:600;
+      align-items:center; gap:8px;
     }
-
-    /* ── Naming guide ── */
-    .naming {
-      margin-top:20px; padding-top:18px;
-      border-top:2px solid var(--navy-light);
-    }
-    .naming-title {
-      font-size:0.85em; font-weight:700; color:var(--navy);
-      margin-bottom:10px;
-    }
-    .naming-row {
-      display:flex; justify-content:space-between;
-      font-size:0.82em; padding:6px 0;
-      border-bottom:1px solid var(--navy-light);
-      gap:10px;
-    }
+    .file-selected.show { display:flex; }
+    .file-clear { margin-left:auto; cursor:pointer; color:var(--red); font-weight:700; font-size:1.1em; flex-shrink:0; background:none; border:none; padding:0 4px; }
+    .naming-guide { background:var(--navy-light); border-radius:8px; padding:12px 16px; margin-bottom:18px; }
+    .naming-title { font-size:0.82em; font-weight:700; color:var(--navy); margin-bottom:8px; }
+    .naming-row { display:flex; justify-content:space-between; gap:10px; font-size:0.8em; padding:4px 0; border-bottom:1px solid var(--navy-mid); }
     .naming-row:last-child { border-bottom:none; }
     .naming-label { color:var(--grey); flex-shrink:0; }
     .naming-example { color:#333; font-style:italic; text-align:right; }
+    .progress-wrap { display:none; margin-bottom:14px; background:#e0e0e0; border-radius:20px; overflow:hidden; height:8px; }
+    .progress-wrap.show { display:block; }
+    .progress-bar { height:100%; background:var(--navy); border-radius:20px; width:0%; transition:width 0.3s; }
+    .progress-label { font-size:0.82em; color:var(--grey); text-align:center; margin-top:6px; display:none; }
+    .progress-label.show { display:block; }
+    .alert { padding:12px 16px; border-radius:8px; font-size:0.88em; margin-bottom:16px; display:none; line-height:1.55; }
+    .alert.show { display:block; }
+    .alert-success { background:var(--green-bg); color:var(--green); border:1px solid #a8d5b8; }
+    .alert-error   { background:var(--red-bg);   color:var(--red);   border:1px solid #f1b0a8; }
+    .btn-primary {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      background:var(--navy); color:white; padding:13px 24px;
+      border-radius:8px; font-weight:700; font-size:0.95em;
+      border:none; cursor:pointer; width:100%; transition:background 0.2s;
+    }
+    .btn-primary:hover { background:#17406a; }
+    .btn-primary:disabled { background:#aaa; cursor:not-allowed; }
+    .spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .success-card { display:none; }
+    .success-card.show { display:block; }
+    .success-icon { font-size:3em; text-align:center; margin-bottom:12px; }
+    .success-detail { background:var(--navy-light); border-radius:8px; padding:12px 16px; font-size:0.88em; color:#333; margin:14px 0; line-height:1.6; }
+    .btn-another {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      background:white; color:var(--navy); padding:12px 24px;
+      border-radius:8px; font-weight:700; font-size:0.92em;
+      border:2px solid var(--navy); cursor:pointer; width:100%; transition:all 0.2s; margin-top:10px;
+    }
+    .btn-another:hover { background:var(--navy-light); }
+    @media(max-width:480px){ .top-bar { padding:10px 14px; } .back-btn { font-size:0.82em; padding:8px 12px; } .card-body { padding:16px; } }
   </style>
 </head>
 <body>
 
-  <div class="top-bar">
-    <div>
-      <div class="top-bar-title">📤 Upload a Document</div>
-      <div class="top-bar-sub">Bridgeman Downs Retirement Village — Committee use only</div>
-    </div>
-    <a class="back-btn" href="index.html#committee">← Back</a>
+<div class="top-bar">
+  <div>
+    <div class="top-bar-title">&#128228; Upload a Document</div>
+    <div class="top-bar-sub">Bridgeman Downs &#8212; Committee use only</div>
   </div>
+  <a class="back-btn" href="index.html#committee">&#8592; Back</a>
+</div>
 
-  <div class="content">
-    <div class="card">
-      <div class="card-header">📋 Before you upload</div>
-      <div class="card-body">
+<div class="content">
 
-        <p class="intro">
-          Documents are uploaded using a secure Google Form. Follow the steps below,
-          then click the button to open the form. When you are done, close the form tab
-          to return here.
-        </p>
+  <div class="card" id="uploadCard">
+    <div class="card-header">&#128203; Upload a Document to the Hub</div>
+    <div class="card-body">
 
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-text">
-              <strong>Save your document as a PDF</strong> if it is not already in that format.
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-text">
-              <strong>Name the file clearly</strong> — see the naming guide below.
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-text">
-              <strong>Sign in with your committee Google account</strong> before opening the form.
-              The form will not accept uploads from personal accounts.
-            </div>
-          </div>
-          <div class="step">
-            <div class="step-num">4</div>
-            <div class="step-text">
-              <strong>Click the button below</strong> to open the upload form.
-              When finished, use the <strong>← back button</strong> in your browser
-              to return to this page.
-            </div>
-          </div>
-        </div>
+      <div id="alertMsg" class="alert"></div>
 
-        <a class="upload-btn"
-           href="https://docs.google.com/forms/d/1TI6N6koCWuGFoO3izDMI5PwOfmls8sep9b0HKwPA-t4/viewform">
-          📤 Open Upload Form
-        </a>
-
-        <div class="tip">
-          💡 You will receive a confirmation email once your upload is complete.
-          If you do not receive one within a few minutes, check your committee
-          email inbox. Contact Rick if you experience any issues.
-        </div>
-
-        <div class="naming">
-          <div class="naming-title">📝 File naming guide</div>
-          <div class="naming-row">
-            <span class="naming-label">RC Monthly Meeting</span>
-            <span class="naming-example">Apr 2026 - Minutes.pdf</span>
-          </div>
-          <div class="naming-row">
-            <span class="naming-label">RC Monthly Meeting</span>
-            <span class="naming-example">Apr 2026 - Agenda.pdf</span>
-          </div>
-          <div class="naming-row">
-            <span class="naming-label">SC Monthly Meeting</span>
-            <span class="naming-example">Apr 2026 - SC Minutes.pdf</span>
-          </div>
-          <div class="naming-row">
-            <span class="naming-label">Quarterly Meeting</span>
-            <span class="naming-example">Q2 2026 - Quarterly Meeting.pdf</span>
-          </div>
-          <div class="naming-row">
-            <span class="naming-label">AGM</span>
-            <span class="naming-example">2026 AGM - Minutes.pdf</span>
-          </div>
-          <div class="naming-row">
-            <span class="naming-label">Newsletter</span>
-            <span class="naming-example">May 2026 - Newsletter.pdf</span>
-          </div>
-        </div>
-
+      <div class="form-group">
+        <label for="docFolder">Destination folder <span class="required">*</span></label>
+        <select id="docFolder" onchange="updateNamingGuide()">
+          <option value="">&#8212; Select a folder &#8212;</option>
+          <optgroup label="Residents Committee">
+            <option value="Annual General Meetings">Annual General Meetings</option>
+            <option value="Residents Committee - Monthly Meetings">Residents Committee &#8212; Monthly Meetings</option>
+            <option value="Residents Quarterly Meetings">Residents Quarterly Meetings</option>
+          </optgroup>
+          <optgroup label="Social Club Committee">
+            <option value="Social Club Committee - Monthly Meetings">Social Club Committee &#8212; Monthly Meetings</option>
+          </optgroup>
+          <optgroup label="Publications">
+            <option value="Newsletters">Newsletters</option>
+          </optgroup>
+          <optgroup label="Financial">
+            <option value="Monthly Financial Reports">Monthly Financial Reports</option>
+            <option value="Bank Statements">Bank Statements</option>
+          </optgroup>
+          <optgroup label="Aveo">
+            <option value="Aveo Documents">Aveo Documents</option>
+          </optgroup>
+        </select>
       </div>
+
+      <div class="naming-guide" id="namingGuide" style="display:none;">
+        <div class="naming-title">&#128221; Suggested file name format</div>
+        <div id="namingRows"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="docName">File name <span class="required">*</span>
+          <span style="font-weight:400;color:var(--grey);font-size:0.9em;"> &#8212; must end in .pdf</span>
+        </label>
+        <input type="text" id="docName" placeholder="e.g. Apr 2026 - Minutes.pdf">
+      </div>
+
+      <div class="form-group">
+        <label>Select PDF file <span class="required">*</span></label>
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="handleFileSelect(this)">
+          <div class="drop-icon">&#128196;</div>
+          <div class="drop-text">
+            <strong>Click to choose a PDF file</strong><br>
+            or drag and drop it here
+          </div>
+        </div>
+        <div class="file-selected" id="fileSelected">
+          <span id="fileSelectedName"></span>
+          <button class="file-clear" onclick="clearFile()" title="Remove file">&#10005;</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="docUploader">Your committee email <span class="required">*</span></label>
+        <input type="email" id="docUploader" placeholder="e.g. rabd.secretary@gmail.com">
+      </div>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-label" id="progressLabel"></div>
+
+      <button class="btn-primary" id="uploadBtn" onclick="uploadDocument()">
+        &#128228; Upload Document
+      </button>
+
     </div>
   </div>
+
+  <div class="card success-card" id="successCard">
+    <div class="card-header">&#9989; Upload Complete</div>
+    <div class="card-body">
+      <div class="success-icon">&#127881;</div>
+      <p style="text-align:center;font-weight:700;color:var(--navy);margin-bottom:6px;">Document uploaded successfully!</p>
+      <p style="text-align:center;font-size:0.88em;color:var(--grey);margin-bottom:14px;">
+        The document is now saved to Google Drive and will appear on the Hub automatically.
+      </p>
+      <div class="success-detail" id="successDetail"></div>
+      <button class="btn-another" onclick="resetForm()">&#128228; Upload Another Document</button>
+      <a class="back-btn" href="index.html#committee" style="margin-top:10px;justify-content:center;display:flex;">
+        &#8592; Back to Committee Page
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgoNq2hDH4jAKiMuXIFBmcTipxor9e2aO6ylEjcilem4A7e8ARzSmdToOKvzBVH7ncNw/exec';
+
+  var NAMING_GUIDES = {
+    'Annual General Meetings': [['AGM Minutes','2026 AGM - Minutes.pdf'],['AGM Agenda','2026 AGM - Agenda.pdf']],
+    'Residents Committee - Monthly Meetings': [['Agenda','Apr 2026 - Agenda.pdf'],['Minutes','Apr 2026 - Minutes.pdf'],['Reports','Apr 2026 - Community Managers Report.pdf']],
+    'Residents Quarterly Meetings': [['Agenda','Q2 2026 - Quarterly Meeting Agenda.pdf'],['Minutes','Q2 2026 - Quarterly Meeting Minutes.pdf']],
+    'Social Club Committee - Monthly Meetings': [['Agenda','Apr 2026 - SC Agenda.pdf'],['Minutes','Apr 2026 - SC Minutes.pdf']],
+    'Newsletters': [['Newsletter','May 2026 - Newsletter.pdf']],
+    'Monthly Financial Reports': [['Report','April 2026.pdf']],
+    'Bank Statements': [['Statement','04-Bank Statement - Apr 26.pdf']],
+    'Aveo Documents': [['Presentation','Aveo Roundtable Presentation - Apr 2026.pdf'],['Policy','Aveo Pet Policy.pdf']]
+  };
+
+  var selectedFile = null;
+
+  function updateNamingGuide() {
+    var folder = document.getElementById('docFolder').value;
+    var guide  = NAMING_GUIDES[folder];
+    var wrap   = document.getElementById('namingGuide');
+    var rows   = document.getElementById('namingRows');
+    if (!guide) { wrap.style.display = 'none'; return; }
+    rows.innerHTML = guide.map(function(r){
+      return '<div class="naming-row"><span class="naming-label">'+r[0]+'</span><span class="naming-example">'+r[1]+'</span></div>';
+    }).join('');
+    wrap.style.display = 'block';
+  }
+
+  function handleFileSelect(input) {
+    var file = input.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+      showAlert('error','Please select a PDF file only.');
+      input.value = ''; return;
+    }
+    if (file.size > 50*1024*1024) {
+      showAlert('error','File is too large. Maximum size is 50 MB.');
+      input.value = ''; return;
+    }
+    selectedFile = file;
+    document.getElementById('fileSelectedName').textContent = file.name + ' (' + formatSize(file.size) + ')';
+    document.getElementById('fileSelected').classList.add('show');
+    if (!document.getElementById('docName').value) {
+      document.getElementById('docName').value = file.name;
+    }
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileSelected').classList.remove('show');
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+
+  var dz = document.getElementById('dropZone');
+  dz.addEventListener('dragover',  function(e){ e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', function(){ dz.classList.remove('dragover'); });
+  dz.addEventListener('drop', function(e) {
+    e.preventDefault(); dz.classList.remove('dragover');
+    var file = e.dataTransfer.files[0];
+    if (file) {
+      try {
+        var dt = new DataTransfer();
+        dt.items.add(file);
+        document.getElementById('fileInput').files = dt.files;
+      } catch(e) {}
+      handleFileSelect(document.getElementById('fileInput'));
+      if (!selectedFile) { selectedFile = file; document.getElementById('fileSelectedName').textContent = file.name + ' (' + formatSize(file.size) + ')'; document.getElementById('fileSelected').classList.add('show'); if (!document.getElementById('docName').value) document.getElementById('docName').value = file.name; }
+    }
+  });
+
+  function uploadDocument() {
+    var folder   = document.getElementById('docFolder').value;
+    var name     = document.getElementById('docName').value.trim();
+    var uploader = document.getElementById('docUploader').value.trim();
+    if (!folder)   { showAlert('error','Please select a destination folder.'); return; }
+    if (!name)     { showAlert('error','Please enter a file name.'); return; }
+    if (!name.toLowerCase().endsWith('.pdf')) { showAlert('error','File name must end in .pdf'); return; }
+    if (!selectedFile) { showAlert('error','Please select a PDF file to upload.'); return; }
+    if (!uploader) { showAlert('error','Please enter your committee email address.'); return; }
+    hideAlert();
+    setProgress(10,'Reading file...');
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var base64 = e.target.result.split(',')[1];
+      setProgress(30,'Uploading to Google Drive...');
+      var btn = document.getElementById('uploadBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Uploading...';
+      fetch(SCRIPT_URL, {
+        method:'POST',
+        body: JSON.stringify({ action:'uploadDocument', fileName:name, fileData:base64, mimeType:'application/pdf', folder:folder, uploader:uploader })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        setProgress(100,'Complete!');
+        btn.disabled = false;
+        btn.innerHTML = '&#128228; Upload Document';
+        hideProgress();
+        if (data.status === 'ok') { showSuccess(name, folder); }
+        else { showAlert('error','Upload failed: ' + (data.message || 'Please try again or contact Rick.')); }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.innerHTML = '&#128228; Upload Document';
+        hideProgress();
+        showAlert('error','Upload failed. Please check your connection and try again, or contact Rick.');
+      });
+    };
+    reader.onerror = function(){ hideProgress(); showAlert('error','Could not read the file. Please try again.'); };
+    reader.readAsDataURL(selectedFile);
+  }
+
+  function setProgress(pct, label) {
+    document.getElementById('progressWrap').classList.add('show');
+    document.getElementById('progressLabel').classList.add('show');
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = label;
+  }
+  function hideProgress() {
+    setTimeout(function(){ document.getElementById('progressWrap').classList.remove('show'); document.getElementById('progressLabel').classList.remove('show'); }, 800);
+  }
+  function showAlert(type, msg) {
+    var el = document.getElementById('alertMsg');
+    el.className = 'alert alert-'+type+' show';
+    el.textContent = msg;
+    el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function hideAlert() {
+    var el = document.getElementById('alertMsg');
+    el.className = 'alert'; el.textContent = '';
+  }
+  function showSuccess(name, folder) {
+    document.getElementById('uploadCard').style.display = 'none';
+    document.getElementById('successDetail').innerHTML =
+      '<strong>File:</strong> ' + name + '<br>' +
+      '<strong>Saved to:</strong> ' + folder + '<br>' +
+      '<strong>Status:</strong> Shared with residents &#8212; visible on the Hub automatically';
+    document.getElementById('successCard').classList.add('show');
+    window.scrollTo(0,0);
+  }
+  function resetForm() {
+    document.getElementById('uploadCard').style.display = 'block';
+    document.getElementById('successCard').classList.remove('show');
+    document.getElementById('docFolder').value = '';
+    document.getElementById('docName').value = '';
+    document.getElementById('docUploader').value = '';
+    clearFile(); hideAlert(); updateNamingGuide(); window.scrollTo(0,0);
+  }
+</script>
 
 </body>
 </html>
