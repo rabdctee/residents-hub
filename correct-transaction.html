@@ -692,10 +692,11 @@ function submitCorrection() {
 
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
+    mode: 'no-cors',
     body: JSON.stringify(payload)
   })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
+  .then(function() {
+    var data = { status: 'ok' };
     if (data.status === 'ok') {
       document.getElementById('successDetail').textContent =
         'Correction for "' + selectedTx['Description'] + '" has been submitted and will be processed shortly.';

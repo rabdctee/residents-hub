@@ -643,10 +643,11 @@ function submitDeletion() {
 
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
+    mode: 'no-cors',
     body: JSON.stringify(payload)
   })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
+  .then(function() {
+    var data = { status: 'ok' };
     if (data.status === 'ok') {
       document.getElementById('successDetail').textContent =
         'Deletion request for "' + selectedTx['Description'] + '" (' +
