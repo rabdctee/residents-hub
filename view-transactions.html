@@ -5,133 +5,294 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Transaction Review | Bridgeman Downs Residents Hub</title>
   <style>
+    :root {
+      --navy: #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid: #c5d8ee;
+      --grey: #5f6368;
+    }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; }
 
+    /* ── Top bar ── */
     .top-bar {
-      background:#1F4E79;
-      padding:12px 20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      gap:10px;
+      background:var(--navy); padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px; position:sticky; top:0; z-index:50;
     }
-
-    .top-bar-title {
-      color:white;
-      font-size:1em;
-      font-weight:700;
-    }
-
-    .top-bar-sub {
-      color:rgba(255,255,255,0.75);
-      font-size:0.82em;
-      margin-top:2px;
-    }
-
-    .btn-group {
-      display:flex;
-      gap:8px;
-      flex-shrink:0;
-    }
-
+    .top-bar-info { min-width:0; }
+    .top-bar-title { color:white; font-size:1em; font-weight:700; }
+    .top-bar-sub { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .btn-group { display:flex; gap:8px; flex-shrink:0; }
     .back-btn {
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      background:white;
-      color:#1F4E79;
-      padding:9px 18px;
-      border-radius:7px;
-      text-decoration:none;
-      font-weight:700;
-      font-size:0.9em;
-      border:2px solid white;
-      transition:all 0.2s;
-      white-space:nowrap;
+      display:inline-flex; align-items:center; gap:6px;
+      background:white; color:var(--navy); padding:9px 16px;
+      border-radius:7px; text-decoration:none; font-weight:700;
+      font-size:0.88em; border:2px solid white; white-space:nowrap;
     }
-    .back-btn:hover { background:#E7F1FB; }
-
+    .back-btn:hover { background:var(--navy-light); }
     .print-btn {
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      background:rgba(255,255,255,0.15);
-      color:white;
-      padding:9px 18px;
-      border-radius:7px;
-      font-weight:700;
-      font-size:0.9em;
-      border:2px solid rgba(255,255,255,0.4);
-      cursor:pointer;
-      white-space:nowrap;
-      transition:background 0.2s;
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(255,255,255,0.15); color:white;
+      padding:9px 16px; border-radius:7px; font-weight:700;
+      font-size:0.88em; cursor:pointer;
+      border:2px solid rgba(255,255,255,0.4); white-space:nowrap;
     }
     .print-btn:hover { background:rgba(255,255,255,0.28); }
 
-    @media print {
-      .top-bar, .info-bar { display:none !important; }
-      body { background:white; }
-      .sheet-frame { height:100vh; }
-    }
-
+    /* ── Info bar ── */
     .info-bar {
-      background:#E7F1FB;
-      border-bottom:2px solid #c5d8ee;
-      padding:10px 20px;
-      font-size:0.85em;
-      color:#1F4E79;
+      background:var(--navy-light); border-bottom:2px solid var(--navy-mid);
+      padding:8px 20px; font-size:0.83em; color:var(--navy);
     }
 
-    .sheet-frame {
-      width:100%;
-      height:calc(100vh - 110px);
-      border:none;
-      display:block;
-      background:white;
+    /* ── Content ── */
+    .content { padding:16px 20px 40px; max-width:960px; margin:0 auto; }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x:auto; border-radius:8px; border:1px solid var(--navy-mid); }
+    table { width:100%; border-collapse:collapse; font-size:0.88em; background:white; }
+    thead th {
+      background:var(--navy); color:white; padding:10px 12px;
+      text-align:left; font-weight:600; white-space:nowrap;
+    }
+    tbody td { padding:9px 12px; border-bottom:1px solid var(--navy-light); color:#333; vertical-align:top; }
+    tbody tr:last-child td { border-bottom:none; }
+    tbody tr:nth-child(even) td { background:#f8fbff; }
+    tbody tr:hover td { background:var(--navy-light); }
+
+    /* Income/Expense colouring */
+    .type-income { color:#1a6b3a; font-weight:600; }
+    .type-expense { color:#c0392b; font-weight:600; }
+    .amount { text-align:right; white-space:nowrap; }
+
+    /* ── Loading / error ── */
+    .status-msg {
+      text-align:center; padding:40px 20px;
+      color:var(--grey); font-style:italic; font-size:0.92em;
     }
 
-    @media(max-width:600px) {
+    /* ── Summary bar ── */
+    .summary {
+      display:flex; gap:16px; flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .summary-pill {
+      background:white; border:2px solid var(--navy-mid);
+      border-radius:8px; padding:8px 16px; font-size:0.85em;
+      color:var(--navy); white-space:nowrap;
+    }
+    .summary-pill strong { display:block; font-size:1.1em; }
+
+    /* ── Search ── */
+    .search-wrap { margin-bottom:12px; }
+    .search-input {
+      width:100%; padding:10px 14px; font-size:0.92em;
+      border:2px solid var(--navy-mid); border-radius:8px;
+      font-family:inherit; color:#333;
+    }
+    .search-input:focus { outline:none; border-color:var(--navy); }
+
+    /* ── Print ── */
+    @media print {
+      .top-bar, .info-bar, .search-wrap, .summary { display:none !important; }
+      body { background:white; font-size:11px; }
+      .content { padding:0; max-width:100%; }
+      .table-wrap { border:none; border-radius:0; }
+      thead th { background:#1F4E79 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+      .print-header { display:block !important; }
+    }
+    .print-header {
+      display:none;
+      margin-bottom:12px;
+    }
+    .print-header h2 { font-size:14px; color:#1F4E79; margin-bottom:2px; }
+    .print-header p  { font-size:10px; color:#888; }
+
+    @media(max-width:600px){
       .top-bar { padding:10px 14px; }
-      .top-bar-title { font-size:0.9em; }
       .back-btn, .print-btn { font-size:0.8em; padding:8px 12px; }
-      .sheet-frame { height:calc(100vh - 130px); }
+      .content { padding:12px 10px 30px; }
     }
   </style>
 </head>
 <body>
 
   <div class="top-bar">
-    <div>
-      <div class="top-bar-title">📋 Transaction Review</div>
-      <div class="top-bar-sub">Bridgeman Downs Social Club — read only</div>
+    <div class="top-bar-info">
+      <div class="top-bar-title">&#128203; Transaction Review</div>
+      <div class="top-bar-sub">Bridgeman Downs Social Club &#8212; read only</div>
     </div>
-    <a class="back-btn" href="index.html#committee">← Return to Committee Page</a>
-    <button class="print-btn" onclick="printFull()">🖨️ Print</button>
+    <div class="btn-group">
+      <button class="print-btn" onclick="window.print()">&#128424;&#65039; Print</button>
+      <a class="back-btn" href="index.html#committee">&#8592; Return to Committee Page</a>
+    </div>
   </div>
 
   <div class="info-bar">
-    💡 Use this view to find the exact date, description and amount before making a correction or deletion. This list is read-only — no changes can be made here.
+    &#128161; Use this view to find the exact date, description and amount before making a correction or deletion. This list is read-only &#8212; no changes can be made here.
   </div>
 
-  <iframe
-    class="sheet-frame"
-    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKCTWAGXRw_S2baTXaj6UYZQlh6Mn7ih_PGkAxXDxIVKonae5zlE2cwhH0z3mvkcyw-pPd/pubhtml?gid=1140606109&single=true&widget=false&headers=false"
-    title="Social Club Transaction Review">
-  </iframe>
+  <div class="content">
+
+    <div class="print-header">
+      <h2>Bridgeman Downs Social Club &#8212; Transaction Review</h2>
+      <p id="printDate"></p>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <div class="search-wrap">
+      <input class="search-input" type="text" id="searchBox"
+             placeholder="&#128269; Search by description, category, type or amount..."
+             oninput="filterTable()">
+    </div>
+
+    <div class="table-wrap">
+      <table id="txTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Month</th>
+            <th>Year</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th style="text-align:right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="txBody">
+          <tr><td colspan="7" class="status-msg">Loading transactions...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
 
 <script>
-  function printFull() {
-    // Open the published sheet directly in a new tab for full printing
-    // The user prints from there using Ctrl+P / Cmd+P
-    var printUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKCTWAGXRw_S2baTXaj6UYZQlh6Mn7ih_PGkAxXDxIVKonae5zlE2cwhH0z3mvkcyw-pPd/pubhtml?gid=1140606109&single=true';
-    var win = window.open(printUrl, '_blank');
-    // Brief delay then trigger print in the new tab
-    setTimeout(function() {
-      try { win.print(); } catch(e) {}
-    }, 2500);
+  var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKCTWAGXRw_S2baTXaj6UYZQlh6Mn7ih_PGkAxXDxIVKonae5zlE2cwhH0z3mvkcyw-pPd/pub?gid=1140606109&single=true&output=csv';
+
+  var allRows = [];
+
+  function parseCSVLine(line) {
+    var cols = [], cur = '', inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var ch = line[i];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+    cols.push(cur);
+    return cols;
   }
+
+  function formatAUD(val) {
+    var n = parseFloat(val);
+    if (isNaN(n)) return '';
+    return '$' + Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function loadTransactions() {
+    fetch(CSV_URL)
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var lines = csv.split('\n');
+        allRows = [];
+
+        // Skip header rows (rows with non-data content)
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (!line) continue;
+          var cols = parseCSVLine(line);
+          // Data rows have a date-like value in col 0 and a year in col 2
+          var year = (cols[2] || '').trim();
+          if (year === '2026' || year === '2025' || year === '2027') {
+            allRows.push(cols);
+          }
+        }
+
+        if (allRows.length === 0) {
+          document.getElementById('txBody').innerHTML =
+            '<tr><td colspan="7" class="status-msg">No transactions found.</td></tr>';
+          return;
+        }
+
+        renderTable(allRows);
+        renderSummary(allRows);
+        document.getElementById('printDate').textContent =
+          'Printed: ' + new Date().toLocaleDateString('en-AU', {
+            day:'numeric', month:'long', year:'numeric',
+            hour:'2-digit', minute:'2-digit'
+          });
+      })
+      .catch(function() {
+        document.getElementById('txBody').innerHTML =
+          '<tr><td colspan="7" class="status-msg">&#9888;&#65039; Could not load transactions. Please try refreshing the page.</td></tr>';
+      });
+  }
+
+  function renderTable(rows) {
+    var html = '';
+    rows.forEach(function(cols) {
+      var date   = (cols[0] || '').trim();
+      var month  = (cols[1] || '').trim();
+      var year   = (cols[2] || '').trim();
+      var type   = (cols[3] || '').trim();
+      var cat    = (cols[4] || '').trim();
+      var desc   = (cols[5] || '').trim();
+      var amount = (cols[6] || '').trim();
+
+      var typeCls = type.toLowerCase().includes('income') ? 'type-income' : 'type-expense';
+
+      html += '<tr>' +
+        '<td>' + esc(date) + '</td>' +
+        '<td>' + esc(month) + '</td>' +
+        '<td>' + esc(year) + '</td>' +
+        '<td class="' + typeCls + '">' + esc(type) + '</td>' +
+        '<td>' + esc(cat) + '</td>' +
+        '<td>' + esc(desc) + '</td>' +
+        '<td class="amount">' + formatAUD(amount) + '</td>' +
+        '</tr>';
+    });
+    document.getElementById('txBody').innerHTML = html;
+  }
+
+  function renderSummary(rows) {
+    var totalIncome = 0, totalExpense = 0;
+    rows.forEach(function(cols) {
+      var type   = (cols[3] || '').toLowerCase();
+      var amount = parseFloat(cols[6]) || 0;
+      if (type.includes('income')) totalIncome += amount;
+      else totalExpense += amount;
+    });
+    var net = totalIncome - totalExpense;
+    var netColour = net >= 0 ? '#1a6b3a' : '#c0392b';
+
+    document.getElementById('summary').innerHTML =
+      '<div class="summary-pill"><strong>' + rows.length + '</strong> transactions</div>' +
+      '<div class="summary-pill" style="border-color:#a8d5b8;"><strong style="color:#1a6b3a;">' + formatAUD(totalIncome) + '</strong> total income</div>' +
+      '<div class="summary-pill" style="border-color:#f1b0a8;"><strong style="color:#c0392b;">' + formatAUD(totalExpense) + '</strong> total expense</div>' +
+      '<div class="summary-pill"><strong style="color:' + netColour + ';">' + (net >= 0 ? '+' : '') + formatAUD(net) + '</strong> net</div>';
+  }
+
+  function filterTable() {
+    var q = document.getElementById('searchBox').value.toLowerCase();
+    if (!q) { renderTable(allRows); return; }
+    var filtered = allRows.filter(function(cols) {
+      return cols.join(' ').toLowerCase().includes(q);
+    });
+    renderTable(filtered);
+    if (filtered.length === 0) {
+      document.getElementById('txBody').innerHTML =
+        '<tr><td colspan="7" class="status-msg">No transactions match your search.</td></tr>';
+    }
+  }
+
+  function esc(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  loadTransactions();
 </script>
 
 </body>
