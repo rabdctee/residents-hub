@@ -108,7 +108,7 @@
       <div class="top-bar-sub">Bridgeman Downs Social Club — read only</div>
     </div>
     <a class="back-btn" href="index.html#committee">← Return to Committee Page</a>
-    <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+    <button class="print-btn" onclick="printFull()">🖨️ Print</button>
   </div>
 
   <div class="info-bar">
@@ -120,6 +120,19 @@
     src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKCTWAGXRw_S2baTXaj6UYZQlh6Mn7ih_PGkAxXDxIVKonae5zlE2cwhH0z3mvkcyw-pPd/pubhtml?gid=1140606109&single=true&widget=false&headers=false"
     title="Social Club Transaction Review">
   </iframe>
+
+<script>
+  function printFull() {
+    // Open the published sheet directly in a new tab for full printing
+    // The user prints from there using Ctrl+P / Cmd+P
+    var printUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKCTWAGXRw_S2baTXaj6UYZQlh6Mn7ih_PGkAxXDxIVKonae5zlE2cwhH0z3mvkcyw-pPd/pubhtml?gid=1140606109&single=true';
+    var win = window.open(printUrl, '_blank');
+    // Brief delay then trigger print in the new tab
+    setTimeout(function() {
+      try { win.print(); } catch(e) {}
+    }, 2500);
+  }
+</script>
 
 </body>
 </html>
