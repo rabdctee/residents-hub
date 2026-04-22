@@ -192,6 +192,9 @@
     return '$' + Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
+  // Column indices — discovered from CSV header row
+  var COL = { date:0, month:1, year:2, type:3, cat:4, desc:5, amount:6 };
+
   function loadTransactions() {
     fetch(CSV_URL)
       .then(function(r) { return r.text(); })
@@ -199,14 +202,36 @@
         var lines = csv.split('\n');
         allRows = [];
 
-        // Skip header rows (rows with non-data content)
-        for (var i = 0; i < lines.length; i++) {
+        // Find header row — the one containing 'Amount'
+        var headerIdx = -1;
+        for (var i = 0; i < Math.min(lines.length, 10); i++) {
+          var line = lines[i].toLowerCase();
+          if (line.includes('amount') && line.includes('date')) {
+            headerIdx = i;
+            // Parse column positions from this header
+            var hCols = parseCSVLine(lines[i]);
+            hCols.forEach(function(h, idx) {
+              var k = h.toLowerCase().trim();
+              if (k.includes('amount'))      COL.amount = idx;
+              else if (k.includes('desc'))   COL.desc   = idx;
+              else if (k.includes('categ'))  COL.cat    = idx;
+              else if (k.includes('type') || k.includes('incom')) COL.type = idx;
+              else if (k === 'year')         COL.year   = idx;
+              else if (k === 'month')        COL.month  = idx;
+              else if (k === 'date' || k.includes('date of')) COL.date = idx;
+            });
+            break;
+          }
+        }
+
+        // Collect data rows — lines after header where year is numeric
+        var start = headerIdx >= 0 ? headerIdx + 1 : 0;
+        for (var i = start; i < lines.length; i++) {
           var line = lines[i].trim();
           if (!line) continue;
           var cols = parseCSVLine(line);
-          // Data rows have a date-like value in col 0 and a year in col 2
-          var year = (cols[2] || '').trim();
-          if (year === '2026' || year === '2025' || year === '2027') {
+          var year = (cols[COL.year] || '').trim();
+          if (/^20\d{2}$/.test(year)) {
             allRows.push(cols);
           }
         }
@@ -217,8 +242,6 @@
           return;
         }
 
-        // Log first row to diagnose column structure
-        if (allRows.length > 0) console.log('First row cols:', JSON.stringify(allRows[0]));
         renderTable(allRows);
         renderSummary(allRows);
         document.getElementById('printDate').textContent =
@@ -236,13 +259,13 @@
   function renderTable(rows) {
     var html = '';
     rows.forEach(function(cols) {
-      var date   = (cols[0] || '').trim();
-      var month  = (cols[1] || '').trim();
-      var year   = (cols[2] || '').trim();
-      var type   = (cols[3] || '').trim();
-      var cat    = (cols[4] || '').trim();
-      var desc   = (cols[5] || '').trim();
-      var amount = (cols[7] !== undefined ? cols[7] : cols[6] || '').trim();
+      var date   = (cols[COL.date]   || '').trim();
+      var month  = (cols[COL.month]  || '').trim();
+      var year   = (cols[COL.year]   || '').trim();
+      var type   = (cols[COL.type]   || '').trim();
+      var cat    = (cols[COL.cat]    || '').trim();
+      var desc   = (cols[COL.desc]   || '').trim();
+      var amount = (cols[COL.amount] || '').trim();
 
       var typeCls = type.toLowerCase().includes('income') ? 'type-income' : 'type-expense';
 
@@ -262,8 +285,8 @@
   function renderSummary(rows) {
     var totalIncome = 0, totalExpense = 0;
     rows.forEach(function(cols) {
-      var type   = (cols[3] || '').toLowerCase();
-      var amount = parseFloat(cols[7] !== undefined ? cols[7] : cols[6]) || 0;
+      var type   = (cols[COL.type]   || '').toLowerCase();
+      var amount = parseFloat(cols[COL.amount]) || 0;
       if (type.includes('income')) totalIncome += amount;
       else totalExpense += amount;
     });
