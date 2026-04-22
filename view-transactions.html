@@ -189,7 +189,9 @@
   function parseAmount(val) {
     if (!val) return NaN;
     // Strip dollar signs, spaces, commas before parsing
-    return parseFloat(val.toString().replace(/[$,\s]/g, ''));
+    // Remove $, commas, spaces
+    var clean = val.toString().replace(/\$/g,'').replace(/,/g,'').trim();
+    return parseFloat(clean);
   }
 
   function formatAUD(val) {
@@ -248,9 +250,6 @@
           return;
         }
 
-        // Debug: log column detection and first row
-        console.log('COL indices:', JSON.stringify(COL));
-        if (allRows.length > 0) console.log('First data row:', JSON.stringify(allRows[0]));
         renderTable(allRows);
         renderSummary(allRows);
         document.getElementById('printDate').textContent =
