@@ -217,6 +217,8 @@
           return;
         }
 
+        // Log first row to diagnose column structure
+        if (allRows.length > 0) console.log('First row cols:', JSON.stringify(allRows[0]));
         renderTable(allRows);
         renderSummary(allRows);
         document.getElementById('printDate').textContent =
@@ -240,7 +242,7 @@
       var type   = (cols[3] || '').trim();
       var cat    = (cols[4] || '').trim();
       var desc   = (cols[5] || '').trim();
-      var amount = (cols[6] || '').trim();
+      var amount = (cols[7] !== undefined ? cols[7] : cols[6] || '').trim();
 
       var typeCls = type.toLowerCase().includes('income') ? 'type-income' : 'type-expense';
 
@@ -261,7 +263,7 @@
     var totalIncome = 0, totalExpense = 0;
     rows.forEach(function(cols) {
       var type   = (cols[3] || '').toLowerCase();
-      var amount = parseFloat(cols[6]) || 0;
+      var amount = parseFloat(cols[7] !== undefined ? cols[7] : cols[6]) || 0;
       if (type.includes('income')) totalIncome += amount;
       else totalExpense += amount;
     });
