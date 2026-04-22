@@ -30,6 +30,12 @@
       margin-top:2px;
     }
 
+    .btn-group {
+      display:flex;
+      gap:8px;
+      flex-shrink:0;
+    }
+
     .back-btn {
       display:inline-flex;
       align-items:center;
@@ -46,6 +52,29 @@
       white-space:nowrap;
     }
     .back-btn:hover { background:#E7F1FB; }
+
+    .print-btn {
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      background:rgba(255,255,255,0.15);
+      color:white;
+      padding:9px 18px;
+      border-radius:7px;
+      font-weight:700;
+      font-size:0.9em;
+      border:2px solid rgba(255,255,255,0.4);
+      cursor:pointer;
+      white-space:nowrap;
+      transition:background 0.2s;
+    }
+    .print-btn:hover { background:rgba(255,255,255,0.28); }
+
+    @media print {
+      .top-bar, .info-bar { display:none !important; }
+      body { background:white; }
+      .sheet-frame { height:100vh; }
+    }
 
     .info-bar {
       background:#E7F1FB;
@@ -66,6 +95,7 @@
     @media(max-width:600px) {
       .top-bar { padding:10px 14px; }
       .top-bar-title { font-size:0.9em; }
+      .back-btn, .print-btn { font-size:0.8em; padding:8px 12px; }
       .sheet-frame { height:calc(100vh - 130px); }
     }
   </style>
@@ -78,6 +108,7 @@
       <div class="top-bar-sub">Bridgeman Downs Social Club — read only</div>
     </div>
     <a class="back-btn" href="index.html#committee">← Return to Committee Page</a>
+    <button class="print-btn" onclick="window.print()">🖨️ Print</button>
   </div>
 
   <div class="info-bar">
