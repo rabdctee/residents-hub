@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Registrations | Bridgeman Downs Residents Hub</title>
+  <style>
+    :root {
+      --navy:       #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid:   #c5d8ee;
+      --green:      #1a6b3a;
+      --green-bg:   #e8f5ee;
+      --red:        #c0392b;
+      --red-bg:     #fdf0ee;
+      --orange:     #d35400;
+      --orange-bg:  #fef3ec;
+      --grey:       #5f6368;
+      --border:     #dde3ec;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; color:#333; }
+
+    /* ── Top bar ── */
+    .top-bar {
+      background:var(--navy); padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px; position:sticky; top:0; z-index:50;
+    }
+    .top-bar-info { min-width:0; }
+    .top-bar-title { color:white; font-size:1em; font-weight:700; }
+    .top-bar-sub { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      background:white; color:var(--navy); padding:9px 16px;
+      border-radius:7px; text-decoration:none; font-weight:700;
+      font-size:0.88em; border:2px solid white; white-space:nowrap;
+    }
+    .back-btn:hover { background:var(--navy-light); }
+
+    /* ── Content ── */
+    .content { padding:16px 20px 60px; max-width:1000px; margin:0 auto; }
+
+    /* ── Event selector ── */
+    .event-select-wrap {
+      background:white; border:2px solid var(--navy-mid);
+      border-radius:10px; padding:16px 20px; margin-bottom:16px;
+      display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    }
+    .event-select-label { font-weight:700; color:var(--navy); font-size:0.92em; white-space:nowrap; }
+    .event-select {
+      flex:1; min-width:200px; padding:9px 12px; font-size:0.92em;
+      border:2px solid var(--navy-mid); border-radius:7px;
+      font-family:inherit; color:#333; background:white;
+    }
+    .event-select:focus { outline:none; border-color:var(--navy); }
+
+    /* ── Summary pills ── */
+    .summary {
+      display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px;
+    }
+    .summary-pill {
+      background:white; border:2px solid var(--navy-mid);
+      border-radius:8px; padding:8px 16px; font-size:0.83em;
+      color:var(--navy); white-space:nowrap;
+    }
+    .summary-pill strong { display:block; font-size:1.15em; }
+
+    /* ── Add button ── */
+    .btn-add {
+      display:inline-flex; align-items:center; gap:7px;
+      background:var(--navy); color:white; padding:10px 18px;
+      border-radius:8px; font-weight:700; font-size:0.9em;
+      border:none; cursor:pointer; margin-bottom:14px;
+    }
+    .btn-add:hover { background:#163d61; }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--border); }
+    table { width:100%; border-collapse:collapse; font-size:0.86em; background:white; }
+    thead th {
+      background:var(--navy); color:white; padding:10px 12px;
+      text-align:left; font-weight:600; white-space:nowrap;
+    }
+    tbody td { padding:9px 12px; border-bottom:1px solid var(--navy-light); vertical-align:middle; }
+    tbody tr:last-child td { border-bottom:none; }
+    tbody tr:nth-child(even) td { background:#f8fbff; }
+    tbody tr:hover td { background:var(--navy-light); }
+
+    .paid-badge {
+      display:inline-block; padding:3px 10px; border-radius:20px;
+      font-size:0.82em; font-weight:700;
+    }
+    .paid-yes { background:var(--green-bg); color:var(--green); }
+    .paid-no  { background:var(--red-bg);   color:var(--red); }
+
+    .btn-edit, .btn-delete {
+      padding:5px 12px; border-radius:6px; font-size:0.82em;
+      font-weight:700; border:none; cursor:pointer; white-space:nowrap;
+    }
+    .btn-edit   { background:var(--navy-light); color:var(--navy); margin-right:6px; }
+    .btn-edit:hover { background:var(--navy-mid); }
+    .btn-delete { background:var(--red-bg); color:var(--red); }
+    .btn-delete:hover { background:#f5c6c2; }
+
+    /* ── Status messages ── */
+    .status-msg { text-align:center; padding:40px 20px; color:var(--grey); font-style:italic; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.5); z-index:200;
+      align-items:center; justify-content:center; padding:20px;
+    }
+    .modal-overlay.open { display:flex; }
+    .modal {
+      background:white; border-radius:14px; padding:28px;
+      max-width:500px; width:100%; max-height:90vh; overflow-y:auto;
+      box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal-title {
+      font-size:1.1em; font-weight:800; color:var(--navy);
+      margin-bottom:20px; padding-bottom:12px;
+      border-bottom:2px solid var(--navy-light);
+    }
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-weight:700; font-size:0.85em; color:var(--navy); margin-bottom:6px; }
+    .form-input, .form-select, .form-textarea {
+      width:100%; padding:10px 12px; font-size:0.92em;
+      border:2px solid var(--border); border-radius:8px;
+      font-family:inherit; color:#333;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline:none; border-color:var(--navy);
+    }
+    .form-textarea { min-height:70px; resize:vertical; }
+    .paid-toggle-wrap { display:flex; align-items:center; gap:10px; margin-top:4px; }
+    .paid-toggle {
+      width:44px; height:24px; background:#ccc; border-radius:12px;
+      position:relative; cursor:pointer; border:none; transition:background 0.2s;
+      flex-shrink:0;
+    }
+    .paid-toggle.on { background:var(--green); }
+    .paid-toggle::after {
+      content:''; position:absolute; top:3px; left:3px;
+      width:18px; height:18px; background:white; border-radius:50%;
+      transition:left 0.2s;
+    }
+    .paid-toggle.on::after { left:23px; }
+    .paid-toggle-label { font-size:0.9em; color:var(--grey); }
+
+    .modal-btns { display:flex; gap:10px; margin-top:20px; }
+    .btn-save {
+      flex:1; background:var(--navy); color:white; padding:12px;
+      border-radius:8px; font-weight:700; font-size:0.92em;
+      border:none; cursor:pointer;
+    }
+    .btn-save:hover { background:#163d61; }
+    .btn-cancel {
+      background:white; color:var(--grey); padding:12px 20px;
+      border-radius:8px; font-weight:700; font-size:0.92em;
+      border:2px solid var(--border); cursor:pointer;
+    }
+    .btn-cancel:hover { background:#f5f5f5; }
+
+    /* ── Delete confirm ── */
+    .delete-confirm {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.5); z-index:300;
+      align-items:center; justify-content:center; padding:20px;
+    }
+    .delete-confirm.open { display:flex; }
+    .delete-box {
+      background:white; border-radius:14px; padding:28px;
+      max-width:420px; width:100%; text-align:center;
+      box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    }
+    .delete-icon { font-size:2.5em; margin-bottom:12px; }
+    .delete-name { font-weight:800; color:var(--navy); font-size:1.1em; margin:8px 0; }
+    .delete-msg { color:var(--grey); font-size:0.9em; margin-bottom:20px; }
+    .delete-btns { display:flex; gap:10px; }
+    .btn-confirm-delete {
+      flex:1; background:var(--red); color:white; padding:12px;
+      border-radius:8px; font-weight:700; border:none; cursor:pointer;
+    }
+    .btn-confirm-delete:hover { background:#a93226; }
+
+    /* ── Toast ── */
+    .toast {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(100px);
+      background:#1a3a1a; color:white; padding:12px 24px; border-radius:8px;
+      font-weight:700; font-size:0.9em; z-index:500;
+      transition:transform 0.3s; pointer-events:none;
+    }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast.error { background:#7a1a1a; }
+
+    @media(max-width:600px){
+      .content { padding:12px 10px 40px; }
+      .event-select-wrap { padding:12px; }
+    }
+
+    @media print {
+      .top-bar, .event-select-wrap, .btn-add, .btn-edit, .btn-delete { display:none !important; }
+      body { background:white; }
+      .content { padding:0; max-width:100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-info">
+    <div class="top-bar-title">👥 Manage Registrations</div>
+    <div class="top-bar-sub">Bridgeman Downs Social Club — Event Coordinator</div>
+  </div>
+  <a class="back-btn" href="index.html#committee">← Return to Committee Page</a>
+</div>
+
+<div class="content">
+
+  <div class="event-select-wrap">
+    <span class="event-select-label">🗓️ Select Event:</span>
+    <select class="event-select" id="eventSelect" onchange="loadRegistrations()">
+      <option value="">— Loading events… —</option>
+    </select>
+  </div>
+
+  <div class="summary" id="summary"></div>
+
+  <button class="btn-add" id="addBtn" onclick="openAddModal()" style="display:none;">
+    ＋ Add Manual Registration
+  </button>
+
+  <div class="table-wrap">
+    <table id="regTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Unit</th>
+          <th>People</th>
+          <th>Email</th>
+          <th>Dietary</th>
+          <th>Paid</th>
+          <th>Source</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="regBody">
+        <tr><td colspan="8" class="status-msg">Select an event to view registrations.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Edit / Add Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Edit Registration</div>
+
+    <div class="form-group" id="nameGroup">
+      <label class="form-label">Full Name *</label>
+      <input class="form-input" type="text" id="editName" placeholder="e.g. John Smith">
+    </div>
+    <div class="form-group" id="unitGroup">
+      <label class="form-label">Unit Number</label>
+      <input class="form-input" type="text" id="editUnit" placeholder="e.g. 42">
+    </div>
+    <div class="form-group" id="emailGroup">
+      <label class="form-label">Email Address</label>
+      <input class="form-input" type="email" id="editEmail" placeholder="e.g. name@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Number of People</label>
+      <input class="form-input" type="number" id="editNumber" min="1" max="20" value="1">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Dietary Requirements</label>
+      <textarea class="form-textarea" id="editDietary" placeholder="e.g. Gluten free, vegetarian — leave blank if none"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Payment Received</label>
+      <div class="paid-toggle-wrap">
+        <button class="paid-toggle" id="paidToggle" onclick="togglePaid()" type="button"></button>
+        <span class="paid-toggle-label" id="paidLabel">Not paid</span>
+      </div>
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" id="saveBtn" onclick="saveRegistration()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm -->
+<div class="delete-confirm" id="deleteConfirm">
+  <div class="delete-box">
+    <div class="delete-icon">🗑️</div>
+    <div class="delete-name" id="deleteName"></div>
+    <div class="delete-msg">This will remove this registration permanently. This cannot be undone.</div>
+    <div class="delete-btns">
+      <button class="btn-cancel" onclick="closeDelete()">Cancel</button>
+      <button class="btn-confirm-delete" onclick="confirmDelete()">Delete Registration</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUcetKOKOyNwn1SSqI54xBIGTHV2YVTXcD1o2UTFo7uKGoqCts-nUqFSMEhLxXanK0CA/exec';
+
+  var allRegistrations = [];
+  var currentEvent     = '';
+  var editingRow       = null;
+  var deleteRow        = null;
+  var paidValue        = false;
+
+  // ── Load events into dropdown ──────────────────────────────
+  function loadEvents() {
+    fetch(SCRIPT_URL + '?action=getEvents')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var sel = document.getElementById('eventSelect');
+        sel.innerHTML = '<option value="">— Select an event —</option>';
+        if (data.events && data.events.length > 0) {
+          data.events.forEach(function(ev) {
+            var opt = document.createElement('option');
+            opt.value = ev.name;
+            opt.textContent = ev.name + (ev.date ? ' (' + ev.date + ')' : '');
+            sel.appendChild(opt);
+          });
+        } else {
+          sel.innerHTML = '<option value="">— No events found —</option>';
+        }
+      })
+      .catch(function() {
+        document.getElementById('eventSelect').innerHTML =
+          '<option value="">— Could not load events —</option>';
+      });
+  }
+
+  // ── Load registrations for selected event ─────────────────
+  function loadRegistrations() {
+    currentEvent = document.getElementById('eventSelect').value;
+    if (!currentEvent) {
+      document.getElementById('regBody').innerHTML =
+        '<tr><td colspan="8" class="status-msg">Select an event to view registrations.</td></tr>';
+      document.getElementById('summary').innerHTML = '';
+      document.getElementById('addBtn').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('regBody').innerHTML =
+      '<tr><td colspan="8" class="status-msg">Loading…</td></tr>';
+    document.getElementById('addBtn').style.display = 'none';
+
+    fetch(SCRIPT_URL + '?action=getRegistrations&event=' + encodeURIComponent(currentEvent))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        allRegistrations = data.registrations || [];
+        renderTable(allRegistrations);
+        renderSummary(allRegistrations);
+        document.getElementById('addBtn').style.display = 'inline-flex';
+      })
+      .catch(function() {
+        document.getElementById('regBody').innerHTML =
+          '<tr><td colspan="8" class="status-msg">⚠️ Could not load registrations. Please refresh.</td></tr>';
+      });
+  }
+
+  // ── Render table ───────────────────────────────────────────
+  function renderTable(rows) {
+    if (rows.length === 0) {
+      document.getElementById('regBody').innerHTML =
+        '<tr><td colspan="8" class="status-msg">No registrations found for this event.</td></tr>';
+      return;
+    }
+
+    var html = '';
+    rows.forEach(function(r) {
+      var paidBadge = r.paid
+        ? '<span class="paid-badge paid-yes">✓ Paid</span>'
+        : '<span class="paid-badge paid-no">✗ Unpaid</span>';
+
+      // Determine source
+      var ts = r.timestamp ? r.timestamp.toString().toLowerCase() : '';
+      var source = (ts === 'paper' || ts === 'mailbox drop') ? '📄 Paper' : '🌐 Online';
+
+      html += '<tr>' +
+        '<td><strong>' + esc(r.name) + '</strong></td>' +
+        '<td>' + esc(r.unit) + '</td>' +
+        '<td style="text-align:center;">' + esc(r.number) + '</td>' +
+        '<td>' + esc(r.email) + '</td>' +
+        '<td>' + (r.dietary ? esc(r.dietary) : '<span style="color:#aaa">—</span>') + '</td>' +
+        '<td>' + paidBadge + '</td>' +
+        '<td style="font-size:0.82em;">' + source + '</td>' +
+        '<td style="white-space:nowrap;">' +
+          '<button class="btn-edit" onclick="openEditModal(' + r.row + ')">✏️ Edit</button>' +
+          '<button class="btn-delete" onclick="openDeleteConfirm(' + r.row + ',\'' + esc(r.name).replace(/'/g,"\\'") + '\')">🗑️</button>' +
+        '</td>' +
+        '</tr>';
+    });
+    document.getElementById('regBody').innerHTML = html;
+  }
+
+  // ── Render summary ─────────────────────────────────────────
+  function renderSummary(rows) {
+    var totalPeople = 0, paid = 0, dietary = 0;
+    rows.forEach(function(r) {
+      totalPeople += parseInt(r.number) || 1;
+      if (r.paid) paid++;
+      if (r.dietary && r.dietary.trim() && r.dietary.toLowerCase() !== 'nil') dietary++;
+    });
+    document.getElementById('summary').innerHTML =
+      '<div class="summary-pill"><strong>' + rows.length + '</strong> registrations</div>' +
+      '<div class="summary-pill"><strong>' + totalPeople + '</strong> total people</div>' +
+      '<div class="summary-pill" style="border-color:#a8d5b8;"><strong style="color:var(--green);">' + paid + '</strong> paid</div>' +
+      '<div class="summary-pill" style="border-color:#f1b0a8;"><strong style="color:var(--red);">' + (rows.length - paid) + '</strong> unpaid</div>' +
+      (dietary > 0 ? '<div class="summary-pill" style="border-color:#f5c518;"><strong style="color:var(--orange);">' + dietary + '</strong> dietary req.</div>' : '');
+  }
+
+  // ── Edit modal ─────────────────────────────────────────────
+  function openEditModal(row) {
+    var reg = allRegistrations.find(function(r) { return r.row === row; });
+    if (!reg) return;
+
+    editingRow = row;
+    document.getElementById('modalTitle').textContent = 'Edit Registration — ' + reg.name;
+    document.getElementById('editName').value    = reg.name;
+    document.getElementById('editUnit').value    = reg.unit;
+    document.getElementById('editEmail').value   = reg.email;
+    document.getElementById('editNumber').value  = reg.number || 1;
+    document.getElementById('editDietary').value = reg.dietary;
+    paidValue = reg.paid;
+    updatePaidToggle();
+
+    // Hide name/unit/email in edit mode (can't change identity fields)
+    document.getElementById('nameGroup').style.display  = 'none';
+    document.getElementById('unitGroup').style.display  = 'none';
+    document.getElementById('emailGroup').style.display = 'none';
+    document.getElementById('saveBtn').textContent = '💾 Save Changes';
+    document.getElementById('modalTitle').textContent = '✏️ Edit — ' + reg.name;
+
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  function openAddModal() {
+    editingRow = null;
+    document.getElementById('modalTitle').textContent = '➕ Add Manual Registration';
+    document.getElementById('editName').value    = '';
+    document.getElementById('editUnit').value    = '';
+    document.getElementById('editEmail').value   = '';
+    document.getElementById('editNumber').value  = 1;
+    document.getElementById('editDietary').value = '';
+    paidValue = false;
+    updatePaidToggle();
+
+    document.getElementById('nameGroup').style.display  = 'block';
+    document.getElementById('unitGroup').style.display  = 'block';
+    document.getElementById('emailGroup').style.display = 'block';
+    document.getElementById('saveBtn').textContent = '➕ Add Registration';
+
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('editModal').classList.remove('open');
+    editingRow = null;
+  }
+
+  function togglePaid() {
+    paidValue = !paidValue;
+    updatePaidToggle();
+  }
+
+  function updatePaidToggle() {
+    var btn = document.getElementById('paidToggle');
+    var lbl = document.getElementById('paidLabel');
+    if (paidValue) {
+      btn.classList.add('on');
+      lbl.textContent = 'Paid ✓';
+      lbl.style.color = 'var(--green)';
+    } else {
+      btn.classList.remove('on');
+      lbl.textContent = 'Not paid';
+      lbl.style.color = 'var(--grey)';
+    }
+  }
+
+  // ── Save (edit or add) ─────────────────────────────────────
+  function saveRegistration() {
+    var btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    var payload;
+
+    if (editingRow) {
+      payload = {
+        action:  'updateRegistration',
+        row:     editingRow,
+        number:  document.getElementById('editNumber').value,
+        dietary: document.getElementById('editDietary').value.trim(),
+        paid:    paidValue
+      };
+    } else {
+      var name = document.getElementById('editName').value.trim();
+      if (!name) {
+        showToast('Please enter a name.', true);
+        btn.disabled = false;
+        btn.textContent = '➕ Add Registration';
+        return;
+      }
+      payload = {
+        action:  'addRegistration',
+        event:   currentEvent,
+        name:    name,
+        unit:    document.getElementById('editUnit').value.trim(),
+        email:   document.getElementById('editEmail').value.trim(),
+        number:  document.getElementById('editNumber').value,
+        dietary: document.getElementById('editDietary').value.trim(),
+        paid:    paidValue
+      };
+    }
+
+    var formData = new FormData();
+    formData.append('payload', JSON.stringify(payload));
+
+    fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body:formData })
+      .then(function() {
+        closeModal();
+        showToast(editingRow ? 'Registration updated ✓' : 'Registration added ✓');
+        setTimeout(loadRegistrations, 800);
+      })
+      .catch(function(err) {
+        showToast('Save failed: ' + err.message, true);
+        btn.disabled = false;
+        btn.textContent = editingRow ? '💾 Save Changes' : '➕ Add Registration';
+      });
+  }
+
+  // ── Delete ─────────────────────────────────────────────────
+  function openDeleteConfirm(row, name) {
+    deleteRow = row;
+    document.getElementById('deleteName').textContent = name;
+    document.getElementById('deleteConfirm').classList.add('open');
+  }
+
+  function closeDelete() {
+    document.getElementById('deleteConfirm').classList.remove('open');
+    deleteRow = null;
+  }
+
+  function confirmDelete() {
+    if (!deleteRow) return;
+    var btn = document.querySelector('.btn-confirm-delete');
+    btn.disabled = true;
+    btn.textContent = 'Deleting…';
+
+    var formData = new FormData();
+    formData.append('payload', JSON.stringify({ action:'deleteRegistration', row:deleteRow }));
+
+    fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body:formData })
+      .then(function() {
+        closeDelete();
+        showToast('Registration deleted ✓');
+        setTimeout(loadRegistrations, 800);
+      })
+      .catch(function(err) {
+        showToast('Delete failed: ' + err.message, true);
+        btn.disabled = false;
+        btn.textContent = 'Delete Registration';
+      });
+  }
+
+  // ── Toast ──────────────────────────────────────────────────
+  function showToast(msg, isError) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '');
+    setTimeout(function() { t.classList.add('show'); }, 10);
+    setTimeout(function() { t.classList.remove('show'); }, 3000);
+  }
+
+  function esc(str) {
+    return (str || '').toString()
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Init ───────────────────────────────────────────────────
+  loadEvents();
+</script>
+
+</body>
+</html>
