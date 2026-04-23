@@ -381,7 +381,7 @@
 
 <header>
   <div>
-    <a href="index.html#committee" class="back-link">← Back to Committees</a>
+    <a href="https://rabdctee.github.io/residents-hub/#committee" class="back-link">← Back to Committees</a>
     <h1>Record a Transaction</h1>
     <div class="subtitle">Bridgeman Downs Social Club — Financial Data Entry</div>
   </div>
@@ -430,7 +430,7 @@
       <div class="error-msg" id="formError"></div>
 
       <div class="btn-row">
-        <a href="index.html#committee" class="btn btn-secondary" style="text-align:center;text-decoration:none;">✕ Cancel</a>
+        <a href="https://rabdctee.github.io/residents-hub/#committee" class="btn btn-secondary" style="text-align:center;text-decoration:none;">✕ Cancel</a>
         <button class="btn btn-primary" onclick="showReview()">Review →</button>
       </div>
 
@@ -512,6 +512,7 @@ const DATA_LIST_CSV = '';
 
 // Google Apps Script Web App URL (deploy separately — see setup notes)
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytxHID43hrAGzXOxI98UPmROQVNILMVwmH-JfWV7lUIEA-vejQUv899dNRpFTejNrm/exec';
+const TX_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKCTWAGXRw_S2baTXaj6UYZQlh6Mn7ih_PGkAxXDxIVKonae5zlE2cwhH0z3mvkcyw-pPd/pub?gid=1140606109&single=true&output=csv';
 
 // ── State ──────────────────────────────────────────────────────
 let selectedType = '';
@@ -605,7 +606,7 @@ function showReview() {
   if (!desc)         return showError('formError', 'Please enter a description.');
   if (!amount || parseFloat(amount) <= 0) return showError('formError', 'Please enter a valid amount greater than zero.');
 
-  // Populate review
+  // Populate review card
   const amtEl = document.getElementById('reviewAmount');
   amtEl.textContent = (selectedType === 'Income' ? '+' : '-') + formatAUD(amount);
   amtEl.className = 'review-amount ' + selectedType.toLowerCase();
@@ -617,9 +618,112 @@ function showReview() {
   document.getElementById('reviewCategory').textContent = category;
   document.getElementById('reviewDesc').textContent     = desc;
 
+  document.getElementById('dupWarning').style.display = 'none';
   document.getElementById('formCard').style.display   = 'none';
   document.getElementById('reviewCard').style.display = 'block';
   window.scrollTo(0, 0);
+
+  // Check for duplicates in background — warn if found
+  checkDuplicate(date, desc, parseFloat(amount));
+}
+
+function checkDuplicate(newDate, newDesc, newAmount) {
+  fetch(TX_CSV_URL)
+    .then(function(r) { return r.text(); })
+    .then(function(csv) {
+      var lines = csv.split('\n');
+      var cutoff = new Date();
+      cutoff.setDate(cutoff.getDate() - 30);
+
+      // Find header row
+      var headerIdx = -1;
+      var amtCol = 6, descCol = 5, dateCol = 0;
+      for (var i = 0; i < Math.min(lines.length, 10); i++) {
+        var l = lines[i].toLowerCase();
+        if (l.includes('amount') && l.includes('date')) {
+          headerIdx = i;
+          var hCols = parseCSVLine(lines[i]);
+          hCols.forEach(function(h, idx) {
+            var k = h.toLowerCase().trim();
+            if (k.includes('amount'))    amtCol  = idx;
+            else if (k.includes('desc')) descCol = idx;
+            else if (k.includes('date of') || k === 'date') dateCol = idx;
+          });
+          break;
+        }
+      }
+
+      var newDateObj = new Date(newDate);
+      var matches = [];
+
+      for (var i = (headerIdx >= 0 ? headerIdx + 1 : 1); i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line) continue;
+        var cols = parseCSVLine(line);
+        if (!cols[dateCol]) continue;
+
+        // Parse row date
+        var rawDate = cols[dateCol].trim();
+        var rowDate = null;
+        var m = rawDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+        if (m) {
+          var yr = parseInt(m[3]);
+          if (yr < 100) yr += 2000;
+          rowDate = new Date(yr, parseInt(m[2])-1, parseInt(m[1]));
+        } else {
+          rowDate = new Date(rawDate);
+        }
+        if (!rowDate || isNaN(rowDate.getTime())) continue;
+        if (rowDate < cutoff) continue;
+
+        // Check description and amount match
+        var rowDesc   = (cols[descCol] || '').trim();
+        var rowAmount = parseFloat((cols[amtCol] || '').replace(/[$,]/g,''));
+
+        if (rowDesc.toLowerCase() === newDesc.toLowerCase() &&
+            Math.abs(rowAmount - newAmount) < 0.01) {
+          matches.push({
+            date:   rawDate,
+            desc:   rowDesc,
+            amount: rowAmount
+          });
+        }
+      }
+
+      if (matches.length > 0) {
+        var existing = matches[0];
+        document.getElementById('dupDetail').innerHTML =
+          'A transaction with the same description and amount was already recorded on <strong>' +
+          existing.date + '</strong>:<br>' +
+          '<strong>' + esc(existing.desc) + ' — $' + existing.amount.toFixed(2) + '</strong><br>' +
+          'Please confirm this is not a duplicate before submitting.';
+        document.getElementById('dupWarning').style.display = 'block';
+        window.scrollTo(0, 0);
+      }
+    })
+    .catch(function() {
+      // Silently ignore — duplicate check is advisory only
+    });
+}
+
+function dismissDuplicate() {
+  document.getElementById('dupWarning').style.display = 'none';
+}
+
+function parseCSVLine(line) {
+  var cols = [], cur = '', inQ = false;
+  for (var i = 0; i < line.length; i++) {
+    var ch = line[i];
+    if (ch === '"') { inQ = !inQ; }
+    else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+    else { cur += ch; }
+  }
+  cols.push(cur);
+  return cols;
+}
+
+function esc(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function goBack() {
