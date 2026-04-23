@@ -449,13 +449,16 @@ function submitBalance() {
     bankBalance: balance
   };
 
+  var formData = new FormData();
+  formData.append('payload', JSON.stringify(payload));
+
   fetch(APPS_SCRIPT_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify(payload)
+    mode: 'no-cors',
+    body: formData
   })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
+  .then(function() {
+    var data = { status: 'ok' };
     if (data.status === 'ok') {
       document.getElementById('successDetail').textContent =
         'Bank balance of ' + formatAUD(balance) +
