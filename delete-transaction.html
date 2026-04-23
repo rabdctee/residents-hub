@@ -631,7 +631,11 @@ function submitDeletion() {
   btn.innerHTML = '<span class="spinner"></span>Submitting…';
 
   const rawDate = sheetSerialToDate(selectedTx['Date']);
-  const isoDate = rawDate ? rawDate.toISOString().split('T')[0] : selectedTx['Date'];
+  const isoDate = rawDate
+    ? rawDate.getFullYear() + '-' +
+      String(rawDate.getMonth() + 1).padStart(2, '0') + '-' +
+      String(rawDate.getDate()).padStart(2, '0')
+    : selectedTx['Date'];
 
   const payload = {
     action:      'deleteTransaction',
