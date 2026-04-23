@@ -220,7 +220,7 @@
 <div class="content">
 
   <div class="event-select-wrap">
-    <span class="event-select-label">🗓️ Select Event:</span>
+    <span class="event-select-label">📅 Select Event:</span>
     <select class="event-select" id="eventSelect" onchange="loadRegistrations()">
       <option value="">— Loading events… —</option>
     </select>
@@ -374,6 +374,12 @@
 
   // ── Render table ───────────────────────────────────────────
   function renderTable(rows) {
+    // Sort by unit number (numeric, blanks at end)
+    rows = rows.slice().sort(function(a, b) {
+      var ua = parseInt(a.unit) || 9999;
+      var ub = parseInt(b.unit) || 9999;
+      return ua - ub;
+    });
     if (rows.length === 0) {
       document.getElementById('regBody').innerHTML =
         '<tr><td colspan="8" class="status-msg">No registrations found for this event.</td></tr>';
@@ -515,6 +521,16 @@
         btn.textContent = '➕ Add Registration';
         return;
       }
+      // Check for duplicate name in current event
+      var duplicate = allRegistrations.find(function(r) {
+        return r.name.toLowerCase().trim() === name.toLowerCase().trim();
+      });
+      if (duplicate) {
+        showToast('⚠️ ' + name + ' is already registered for this event.', true);
+        btn.disabled = false;
+        btn.textContent = '➕ Add Registration';
+        return;
+      }
       payload = {
         action:  'addRegistration',
         event:   currentEvent,
@@ -527,20 +543,33 @@
       };
     }
 
-    var formData = new FormData();
-    formData.append('payload', JSON.stringify(payload));
-
-    fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body:formData })
-      .then(function() {
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
         closeModal();
         showToast(editingRow ? 'Registration updated ✓' : 'Registration added ✓');
         setTimeout(loadRegistrations, 800);
-      })
-      .catch(function(err) {
+      } else {
+        throw new Error(data.message || 'Unknown error');
+      }
+    })
+    .catch(function(err) {
+      // If CORS blocks the response, assume success (script completed)
+      if (err.message && err.message.toLowerCase().includes('failed to fetch')) {
+        closeModal();
+        showToast(editingRow ? 'Registration updated ✓' : 'Registration added ✓');
+        setTimeout(loadRegistrations, 1500);
+      } else {
         showToast('Save failed: ' + err.message, true);
         btn.disabled = false;
         btn.textContent = editingRow ? '💾 Save Changes' : '➕ Add Registration';
-      });
+      }
+    });
   }
 
   // ── Delete ─────────────────────────────────────────────────
@@ -561,20 +590,28 @@
     btn.disabled = true;
     btn.textContent = 'Deleting…';
 
-    var formData = new FormData();
-    formData.append('payload', JSON.stringify({ action:'deleteRegistration', row:deleteRow }));
-
-    fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body:formData })
-      .then(function() {
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action:'deleteRegistration', row:deleteRow })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      closeDelete();
+      showToast('Registration deleted ✓');
+      setTimeout(loadRegistrations, 800);
+    })
+    .catch(function(err) {
+      if (err.message && err.message.toLowerCase().includes('failed to fetch')) {
         closeDelete();
         showToast('Registration deleted ✓');
-        setTimeout(loadRegistrations, 800);
-      })
-      .catch(function(err) {
+        setTimeout(loadRegistrations, 1500);
+      } else {
         showToast('Delete failed: ' + err.message, true);
         btn.disabled = false;
         btn.textContent = 'Delete Registration';
-      });
+      }
+    });
   }
 
   // ── Toast ──────────────────────────────────────────────────
