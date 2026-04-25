@@ -498,8 +498,8 @@ function loadTransactions() {
       const cutoff = new Date();
       cutoff.setDate(cutoff.getDate() - 90);
       allTransactions = rows.filter(function(r) {
-        if (!r['Date'] || !r['Type']) return false;
-        const d = sheetSerialToDate(r['Date']);
+        if (!r['Date of Transaction'] || !r['Is this INCOME or EXPENSE?']) return false;
+        const d = sheetSerialToDate(r['Date of Transaction']);
         return d && !isNaN(d.getTime()) && d >= cutoff;
       }).sort(function(a, b) { return sheetSerialToDate(b['Date']) - sheetSerialToDate(a['Date']); });
       renderTransactions(allTransactions);
@@ -537,17 +537,17 @@ function renderTransactions(txs) {
     return;
   }
   list.innerHTML = txs.map(function(tx, i) {
-    const isIncome  = (tx['Type'] || '').toLowerCase() === 'income';
+    const isIncome  = (tx['Is this INCOME or EXPENSE?'] || '').toLowerCase() === 'income';
     const typeClass = isIncome ? 'income' : 'expense';
     const sign      = isIncome ? '+' : '-';
-    const isSelected = selectedTx && tx['Date'] === selectedTx['Date'] && tx['Description'] === selectedTx['Description'] && tx['Amount'] === selectedTx['Amount'];
+    const isSelected = selectedTx && tx['Date of Transaction'] === selectedTx['Date of Transaction'] && tx['Description'] === selectedTx['Description'] && tx['Amount (in dollars)'] === selectedTx['Amount (in dollars)'];
     return '<div class="tx-item' + (isSelected ? ' selected' : '') + '" onclick="selectTransaction(' + i + ')" id="txItem' + i + '">' +
-      '<span class="tx-badge ' + typeClass + '">' + (tx['Type'] || '') + '</span>' +
+      '<span class="tx-badge ' + typeClass + '">' + (tx['Is this INCOME or EXPENSE?'] || '') + '</span>' +
       '<div class="tx-info">' +
         '<div class="tx-desc">' + (tx['Description'] || '') + '</div>' +
-        '<div class="tx-meta">' + formatDateDisplay(tx['Date']) + ' &nbsp;·&nbsp; ' + (tx['Detailed Category'] || '') + '</div>' +
+        '<div class="tx-meta">' + formatDateDisplay(tx['Date of Transaction']) + ' &nbsp;·&nbsp; ' + (tx['Category'] || '') + '</div>' +
       '</div>' +
-      '<span class="tx-amount ' + typeClass + '">' + sign + formatAUD(tx['Amount']) + '</span>' +
+      '<span class="tx-amount ' + typeClass + '">' + sign + formatAUD(tx['Amount (in dollars)']) + '</span>' +
     '</div>';
   }).join('');
 }
@@ -556,8 +556,8 @@ function filterTransactions() {
   const q = document.getElementById('txSearch').value.toLowerCase();
   const filtered = q ? allTransactions.filter(function(tx) {
     return (tx['Description'] || '').toLowerCase().includes(q) ||
-           (tx['Detailed Category'] || '').toLowerCase().includes(q) ||
-           (tx['Amount'] || '').includes(q);
+           (tx['Category'] || '').toLowerCase().includes(q) ||
+           (tx['Amount (in dollars)'] || '').includes(q);
   }) : allTransactions;
   renderTransactions(filtered);
 }
@@ -566,8 +566,8 @@ function selectTransaction(idx) {
   const q = document.getElementById('txSearch').value.toLowerCase();
   const displayed = q ? allTransactions.filter(function(tx) {
     return (tx['Description'] || '').toLowerCase().includes(q) ||
-           (tx['Detailed Category'] || '').toLowerCase().includes(q) ||
-           (tx['Amount'] || '').includes(q);
+           (tx['Category'] || '').toLowerCase().includes(q) ||
+           (tx['Amount (in dollars)'] || '').includes(q);
   }) : allTransactions;
 
   selectedTx  = displayed[idx];
@@ -580,10 +580,10 @@ function selectTransaction(idx) {
   // Show selected box
   document.getElementById('selectedBox').style.display = 'block';
   document.getElementById('selectedDetail').textContent =
-    (selectedTx['Type'] === 'Income' ? '+' : '-') + formatAUD(selectedTx['Amount']) +
+    (selectedTx['Is this INCOME or EXPENSE?'] === 'Income' ? '+' : '-') + formatAUD(selectedTx['Amount (in dollars)']) +
     ' — ' + (selectedTx['Description'] || '');
   document.getElementById('selectedMeta').textContent =
-    formatDateDisplay(selectedTx['Date']) + ' · ' + (selectedTx['Detailed Category'] || '');
+    formatDateDisplay(selectedTx['Date of Transaction']) + ' · ' + (selectedTx['Category'] || '');
 
   // Show corrections card
   document.getElementById('correctionsCard').style.display = 'block';
@@ -631,11 +631,11 @@ function showReview() {
 
   // Build comparison table
   const fields = [
-    { name: 'Date',        orig: formatDateDisplay(selectedTx['Date']),        newVal: newDate     ? formatDateDisplay(newDate) : null },
-    { name: 'Type',        orig: selectedTx['Type'] || '',                      newVal: newType !== 'No change' ? newType : null },
-    { name: 'Category',    orig: selectedTx['Detailed Category'] || '',         newVal: newCategory !== 'No change' ? newCategory : null },
+    { name: 'Date',        orig: formatDateDisplay(selectedTx['Date of Transaction']),        newVal: newDate     ? formatDateDisplay(newDate) : null },
+    { name: 'Type',        orig: selectedTx['Is this INCOME or EXPENSE?'] || '',                      newVal: newType !== 'No change' ? newType : null },
+    { name: 'Category',    orig: selectedTx['Category'] || '',         newVal: newCategory !== 'No change' ? newCategory : null },
     { name: 'Description', orig: selectedTx['Description'] || '',               newVal: newDesc || null },
-    { name: 'Amount',      orig: formatAUD(selectedTx['Amount']),               newVal: newAmount ? formatAUD(newAmount) : null }
+    { name: 'Amount',      orig: formatAUD(selectedTx['Amount (in dollars)']),               newVal: newAmount ? formatAUD(newAmount) : null }
   ];
 
   const tbody = document.getElementById('comparisonBody');
@@ -674,18 +674,18 @@ function submitCorrection() {
   const newAmount   = document.getElementById('newAmount').value;
   const newDesc     = document.getElementById('newDesc').value.trim();
 
-  const rawDate = sheetSerialToDate(selectedTx['Date']);
+  const rawDate = sheetSerialToDate(selectedTx['Date of Transaction']);
   const isoDate = rawDate
     ? rawDate.getFullYear() + '-' +
       String(rawDate.getMonth() + 1).padStart(2, '0') + '-' +
       String(rawDate.getDate()).padStart(2, '0')
-    : selectedTx['Date'];
+    : selectedTx['Date of Transaction'];
 
   const payload = {
     action:       'correctTransaction',
     origDate:     isoDate,
     origDesc:     selectedTx['Description'],
-    origAmount:   selectedTx['Amount'],
+    origAmount:   selectedTx['Amount (in dollars)'],
     newDate:      newDate     || '',
     newType:      newType     !== 'No change' ? newType     : 'No change',
     newCategory:  newCategory !== 'No change' ? newCategory : 'No change',

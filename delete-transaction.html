@@ -504,8 +504,8 @@ function loadTransactions() {
       cutoff.setDate(cutoff.getDate() - 90);
 
       allTransactions = rows.filter(function(r) {
-        if (!r['Date'] || !r['Type']) return false;
-        const d = sheetSerialToDate(r['Date']);
+        if (!r['Date of Transaction'] || !r['Is this INCOME or EXPENSE?']) return false;
+        const d = sheetSerialToDate(r['Date of Transaction']);
         return d && !isNaN(d.getTime()) && d >= cutoff;
       }).sort(function(a, b) {
         return sheetSerialToDate(b['Date']) - sheetSerialToDate(a['Date']);
@@ -539,16 +539,16 @@ function renderTransactions(txs) {
     return;
   }
   list.innerHTML = txs.map(function(tx, i) {
-    const isIncome  = (tx['Type'] || '').toLowerCase() === 'income';
+    const isIncome  = (tx['Is this INCOME or EXPENSE?'] || '').toLowerCase() === 'income';
     const typeClass = isIncome ? 'income' : 'expense';
     const sign      = isIncome ? '+' : '-';
     return '<div class="tx-item" onclick="selectTransaction(' + i + ')" id="txItem' + i + '">' +
-      '<span class="tx-badge ' + typeClass + '">' + (tx['Type'] || '') + '</span>' +
+      '<span class="tx-badge ' + typeClass + '">' + (tx['Is this INCOME or EXPENSE?'] || '') + '</span>' +
       '<div class="tx-info">' +
         '<div class="tx-desc">' + (tx['Description'] || '') + '</div>' +
-        '<div class="tx-meta">' + formatDateDisplay(tx['Date']) + ' &nbsp;·&nbsp; ' + (tx['Reporting Category\nMapped'] || tx['Detailed Category'] || '') + '</div>' +
+        '<div class="tx-meta">' + formatDateDisplay(tx['Date of Transaction']) + ' &nbsp;·&nbsp; ' + (tx['Reporting Category\nMapped'] || tx['Category'] || '') + '</div>' +
       '</div>' +
-      '<span class="tx-amount ' + typeClass + '">' + sign + formatAUD(tx['Amount']) + '</span>' +
+      '<span class="tx-amount ' + typeClass + '">' + sign + formatAUD(tx['Amount (in dollars)']) + '</span>' +
     '</div>';
   }).join('');
 }
@@ -558,8 +558,8 @@ function filterTransactions() {
   if (!q) { renderTransactions(allTransactions); return; }
   const filtered = allTransactions.filter(function(tx) {
     return (tx['Description'] || '').toLowerCase().includes(q) ||
-           (tx['Detailed Category'] || '').toLowerCase().includes(q) ||
-           (tx['Amount'] || '').includes(q);
+           (tx['Category'] || '').toLowerCase().includes(q) ||
+           (tx['Amount (in dollars)'] || '').includes(q);
   });
   renderTransactions(filtered);
 }
@@ -570,8 +570,8 @@ function selectTransaction(idx) {
   const q = document.getElementById('txSearch').value.toLowerCase();
   const displayed = q ? allTransactions.filter(function(tx) {
     return (tx['Description'] || '').toLowerCase().includes(q) ||
-           (tx['Detailed Category'] || '').toLowerCase().includes(q) ||
-           (tx['Amount'] || '').includes(q);
+           (tx['Category'] || '').toLowerCase().includes(q) ||
+           (tx['Amount (in dollars)'] || '').includes(q);
   }) : allTransactions;
 
   selectedTx = displayed[idx];
@@ -584,11 +584,11 @@ function selectTransaction(idx) {
   const box = document.getElementById('selectedBox');
   box.style.display = 'block';
   document.getElementById('selectedDetail').textContent =
-    (selectedTx['Type'] === 'Income' ? '+' : '-') + formatAUD(selectedTx['Amount']) +
+    (selectedTx['Is this INCOME or EXPENSE?'] === 'Income' ? '+' : '-') + formatAUD(selectedTx['Amount (in dollars)']) +
     ' — ' + (selectedTx['Description'] || '');
   document.getElementById('selectedMeta').textContent =
-    formatDateDisplay(selectedTx['Date']) + ' · ' +
-    (selectedTx['Detailed Category'] || '');
+    formatDateDisplay(selectedTx['Date of Transaction']) + ' · ' +
+    (selectedTx['Category'] || '');
 }
 
 function showDeleteReview() {
@@ -607,11 +607,11 @@ function showDeleteReview() {
     return;
   }
 
-  document.getElementById('revDate').textContent   = formatDateDisplay(selectedTx['Date']);
-  document.getElementById('revType').textContent   = selectedTx['Type'] || '';
-  document.getElementById('revCat').textContent    = selectedTx['Detailed Category'] || '';
+  document.getElementById('revDate').textContent   = formatDateDisplay(selectedTx['Date of Transaction']);
+  document.getElementById('revType').textContent   = selectedTx['Is this INCOME or EXPENSE?'] || '';
+  document.getElementById('revCat').textContent    = selectedTx['Category'] || '';
   document.getElementById('revDesc').textContent   = selectedTx['Description'] || '';
-  document.getElementById('revAmount').textContent = formatAUD(selectedTx['Amount']);
+  document.getElementById('revAmount').textContent = formatAUD(selectedTx['Amount (in dollars)']);
   document.getElementById('revReason').textContent = reason;
 
   document.getElementById('step1Card').style.display  = 'none';
@@ -630,18 +630,18 @@ function submitDeletion() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Submitting…';
 
-  const rawDate = sheetSerialToDate(selectedTx['Date']);
+  const rawDate = sheetSerialToDate(selectedTx['Date of Transaction']);
   const isoDate = rawDate
     ? rawDate.getFullYear() + '-' +
       String(rawDate.getMonth() + 1).padStart(2, '0') + '-' +
       String(rawDate.getDate()).padStart(2, '0')
-    : selectedTx['Date'];
+    : selectedTx['Date of Transaction'];
 
   const payload = {
     action:      'deleteTransaction',
     origDate:    isoDate,
     origDesc:    selectedTx['Description'],
-    origAmount:  selectedTx['Amount'],
+    origAmount:  selectedTx['Amount (in dollars)'],
     reason:      document.getElementById('deleteReason').value.trim()
   };
 
@@ -658,7 +658,7 @@ function submitDeletion() {
     if (data.status === 'ok') {
       document.getElementById('successDetail').textContent =
         'Deletion request for "' + selectedTx['Description'] + '" (' +
-        formatAUD(selectedTx['Amount']) + ') has been submitted for processing.';
+        formatAUD(selectedTx['Amount (in dollars)']) + ') has been submitted for processing.';
       document.getElementById('reviewCard').style.display  = 'none';
       document.getElementById('successCard').style.display = 'block';
       window.scrollTo(0, 0);
