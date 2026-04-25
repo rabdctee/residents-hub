@@ -2391,6 +2391,20 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+// Auto-expand a sub-section if ?expand=sc-finance etc passed in URL
+var expandParam = new URLSearchParams(window.location.search).get('expand');
+if (expandParam) {
+    var body  = document.getElementById(expandParam + '-body');
+    var arrow = document.getElementById(expandParam + '-arrow');
+    var hdr   = document.querySelector('[onclick*="' + expandParam + '"]');
+    if (body)  body.classList.add('open');
+    if (arrow) arrow.classList.add('open');
+    if (hdr)   hdr.classList.add('open');
+    setTimeout(function() {
+        if (body) body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+}
+
 // Update breadcrumbs + back button based on current page
 function updateBreadcrumbs(pageId) {
     var breadcrumbsDiv = document.getElementById('breadcrumbs');
