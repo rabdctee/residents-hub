@@ -2374,7 +2374,7 @@ function goBack() {
     window.scrollTo(0, 0);
 }
 
-// Load page from URL hash on startup (allows bookmarking direct links)
+// Load page from URL hash on startup, then expand sub-section if ?expand= param present
 window.addEventListener('DOMContentLoaded', function() {
     var hash = window.location.hash.replace('#', '');
     if (hash && document.getElementById(hash)) {
@@ -2384,10 +2384,8 @@ window.addEventListener('DOMContentLoaded', function() {
         pageHistory = ['home'];
         updateBreadcrumbs('home');
     }
-});
 
 // Auto-expand a sub-section if ?expand=sc-finance etc passed in URL
-document.addEventListener('DOMContentLoaded', function() {
     var expandParam = new URLSearchParams(window.location.search).get('expand');
     if (expandParam) {
         var body  = document.getElementById(expandParam + '-body');
