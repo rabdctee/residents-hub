@@ -2384,7 +2384,7 @@ window.addEventListener('DOMContentLoaded', function() {
         updateBreadcrumbs('home');
     }
 
-var expandParam = new URLSearchParams(window.location.search).get('expand');
+    var expandParam = new URLSearchParams(window.location.search).get('expand');
     if (expandParam) {
         setTimeout(function() {
             var parentMap = {
@@ -2409,7 +2409,7 @@ var expandParam = new URLSearchParams(window.location.search).get('expand');
             }, 200);
         }, 400);
     }
-
+});
 // Update breadcrumbs + back button based on current page
 function updateBreadcrumbs(pageId) {
     var breadcrumbsDiv = document.getElementById('breadcrumbs');
