@@ -2387,7 +2387,6 @@ window.addEventListener('DOMContentLoaded', function() {
 var expandParam = new URLSearchParams(window.location.search).get('expand');
     if (expandParam) {
         setTimeout(function() {
-            // Also open the parent committee accordion first
             var parentMap = {
                 'sc-finance': 'sc', 'sc-events': 'sc', 'sc-docs': 'sc',
                 'rc-docs': 'rc', 'rc-info': 'rc'
