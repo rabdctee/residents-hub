@@ -551,8 +551,11 @@
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.status === 'ok') {
+        var wasEditing = editingRow;
+        btn.disabled = false;
+        btn.textContent = wasEditing ? '💾 Save Changes' : '➕ Add Registration';
         closeModal();
-        showToast(editingRow ? 'Registration updated ✓' : 'Registration added ✓');
+        showToast(wasEditing ? 'Registration updated ✓' : 'Registration added ✓');
         setTimeout(loadRegistrations, 800);
       } else {
         throw new Error(data.message || 'Unknown error');
@@ -561,8 +564,11 @@
     .catch(function(err) {
       // If CORS blocks the response, assume success (script completed)
       if (err.message && err.message.toLowerCase().includes('failed to fetch')) {
+        var wasEditing = editingRow;
+        btn.disabled = false;
+        btn.textContent = wasEditing ? '💾 Save Changes' : '➕ Add Registration';
         closeModal();
-        showToast(editingRow ? 'Registration updated ✓' : 'Registration added ✓');
+        showToast(wasEditing ? 'Registration updated ✓' : 'Registration added ✓');
         setTimeout(loadRegistrations, 1500);
       } else {
         showToast('Save failed: ' + err.message, true);
