@@ -225,20 +225,7 @@
     ═══════════════════════════════════════════ */
     .category-block{ margin-bottom:18px; }
 
-    .category-header{
-      background:#1F4E79;
-      color:white;
-      padding:18px 22px;
-      border-radius:8px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      cursor:pointer;
-      transition:background 0.2s;
-      user-select:none;
-    }
-    .category-header:hover{ background:#1e4178; }
-    .category-header.open{ border-radius:8px 8px 0 0; }
+    /* category-header styles defined later in this file */
 
     .category-header-left{
       display:flex;
@@ -396,6 +383,86 @@
       text-align:center;
     }
 
+    /* ===== Welcome panel ===== */
+    .welcome-panel{
+      background:linear-gradient(135deg,#e8f4f8 0%,#f0f7ff 100%);
+      border:2px solid #c5ddf0;
+      border-radius:12px;
+      padding:24px 28px;
+      margin:0 0 24px;
+      display:flex;
+      align-items:flex-start;
+      gap:18px;
+    }
+    .welcome-panel-icon{ font-size:2.4em; flex-shrink:0; line-height:1; margin-top:2px; }
+    .welcome-panel-text h2{
+      font-size:1.15em; color:#1F4E79; margin-bottom:6px; font-weight:800;
+    }
+    .welcome-panel-text p{ font-size:0.92em; color:#444; line-height:1.65; margin:0; }
+    @media(max-width:600px){
+      .welcome-panel{ flex-direction:column; gap:10px; padding:18px; }
+      .welcome-panel-icon{ font-size:1.8em; }
+    }
+
+    /* ===== Start Here spotlight ===== */
+    .start-here{
+      background:#fffbea;
+      border:2px solid #f9c74f;
+      border-radius:12px;
+      padding:20px 24px 22px;
+      margin:0 0 28px;
+    }
+    .start-here-heading{
+      font-size:0.88em; font-weight:800; color:#b07d00;
+      text-transform:uppercase; letter-spacing:0.07em; margin-bottom:14px;
+    }
+    .start-here-btns{
+      display:flex; flex-wrap:wrap; gap:10px;
+    }
+    .start-here-btn{
+      display:inline-flex; align-items:center; gap:8px;
+      background:white; color:#1F4E79;
+      border:2px solid #c5ddf0; border-radius:10px;
+      padding:12px 18px; font-size:0.88em; font-weight:700;
+      text-decoration:none; cursor:pointer;
+      transition:all 0.2s;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .start-here-btn:hover{ background:#e8f4f8; border-color:#1F4E79; }
+    .start-here-btn-icon{ font-size:1.3em; }
+
+    /* ===== Group label subtitle ===== */
+    .group-label-subtitle{
+      text-align:center;
+      font-size:0.82em;
+      color:#6b7785;
+      margin:-4px 0 14px;
+      font-style:italic;
+    }
+
+    /* ===== Softer category headers ===== */
+    .category-header{
+      background:white;
+      color:#1F4E79;
+      border:2px solid #1F4E79;
+      padding:16px 22px;
+      border-radius:8px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      cursor:pointer;
+      transition:background 0.2s;
+      user-select:none;
+    }
+    .category-header:hover{ background:#e8f4f8; }
+    .category-header.open{
+      background:#1F4E79; color:white;
+      border-radius:8px 8px 0 0;
+    }
+    .category-header.open .category-subtitle{ color:rgba(255,255,255,0.8); }
+    .category-header.open .category-arrow{ color:white; }
+    .category-arrow{ color:#1F4E79; }
+
     /* ===== Highlight for search matches ===== */
     .search-highlight{
       background:#fff176;
@@ -451,10 +518,32 @@
   <!-- ===== PAGE CONTENT ===== -->
   <div class="page-content">
 
-    <div class="info-box">
-      Plain-English answers to everyday questions.
-      Click any topic below to expand it, then click a question to see the answer.
-      Or use the <strong>search bar above</strong> to jump straight to what you need.
+    <!-- WELCOME PANEL -->
+    <div class="welcome-panel">
+      <div class="welcome-panel-icon">😊</div>
+      <div class="welcome-panel-text">
+        <h2>Welcome — no need to feel overwhelmed!</h2>
+        <p>This page is here to help you at your own pace. You don't need to read everything — just click on a topic that interests you, or use the <strong>search bar above</strong> to type a question in your own words. Everything is explained in plain English, one step at a time. There are no silly questions here.</p>
+      </div>
+    </div>
+
+    <!-- START HERE SPOTLIGHT -->
+    <div class="start-here">
+      <div class="start-here-heading">⭐ Not sure where to start? Try one of these popular topics:</div>
+      <div class="start-here-btns">
+        <a class="start-here-btn" href="#cat-internet" onclick="openCategory('internet-body')">
+          <span class="start-here-btn-icon">🌐</span> Getting Connected to the Internet
+        </a>
+        <a class="start-here-btn" href="#cat-phone" onclick="openCategory('phone-body')">
+          <span class="start-here-btn-icon">📱</span> Using My Mobile Phone
+        </a>
+        <a class="start-here-btn" href="#cat-safety" onclick="openCategory('safety-body')">
+          <span class="start-here-btn-icon">🔒</span> Staying Safe Online
+        </a>
+        <a class="start-here-btn" href="#cat-photos" onclick="openCategory('photos-body')">
+          <span class="start-here-btn-icon">📷</span> Managing My Photos
+        </a>
+      </div>
     </div>
 
     <!-- GROUP: GETTING STARTED -->
@@ -463,6 +552,7 @@
       <div class="group-label-text">🚀 Getting Started</div>
       <div class="group-label-line"></div>
     </div>
+    <p class="group-label-subtitle">New to technology? A good place to begin.</p>
 
 <!-- ══════════════════════════════════════════
          CATEGORY 1 — GETTING CONNECTED TO THE INTERNET
@@ -719,6 +809,7 @@
       <div class="group-label-text">📱 Phones, TV, Email &amp; Video Calls</div>
       <div class="group-label-line"></div>
     </div>
+    <p class="group-label-subtitle">Make the most of your devices — calls, messages, TV and keeping in touch.</p>
 
 
 
@@ -1486,6 +1577,7 @@
       <div class="group-label-text">📷 Managing Your Photos</div>
       <div class="group-label-line"></div>
     </div>
+    <p class="group-label-subtitle">Organise, back up and free up space — for iPhone and Android.</p>
 
 <!-- ══════════════════════════════════════════
          CATEGORY 7 — MANAGING YOUR PHOTO COLLECTION
@@ -1764,6 +1856,7 @@
       <div class="group-label-text">🏠 Around Your Home</div>
       <div class="group-label-line"></div>
     </div>
+    <p class="group-label-subtitle">Practical help for everyday life in your unit.</p>
 
 
     <!-- ══════════════════════════════════════════
@@ -2002,6 +2095,7 @@
       <div class="group-label-text">🔒 Staying Safe</div>
       <div class="group-label-line"></div>
     </div>
+    <p class="group-label-subtitle">Protect yourself online — passwords, scams and safe banking.</p>
 
     <!-- ══════════════════════════════════════════
          CATEGORY 10 — STAYING SAFE ONLINE
@@ -2363,6 +2457,7 @@
       <div class="group-label-text">🤖 New Technology</div>
       <div class="group-label-line"></div>
     </div>
+    <p class="group-label-subtitle">Curious about Artificial Intelligence (AI)? Find out what it is and how it can help you.</p>
 
      <!-- ══════════════════════════════════════════
          CATEGORY 13 — ARTIFICIAL INTELLIGENCE (AI)
@@ -2529,6 +2624,18 @@
 </div><!-- end container -->
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+
+  /* ══════════════════════════════════════════
+     OPEN CATEGORY (used by Start Here buttons)
+  ══════════════════════════════════════════ */
+  function openCategory(bodyId) {
+    var body = document.getElementById(bodyId);
+    if (body && !body.classList.contains('open')) {
+      body.classList.add('open');
+      var header = body.previousElementSibling;
+      if (header) header.classList.add('open');
+    }
+  }
 
   /* ══════════════════════════════════════════
      LEVEL 1 — CATEGORY TOGGLE
