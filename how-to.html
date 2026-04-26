@@ -430,9 +430,11 @@
   <a class="nav-item" href="index.html">🏠 Home</a>
     <a class="nav-item" href="#group-getting-started">🚀 Getting Started</a>
     <a class="nav-item" href="#group-apps-services">📱 Phones, TV, Email &amp; Video Calls</a>
+    <a class="nav-item" href="#group-photos">📷 Managing Your Photos</a>
     <a class="nav-item" href="#group-home">🏠 Around your Home</a>
     <a class="nav-item" href="#group-staying-safe">🔒 Staying Safe</a>
     <a class="nav-item" href="#group-new-tech">🤖 New Technology</a>
+    
   </nav>
 
   <!-- ===== SEARCH BAR ===== -->
@@ -1478,9 +1480,280 @@
       </div><!-- end email-body -->
     </div><!-- end cat-email -->
 
+    <!-- GROUP: MANAGING YOUR PHOTOS -->
+    <div class="group-label" id="group-photos">
+      <div class="group-label-line"></div>
+      <div class="group-label-text">📷 Managing Your Photos</div>
+      <div class="group-label-line"></div>
+    </div>
 
+<!-- ══════════════════════════════════════════
+         CATEGORY 7 — MANAGING YOUR PHOTO COLLECTION
+    ══════════════════════════════════════════ -->
+    <div class="category-block" id="cat-photos">
 
-    
+      <div class="category-header" onclick="toggleCategory('photos-body', this)">
+        <div class="category-header-left">
+          <span class="category-icon">📷</span>
+          <div>
+            <div class="category-title-text">Managing Your Photo Collection</div>
+            <div class="category-subtitle">How to organise, back up and free up space for your photos — on iPhone or Android.</div>
+          </div>
+        </div>
+        <span class="category-arrow">▼</span>
+      </div>
+
+      <div id="photos-body" class="category-body">
+
+        <!-- Tab bar: iPhone / Android -->
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchTab(this,'photos-iphone')">🍎 iPhone (iOS)</button>
+          <button class="tab-btn" onclick="switchTab(this,'photos-android')">🤖 Android</button>
+        </div>
+
+        <!-- ── iPhone tab ── -->
+        <div id="photos-iphone" class="tab-panel active">
+
+          <div class="faq-item" data-keywords="iphone photos too many full storage space running out ios apple slow can't take pictures no room memory used up phone full pictures videos taking up space">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              My iPhone says storage is full — what does that mean?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>Every phone has a limited amount of space to store things — photos, videos, apps and messages. Photos and videos (especially videos) can take up a very large amount of that space. When your iPhone says storage is full, it simply means the phone has run out of room.</p>
+              <p style="margin-top:12px;">When storage is full you may notice:</p>
+              <ul>
+                <li>You cannot take any new photos</li>
+                <li>Your phone runs slowly</li>
+                <li>Apps stop working properly</li>
+                <li>You cannot receive new messages with photos attached</li>
+              </ul>
+              <p style="margin-top:12px;">To check how much storage you have left, go to <strong>Settings → General → iPhone Storage</strong>. You will see a coloured bar showing what is using the most space — photos are usually the biggest item.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> Even if storage is not full yet, it is a good habit to manage your photos regularly — just like tidying a filing cabinet — so the problem never arises.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="icloud photos backup iphone apple automatic cloud storage free up space online save pictures safely cost monthly optimise reduce phone storage 1.49 apple storage plan">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              What is iCloud and how does it help with my photos?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p><strong>iCloud</strong> is Apple's online storage service — think of it as a very safe filing cabinet in the sky that Apple looks after for you. When you turn on iCloud Photos, every photo and video on your iPhone is automatically copied to iCloud over Wi-Fi.</p>
+              <p style="margin-top:12px;">The big benefit is the <strong>Optimise iPhone Storage</strong> option. When this is turned on, your iPhone keeps small preview versions of your older photos on the phone itself, while the full-quality originals are safely stored in iCloud. This can free up a huge amount of space on your phone — sometimes several gigabytes — without you losing a single photo.</p>
+              <p style="margin-top:12px;"><strong>How to turn it on:</strong></p>
+              <ol>
+                <li>Open <strong>Settings</strong> (the grey icon with cogs)</li>
+                <li>Tap your name at the very top</li>
+                <li>Tap <strong>iCloud</strong></li>
+                <li>Tap <strong>Photos</strong></li>
+                <li>Make sure <strong>Sync this iPhone</strong> is turned on (green)</li>
+                <li>Select <strong>Optimise iPhone Storage</strong></li>
+              </ol>
+              <p style="margin-top:12px;">Apple gives you 5 GB of iCloud storage for free. If you have a large collection of photos, you may need to pay for more. Plans start at <strong>$1.49 per month</strong> for 50 GB — enough for most people.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> Your photos are still easy to view even when stored in iCloud — they appear in your Photos app just as they always did. The only difference is that opening a photo for the first time may take a second or two to load if it needs to download from iCloud.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="iphone delete duplicate blurry bad photos free space clean up remove unwanted pictures get rid of photos recently deleted bin trash permanently remove tidy up">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I delete photos I no longer want?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>Deleting unwanted photos is one of the quickest ways to free up space. Here is how to do it:</p>
+              <p style="margin-top:12px;"><strong>To delete one photo at a time:</strong></p>
+              <ol>
+                <li>Open the <strong>Photos</strong> app</li>
+                <li>Tap the photo you want to delete</li>
+                <li>Tap the <strong>bin icon</strong> (bottom right)</li>
+                <li>Confirm by tapping <strong>Delete Photo</strong></li>
+              </ol>
+              <p style="margin-top:12px;"><strong>To delete several photos at once:</strong></p>
+              <ol>
+                <li>Open the <strong>Photos</strong> app and go to your photo library</li>
+                <li>Tap <strong>Select</strong> (top right)</li>
+                <li>Tap each photo you want to delete — a blue tick appears on each one</li>
+                <li>Tap the <strong>bin icon</strong> (bottom right) and confirm</li>
+              </ol>
+              <p style="margin-top:12px;"><strong>Important — the Recently Deleted folder:</strong> When you delete a photo it goes into a "Recently Deleted" folder and stays there for 30 days before being permanently removed. This gives you a safety net if you change your mind. To immediately free up storage, go to <strong>Photos → Albums → Recently Deleted → Select All → Delete</strong>.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> iPhone's built-in <strong>Duplicates</strong> feature (Photos → Albums → Duplicates) automatically finds photos you have taken twice. It is a very easy way to free up space without having to go through your collection by hand.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="iphone organise albums folders sort find photos easier access group by date place people faces search pictures can't find a photo lost photo how to create album collection">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I organise my photos so I can find them easily?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>Your iPhone already organises photos automatically in a few helpful ways:</p>
+              <ul>
+                <li><strong>By date</strong> — the main Library view shows all photos in the order they were taken, grouped by day, month and year</li>
+                <li><strong>By place</strong> — tap <strong>Albums → Places</strong> to see photos arranged on a map by where they were taken</li>
+                <li><strong>By people</strong> — your iPhone can recognise faces and group photos of the same person together under <strong>Albums → People &amp; Pets</strong></li>
+              </ul>
+              <p style="margin-top:12px;"><strong>Creating your own albums:</strong> You can also create your own folders — for example "Grandchildren", "Holidays", or "Garden".</p>
+              <ol>
+                <li>Open <strong>Photos</strong> and tap <strong>Albums</strong> (bottom of screen)</li>
+                <li>Tap the <strong>+</strong> button (top left) and choose <strong>New Album</strong></li>
+                <li>Give it a name and tap <strong>Save</strong></li>
+                <li>Select the photos you want to add and tap <strong>Done</strong></li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> You can also search for photos by typing a word in the Search tab — for example type "beach" or "birthday" and your iPhone will find photos matching that description, even without you having labelled them.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="iphone share photos family email whatsapp airdrop send pictures grandchildren shared album send a photo how do i send photos to family how to share pictures icloud shared">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I share photos with family and friends?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>There are several easy ways to share photos from your iPhone:</p>
+              <p style="margin-top:12px;"><strong>By message or email:</strong></p>
+              <ol>
+                <li>Open the photo you want to share</li>
+                <li>Tap the <strong>Share button</strong> (a box with an arrow pointing upwards) at the bottom left</li>
+                <li>Choose <strong>Message</strong> to send by text, or <strong>Mail</strong> to send by email</li>
+                <li>Type the person's name or number and tap Send</li>
+              </ol>
+              <p style="margin-top:12px;"><strong>By WhatsApp:</strong> Follow the same steps above but choose <strong>WhatsApp</strong> from the share options, then select the contact you want to send to.</p>
+              <p style="margin-top:12px;"><strong>iCloud Shared Albums</strong> — a lovely option for families: Create a shared album that family members can view and add to on their own devices. Go to <strong>Photos → + → New Shared Album</strong>, invite family members by email, and anyone you invite can see all the photos you add — and add their own.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> If you are sending several photos, WhatsApp or a Shared Album are much easier than sending individual emails or messages.</div>
+            </div>
+          </div>
+
+        </div><!-- end photos-iphone -->
+
+        <!-- ── Android tab ── -->
+        <div id="photos-android" class="tab-panel">
+
+          <div class="faq-item" data-keywords="android photos too many full storage space running out samsung google pixel slow can't take pictures no room memory used up phone full pictures videos taking up space oppo nokia motorola">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              My Android phone says storage is full — what does that mean?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>Every phone has a limited amount of space to store things — photos, videos, apps and messages. Photos and videos (especially videos) can take up a very large amount of that space. When your Android phone says storage is full, it simply means the phone has run out of room.</p>
+              <p style="margin-top:12px;">When storage is full you may notice:</p>
+              <ul>
+                <li>You cannot take any new photos</li>
+                <li>Your phone runs slowly</li>
+                <li>Apps stop working properly</li>
+                <li>You cannot receive new messages with photos attached</li>
+              </ul>
+              <p style="margin-top:12px;">To check how much storage you have left, go to <strong>Settings → Storage</strong> (or <strong>Settings → Device Care → Storage</strong> on Samsung). You will see a breakdown of what is using the most space — photos and videos are usually the biggest item.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> Even if storage is not full yet, it is a good habit to manage your photos regularly — just like tidying a filing cabinet — so the problem never arises.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="google photos backup android automatic cloud storage free up space online save pictures safely cost monthly reduce phone storage 15gb free storage plan samsung backup photos">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              What is Google Photos and how does it help?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p><strong>Google Photos</strong> is Google's free photo storage service — think of it as a very safe and well-organised photo album kept safely online. It is available on all Android phones and is one of the best tools available for managing a large photo collection.</p>
+              <p style="margin-top:12px;">Key benefits:</p>
+              <ul>
+                <li><strong>Automatic backup</strong> — every photo you take is automatically copied to Google's servers over Wi-Fi, so your photos are safe even if you lose or break your phone</li>
+                <li><strong>Free up phone storage</strong> — once your photos are backed up, you can delete them from the phone itself to free up space, while keeping them safely in Google Photos</li>
+                <li><strong>Powerful search</strong> — search by typing words like "beach", "birthday" or "grandchildren" and Google Photos will find the right photos automatically</li>
+                <li><strong>Automatic organisation</strong> — photos are sorted by date, place and faces automatically</li>
+              </ul>
+              <p style="margin-top:12px;"><strong>How to set it up:</strong></p>
+              <ol>
+                <li>Open the <strong>Google Photos</strong> app (it may already be installed — look for a colourful pinwheel icon)</li>
+                <li>Sign in with your Google account (the same one you use for Gmail)</li>
+                <li>Tap your profile picture (top right) → <strong>Photos settings → Backup</strong></li>
+                <li>Turn <strong>Backup</strong> on</li>
+              </ol>
+              <p style="margin-top:12px;">Google gives you <strong>15 GB of free storage</strong> shared across Google Photos, Gmail and Google Drive. Most people find this is enough for thousands of photos. If you need more, extra storage starts at <strong>$3.49 per month</strong> for 100 GB.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> Once backup is turned on, Google Photos works quietly in the background. You do not need to do anything — your photos are being backed up automatically whenever you are connected to Wi-Fi.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="android delete photos free space remove unwanted duplicate blurry get rid of pictures recently deleted bin trash permanently remove tidy up samsung google photos free up space on device">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I delete photos I no longer want?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>Deleting unwanted photos is one of the quickest ways to free up space. Here is how to do it in Google Photos:</p>
+              <p style="margin-top:12px;"><strong>To delete one photo at a time:</strong></p>
+              <ol>
+                <li>Open <strong>Google Photos</strong></li>
+                <li>Tap the photo you want to delete</li>
+                <li>Tap the <strong>bin icon</strong> at the bottom of the screen</li>
+                <li>Confirm by tapping <strong>Move to bin</strong></li>
+              </ol>
+              <p style="margin-top:12px;"><strong>To delete several photos at once:</strong></p>
+              <ol>
+                <li>Open <strong>Google Photos</strong></li>
+                <li>Press and hold on the first photo you want to delete until a blue tick appears</li>
+                <li>Tap any other photos you also want to delete</li>
+                <li>Tap the <strong>bin icon</strong> and confirm</li>
+              </ol>
+              <p style="margin-top:12px;"><strong>Important — the Bin folder:</strong> Deleted photos go to a Bin and stay there for 60 days before being permanently removed. This is your safety net if you change your mind. To immediately free up storage, go to <strong>Library → Bin → Empty Bin</strong>.</p>
+              <p style="margin-top:12px;"><strong>Let Google do the work — "Free up space":</strong> Google Photos has a very handy feature that automatically identifies photos already safely backed up to the cloud and removes them from your phone. Go to your <strong>profile picture → Free up space on this device</strong>. This is the easiest way to free up storage without losing anything.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> Google Photos also has a <strong>Manage Storage</strong> tool that identifies blurry photos, screenshots and other items you may no longer need — a very easy way to tidy up without going through everything by hand.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="android organise albums folders sort find photos easier access google photos group by date place people faces search pictures can't find a photo lost photo how to create album collection samsung">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I organise my photos so I can find them easily?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>Google Photos organises your collection automatically in several helpful ways:</p>
+              <ul>
+                <li><strong>By date</strong> — the main Photos tab shows all your photos in the order they were taken</li>
+                <li><strong>By place</strong> — tap <strong>Search → Places</strong> to see photos arranged on a map by where they were taken</li>
+                <li><strong>By people</strong> — Google Photos recognises faces and groups photos of the same person together. Tap <strong>Search → People &amp; Pets</strong> to find this</li>
+              </ul>
+              <p style="margin-top:12px;"><strong>Creating your own albums:</strong></p>
+              <ol>
+                <li>Open <strong>Google Photos</strong> and tap <strong>Library</strong> (bottom of screen)</li>
+                <li>Tap <strong>New album</strong></li>
+                <li>Give it a name (e.g. "Grandchildren", "Garden", "Holidays")</li>
+                <li>Select the photos you want to add and tap <strong>Done</strong></li>
+              </ol>
+              <p style="margin-top:12px;"><strong>Search by word:</strong> Tap the Search icon and type any word — "sunset", "Christmas", "dog" — and Google Photos will find matching photos automatically, even ones you have never labelled.</p>
+              <div class="tip-box">💡 <strong>Tip:</strong> Google Photos' search is remarkably clever. Try typing the name of a place you have visited or a person's name — it will often find the right photos straight away.</div>
+            </div>
+          </div>
+
+          <div class="faq-item" data-keywords="android share photos family email whatsapp send pictures grandchildren shared album send a photo how do i send photos to family how to share pictures google photos shared samsung">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              How do I share photos with family and friends?
+              <span class="faq-arrow">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p>There are several easy ways to share photos from your Android phone:</p>
+              <p style="margin-top:12px;"><strong>By message or WhatsApp:</strong></p>
+              <ol>
+                <li>Open <strong>Google Photos</strong> and tap the photo you want to share</li>
+                <li>Tap the <strong>Share button</strong> (an arrow pointing right) at the bottom of the screen</li>
+                <li>Choose <strong>WhatsApp</strong>, <strong>Messages</strong> or <strong>Gmail</strong> from the options</li>
+                <li>Select the contact you want to send to and tap Send</li>
+              </ol>
+              <p style="margin-top:12px;"><strong>Google Photos Shared Albums</strong> — a lovely option for families: Create a shared album that family members can view and add to on their own devices (whether they have Android or iPhone).</p>
+              <ol>
+                <li>In Google Photos, tap <strong>Library → New album</strong></li>
+                <li>Give it a name, select photos to add, and tap <strong>Share</strong></li>
+                <li>Invite family members by entering their email address</li>
+                <li>Anyone you invite can view all the photos you add — and add their own</li>
+              </ol>
+              <div class="tip-box">💡 <strong>Tip:</strong> A Shared Album is a wonderful way to stay connected with family. You can create one called "Family Moments" and everyone — children, grandchildren, siblings — can add photos to it and enjoy each other's memories.</div>
+            </div>
+          </div>
+
+        </div><!-- end photos-android -->
+
+      </div><!-- end photos-body -->
+    </div><!-- end cat-photos -->
 
 
 
@@ -1987,7 +2260,7 @@
     </div><!-- end cat-banking -->
 
     <!-- ══════════════════════════════════════════
-         CATEGORY 7 — SHOPPING ONLINE SAFELY
+         CATEGORY 12 — SHOPPING ONLINE SAFELY
     ══════════════════════════════════════════ -->
     <div class="category-block" id="cat-shopping">
 
@@ -2222,6 +2495,9 @@
 
       </div><!-- end ai-body -->
     </div><!-- end cat-ai -->
+
+
+   
 
 
    
