@@ -1062,27 +1062,49 @@ setInterval(loadWeather, 1800000);
     
 <div class="sidebar-widget">
 <div class="widget-title">🗓️ Upcoming Events</div>
-<!-- UPDATE EVENTS HERE -->
-<div class="event-item">
-<a href="#" onclick="showPage('events', document.querySelector('.nav-item:nth-child(4)')); return false;" style="text-decoration:none; color:inherit;">
-<div class="event-date" style="cursor:pointer; transition: color 0.2s;">Wed, May 06</div>
-</a>
-<div class="event-name">Free Vaccinations</div>
-</div>
-<div class="event-item">
-<a href="#" onclick="showPage('events', document.querySelector('.nav-item:nth-child(4)')); return false;" style="text-decoration:none; color:inherit;">
-<div class="event-date" style="cursor:pointer; transition: color 0.2s;">Mon, May 11</div>
-</a>
-<div class="event-name">Morning Tea for Hummingbird House</div>
-</div>
-<div class="event-item">
-<a href="#" onclick="showPage('events', document.querySelector('.nav-item:nth-child(4)')); return false;" style="text-decoration:none; color:inherit;">
-<div class="event-date" style="cursor:pointer; transition: color 0.2s;">Thurs, May 21</div>
-</a>
-<div class="event-name">Heritage Day - Lunch</div>
-</div>
+<div id="upcomingEventsList"><div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">Loading events…</div></div>
 </div>
 <!-- END OF EVENTS LIST -->
+
+<script>
+(function() {
+  var UPCOMING_URL = 'https://docs.google.com/spreadsheets/d/1daP-rq3w3OTGioo-PCIkCpzQ6L2wAyEB6RWWb8vLdKY/edit?gid=0#gid=0';
+  function loadUpcomingEvents() {
+    fetch(UPCOMING_URL + '?action=getEvents')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var events = data.events || [];
+        var container = document.getElementById('upcomingEventsList');
+        if (!container) return;
+        if (events.length === 0) {
+          container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
+          return;
+        }
+        var html = '';
+        events.forEach(function(ev) {
+          html += '<div class="event-item">';
+          if (ev.link) {
+            html += '<a href="' + ev.link + '" style="text-decoration:none;color:inherit;">';
+            html += '<div class="event-date" style="cursor:pointer;">' + ev.date + '</div>';
+            html += '</a>';
+          } else {
+            html += '<a href="#" onclick="showPage('events'); return false;" style="text-decoration:none;color:inherit;">';
+            html += '<div class="event-date" style="cursor:pointer;">' + ev.date + '</div>';
+            html += '</a>';
+          }
+          html += '<div class="event-name">' + ev.name + '</div>';
+          html += '</div>';
+        });
+        container.innerHTML = html;
+      })
+      .catch(function() {
+        var container = document.getElementById('upcomingEventsList');
+        if (container) container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">Events unavailable.</div>';
+      });
+  }
+  document.addEventListener('DOMContentLoaded', loadUpcomingEvents);
+})();
+</script>
 
 <!-- Quote of the Day Widget -->
 <div class="sidebar-widget">
@@ -2125,6 +2147,12 @@ Advocacy, advice and support for retirement village residents in Queensland
       <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">
          Add, edit or delete registrations for any event
       </span>
+</a>
+        <a href="manage-upcoming-events.html" class="doc-link" style="margin-top:8px;">
+  🗓️ Home Page — What's On
+  <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">
+    Update the Upcoming Events highlights shown on the Hub home page
+  </span>
         </a>  
       </div>
     </div>
