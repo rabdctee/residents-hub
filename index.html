@@ -1068,7 +1068,7 @@ setInterval(loadWeather, 1800000);
 
 <script>
 (function() {
-  var UPCOMING_URL = 'https://docs.google.com/spreadsheets/d/1daP-rq3w3OTGioo-PCIkCpzQ6L2wAyEB6RWWb8vLdKY/edit?gid=0#gid=0';
+  var UPCOMING_URL = 'https://script.google.com/macros/s/AKfycbz7Zi9xPahcXNNK0-7kBxUV5toO-dOugD6OWWJnCVBniscyPgGu_XTQmGqtQPwXo9Q9/exec';
   function loadUpcomingEvents() {
     fetch(UPCOMING_URL + '?action=getEvents')
       .then(function(r) { return r.json(); })
