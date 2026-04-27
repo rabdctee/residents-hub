@@ -125,7 +125,7 @@
   </div>
 
   <div class="info-bar">
-    💡 This document is read-only. Use the <strong>Print</strong> button to print, or <strong>Back</strong> to return to the Residents Hub.
+    💡 This document is read-only. To <strong>print</strong>: click the Print button, then click the print icon (🖨️) in the Google page that opens. Click <strong>Back</strong> to return to the Residents Hub.
   </div>
 
   <iframe
@@ -153,11 +153,10 @@
     }
   }
 
-  // Print the document — opens PDF directly in browser for native print dialog
+  // Print the document — opens in Google Drive viewer where resident can print
   function printDocument() {
     if (fileId) {
-      // Opens the PDF directly — browser shows it with its own Print button (1 click)
-      window.open('https://drive.google.com/uc?export=download&id=' + fileId, '_blank');
+      window.open('https://drive.google.com/file/d/' + fileId + '/view', '_blank');
     }
   }
 
