@@ -120,7 +120,7 @@
     </div>
     <div class="btn-group">
       <button class="print-btn" onclick="printDocument()">🖨️ Print</button>
-      <button class="back-btn" onclick="history.back()">← Back</button>
+      <button class="back-btn" onclick="goBack()">← Back</button>
     </div>
   </div>
 
@@ -137,11 +137,21 @@
 
   <div class="error-msg" id="errorMsg">
     ⚠️ This document could not be loaded. It may not be publicly accessible.<br><br>
-    <a href="#" onclick="history.back();return false;" style="color:#1F4E79;font-weight:700;">← Return to Residents Hub</a>
+    <a href="#" onclick="goBack();return false;" style="color:#1F4E79;font-weight:700;">← Return to Residents Hub</a>
   </div>
 
 <script>
   var fileId = '';
+  var returnUrl = '';
+
+  // Go back to wherever the resident came from
+  function goBack() {
+    if (returnUrl) {
+      window.location.href = returnUrl;
+    } else {
+      window.location.href = 'index.html';
+    }
+  }
 
   // Print the document inside the iframe (not the wrapper)
   function printDocument() {
@@ -157,8 +167,11 @@
       return url.searchParams.get(name) || '';
     }
 
-    fileId  = getParam('id');
-    var title   = getParam('title');
+    fileId    = getParam('id');
+    var title = getParam('title');
+
+    // Store where we came from so the Back button works reliably
+    returnUrl = document.referrer || 'index.html';
 
     // Set page title
     var displayTitle = title || 'Village Document';
