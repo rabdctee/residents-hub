@@ -204,6 +204,7 @@
     <a class="nav-item" onclick="jumpToSection('using-govt','sec-using-govt')">🖥️ Using Gov Services</a>
     <a class="nav-item" onclick="jumpToSection('rv-resources','sec-rv')">🏘️ Retirement Village Info</a>
     <a class="nav-item" onclick="jumpToSection('safety','sec-safety')">🛡️ Safety</a>
+    <a class="nav-item" onclick="jumpToSection('health-wellbeing','sec-health')">🌿 Health &amp; Wellbeing</a>
     <a class="nav-item" onclick="jumpToSection('local-services','sec-local')">📚 Local Services</a>
   </nav>
 
@@ -358,6 +359,9 @@
       <hr style="margin:12px 0;border:none;border-top:1px solid #c5d8ee;">
       <a href="https://arqrv.org.au" target="_blank" class="doc-link">🔗 ARQ — Association of Residents of QLD Retirement Villages</a>
       <p class="section-note">Advocacy, advice and support for retirement village residents in Queensland.</p>
+      <hr style="margin:12px 0;border:none;border-top:1px solid #c5d8ee;">
+      <a href="https://www.qld.gov.au/law/fair-trading" target="_blank" class="doc-link">🔗 QLD Fair Trading — Consumer rights and complaints</a>
+      <p class="section-note">Useful if you have a dispute or complaint about goods, services or tenancy matters in Queensland.</p>
     </div>
 
 
@@ -372,6 +376,35 @@
     <div id="safety" class="collapsible-content">
       <a href="https://www.brisbane.qld.gov.au/community-support-and-safety/natural-disasters-and-emergencies/emergency-dashboard" target="_blank" class="doc-link">🔗 Brisbane City Council — Emergency Dashboard</a>
       <a href="https://www.esafety.gov.au/seniors" target="_blank" class="doc-link">🔗 eSafety — Online safety for seniors</a>
+      <a href="https://www.scamwatch.gov.au/types-of-scams/relationship-scams" target="_blank" class="doc-link">🔗 Scamwatch — Relationship and romance scams</a>
+      <p class="section-note">Sadly common among older Australians — learn to recognise and avoid these scams.</p>
+      <hr style="margin:12px 0;border:none;border-top:1px solid #c5d8ee;">
+      <a href="https://beconnected.esafety.gov.au/" target="_blank" class="doc-link">🔗 Be Connected — Free digital literacy training for seniors</a>
+      <p class="section-note">Free online courses to help you use the internet, your phone and tablet with confidence. Funded by the Australian Government.</p>
+    </div>
+
+
+    <!-- ══════════════════
+         HEALTH, WELLBEING & LEGAL
+    ══════════════════════ -->
+    <div id="sec-health"></div>
+    <div class="collapsible-header" onclick="toggleSection('health-wellbeing')">
+      <span class="collapsible-title">🌿 Health, Wellbeing &amp; Legal</span>
+      <span id="health-wellbeing-arrow" class="collapsible-arrow">▼</span>
+    </div>
+    <div id="health-wellbeing" class="collapsible-content">
+      <p style="color:#444;font-size:0.88em;margin-bottom:12px;">
+        Resources to support your health, independence and legal planning as you age.
+      </p>
+      <a href="https://www.mycaremychoices.com.au" target="_blank" class="doc-link">🔗 My Care My Choices — Advance Care Planning</a>
+      <p class="section-note">Helps you plan and record your wishes for future health and personal care — so the right decisions are made if you are unable to speak for yourself.</p>
+      <a href="https://www.pt.qld.gov.au/wills-powers-of-attorney-estates/powers-of-attorney/about-power-of-attorney" target="_blank" class="doc-link">🔗 QLD Public Trustee — About Power of Attorney</a>
+      <p class="section-note">Plain-English explanation of what a Power of Attorney is, the different types available in Queensland, and how to set one up.</p>
+      <hr style="margin:12px 0;border:none;border-top:1px solid #c5d8ee;">
+      <a href="https://www.liveup.org.au/" target="_blank" class="doc-link">🔗 LiveUp — Healthy ageing resources</a>
+      <p class="section-note">Free Australian Government resource with practical tips and tools to help you stay active, connected and independent as you age.</p>
+      <a href="https://adaaustralia.com.au/" target="_blank" class="doc-link">🔗 ADA Australia — Aged care and disability advocacy</a>
+      <p class="section-note">Independent advocacy service supporting older Australians and people with disability to understand their rights and navigate aged care services.</p>
     </div>
 
 
@@ -385,9 +418,13 @@
     </div>
     <div id="local-services" class="collapsible-content">
       <a href="https://translink.com.au" target="_blank" class="doc-link">🔗 Translink — Buses, trains and ferries</a>
+      <a href="https://www.queenslandrailtravel.com.au/Planyourtrip/concession-fares" target="_blank" class="doc-link">🔗 Queensland Rail — Concession fares</a>
+      <p class="section-note">Information on concession fares available for seniors, pensioners and Health Care Card holders.</p>
       <a href="https://www.brisbane-australia.com/brisbane-cinemas.html" target="_blank" class="doc-link">🔗 Brisbane Entertainment — Cinemas and events</a>
       <a href="https://www.brisbane.qld.gov.au/libraries-venues-and-facilities/libraries/library-locations" target="_blank" class="doc-link">🔗 Brisbane Libraries — Library locations and services</a>
       <a href="https://www.brisbane.qld.gov.au/events-arts-and-culture" target="_blank" class="doc-link">🔗 Brisbane City Council — Events, Arts and Culture</a>
+      <a href="https://www.qld.gov.au/seniors/legal-finance-concessions/seniors-expos/seniors-event-calendar" target="_blank" class="doc-link">🔗 QLD Seniors Event Calendar</a>
+      <p class="section-note">Upcoming expos, events and activities across Queensland specifically for seniors.</p>
       <a href="https://www.brisbane.qld.gov.au/laws-and-permits" target="_blank" class="doc-link">🔗 Brisbane City Council — Laws and Permits</a>
     </div>
 
@@ -415,7 +452,7 @@
   }
 
   function jumpToSection(sectionId, anchorId) {
-    var allSections = ['gov-services','using-govt','rv-resources','safety','local-services'];
+    var allSections = ['gov-services','using-govt','rv-resources','safety','health-wellbeing','local-services'];
     allSections.forEach(function(id) {
       var el  = document.getElementById(id);
       var arr = document.getElementById(id + '-arrow');
