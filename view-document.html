@@ -153,10 +153,11 @@
     }
   }
 
-  // Print the document inside the iframe (not the wrapper)
+  // Print the document — opens PDF directly in browser for native print dialog
   function printDocument() {
     if (fileId) {
-      window.open('https://drive.google.com/file/d/' + fileId + '/view?print=true', '_blank');
+      // Opens the PDF directly — browser shows it with its own Print button (1 click)
+      window.open('https://drive.google.com/uc?export=download&id=' + fileId, '_blank');
     }
   }
 
