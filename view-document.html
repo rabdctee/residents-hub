@@ -119,8 +119,8 @@
       <div class="top-bar-sub">Bridgeman Downs Retirement Village — Residents Hub</div>
     </div>
     <div class="btn-group">
-      <button class="print-btn" onclick="window.print()">🖨️ Print</button>
-      <a class="back-btn" id="backBtn" href="index.html#community-info">← Back</a>
+      <button class="print-btn" onclick="printDocument()">🖨️ Print</button>
+      <button class="back-btn" onclick="history.back()">← Back</button>
     </div>
   </div>
 
@@ -137,10 +137,19 @@
 
   <div class="error-msg" id="errorMsg">
     ⚠️ This document could not be loaded. It may not be publicly accessible.<br><br>
-    <a href="index.html#community-info" style="color:#1F4E79;font-weight:700;">← Return to Residents Hub</a>
+    <a href="#" onclick="history.back();return false;" style="color:#1F4E79;font-weight:700;">← Return to Residents Hub</a>
   </div>
 
 <script>
+  var fileId = '';
+
+  // Print the document inside the iframe (not the wrapper)
+  function printDocument() {
+    if (fileId) {
+      window.open('https://drive.google.com/file/d/' + fileId + '/view?print=true', '_blank');
+    }
+  }
+
   (function() {
     // Parse URL parameters
     function getParam(name) {
@@ -148,18 +157,13 @@
       return url.searchParams.get(name) || '';
     }
 
-    var fileId  = getParam('id');
+    fileId  = getParam('id');
     var title   = getParam('title');
-    var back    = getParam('back');   // e.g. 'community-info', 'home'
 
     // Set page title
     var displayTitle = title || 'Village Document';
     document.getElementById('docTitle').textContent = displayTitle;
     document.title = displayTitle + ' | Bridgeman Downs Residents Hub';
-
-    // Set back button destination
-    var backHash = back ? 'index.html#' + back : 'index.html#community-info';
-    document.getElementById('backBtn').href = backHash;
 
     // Build the iframe src
     if (fileId) {
