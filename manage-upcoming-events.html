@@ -439,14 +439,20 @@
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
+      var wasEditing = editingRow;
+      btn.disabled = false;
+      btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Event';
       closeModal();
-      showToast(editingRow ? 'Event updated ✓' : 'Event added ✓');
+      showToast(wasEditing ? 'Event updated ✓' : 'Event added ✓');
       setTimeout(loadEvents, 800);
     })
     .catch(function() {
       // Assume success on CORS error
+      var wasEditing = editingRow;
+      btn.disabled = false;
+      btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Event';
       closeModal();
-      showToast(editingRow ? 'Event updated ✓' : 'Event added ✓');
+      showToast(wasEditing ? 'Event updated ✓' : 'Event added ✓');
       setTimeout(loadEvents, 1500);
     });
   }
