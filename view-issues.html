@@ -76,7 +76,7 @@
       <div class="top-bar-sub">Bridgeman Downs Retirement Village &#8212; read only</div>
     </div>
     <div class="btn-group">
-      <button class="print-btn" onclick="window.print()">&#128424;&#65039; Print</button>
+      <button class="print-btn" onclick="printTab()">&#128424;&#65039; Print</button>
       <a class="back-btn" href="community-info.html">&#8592; Back</a>
     </div>
   </div>
@@ -89,7 +89,7 @@
   </div>
 
   <div class="info-bar">
-    &#128161; Use the buttons above to switch between sections. Content updates automatically when the tracker is changed.
+    &#128161; Use the buttons above to switch between sections. Click <strong>Print</strong> to open a printable PDF of the current section — all rows included.
   </div>
 
   <iframe
@@ -100,11 +100,19 @@
   </iframe>
 
 <script>
-  var BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTB9ycPfMGB70frGHsduYXmDyTG4ajvoyePSN9ACK_0NgXBH-8qiJFges9RoEGEir8pKRskQD5RIlLw/pubhtml?single=true&widget=false&headers=false&gid=';
+  var BASE     = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTB9ycPfMGB70frGHsduYXmDyTG4ajvoyePSN9ACK_0NgXBH-8qiJFges9RoEGEir8pKRskQD5RIlLw/pubhtml?single=true&widget=false&headers=false&gid=';
+  var PDF_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTB9ycPfMGB70frGHsduYXmDyTG4ajvoyePSN9ACK_0NgXBH-8qiJFges9RoEGEir8pKRskQD5RIlLw/pub?single=true&output=pdf&gid=';
+  var currentGid = '717513364';
+
   function showTab(btn, gid) {
     document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
     btn.classList.add('active');
+    currentGid = gid;
     document.getElementById('sheetFrame').src = BASE + gid;
+  }
+
+  function printTab() {
+    window.open(PDF_BASE + currentGid, '_blank');
   }
 </script>
 
