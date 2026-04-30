@@ -307,6 +307,65 @@
     .ai-saved-notice.visible{ display:block; }
     .ai-disclaimer{ margin-top:12px; font-size:0.78em; color:#999; font-style:italic; }
 
+    /* ===== API Key input ===== */
+    .api-key-row{
+      background:#fff9e6;
+      border:1px solid #e8d5a3;
+      border-radius:6px;
+      padding:14px 16px;
+      margin-bottom:16px;
+    }
+    .api-key-label{
+      font-size:0.92em;
+      font-weight:700;
+      color:#5a3e00;
+      margin-bottom:8px;
+      display:flex;
+      align-items:flex-start;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+    .api-key-hint{
+      font-weight:400;
+      color:#7a6030;
+      font-size:0.88em;
+      display:block;
+      margin-top:3px;
+      width:100%;
+    }
+    .api-key-fields{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .api-key-fields input{
+      flex:1;
+      min-width:200px;
+      border:2px solid #e8d5a3;
+      border-radius:5px;
+      padding:9px 12px;
+      font-size:0.92em;
+      font-family:monospace;
+      background:white;
+      color:#222;
+      letter-spacing:0.04em;
+    }
+    .api-key-fields input:focus{
+      outline:none;
+      border-color:#C9A44A;
+      box-shadow:0 0 0 3px rgba(201,164,74,0.15);
+    }
+    .api-key-status{
+      margin-top:8px;
+      font-size:0.85em;
+      font-weight:600;
+      min-height:20px;
+    }
+    .api-key-status.ok{ color:#2e7d32; }
+    .api-key-status.err{ color:#c62828; }
+    .ai-search-row.locked{ opacity:0.4; pointer-events:none; }
+
     /* ===== AI results price table ===== */
     .ai-prices-table{
       width:100%;
@@ -524,7 +583,7 @@
         and iHerb — for the best current price. If the item matches one already on your list,
         the best price will be saved to the list automatically.
       </p>
-      <div class="ai-search-row">
+      <div class="ai-search-row" id="aiSearchRow">
         <input type="text" id="aiQuery"
           placeholder="e.g. Metamucil 500g, Lurpak butter, Ostelin D3 capsules, Aveeno cream…"
           onkeydown="if(event.key==='Enter') runAiSearch()"/>
@@ -535,8 +594,8 @@
       <div class="ai-result-box" id="aiResultBox"></div>
       <div class="ai-saved-notice" id="aiSavedNotice"></div>
       <p class="ai-disclaimer">
-        ⓘ Results are sourced from the web and may not reflect real-time shelf prices. 
-        Always verify the price before purchasing. AI-saved prices are marked
+        ⓘ Results are sourced from the web and may not reflect real-time shelf prices or
+        flash sales. Always verify the price before purchasing. AI-saved prices are marked
         with today's date and labelled "AI".
       </p>
     </div>
@@ -748,6 +807,14 @@ function delItem(id){
   toast('🗑️ '+item.name+' removed');
 }
 
+// ─── PROXY URL ───────────────────────────────────────────────────────────────
+// Replace the value below with your Apps Script web app URL after deployment.
+const PROXY_URL = 'https://script.google.com/macros/s/AKfycbwCUFG_xtn7-YbRvCmG7XCnxRcNhjgBFDXaNWW-jwtH_pKcPpfycduUmp8hsev4ktN2/exec';
+
+
+
+
+
 // ─── AI ASSISTANT ─────────────────────────────────────────────────────────────
 async function runAiSearch(){
   const query=document.getElementById('aiQuery').value.trim();
@@ -766,106 +833,31 @@ async function runAiSearch(){
     <span>Searching Australian retailers for <strong>${esc(query)}</strong> — this may take a few seconds…</span>
   </div>`;
 
-  const dateStr=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  try{ || PROXY_URL === 'YOUR_APPS_SCRIPT_URL_HERE'){
+      throw new Error('The AI search has not been configured yet. Please ask your Hub administrator to complete setup.');
+    }
 
-  const systemPrompt=`You are a helpful price-checking assistant for senior Australian residents at Bridgeman Downs Retirement Village, Brisbane, Queensland.
-
-Search for the cheapest CURRENT price for the requested product across ALL of these Australian retailers and online stores:
-- Woolworths (woolworths.com.au)
-- Coles (coles.com.au)
-- Aldi (in-store, check catalogue)
-- Chemist Warehouse (chemistwarehouse.com.au)
-- Priceline Pharmacy (priceline.com.au)
-- Big W (bigw.com.au)
-- Amazon Australia (amazon.com.au)
-- eBay Australia (ebay.com.au) — include if relevant deals exist
-- iHerb Australia (au.iherb.com) — especially for vitamins, supplements and health products
-- Any other relevant Australian retailer
-
-Respond ONLY in this exact JSON format — no markdown, no code fences, nothing else:
-{
-  "summary": "A friendly 2-3 sentence plain English summary for a senior reader. Name the cheapest price and exactly where to find it.",
-  "bestPrice": 12.50,
-  "bestStore": "Chemist Warehouse",
-  "allPrices": [
-    { "store": "Chemist Warehouse", "price": 12.50, "note": "Online and in-store" },
-    { "store": "Amazon Australia",  "price": 13.99, "note": "Prime eligible" }
-  ],
-  "itemMatched": "exact item name from the tracked list if it matches, otherwise empty string"
-}
-
-Today's date is ${dateStr}. Be honest if reliable current pricing cannot be found.`;
-
-  try{
-  // Multi-turn handler: keep calling until we get a final text response
-  const apiHeaders = {
-    'Content-Type':'application/json',
-    'anthropic-dangerous-direct-browser-access':'true'
-  };
-  const apiTools = [{type:'web_search_20250305', name:'web_search'}];
-  const userMessage = `Find the cheapest current Australian price for: ${query}\n\nTracked items on our list for reference: ${items.map(i=>i.name).join(', ')}`;
-
-  let messages = [{ role:'user', content: userMessage }];
-  let raw = '';
-
-  // Allow up to 5 turns to handle tool use rounds
-  for(let turn=0; turn<5; turn++){
-    const resp = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers: apiHeaders,
+    // Send query to the Apps Script proxy — it holds the API key securely
+    const resp = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:2000,
-        tools: apiTools,
-        system: systemPrompt,
-        messages: messages
+        query: query,
+        tracked: items.map(i=>i.name).join(', ')
       })
     });
-    const data = await resp.json();
 
-    if(data.error){ throw new Error('API error: ' + (data.error.message||JSON.stringify(data.error))); }
+    const result = await resp.json();
 
-    // Add assistant response to message history
-    messages.push({ role:'assistant', content: data.content });
+    if(result.error){ throw new Error(result.error); }
 
-    if(data.stop_reason === 'end_turn'){
-      // Final response — extract text
-      const textBlock = data.content.find(b=>b.type==='text');
-      raw = textBlock ? textBlock.text : '';
-      break;
-    }
-
-    if(data.stop_reason === 'tool_use'){
-      // Process each tool use block and send results back
-      const toolResults = data.content
-        .filter(b=>b.type==='tool_use')
-        .map(b=>({
-          type:'tool_result',
-          tool_use_id: b.id,
-          content: b.type==='web_search' ? b.content : (b.input ? JSON.stringify(b.input) : 'search completed')
-        }));
-      messages.push({ role:'user', content: toolResults });
-      continue;
-    }
-
-    // Unexpected stop reason — try to get any text available
-    const textBlock = data.content && data.content.find(b=>b.type==='text');
-    if(textBlock){ raw = textBlock.text; break; }
-    break;
-  }
-
-  if(!raw) throw new Error('No response received from the search. Please try again.');
-
-  let result;
-  try{ result = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
-  catch(e){ throw new Error('Could not read AI response. Please try again.'); }
-
+    // Build results table
     let html=`<p style="margin-bottom:12px;">${esc(result.summary)}</p>`;
-    if(result.allPrices&&result.allPrices.length){
+    if(result.allPrices && result.allPrices.length){
       html+=`<table class="ai-prices-table">
         <thead><tr><th>Store</th><th>Price</th><th>Notes</th></tr></thead><tbody>`;
       result.allPrices.forEach(p=>{
-        const best=p.price===result.bestPrice&&p.store===result.bestStore;
+        const best = p.price===result.bestPrice && p.store===result.bestStore;
         html+=`<tr class="${best?'best-row':''}">
           <td>${best?'🏆 ':''}${esc(p.store)}</td>
           <td class="price-col">$${Number(p.price).toFixed(2)}</td>
@@ -877,17 +869,17 @@ Today's date is ${dateStr}. Be honest if reliable current pricing cannot be foun
     resultBox.className='ai-result-box visible';
     resultBox.innerHTML=html;
 
-    // Auto-save if matched
-    if(result.itemMatched&&result.bestPrice&&result.bestStore){
-      const matched=items.find(i=>
-        i.name.toLowerCase().includes(result.itemMatched.toLowerCase().split(' ')[0])||
+    // Auto-save best price if item matches the list
+    if(result.itemMatched && result.bestPrice && result.bestStore){
+      const matched = items.find(i=>
+        i.name.toLowerCase().includes(result.itemMatched.toLowerCase().split(' ')[0]) ||
         result.itemMatched.toLowerCase().includes(i.name.toLowerCase().split(' ')[0])
       );
       if(matched){
-        matched.price=result.bestPrice;
-        matched.store=result.bestStore;
-        matched.date=today();
-        matched.aiSaved=true;
+        matched.price   = result.bestPrice;
+        matched.store   = result.bestStore;
+        matched.date    = today();
+        matched.aiSaved = true;
         saveItems(items); renderTable();
         savedNotice.className='ai-saved-notice visible';
         savedNotice.innerHTML=`✅ <strong>List updated automatically!</strong> Best price of <strong>$${Number(result.bestPrice).toFixed(2)}</strong> at <strong>${esc(result.bestStore)}</strong> has been saved to "<strong>${esc(matched.name)}</strong>" in the list above.`;
