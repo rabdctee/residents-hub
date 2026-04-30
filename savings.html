@@ -535,8 +535,8 @@
       <div class="ai-result-box" id="aiResultBox"></div>
       <div class="ai-saved-notice" id="aiSavedNotice"></div>
       <p class="ai-disclaimer">
-        ⓘ Results are sourced from the web and may not reflect real-time shelf prices or
-        flash sales. Always verify the price before purchasing. AI-saved prices are marked
+        ⓘ Results are sourced from the web and may not reflect real-time shelf prices. 
+        Always verify the price before purchasing. AI-saved prices are marked
         with today's date and labelled "AI".
       </p>
     </div>
@@ -797,29 +797,68 @@ Respond ONLY in this exact JSON format — no markdown, no code fences, nothing 
 Today's date is ${dateStr}. Be honest if reliable current pricing cannot be found.`;
 
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+  // Multi-turn handler: keep calling until we get a final text response
+  const apiHeaders = {
+    'Content-Type':'application/json',
+    'anthropic-dangerous-direct-browser-access':'true'
+  };
+  const apiTools = [{type:'web_search_20250305', name:'web_search'}];
+  const userMessage = `Find the cheapest current Australian price for: ${query}\n\nTracked items on our list for reference: ${items.map(i=>i.name).join(', ')}`;
+
+  let messages = [{ role:'user', content: userMessage }];
+  let raw = '';
+
+  // Allow up to 5 turns to handle tool use rounds
+  for(let turn=0; turn<5; turn++){
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
+      headers: apiHeaders,
+      body: JSON.stringify({
         model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        system:systemPrompt,
-        messages:[{
-          role:'user',
-          content:`Find the cheapest current Australian price for: ${query}\n\nTracked items on our list for reference: ${items.map(i=>i.name).join(', ')}`
-        }]
+        max_tokens:2000,
+        tools: apiTools,
+        system: systemPrompt,
+        messages: messages
       })
     });
-    const data=await resp.json();
-    const textBlock=data.content&&data.content.find(b=>b.type==='text');
-    const raw=textBlock?textBlock.text:'';
-    let result;
-    try{ result=JSON.parse(raw.replace(/```json|```/g,'').trim()); }
-    catch(e){ throw new Error('Could not read AI response. Please try again.'); }
+    const data = await resp.json();
+
+    if(data.error){ throw new Error('API error: ' + (data.error.message||JSON.stringify(data.error))); }
+
+    // Add assistant response to message history
+    messages.push({ role:'assistant', content: data.content });
+
+    if(data.stop_reason === 'end_turn'){
+      // Final response — extract text
+      const textBlock = data.content.find(b=>b.type==='text');
+      raw = textBlock ? textBlock.text : '';
+      break;
+    }
+
+    if(data.stop_reason === 'tool_use'){
+      // Process each tool use block and send results back
+      const toolResults = data.content
+        .filter(b=>b.type==='tool_use')
+        .map(b=>({
+          type:'tool_result',
+          tool_use_id: b.id,
+          content: b.type==='web_search' ? b.content : (b.input ? JSON.stringify(b.input) : 'search completed')
+        }));
+      messages.push({ role:'user', content: toolResults });
+      continue;
+    }
+
+    // Unexpected stop reason — try to get any text available
+    const textBlock = data.content && data.content.find(b=>b.type==='text');
+    if(textBlock){ raw = textBlock.text; break; }
+    break;
+  }
+
+  if(!raw) throw new Error('No response received from the search. Please try again.');
+
+  let result;
+  try{ result = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+  catch(e){ throw new Error('Could not read AI response. Please try again.'); }
 
     let html=`<p style="margin-bottom:12px;">${esc(result.summary)}</p>`;
     if(result.allPrices&&result.allPrices.length){
