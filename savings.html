@@ -594,8 +594,7 @@
       <div class="ai-result-box" id="aiResultBox"></div>
       <div class="ai-saved-notice" id="aiSavedNotice"></div>
       <p class="ai-disclaimer">
-        ⓘ Results are sourced from the web and may not reflect real-time shelf prices or
-        flash sales. Always verify the price before purchasing. AI-saved prices are marked
+        ⓘ Results are sourced from the web and may not reflect real-time shelf prices. Always verify the price before purchasing. AI-saved prices are marked
         with today's date and labelled "AI".
       </p>
     </div>
@@ -809,7 +808,7 @@ function delItem(id){
 
 // ─── PROXY URL ───────────────────────────────────────────────────────────────
 // Replace the value below with your Apps Script web app URL after deployment.
-const PROXY_URL = 'https://script.google.com/macros/s/AKfycbwc6yGtrtX-YVeF-ETxzQshsuWljzzkW1dbdHX9l9tbl6HM0P6FQBiK28phLQGi2PH7/exec';
+const PROXY_URL = 'https://script.google.com/macros/s/AKfycbwCUFG_xtn7-YbRvCmG7XCnxRcNhjgBFDXaNWW-jwtH_pKcPpfycduUmp8hsev4ktN2/exec';
 
 
 
@@ -833,36 +832,18 @@ async function runAiSearch(){
     <span>Searching Australian retailers for <strong>${esc(query)}</strong> — this may take a few seconds…</span>
   </div>`;
 
-  try{ || PROXY_URL === 'YOUR_APPS_SCRIPT_URL_HERE'){
-      throw new Error('The AI search has not been configured yet. Please ask your Hub administrator to complete setup.');
-    }
+  try{
 
-    // Send query to the Apps Script proxy — it holds the API key securely
-    const resp = await fetch(PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    // Send query to the Apps Script proxy via GET (avoids CORS preflight)
+    const params = new URLSearchParams({
       query: query,
       tracked: items.map(i=>i.name).join(', ')
-      })
+    });
+    const resp = await fetch(PROXY_URL + '?' + params.toString(), {
+      method: 'GET'
     });
 
-    // Parse response — handle both clean JSON and text-wrapped JSON
-    let result;
-    const respText = await resp.text();
-    try {
-      // Try direct JSON parse first
-      result = JSON.parse(respText);
-    } catch(e) {
-      // Try extracting JSON from within the text
-      const match = respText.match(/\{[\s\S]*\}/);
-      if (match) {
-        try { result = JSON.parse(match[0]); }
-        catch(e2) { throw new Error('Could not read search results. Please try again.'); }
-      } else {
-        throw new Error('Could not read search results. Please try again.');
-      }
-    }
+    const result = await resp.json();
 
     if(result.error){ throw new Error(result.error); }
 
