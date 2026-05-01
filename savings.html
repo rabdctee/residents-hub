@@ -834,9 +834,6 @@ async function runAiSearch(){
   </div>`;
 
   try{
-    if(!PROXY_URL || PROXY_URL === 'YOUR_APPS_SCRIPT_URL_HERE'){
-      throw new Error('The AI search has not been configured yet. Please ask your Hub administrator to complete setup.');
-    }
 
     // Send query to the Apps Script proxy — it holds the API key securely
     const resp = await fetch(PROXY_URL, {
