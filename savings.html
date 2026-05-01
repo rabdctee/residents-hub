@@ -808,7 +808,7 @@ function delItem(id){
 
 // ─── PROXY URL ───────────────────────────────────────────────────────────────
 // Replace the value below with your Apps Script web app URL after deployment.
-const PROXY_URL = 'https://script.google.com/macros/s/AKfycbzxS8RytkIdsm-R7DiUQHULxE330raUBka_5WX7f3Gj4wlV4KzUHDVm_GMpDT5sj5I_/exec';
+const PROXY_URL = 'https://script.google.com/macros/s/AKfycbwaXynVRiroWcfPuCnNIYZSq84cNQ8lcFDgU11hZu8nPsixQbpXygBFO7jKJrwqCIo3/exec';
 
 
 
@@ -834,13 +834,15 @@ async function runAiSearch(){
 
   try{
 
-    // Send query to the Apps Script proxy via GET (avoids CORS preflight)
-    const params = new URLSearchParams({
+    // Send query to the Apps Script proxy
+    // text/plain avoids CORS preflight while still sending a POST body
+    const resp = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
       query: query,
       tracked: items.map(i=>i.name).join(', ')
-    });
-    const resp = await fetch(PROXY_URL + '?' + params.toString(), {
-      method: 'GET'
+      })
     });
 
     const result = await resp.json();
