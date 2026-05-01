@@ -835,14 +835,13 @@ async function runAiSearch(){
 
   try{
 
-    // Send query to the Apps Script proxy — it holds the API key securely
-    const resp = await fetch(PROXY_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: query,
-        tracked: items.map(i=>i.name).join(', ')
-      })
+    // Send query to the Apps Script proxy via GET (avoids CORS preflight)
+    const params = new URLSearchParams({
+      query: query,
+      tracked: items.map(i=>i.name).join(', ')
+    });
+    const resp = await fetch(PROXY_URL + '?' + params.toString(), {
+      method: 'GET'
     });
 
     const result = await resp.json();
