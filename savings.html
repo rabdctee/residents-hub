@@ -507,7 +507,7 @@
     <strong>How this works:</strong> When you spot a good price at a shop or online, click
     <em>Update Price</em> on any item to record it for all residents. You can also use the
     <em>AI Price Assistant</em> below the list — type any item and it will search Australian
-    retailers and online stores for the best current price and automatically save it to your list.
+    retailers and online stores for the best current price, and automatically save it to your list.
     <br/><br/>
     <strong>⚠️ Please note:</strong> This page is for <strong>checking and comparing prices only</strong>.
     It is not for online shopping or Click &amp; Collect ordering. Always visit the retailer's
@@ -809,7 +809,7 @@ function delItem(id){
 
 // ─── PROXY URL ───────────────────────────────────────────────────────────────
 // Replace the value below with your Apps Script web app URL after deployment.
-const PROXY_URL = 'https://script.google.com/macros/s/AKfycbwCUFG_xtn7-YbRvCmG7XCnxRcNhjgBFDXaNWW-jwtH_pKcPpfycduUmp8hsev4ktN2/exec';
+const PROXY_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
 
 
 
@@ -833,7 +833,8 @@ async function runAiSearch(){
     <span>Searching Australian retailers for <strong>${esc(query)}</strong> — this may take a few seconds…</span>
   </div>`;
 
-  try{ || PROXY_URL === 'YOUR_APPS_SCRIPT_URL_HERE'){
+  try{
+    if(!PROXY_URL || PROXY_URL === 'YOUR_APPS_SCRIPT_URL_HERE'){
       throw new Error('The AI search has not been configured yet. Please ask your Hub administrator to complete setup.');
     }
 
