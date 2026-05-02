@@ -143,6 +143,32 @@
       padding-left: 19px;
     }
 
+    /* Breadcrumb bar */
+    .sb-breadcrumb {
+      background: #E7F1FB;
+      border-bottom: 2px solid #c5d8ee;
+      padding: 10px 22px;
+      font-size: 0.82em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .sb-breadcrumb a {
+      color: #1F4E79;
+      text-decoration: none;
+      font-weight: 700;
+      background: white;
+      border: 1px solid #c5d8ee;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.95em;
+      transition: all 0.15s;
+    }
+    .sb-breadcrumb a:hover { background: #1F4E79; color: white; }
+    .sb-breadcrumb span { color: #aaa; font-size: 0.9em; }
+    .sb-breadcrumb strong { color: #444; font-weight: 600; }
+
     /* Hub footer */
     .hub-footer {
       background: #f8f9fa;
@@ -331,7 +357,35 @@
         mainDiv.appendChild(child);
       });
     }
-  });
+
+    // ── INJECT BREADCRUMB BAR ──────────────────────────────
+    // Add "Home › Page Name" bar after header, inside hub-main
+    // Only add if one doesn't already exist
+    if (!document.querySelector('.sb-breadcrumb')) {
+      var header = document.querySelector('header');
+      if (header) {
+        // Get page title from <title> tag, stripping " | Bridgeman Downs..."
+        var titleFull  = document.title || '';
+        var pageTitle  = titleFull.split('|')[0].trim();
+        // Don't show breadcrumb on home page
+        if (currentPage !== 'index.html') {
+          var bc = document.createElement('div');
+          bc.className = 'sb-breadcrumb';
+          bc.innerHTML =
+            '<a href="index.html">🏠 Home</a>' +
+            '<span>›</span>' +
+            '<strong>' + pageTitle + '</strong>';
+          // Insert after header inside hub-main (header is inside container/hub-main)
+          if (header.nextSibling) {
+            header.parentNode.insertBefore(bc, header.nextSibling);
+          } else {
+            header.parentNode.appendChild(bc);
+          }
+        }
+      }
+    }
+
+  }); // end DOMContentLoaded
 
   // ── ACCORDION TOGGLE ──────────────────────────────────────
   window.sbToggle = function (id) {
