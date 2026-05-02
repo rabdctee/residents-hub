@@ -224,7 +224,7 @@
   // Determine which accordion group should auto-open
   var communityPages = ['concerts.html','savings.html','info-sessions.html',
                         'memories.html','community-life.html','village-map.html'];
-  var newsPages      = ['news.html','activities.html'];
+  var newsPages      = ['index.html'];
   var infoPages      = ['useful-links.html','how-to.html','contacts.html'];
 
   var openNews      = newsPages.some(isActive)      ? ' open' : '';
@@ -249,8 +249,8 @@
         </div>
         <div class="sb-acc-body${openNews}" id="sba-news">
           <ul class="sb-links">
-            <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>📰 Village News</a></li>
-            <li><a href="activities.html"${isActive('activities.html') ? ' class="sb-active"' : ''}>🎯 Activities</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('newsletter');return false;}else{window.location.href='index.html#newsletter';return false;}">📰 Village News</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('activity-contacts');return false;}else{window.location.href='index.html#activity-contacts';return false;}">🎯 Activities</a></li>
           </ul>
         </div>
 
