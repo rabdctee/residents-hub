@@ -235,6 +235,16 @@
     </aside>
   `;
 
+
+  // Remove any stray literal \n text that may appear if regex mode was off during find-replace
+  document.addEventListener('DOMContentLoaded', function() {
+    document.body.childNodes.forEach(function(n) {
+      if (n.nodeType === 3 && n.nodeValue && n.nodeValue.trim() === '\\n') {
+        n.parentNode.removeChild(n);
+      }
+    });
+  });
+
   // ── WRAP PAGE CONTENT IN hub-wrapper ──────────────────────
   // Find the body's first meaningful child after header/breadcrumbs
   // Strategy: wrap everything in body inside hub-wrapper > sidebar + hub-main
