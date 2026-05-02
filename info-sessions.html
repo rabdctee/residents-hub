@@ -56,34 +56,7 @@
       padding:6px 20px;
     }
 
-    /* ===== Navigation ===== */
-    nav{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      background:#f5f5f5;
-      padding:15px 10px;
-      gap:8px;
-    }
-
-    .nav-item{
-      color:#1f3f73;
-      background:white;
-      padding:16px 20px;
-      text-decoration:none;
-      cursor:pointer;
-      font-weight:700;
-      border-radius:10px;
-      border:2px solid #e0e0e0;
-      transition:all 0.3s;
-      font-size:16px;
-      min-height:50px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .nav-item:hover{ background:#e8f4f8; border-color:#1F4E79; color:#1F4E79; }
-    .nav-item.active{ background:#1F4E79; color:white; border-color:#1F4E79; }
+    /* Navigation handled by sidebar.js */
 
     /* ===== Page content ===== */
     .page-content{ padding:36px 25px 50px; }
@@ -285,6 +258,72 @@
     }
     .no-sessions strong{ display:block; color:#1F4E79; margin-bottom:6px; font-size:1em; }
 
+    /* ===== Add session panel ===== */
+    .add-session-panel{
+      display:none;
+      background:#fffdf5;
+      border:2px solid #C9A44A;
+      border-radius:10px;
+      padding:24px 26px;
+      margin-bottom:28px;
+    }
+    .add-session-panel.open{ display:block; }
+    .add-session-panel h3{
+      color:#7a5200;
+      font-size:1em;
+      margin-bottom:16px;
+      padding-bottom:8px;
+      border-bottom:1px solid #e8d5a3;
+    }
+    .add-field{ margin-bottom:14px; }
+    .add-field label{
+      display:block;
+      font-size:0.82em;
+      font-weight:700;
+      color:#555;
+      margin-bottom:5px;
+    }
+    .add-field input, .add-field select, .add-field textarea{
+      width:100%;
+      padding:9px 12px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:0.9em;
+      border:2px solid #e8d5a3;
+      border-radius:6px;
+      background:white;
+      color:#222;
+    }
+    .add-field input:focus, .add-field select:focus, .add-field textarea:focus{
+      outline:none;
+      border-color:#C9A44A;
+    }
+    .add-field textarea{ min-height:80px; resize:vertical; }
+    .add-row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .add-row .add-field{ flex:1; min-width:160px; }
+    .add-btn{
+      background:#1F4E79;
+      color:white;
+      border:none;
+      padding:10px 22px;
+      border-radius:6px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:0.92em;
+      font-weight:700;
+      cursor:pointer;
+      margin-right:10px;
+    }
+    .add-btn:hover{ background:#163d60; }
+    .add-btn-cancel{
+      background:white;
+      color:#888;
+      border:1px solid #ddd;
+      padding:10px 18px;
+      border-radius:6px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:0.92em;
+      cursor:pointer;
+    }
+
     /* ===== Responsive ===== */
     @media(max-width:768px){
       .nav-item{ font-size:14px; padding:10px 14px; }
@@ -296,6 +335,7 @@
   </style>
 </head>
 <body>
+<script src="sidebar.js"></script>
 
 <div class="container">
 
@@ -306,14 +346,14 @@
     <p class="page-tagline"><span>🎓 Information Sessions</span></p>
   </header>
 
-  <!-- ===== NAV ===== -->
-  <nav>
-    <a class="nav-item" href="index.html">🏠 Home</a>
-    <a class="nav-item" href="#upcoming">🗓️ Upcoming</a>
-    <a class="nav-item" href="#past">📁 Past Sessions</a>
-    <a class="nav-item" href="#planned">💡 Planned Topics</a>
-    <a class="nav-item" href="#register">✋ Register Interest</a>
-  </nav>
+  <!-- Section navigation — within-page links -->
+  <div style="background:#E7F1FB;border-bottom:2px solid #c5d8ee;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;">
+    <a href="#upcoming" style="color:#1F4E79;font-weight:700;font-size:0.85em;background:white;border:1px solid #c5d8ee;border-radius:6px;padding:6px 14px;text-decoration:none;">🗓️ Upcoming</a>
+    <a href="#past"     style="color:#1F4E79;font-weight:700;font-size:0.85em;background:white;border:1px solid #c5d8ee;border-radius:6px;padding:6px 14px;text-decoration:none;">📁 Past Sessions</a>
+    <a href="#planned"  style="color:#1F4E79;font-weight:700;font-size:0.85em;background:white;border:1px solid #c5d8ee;border-radius:6px;padding:6px 14px;text-decoration:none;">💡 Planned Topics</a>
+    <a href="#register" style="color:#1F4E79;font-weight:700;font-size:0.85em;background:white;border:1px solid #c5d8ee;border-radius:6px;padding:6px 14px;text-decoration:none;">✋ Register Interest</a>
+    <a href="#" onclick="toggleAddSession();return false;" style="color:#7a5200;font-weight:700;font-size:0.85em;background:#fffdf5;border:1px solid #C9A44A;border-radius:6px;padding:6px 14px;text-decoration:none;">➕ Add Session</a>
+  </div>
 
   <!-- ===== PAGE CONTENT ===== -->
   <div class="page-content">
@@ -584,10 +624,285 @@
 
     </div><!-- end register-section -->
 
+  <!-- ══════════════════════════════════════════
+       ADD SESSION PANEL
+  ══════════════════════════════════════════ -->
+  <div class="add-session-panel" id="addSessionPanel">
+    <h3>➕ Add a New Session</h3>
+    <div class="add-row">
+      <div class="add-field">
+        <label for="as-title">Session title *</label>
+        <input type="text" id="as-title" placeholder="e.g. Understanding Insurance"/>
+      </div>
+      <div class="add-field">
+        <label for="as-type">Type *</label>
+        <select id="as-type">
+          <option value="upcoming">🗓️ Upcoming</option>
+          <option value="planned">💡 Planned Topic</option>
+        </select>
+      </div>
+    </div>
+    <div class="add-row">
+      <div class="add-field">
+        <label for="as-date">Date (leave blank for Planned Topics)</label>
+        <input type="date" id="as-date"/>
+      </div>
+      <div class="add-field">
+        <label for="as-time">Time</label>
+        <input type="text" id="as-time" placeholder="e.g. 10:00am – 11:30am"/>
+      </div>
+    </div>
+    <div class="add-row">
+      <div class="add-field">
+        <label for="as-host">Host / Presenter</label>
+        <input type="text" id="as-host" placeholder="e.g. ARQRV, Guest Speaker"/>
+      </div>
+      <div class="add-field">
+        <label for="as-format">Format</label>
+        <select id="as-format">
+          <option value="">Not specified</option>
+          <option value="In person">In person</option>
+          <option value="Online via Zoom">Online via Zoom</option>
+          <option value="Webinar">Webinar</option>
+          <option value="Self-paced guide">Self-paced guide</option>
+        </select>
+      </div>
+    </div>
+    <div class="add-field">
+      <label for="as-intro">Description *</label>
+      <textarea id="as-intro" placeholder="Brief description of the session for residents…"></textarea>
+    </div>
+    <div class="add-field">
+      <label for="as-link">Registration or info link (optional)</label>
+      <input type="url" id="as-link" placeholder="https://…"/>
+    </div>
+    <div style="margin-top:6px;">
+      <button class="add-btn" onclick="addSession()">✅ Add Session</button>
+      <button class="add-btn-cancel" onclick="toggleAddSession()">Cancel</button>
+    </div>
+  </div>
+
   </div><!-- end page-content -->
 </div><!-- end container -->
 
 <script>
+
+  // ── AUTO-SORT SESSIONS BY DATE ─────────────────────────────────────────────
+  // Runs on page load. Any upcoming session whose date has passed
+  // is automatically moved to the Past Sessions section.
+  (function autoSortSessions() {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    var upcomingSection = document.getElementById('upcoming');
+    var pastSection     = document.getElementById('past');
+    if (!upcomingSection || !pastSection) return;
+
+    // Find all upcoming session cards after the upcoming divider
+    var allCards = document.querySelectorAll('.session-card.upcoming');
+    allCards.forEach(function(card) {
+      var dateEl = card.querySelector('.session-date');
+      if (!dateEl) return;
+
+      // Parse date from text like "Wednesday 29 April 2026 · 10:00am"
+      var dateText = dateEl.textContent.trim();
+      var match = dateText.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
+      if (!match) return;
+
+      var months = {January:0,February:1,March:2,April:3,May:4,June:5,
+                    July:6,August:7,September:8,October:9,November:10,December:11};
+      var sessionDate = new Date(parseInt(match[3]), months[match[2]], parseInt(match[1]));
+
+      if (sessionDate < today) {
+        // Move this card to Past Sessions
+        card.classList.remove('upcoming');
+        card.classList.add('past');
+
+        // Update the tag
+        var tag = card.querySelector('.session-tag.tag-upcoming');
+        if (tag) {
+          tag.classList.remove('tag-upcoming');
+          tag.classList.add('tag-past');
+          tag.textContent = 'Past Session';
+        }
+
+        // Remove any webinar tags and Zoom buttons
+        var webinarTag = card.querySelector('.session-tag.tag-webinar');
+        // Keep webinar tag but update styling for past
+
+        // Insert after the past section divider
+        var firstPastCard = pastSection.nextElementSibling;
+        var noSessionsNotice = document.querySelector('.no-sessions');
+
+        if (noSessionsNotice) {
+          noSessionsNotice.style.display = 'none';
+        }
+
+        // Insert the card after the past section divider
+        if (firstPastCard && firstPastCard.classList && firstPastCard.classList.contains('session-card')) {
+          pastSection.parentNode.insertBefore(card, firstPastCard);
+        } else {
+          // Insert after the past divider
+          var plannedSection = document.getElementById('planned');
+          pastSection.parentNode.insertBefore(card, plannedSection);
+        }
+      }
+    });
+
+    // If no upcoming cards remain, show a notice
+    var remainingUpcoming = document.querySelectorAll('.session-card.upcoming');
+    if (remainingUpcoming.length === 0) {
+      var notice = document.createElement('div');
+      notice.className = 'no-sessions';
+      notice.innerHTML = '<strong>No upcoming sessions at this time</strong>Check back soon — new sessions will appear here when scheduled.';
+      var plannedDivider = document.getElementById('planned');
+      upcomingSection.parentNode.insertBefore(notice, plannedDivider);
+    }
+  })();
+
+  // ── ADD SESSION ────────────────────────────────────────────────────────────
+  var localSessions = JSON.parse(localStorage.getItem('bdrc_sessions_v1') || '[]');
+
+  // Render any locally-added sessions on page load
+  (function renderLocalSessions() {
+    localSessions.forEach(function(s) { renderSession(s); });
+  })();
+
+  function toggleAddSession() {
+    var panel = document.getElementById('addSessionPanel');
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) {
+      panel.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  }
+
+  function addSession() {
+    var title  = document.getElementById('as-title').value.trim();
+    var type   = document.getElementById('as-type').value;
+    var date   = document.getElementById('as-date').value;
+    var time   = document.getElementById('as-time').value.trim();
+    var host   = document.getElementById('as-host').value.trim();
+    var format = document.getElementById('as-format').value;
+    var intro  = document.getElementById('as-intro').value.trim();
+    var link   = document.getElementById('as-link').value.trim();
+
+    if (!title) { alert('Please enter a session title.'); return; }
+    if (!intro) { alert('Please enter a description.'); return; }
+    if (type === 'upcoming' && !date) { alert('Please enter a date for upcoming sessions.'); return; }
+
+    var session = {
+      id: 'local-' + Date.now(),
+      title, type, date, time, host, format, intro, link
+    };
+
+    localSessions.push(session);
+    localStorage.setItem('bdrc_sessions_v1', JSON.stringify(localSessions));
+    renderSession(session);
+    toggleAddSession();
+
+    // Clear form
+    ['as-title','as-date','as-time','as-host','as-intro','as-link'].forEach(function(id){
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('as-type').value   = 'upcoming';
+    document.getElementById('as-format').value = '';
+  }
+
+  function renderSession(s) {
+    // Format date for display
+    var dateStr = '';
+    if (s.date) {
+      var d = new Date(s.date + 'T00:00:00');
+      var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      var months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+      dateStr = days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+      if (s.time) dateStr += ' · ' + s.time;
+    }
+
+    // Check if session has already passed
+    var isPast = false;
+    if (s.date) {
+      var sessionDate = new Date(s.date + 'T00:00:00');
+      var today = new Date(); today.setHours(0,0,0,0);
+      isPast = sessionDate < today;
+    }
+
+    var effectiveType = isPast ? 'past' : s.type;
+
+    var tagHtml = '';
+    if (effectiveType === 'past') tagHtml = '<span class="session-tag tag-past">Past Session</span>';
+    else if (effectiveType === 'upcoming') tagHtml = '<span class="session-tag tag-upcoming">Upcoming</span>';
+    else tagHtml = '<span class="session-tag tag-planned">Planned Topic</span>';
+
+    if (s.format === 'Online via Zoom' || s.format === 'Webinar') {
+      tagHtml += ' <span class="session-tag tag-webinar" style="margin-left:6px;">' + s.format + '</span>';
+    }
+
+    var metaHtml = '';
+    if (s.host)   metaHtml += '<span>🏛️ ' + s.host + '</span>';
+    if (s.format && s.format !== 'Online via Zoom' && s.format !== 'Webinar')
+                  metaHtml += '<span>📍 ' + s.format + '</span>';
+
+    var linkHtml = '';
+    if (s.link) {
+      linkHtml = '<div style="margin-top:14px;"><a href="' + s.link +
+        '" target="_blank" style="display:inline-block;background:#1F4E79;color:white;' +
+        'padding:10px 20px;border-radius:7px;text-decoration:none;font-weight:700;font-size:0.88em;">' +
+        '🔗 More Info / Register →</a></div>';
+    }
+
+    var deleteHtml = '<div style="margin-top:12px;">' +
+      '<button onclick="deleteSession('' + s.id + '',this)" ' +
+      'style="background:none;border:none;color:#aaa;font-size:0.78em;cursor:pointer;padding:0;">' +
+      '🗑 Remove this session</button></div>';
+
+    var html = '<div class="session-card ' + effectiveType + '" id="' + s.id + '">' +
+      tagHtml +
+      (dateStr ? '<div class="session-date">' + dateStr + '</div>' : '') +
+      '<div class="session-title">' + s.title + '</div>' +
+      (metaHtml ? '<div class="session-meta">' + metaHtml + '</div>' : '') +
+      '<div class="session-intro"><p>' + s.intro.replace(/
+/g,'</p><p style="margin-top:10px;">') + '</p></div>' +
+      linkHtml + deleteHtml +
+      '</div>';
+
+    // Insert into correct section
+    var sectionId = effectiveType === 'past' ? 'past' : (effectiveType === 'planned' ? 'planned' : 'upcoming');
+    var sectionDiv = document.getElementById(sectionId);
+    if (!sectionDiv) return;
+
+    var nextSection = sectionDiv.nextElementSibling;
+    // Walk siblings to find next section-divider or end
+    var sibling = sectionDiv.nextElementSibling;
+    while (sibling && !sibling.classList.contains('section-divider') && !sibling.id === 'register') {
+      sibling = sibling.nextElementSibling;
+    }
+
+    var tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    var card = tempDiv.firstChild;
+
+    if (sibling) {
+      sectionDiv.parentNode.insertBefore(card, sibling);
+    } else {
+      sectionDiv.parentNode.appendChild(card);
+    }
+
+    // Hide "no sessions" notice if in upcoming or past
+    if (effectiveType !== 'planned') {
+      var notices = document.querySelectorAll('.no-sessions');
+      notices.forEach(function(n){ n.style.display='none'; });
+    }
+  }
+
+  function deleteSession(id, btn) {
+    if (!confirm('Remove this session from the list?')) return;
+    localSessions = localSessions.filter(function(s){ return s.id !== id; });
+    localStorage.setItem('bdrc_sessions_v1', JSON.stringify(localSessions));
+    var card = document.getElementById(id);
+    if (card) card.remove();
+  }
 
   /* ══════════════════════════════════════════
      INTEREST REGISTRATION FORM
