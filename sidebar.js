@@ -36,7 +36,7 @@
       background: white;
     }
     .hub-sidebar {
-      width: 230px;
+      width: 250px;
       flex-shrink: 0;
       padding: 14px 10px;
       border-right: 2px solid #c5d8ee;
@@ -182,7 +182,7 @@
 
     /* Responsive */
     @media (max-width: 900px) {
-      .hub-sidebar { width: 185px; }
+      .hub-sidebar { width: 200px; }
     }
     @media (max-width: 768px) {
       .hub-wrapper   { flex-direction: column; }
