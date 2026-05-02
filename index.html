@@ -2773,11 +2773,25 @@ var searchableContent = [
     {page: 'village-info', section: 'local-services', title: '🔒 Local Services',          keywords: 'translink bus library brisbane entertainment cinema events arts culture local'}
 ];
     
-    var results = searchableContent.filter(function(item) {
+    // Merge built-in + custom mappings from Google Sheet
+    var allContent = searchableContent.concat(customSearchMappings);
+
+    var results = allContent.filter(function(item) {
         return item.title.toLowerCase().includes(query) || 
-               item.keywords.toLowerCase().includes(query);
+               (item.keywords && item.keywords.toLowerCase().includes(query));
+    });
+    // Remove duplicates by page+section
+    var seen = {};
+    results = results.filter(function(item) {
+        var key = item.page + '|' + (item.section || '');
+        if (seen[key]) return false;
+        seen[key] = true;
+        return true;
     });
     
+    // Log the search term and result count
+    logSearchTerm(query, results.length);
+
     if (results.length === 0) {
         resultsDiv.innerHTML = '<div style="padding:15px;color:#666;">No results found for "' + query + '"</div>';
         resultsDiv.style.display = 'block';
@@ -3101,6 +3115,45 @@ function displayQuoteOfDay() {
     document.getElementById('quote-author').innerHTML = '— ' + quote.author;
 }
 
+// ── SEARCH LOGGER ────────────────────────────────────────────────────
+// Paste your SearchLogger Apps Script URL here after deployment
+var SEARCH_LOGGER_URL = 'https://script.google.com/macros/s/AKfycbwEz5REE0zfEGy6FSpK-7s_2muOJr4lFaGagipFu31WPdxHO-90Qr_f8ekJgIt0RkcbKg/exec';
+// Custom mappings loaded from Google Sheet at startup
+var customSearchMappings = [];
+
+function loadCustomMappings() {
+  if (!SEARCH_LOGGER_URL || SEARCH_LOGGER_URL === 'YOUR_SEARCH_LOGGER_URL_HERE') return;
+  fetch(SEARCH_LOGGER_URL + '?action=getIndex')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      customSearchMappings = (data.items || [])
+        .filter(function(i) { return i.active; })
+        .map(function(i) {
+          return {
+            page:     i.page,
+            section:  i.section || null,
+            title:    i.title,
+            keywords: i.keyword
+          };
+        });
+    })
+    .catch(function() {}); // silently fail — search still works without custom mappings
+}
+
+function logSearchTerm(term, resultCount) {
+  if (!SEARCH_LOGGER_URL || SEARCH_LOGGER_URL === 'YOUR_SEARCH_LOGGER_URL_HERE') return;
+  fetch(SEARCH_LOGGER_URL, {
+    method:  'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body:    JSON.stringify({
+      action:  'log',
+      term:    term,
+      results: resultCount,
+      page:    'index.html'
+    })
+  }).catch(function() {}); // fire and forget
+}
+
 // ── SIDEBAR ACCORDION ─────────────────────────────────────────────────
 function toggleSbAcc(id) {
   var body   = document.getElementById(id);
@@ -3327,6 +3380,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadAnnouncements();
     loadEvents();
     loadFinancialDropdowns();
+    loadCustomMappings();
 });
 
 // Refresh every 5 minutes
