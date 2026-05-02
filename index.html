@@ -2760,6 +2760,7 @@ var searchableContent = [
     {page: 'noticeboard',       section: null, title: '📌 Community Board',            keywords: 'classifieds buy sell wanted notice board community ads post'},
     {page: 'about',             section: null, title: '📖 About This Website',         keywords: 'about website help information how guide feedback suggestions improve'},
     {page: 'home',              section: null, title: '🏠 Home',                       keywords: 'home welcome announcements latest news bookmark start'},
+    {url:  'how-to.html',                      title: '❓ Help & How To',               keywords: 'help how to guide instructions tips delete messages email phone photos wifi internet settings apps computer tablet ipad android'},
     // ── Resident-Only sections (village-info) ────────────────
     {page: 'village-info', section: 'qld-act',    title: '🔒 QLD Act & Regulations',      keywords: 'qld act regulations retirement villages legislation law 1999 2018'},
     {page: 'village-info', section: 'constitution', title: '🔒 Village Constitution',      keywords: 'constitution rules village governing document'},
@@ -2798,7 +2799,14 @@ var searchableContent = [
     } else {
         var html = '<div style="padding:10px;color:#666;font-weight:600;">Found ' + results.length + ' result(s):</div>';
         results.forEach(function(result) {
-            var onclick = 'showPage(\'' + result.page + '\');';
+            var onclick, displayTitle;
+            if (result.url) {
+                // External page — navigate directly
+                onclick = 'window.location.href=\'' + result.url + '\';';
+                onclick += 'document.getElementById(\'searchResults\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\';';
+                displayTitle = '↗ ' + result.title + ' <span style="font-size:0.8em;color:#888;">(click to open page)</span>';
+            } else {
+                onclick = 'showPage(\'' + result.page + '\');';
             if (result.section) {
                 // Navigate to page then open the matching section
                 onclick += 'setTimeout(function(){' +
@@ -2809,7 +2817,9 @@ var searchableContent = [
                     '},200);';
             }
             onclick += 'document.getElementById(\'searchResults\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\';';
-            html += '<div class="search-result-item" onclick="' + onclick + '">' + result.title + '</div>';
+                displayTitle = '→ ' + result.title + ' <span style="font-size:0.8em;color:#888;">(click to open)</span>';
+            }
+            html += '<div class="search-result-item" onclick="' + onclick + '">' + displayTitle + '</div>';
         });
         resultsDiv.innerHTML = html;
         resultsDiv.style.display = 'block';
