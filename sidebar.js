@@ -11,6 +11,21 @@
 
 (function () {
 
+  // ── CLEAN UP LITERAL \n TEXT ────────────────────────────────
+  // VS Code find-and-replace without regex mode inserts a literal \n
+  // character instead of a real line break. This removes it immediately.
+  function cleanLiteralNewline() {
+    var nodes = document.body ? document.body.childNodes : [];
+    for (var i = nodes.length - 1; i >= 0; i--) {
+      if (nodes[i].nodeType === 3 && nodes[i].nodeValue === '\\n') {
+        nodes[i].parentNode.removeChild(nodes[i]);
+      }
+    }
+  }
+  // Run immediately and again after DOM is ready
+  cleanLiteralNewline();
+  document.addEventListener('DOMContentLoaded', cleanLiteralNewline);
+
   // ── CSS ────────────────────────────────────────────────────
   var css = `
     /* Sidebar layout wrapper */
