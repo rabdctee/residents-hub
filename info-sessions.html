@@ -680,77 +680,79 @@
 <script>
 
   // ── AUTO-SORT SESSIONS BY DATE ─────────────────────────────────────────────
-  // Runs after DOM is ready. Any upcoming session whose date has passed
-  // is automatically moved to the Past Sessions section.
-  document.addEventListener('DOMContentLoaded', function autoSortSessions() {
-    var today = new Date();
-    today.setHours(0, 0, 0, 0);
+  document.addEventListener('DOMContentLoaded', function() {
+    // Small delay to ensure sidebar.js has finished wrapping the DOM
+    setTimeout(function() {
 
-    var upcomingSection = document.getElementById('upcoming');
-    var pastSection     = document.getElementById('past');
-    if (!upcomingSection || !pastSection) return;
-
-    // Find all upcoming session cards after the upcoming divider
-    var allCards = document.querySelectorAll('.session-card.upcoming');
-    allCards.forEach(function(card) {
-      var dateEl = card.querySelector('.session-date');
-      if (!dateEl) return;
-
-      // Parse date from text like "Wednesday 29 April 2026 · 10:00am"
-      var dateText = dateEl.textContent.trim();
-      var match = dateText.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
-      if (!match) return;
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
 
       var months = {January:0,February:1,March:2,April:3,May:4,June:5,
                     July:6,August:7,September:8,October:9,November:10,December:11};
-      var sessionDate = new Date(parseInt(match[3]), months[match[2]], parseInt(match[1]));
 
-      if (sessionDate < today) {
-        // Move this card to Past Sessions
-        card.classList.remove('upcoming');
-        card.classList.add('past');
+      var upcomingDivider = document.getElementById('upcoming');
+      var pastDivider     = document.getElementById('past');
+      var plannedDivider  = document.getElementById('planned');
 
-        // Update the tag
-        var tag = card.querySelector('.session-tag.tag-upcoming');
-        if (tag) {
-          tag.classList.remove('tag-upcoming');
-          tag.classList.add('tag-past');
-          tag.textContent = 'Past Session';
+      if (!upcomingDivider || !pastDivider) return;
+
+      // Get all upcoming cards
+      var cards = Array.from(document.querySelectorAll('.session-card.upcoming'));
+
+      cards.forEach(function(card) {
+        var dateEl = card.querySelector('.session-date');
+        if (!dateEl) return;
+
+        var dateText = dateEl.textContent.trim();
+        var match    = dateText.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
+        if (!match) return;
+
+        var sessionDate = new Date(
+          parseInt(match[3]),
+          months[match[2]],
+          parseInt(match[1])
+        );
+
+        if (sessionDate < today) {
+          // Update card styling
+          card.classList.remove('upcoming');
+          card.classList.add('past');
+
+          // Update tag text and style
+          var upTag = card.querySelector('.session-tag.tag-upcoming');
+          if (upTag) {
+            upTag.classList.remove('tag-upcoming');
+            upTag.classList.add('tag-past');
+            upTag.textContent = 'Past Session';
+          }
+
+          // Hide "no past sessions" notice if present
+          var noSessions = document.querySelector('.no-sessions');
+          if (noSessions) noSessions.style.display = 'none';
+
+          // Insert card immediately after the past divider
+          // pastDivider.nextSibling puts it right after the divider line
+          if (plannedDivider) {
+            pastDivider.parentNode.insertBefore(card, plannedDivider);
+          } else {
+            pastDivider.parentNode.appendChild(card);
+          }
         }
+      });
 
-        // Remove any webinar tags and Zoom buttons
-        var webinarTag = card.querySelector('.session-tag.tag-webinar');
-        // Keep webinar tag but update styling for past
-
-        // Insert after the past section divider
-        var firstPastCard = pastSection.nextElementSibling;
-        var noSessionsNotice = document.querySelector('.no-sessions');
-
-        if (noSessionsNotice) {
-          noSessionsNotice.style.display = 'none';
-        }
-
-        // Insert the card after the past section divider
-        if (firstPastCard && firstPastCard.classList && firstPastCard.classList.contains('session-card')) {
-          pastSection.parentNode.insertBefore(card, firstPastCard);
-        } else {
-          // Insert after the past divider
-          var plannedSection = document.getElementById('planned');
-          pastSection.parentNode.insertBefore(card, plannedSection);
+      // Show "no upcoming sessions" notice if none remain
+      var remaining = document.querySelectorAll('.session-card.upcoming');
+      if (remaining.length === 0) {
+        var notice = document.createElement('div');
+        notice.className = 'no-sessions';
+        notice.innerHTML = '<strong>No upcoming sessions at this time.</strong> Check back soon — new sessions will appear here when scheduled.';
+        if (plannedDivider) {
+          upcomingDivider.parentNode.insertBefore(notice, plannedDivider);
         }
       }
-    });
 
-    // If no upcoming cards remain, show a notice
-    var remainingUpcoming = document.querySelectorAll('.session-card.upcoming');
-    if (remainingUpcoming.length === 0) {
-      var notice = document.createElement('div');
-      notice.className = 'no-sessions';
-      notice.innerHTML = '<strong>No upcoming sessions at this time</strong>Check back soon — new sessions will appear here when scheduled.';
-      var plannedDivider = document.getElementById('planned');
-      upcomingSection.parentNode.insertBefore(notice, plannedDivider);
-    }
-  });
+    }, 300); // 300ms delay ensures sidebar.js DOM wrapping is complete
+  });;
 
   // ── ADD SESSION ────────────────────────────────────────────────────────────
   var localSessions = JSON.parse(localStorage.getItem('bdrc_sessions_v1') || '[]');
