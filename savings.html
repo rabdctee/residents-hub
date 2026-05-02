@@ -597,7 +597,7 @@ async function runAiSearch(){
     if(result.error){ throw new Error(result.error); }
 
     // Build display — summary + table (filter out $0 rows)
-    let html=`<p class="ai-summary">${esc(result.summary)}</p>`;
+    let html='';
     const pricesWithValue = result.allPrices ? result.allPrices.filter(p=>p.price>0) : [];
     if(pricesWithValue.length){
       html+=`<table class="ai-prices-table">
