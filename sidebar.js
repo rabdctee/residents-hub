@@ -250,6 +250,14 @@
           <ul class="sb-links">
             <li><a href="useful-links.html"${isActive('useful-links.html') ? ' class="sb-active"' : ''}>🔗 Useful Links</a></li>
             <li><a href="how-to.html"${isActive('how-to.html') ? ' class="sb-active"' : ''}>❓ Help &amp; How To</a></li>
+            ${isActive('how-to.html') ? `
+            <li style="background:#f0f6fc;"><a href="#group-getting-started" style="padding-left:30px;font-size:0.8em;color:#555;">🚀 Getting Started</a></li>
+            <li style="background:#f0f6fc;"><a href="#group-apps-services"   style="padding-left:30px;font-size:0.8em;color:#555;">📱 Phones, TV &amp; Email</a></li>
+            <li style="background:#f0f6fc;"><a href="#group-photos"          style="padding-left:30px;font-size:0.8em;color:#555;">📷 Managing Photos</a></li>
+            <li style="background:#f0f6fc;"><a href="#group-home-tech"       style="padding-left:30px;font-size:0.8em;color:#555;">🏠 Around Your Home</a></li>
+            <li style="background:#f0f6fc;"><a href="#group-staying-safe"    style="padding-left:30px;font-size:0.8em;color:#555;">🔒 Staying Safe</a></li>
+            <li style="background:#f0f6fc;"><a href="#group-new-tech"        style="padding-left:30px;font-size:0.8em;color:#555;">🤖 New Technology</a></li>
+            ` : ''}
             <li><a href="contacts.html"${isActive('contacts.html') ? ' class="sb-active"' : ''}>📞 Contacts</a></li>
           </ul>
         </div>

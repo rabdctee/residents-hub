@@ -56,36 +56,7 @@
       padding:6px 22px;
     }
 
-    /* ===== Navigation ===== */
-    nav{
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      background:#E7F1FB;
-      padding:14px 10px;
-      gap:8px;
-      border-bottom:2px solid #c5d8ee;
-    }
-
-    .nav-item{
-      color:#1F4E79;
-      background:#ffffff;
-      padding:12px 16px;
-      text-decoration:none;
-      cursor:pointer;
-      font-weight:700;
-      border-radius:8px;
-      border:2px solid #c5d8ee;
-      transition:all 0.2s;
-      font-size:15px;
-      min-height:44px;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-    }
-    .nav-item:hover{ background:#E7F1FB; border-color:#1F4E79; color:#1F4E79; }
-    .nav-item.active{ background:#1F4E79; color:white; border-color:#1F4E79; }
+        /* Navigation handled by sidebar.js */
 
     /* ===== Page content ===== */
     .page-content{ padding:36px 25px 50px; }
@@ -179,14 +150,39 @@
 
     /* ===== Responsive ===== */
     @media(max-width:768px){
-      .nav-item{ font-size:13px; padding:10px 12px; }
       header h1{ font-size:1.6em; }
       .page-content{ padding:24px 16px 40px; }
     }
 
+  
+    /* ===== Within-page section bar (replaces old nav) ===== */
+    .section-bar{
+      background:#E7F1FB;
+      border-bottom:2px solid #c5d8ee;
+      padding:8px 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .section-bar a{
+      color:#1F4E79;
+      font-weight:700;
+      font-size:0.8em;
+      background:white;
+      border:1px solid #c5d8ee;
+      border-radius:6px;
+      padding:5px 12px;
+      text-decoration:none;
+      cursor:pointer;
+      transition:all 0.15s;
+      white-space:nowrap;
+    }
+    .section-bar a:hover{ background:#1F4E79; color:white; border-color:#1F4E79; }
+
   </style>
 </head>
-<body>\n<script src="sidebar.js"></script>
+<body>
+<script src="sidebar.js"></script>
 
 <div class="container">
 
@@ -197,16 +193,14 @@
     <p class="page-tagline"><span>🔗 Useful Links</span></p>
   </header>
 
-  <!-- ===== NAV ===== -->
-  <nav>
-    <a class="nav-item" href="index.html">🏠 Home</a>
-    <a class="nav-item" onclick="jumpToSection('gov-services','sec-govt')">🏛️ Government Services</a>
-    <a class="nav-item" onclick="jumpToSection('using-govt','sec-using-govt')">🖥️ Using Gov Services</a>
-    <a class="nav-item" onclick="jumpToSection('rv-resources','sec-rv')">🏘️ Retirement Village Info</a>
-    <a class="nav-item" onclick="jumpToSection('safety','sec-safety')">🛡️ Safety</a>
-    <a class="nav-item" onclick="jumpToSection('health-wellbeing','sec-health')">🌿 Health &amp; Wellbeing</a>
-    <a class="nav-item" onclick="jumpToSection('local-services','sec-local')">📚 Local Services</a>
-  </nav>
+  <div class="section-bar">
+    <a href="#" onclick="jumpToSection('gov-services','sec-govt');return false;">🏛️ Government Services</a>
+    <a href="#" onclick="jumpToSection('using-gov','sec-using');return false;">🖥️ Using Gov Services</a>
+    <a href="#" onclick="jumpToSection('retirement','sec-ret');return false;">🏘️ Retirement Village Info</a>
+    <a href="#" onclick="jumpToSection('safety','sec-safety');return false;">🛡️ Safety</a>
+    <a href="#" onclick="jumpToSection('health','sec-health');return false;">🌿 Health &amp; Wellbeing</a>
+    <a href="#" onclick="jumpToSection('local','sec-local');return false;">📚 Local Services</a>
+  </div>
 
   <!-- ===== PAGE CONTENT ===== -->
   <div class="page-content">
