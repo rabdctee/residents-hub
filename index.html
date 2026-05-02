@@ -910,6 +910,97 @@ border-bottom:2px solid #000;
 }
 }
 
+
+/* ===== Sidebar layout ===== */
+.hub-wrapper {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  background: white;
+}
+.hub-sidebar {
+  width: 210px;
+  flex-shrink: 0;
+  padding: 14px 10px;
+  border-right: 2px solid #c5d8ee;
+  background: white;
+  align-self: stretch;
+}
+.hub-main {
+  flex: 1;
+  min-width: 0;
+}
+.sb-section {
+  background: white;
+  border: 1px solid #c5d8ee;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.sb-heading {
+  background: #1F4E79;
+  color: #C9A44A;
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 7px 12px;
+}
+.sb-links { list-style: none; }
+.sb-links li a {
+  display: block;
+  padding: 8px 12px;
+  font-size: 0.85em;
+  color: #1F4E79;
+  border-bottom: 1px solid #eef0f3;
+  transition: background 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.sb-links li:last-child a { border-bottom: none; }
+.sb-links li a:hover { background: #E7F1FB; font-weight: 600; }
+.sb-links li a.sb-lock { color: #7a5200; background: #fffdf5; }
+.sb-links li a.sb-lock:hover { background: #fff3cc; }
+.sb-acc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #1F4E79;
+  border-bottom: 1px solid #eef0f3;
+  background: white;
+  transition: background 0.15s;
+  user-select: none;
+}
+.sb-acc-header:hover, .sb-acc-header.open { background: #E7F1FB; }
+.sb-acc-arrow { font-size: 0.6em; color: #aaa; transition: transform 0.2s; margin-left: 4px; }
+.sb-acc-header.open .sb-acc-arrow { transform: rotate(180deg); }
+.sb-acc-body { display: none; }
+.sb-acc-body.open { display: block; }
+.sb-acc-body .sb-links li a { padding-left: 20px; font-size: 0.82em; color: #444; }
+.sb-acc-body .sb-links li a:hover { background: #E7F1FB; color: #1F4E79; font-weight: 600; }
+/* Hub footer — full width below wrapper */
+.hub-footer {
+  background: #f8f9fa;
+  padding: 16px 30px;
+  text-align: center;
+  color: #5f6368;
+  border-top: 1px solid #e0e0e0;
+  font-size: 0.85em;
+  width: 100%;
+}
+@media(max-width:900px){
+  .hub-sidebar { width: 180px; }
+}
+@media(max-width:768px){
+  .hub-wrapper { flex-direction: column; }
+  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee; }
+  .quick-tiles { grid-template-columns: repeat(2,1fr); }
+}
+
 </style>
 </head>
 <body>
@@ -920,43 +1011,59 @@ border-bottom:2px solid #000;
 <h1>Bridgeman Downs Retirement Village<br>Residents' Information Hub</h1>
 </header>
 
-<nav>
-<div class="nav-left">
-<a class="nav-item" onclick="showPage('home',this)">🏠 Home</a>
-<a class="nav-item" onclick="showPage('newsletter',this)">📰 News</a>
-<a class="nav-item" onclick="showPage('events',this)">🎉 Events</a>
-<a class="nav-item" onclick="showPage('activity-contacts',this)">🚶 Activities</a>
-<a class="nav-item" onclick="showPage('contact',this)">📞 Contacts</a>
-</div>
-<button class="menu-btn" onclick="toggleMenu()" id="menuBtn">
-<div class="menu-bars"><div class="menu-bar"></div><div class="menu-bar"></div><div class="menu-bar"></div></div>
-<span id="menuBtnLabel">Menu</span>
-</button>
-</nav>
+<div class="hub-wrapper">
 
-<!-- MENU PANEL -->
-<div class="menu-panel" id="menuPanel">
-  <div class="menu-section">
-    <div class="menu-section-title">Community Pages</div>
-    <div class="menu-items">
-      <a class="menu-item" href="village-map.html">🗺️ Village Map</a>
-      <a class="menu-item" href="concerts.html">🎵 City Hall Concerts</a>
-      <a class="menu-item" href="savings.html">🛒 Best Buys</a>
-      <a class="menu-item" href="useful-links.html">🔗 Useful Links</a>
-      <a class="menu-item" href="how-to.html">💡 Help &amp; How To</a>
-      <a class="menu-item" href="info-sessions.html">🎓 Information Sessions</a>
-      <a class="menu-item" href="memories.html">🕰️ Down Memory Lane</a>
-      <a class="menu-item" href="community-life.html">🌺 Life in Our Community</a>
-      <a class="menu-item" onclick="showPage('about',this);toggleMenu();">📖 About This Website</a>
+<!-- ── LEFT SIDEBAR ── -->
+<aside class="hub-sidebar">
+  <div class="sb-section">
+    <div class="sb-heading" style="line-height:1.4;">
+      Click a <span style="font-size:1.1em;">▼</span> arrow to see what's here
     </div>
+    <ul class="sb-links">
+      <li><a href="#" onclick="showPage('home',this);return false;">🏠 Home</a></li>
+    </ul>
+    <div class="sb-acc-header" onclick="toggleSbAcc('sba-news')">
+      📰 News &amp; Events <span class="sb-acc-arrow">▼</span>
   </div>
-  <div class="menu-section">
-    <div class="menu-section-title">Residents Only</div>
-    <div class="menu-items">
-      <a class="menu-item lock-item" href="community-info.html">🔒 Resident-Only Information &amp; Documents</a>
+    <div class="sb-acc-body" id="sba-news">
+      <ul class="sb-links">
+        <li><a href="#" onclick="showPage('newsletter',this);return false;">📰 Village News</a></li>
+        <li><a href="#" onclick="showPage('events',this);return false;">🎉 Events</a></li>
+        <li><a href="#" onclick="showPage('activity-contacts',this);return false;">🚶 Activities &amp; Contacts</a></li>
+      </ul>
     </div>
+    <div class="sb-acc-header" onclick="toggleSbAcc('sba-community')">
+      🌺 Community <span class="sb-acc-arrow">▼</span>
   </div>
+    <div class="sb-acc-body" id="sba-community">
+      <ul class="sb-links">
+        <li><a href="concerts.html">🎵 City Hall Concerts</a></li>
+        <li><a href="savings.html">🛒 Best Buys</a></li>
+        <li><a href="info-sessions.html">🎓 Information Sessions</a></li>
+        <li><a href="memories.html">🕰️ Down Memory Lane</a></li>
+        <li><a href="community-life.html">🌺 Community Life</a></li>
+        <li><a href="village-map.html">🗺️ Village Map</a></li>
+      </ul>
 </div>
+    <div class="sb-acc-header" onclick="toggleSbAcc('sba-info')">
+      💡 Information <span class="sb-acc-arrow">▼</span>
+    </div>
+    <div class="sb-acc-body" id="sba-info">
+      <ul class="sb-links">
+        <li><a href="useful-links.html">🔗 Useful Links</a></li>
+        <li><a href="how-to.html">❓ Help &amp; How To</a></li>
+        <li><a href="#" onclick="showPage('contact',this);return false;">📞 Contacts</a></li>
+        <li><a href="#" onclick="showPage('about',this);return false;">📖 About This Website</a></li>
+      </ul>
+    </div>
+    <ul class="sb-links">
+      <li><a href="community-info.html" class="sb-lock">🔒 Residents Only</a></li>
+    </ul>
+  </div>
+</aside>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="hub-main">
 
 <!-- SEARCH BOX -->
 <div class="search-container">
@@ -1120,35 +1227,7 @@ setInterval(loadWeather, 1800000);
 </div>
 </div>
 
-<!-- QUICK ACCESS TILES -->
-<div style="margin-top:24px;border-top:1px solid #e8eef5;padding-top:20px;">
-  <div style="font-size:0.78em;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#aaa;text-align:center;margin-bottom:12px;">Quick Access</div>
-  <div class="quick-tiles">
-    <a class="quick-tile lock-tile" href="community-info.html">
-      <span class="quick-tile-icon">🔒</span>
-      <div class="quick-tile-name">Resident-Only Info</div>
-      <div class="quick-tile-sub">Documents &amp; finances</div>
-    </a>
-    <a class="quick-tile" href="useful-links.html">
-      <span class="quick-tile-icon">🔗</span>
-      <div class="quick-tile-name">Useful Links</div>
-      <div class="quick-tile-sub">Government &amp; local services</div>
-    </a>
-    <a class="quick-tile" href="how-to.html">
-      <span class="quick-tile-icon">💡</span>
-      <div class="quick-tile-name">Help &amp; How To</div>
-      <div class="quick-tile-sub">Plain-English tech guides</div>
-    </a>
-    <a class="quick-tile" href="community-life.html">
-      <span class="quick-tile-icon">🌺</span>
-      <div class="quick-tile-name">Life in Our Community</div>
-      <div class="quick-tile-sub">Arts, recipes &amp; stories</div>
-    </a>
-  </div>
-  <div style="text-align:center;margin-top:10px;">
-    <a onclick="showPage('about',this)" style="font-size:14px;color:#999;font-weight:500;text-decoration:none;border-bottom:1px solid #ddd;cursor:pointer;">📖 About this website</a>
-  </div>
-</div>
+
 
 <!-- HAVE A QUESTION — full width below the grid -->
 <div class="ask-section" style="margin-top:10px;">
@@ -1816,6 +1895,97 @@ function parseCSVLine(line) {
 .doc-list a { text-decoration: none; color: #1a6496; }
 .doc-list a:hover { text-decoration: underline; }
 .browse-all { margin-top: 6px; font-size: 0.85em; }
+
+/* ===== Sidebar layout ===== */
+.hub-wrapper {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  background: white;
+}
+.hub-sidebar {
+  width: 210px;
+  flex-shrink: 0;
+  padding: 14px 10px;
+  border-right: 2px solid #c5d8ee;
+  background: white;
+  align-self: stretch;
+}
+.hub-main {
+  flex: 1;
+  min-width: 0;
+}
+.sb-section {
+  background: white;
+  border: 1px solid #c5d8ee;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.sb-heading {
+  background: #1F4E79;
+  color: #C9A44A;
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 7px 12px;
+}
+.sb-links { list-style: none; }
+.sb-links li a {
+  display: block;
+  padding: 8px 12px;
+  font-size: 0.85em;
+  color: #1F4E79;
+  border-bottom: 1px solid #eef0f3;
+  transition: background 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.sb-links li:last-child a { border-bottom: none; }
+.sb-links li a:hover { background: #E7F1FB; font-weight: 600; }
+.sb-links li a.sb-lock { color: #7a5200; background: #fffdf5; }
+.sb-links li a.sb-lock:hover { background: #fff3cc; }
+.sb-acc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #1F4E79;
+  border-bottom: 1px solid #eef0f3;
+  background: white;
+  transition: background 0.15s;
+  user-select: none;
+}
+.sb-acc-header:hover, .sb-acc-header.open { background: #E7F1FB; }
+.sb-acc-arrow { font-size: 0.6em; color: #aaa; transition: transform 0.2s; margin-left: 4px; }
+.sb-acc-header.open .sb-acc-arrow { transform: rotate(180deg); }
+.sb-acc-body { display: none; }
+.sb-acc-body.open { display: block; }
+.sb-acc-body .sb-links li a { padding-left: 20px; font-size: 0.82em; color: #444; }
+.sb-acc-body .sb-links li a:hover { background: #E7F1FB; color: #1F4E79; font-weight: 600; }
+/* Hub footer — full width below wrapper */
+.hub-footer {
+  background: #f8f9fa;
+  padding: 16px 30px;
+  text-align: center;
+  color: #5f6368;
+  border-top: 1px solid #e0e0e0;
+  font-size: 0.85em;
+  width: 100%;
+}
+@media(max-width:900px){
+  .hub-sidebar { width: 180px; }
+}
+@media(max-width:768px){
+  .hub-wrapper { flex-direction: column; }
+  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee; }
+  .quick-tiles { grid-template-columns: repeat(2,1fr); }
+}
+
 </style>
 
 <div id="ci-finances"></div>
@@ -2040,6 +2210,97 @@ Advocacy, advice and support for retirement village residents in Queensland
   background:#E7F1FB; border-radius:6px;
   padding:9px 12px; font-size:0.82em; color:#1F4E79; margin-top:10px;
 }
+
+/* ===== Sidebar layout ===== */
+.hub-wrapper {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  background: white;
+}
+.hub-sidebar {
+  width: 210px;
+  flex-shrink: 0;
+  padding: 14px 10px;
+  border-right: 2px solid #c5d8ee;
+  background: white;
+  align-self: stretch;
+}
+.hub-main {
+  flex: 1;
+  min-width: 0;
+}
+.sb-section {
+  background: white;
+  border: 1px solid #c5d8ee;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.sb-heading {
+  background: #1F4E79;
+  color: #C9A44A;
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 7px 12px;
+}
+.sb-links { list-style: none; }
+.sb-links li a {
+  display: block;
+  padding: 8px 12px;
+  font-size: 0.85em;
+  color: #1F4E79;
+  border-bottom: 1px solid #eef0f3;
+  transition: background 0.15s;
+  cursor: pointer;
+  text-decoration: none;
+}
+.sb-links li:last-child a { border-bottom: none; }
+.sb-links li a:hover { background: #E7F1FB; font-weight: 600; }
+.sb-links li a.sb-lock { color: #7a5200; background: #fffdf5; }
+.sb-links li a.sb-lock:hover { background: #fff3cc; }
+.sb-acc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #1F4E79;
+  border-bottom: 1px solid #eef0f3;
+  background: white;
+  transition: background 0.15s;
+  user-select: none;
+}
+.sb-acc-header:hover, .sb-acc-header.open { background: #E7F1FB; }
+.sb-acc-arrow { font-size: 0.6em; color: #aaa; transition: transform 0.2s; margin-left: 4px; }
+.sb-acc-header.open .sb-acc-arrow { transform: rotate(180deg); }
+.sb-acc-body { display: none; }
+.sb-acc-body.open { display: block; }
+.sb-acc-body .sb-links li a { padding-left: 20px; font-size: 0.82em; color: #444; }
+.sb-acc-body .sb-links li a:hover { background: #E7F1FB; color: #1F4E79; font-weight: 600; }
+/* Hub footer — full width below wrapper */
+.hub-footer {
+  background: #f8f9fa;
+  padding: 16px 30px;
+  text-align: center;
+  color: #5f6368;
+  border-top: 1px solid #e0e0e0;
+  font-size: 0.85em;
+  width: 100%;
+}
+@media(max-width:900px){
+  .hub-sidebar { width: 180px; }
+}
+@media(max-width:768px){
+  .hub-wrapper { flex-direction: column; }
+  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee; }
+  .quick-tiles { grid-template-columns: repeat(2,1fr); }
+}
+
 </style>
 
 <!-- ── RESIDENTS COMMITTEE ── -->
@@ -2303,13 +2564,16 @@ The feedback button stays visible as you scroll down the page, making it easy to
 </div>
 
 <!-- FOOTER -->
-<div style="background:#f8f9fa;padding:20px 30px;text-align:center;color:#5f6368;border-top:1px solid #e0e0e0;font-size:0.9em;">
-Bridgeman Downs Retirement Village Residents' Information Hub<br>
-© 2026 | Some information is for residents' use only<br>
-Contact: Contact: rabd.ctee@gmail.com | Emergency: 000
+</div><!-- end hub-main -->
+</div><!-- end hub-wrapper -->
+
+<div class="hub-footer">
+  Bridgeman Downs Retirement Village Residents' Information Hub &nbsp;|&nbsp;
+  © 2026 | Some information is for residents' use only &nbsp;|&nbsp;
+  Contact: rabd.ctee@gmail.com | Emergency: 000
 </div>
 
-</div>
+</div><!-- end container -->
 
 <!-- JavaScript -->
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
@@ -2836,6 +3100,20 @@ function displayQuoteOfDay() {
     document.getElementById('quote-display').innerHTML = '"' + quote.text + '"';
     document.getElementById('quote-author').innerHTML = '— ' + quote.author;
 }
+
+// ── SIDEBAR ACCORDION ─────────────────────────────────────────────────
+function toggleSbAcc(id) {
+  var body   = document.getElementById(id);
+  var header = body.previousElementSibling;
+  var isOpen = body.classList.contains('open');
+  document.querySelectorAll('.sb-acc-body').forEach(function(b){ b.classList.remove('open'); });
+  document.querySelectorAll('.sb-acc-header').forEach(function(h){ h.classList.remove('open'); });
+  if (!isOpen) {
+    body.classList.add('open');
+    header.classList.add('open');
+  }
+}
+
 
 // ============================================
 // HAVE A QUESTION — HOME PAGE FORM
