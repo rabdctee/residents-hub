@@ -367,10 +367,6 @@
     </div>
 
     <!-- Replace this notice with real session cards as sessions are scheduled -->
-    <div class="session-card upcoming" id="session-arqrv-april">
-      <span class="session-tag tag-upcoming">Upcoming — Free Webinar</span>
-      <span class="session-tag tag-webinar" style="margin-left:6px;">Online via Zoom</span>
-      <div class="session-date">Wednesday 29 April 2026 · 10:00am – 11:30am</div>
       <div class="session-title">Residents Committee Best Practice in Queensland Retirement Villages</div>
       <div class="session-meta">
         <span>🏛️ Hosted by ARQRV</span>
@@ -411,8 +407,12 @@
       <div class="section-divider-line"></div>
     </div>
 
-    <!-- Replace this notice with real past session cards as sessions are completed -->
-    <div class="no-sessions">
+        <div class="session-card past" id="session-arqrv-april">
+      <span class="session-tag tag-past">Past Session</span>
+      <span class="session-tag tag-webinar" style="margin-left:6px;">Online via Zoom</span>
+      <div class="session-date">Wednesday 29 April 2026 · 10:00am – 11:30am</div>
+
+    <div class="no-sessions" style="display:none;">
       <strong>No past sessions yet</strong>
       Recordings, notes and summaries from completed sessions will appear here.
     </div>
@@ -680,79 +680,8 @@
 <script>
 
   // ── AUTO-SORT SESSIONS BY DATE ─────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', function() {
-    // Small delay to ensure sidebar.js has finished wrapping the DOM
-    setTimeout(function() {
-
-      var today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      var months = {January:0,February:1,March:2,April:3,May:4,June:5,
-                    July:6,August:7,September:8,October:9,November:10,December:11};
-
-      var upcomingDivider = document.getElementById('upcoming');
-      var pastDivider     = document.getElementById('past');
-      var plannedDivider  = document.getElementById('planned');
-
-      if (!upcomingDivider || !pastDivider) return;
-
-      // Get all upcoming cards
-      var cards = Array.from(document.querySelectorAll('.session-card.upcoming'));
-
-      cards.forEach(function(card) {
-        var dateEl = card.querySelector('.session-date');
-        if (!dateEl) return;
-
-        var dateText = dateEl.textContent.trim();
-        var match    = dateText.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
-        if (!match) return;
-
-        var sessionDate = new Date(
-          parseInt(match[3]),
-          months[match[2]],
-          parseInt(match[1])
-        );
-
-        if (sessionDate < today) {
-          // Update card styling
-          card.classList.remove('upcoming');
-          card.classList.add('past');
-
-          // Update tag text and style
-          var upTag = card.querySelector('.session-tag.tag-upcoming');
-          if (upTag) {
-            upTag.classList.remove('tag-upcoming');
-            upTag.classList.add('tag-past');
-            upTag.textContent = 'Past Session';
-          }
-
-          // Hide "no past sessions" notice if present
-          var noSessions = document.querySelector('.no-sessions');
-          if (noSessions) noSessions.style.display = 'none';
-
-          // Insert card immediately after the past divider
-          // pastDivider.nextSibling puts it right after the divider line
-          if (plannedDivider) {
-            pastDivider.parentNode.insertBefore(card, plannedDivider);
-          } else {
-            pastDivider.parentNode.appendChild(card);
-          }
-        }
-      });
-
-      // Show "no upcoming sessions" notice if none remain
-      var remaining = document.querySelectorAll('.session-card.upcoming');
-      if (remaining.length === 0) {
-        var notice = document.createElement('div');
-        notice.className = 'no-sessions';
-        notice.innerHTML = '<strong>No upcoming sessions at this time.</strong> Check back soon — new sessions will appear here when scheduled.';
-        if (plannedDivider) {
-          upcomingDivider.parentNode.insertBefore(notice, plannedDivider);
-        }
-      }
-
-    }, 300); // 300ms delay ensures sidebar.js DOM wrapping is complete
-  });;
+  // Session dates are set directly in HTML. Future sessions added via the
+  // Add Session form check dates automatically via the renderSession() function.
 
   // ── ADD SESSION ────────────────────────────────────────────────────────────
   var localSessions = JSON.parse(localStorage.getItem('bdrc_sessions_v1') || '[]');
