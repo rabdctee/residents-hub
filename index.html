@@ -3318,6 +3318,12 @@ function displayEvents(events) {
 
 // Load content when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Handle ?page= parameter from sidebar links on other pages
+    var urlParams = new URLSearchParams(window.location.search);
+    var targetPage = urlParams.get('page');
+    if (targetPage && typeof showPage === 'function') {
+        showPage(targetPage);
+    }
     loadAnnouncements();
     loadEvents();
     loadFinancialDropdowns();
