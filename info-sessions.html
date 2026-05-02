@@ -680,9 +680,9 @@
 <script>
 
   // ── AUTO-SORT SESSIONS BY DATE ─────────────────────────────────────────────
-  // Runs on page load. Any upcoming session whose date has passed
+  // Runs after DOM is ready. Any upcoming session whose date has passed
   // is automatically moved to the Past Sessions section.
-  (function autoSortSessions() {
+  document.addEventListener('DOMContentLoaded', function autoSortSessions() {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -750,7 +750,7 @@
       var plannedDivider = document.getElementById('planned');
       upcomingSection.parentNode.insertBefore(notice, plannedDivider);
     }
-  })();
+  });
 
   // ── ADD SESSION ────────────────────────────────────────────────────────────
   var localSessions = JSON.parse(localStorage.getItem('bdrc_sessions_v1') || '[]');
