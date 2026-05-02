@@ -46,7 +46,7 @@
     }
 
     .header-subtitle {
-      font-size: 0.88rem;
+      font-size: 0.75rem;
       color: #c5d8ee;
       margin-top: 2px;
     }
@@ -57,7 +57,7 @@
     }
 
     .header-right {
-      font-size: 0.92rem;
+      font-size: 0.8rem;
       color: #c5d8ee;
       text-align: right;
     }
@@ -67,7 +67,7 @@
       background: #E7F1FB;
       border-bottom: 1px solid #c5d8ee;
       padding: 8px 20px;
-      font-size: 0.92rem;
+      font-size: 0.8rem;
       color: #555;
     }
 
@@ -81,103 +81,7 @@
     .breadcrumb-bar span { margin: 0 5px; color: #999; }
 
     /* ── Layout ── */
-    .page-wrapper {
-      display: flex;
-      flex: 1;
-      max-width: 1100px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 20px 16px;
-      gap: 24px;
-      align-items: flex-start;
-    }
-
-    /* ── Sidebar ── */
-    .sidebar {
-      width: 210px;
-      flex-shrink: 0;
-    }
-
-    .sidebar-section {
-      background: #fff;
-      border: 1px solid #d8dfe8;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-
-    .sidebar-heading {
-      background: #1F4E79;
-      color: #C9A44A;
-      font-size: 0.78rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      padding: 10px 14px;
-    }
-
-    .sidebar-links {
-      list-style: none;
-    }
-
-    .sidebar-links li a {
-      display: block;
-      padding: 10px 14px;
-      font-size: 0.95rem;
-      color: #1F4E79;
-      border-bottom: 1px solid #eef0f3;
-      transition: background 0.15s;
-    }
-
-    .sidebar-links li a:hover,
-    .sidebar-links li a.active {
-      background: #E7F1FB;
-      color: #C9A44A;
-      font-weight: 600;
-    }
-
-    .sidebar-links li:last-child a {
-      border-bottom: none;
-    }
-
-    /* Concert highlight box in sidebar */
-    .sidebar-concert-box {
-      background: linear-gradient(135deg, #1F4E79 0%, #1a3f66 100%);
-      border-radius: 6px;
-      padding: 14px 12px;
-      margin-bottom: 16px;
-      border-left: 4px solid #C9A44A;
-    }
-
-    .sidebar-concert-box .scb-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: #C9A44A;
-      margin-bottom: 5px;
-    }
-
-    .sidebar-concert-box .scb-title {
-      font-size: 0.95rem;
-      color: #fff;
-      line-height: 1.35;
-      margin-bottom: 6px;
-    }
-
-    .sidebar-concert-box .scb-dates {
-      font-size: 0.88rem;
-      color: #c5d8ee;
-    }
-
-    .sidebar-concert-box .scb-dates li {
-      list-style: none;
-      padding: 2px 0;
-    }
-
-    .sidebar-concert-box .scb-dates li::before {
-      content: "🎵 ";
-    }
+    .page-wrapper { max-width: 100%; padding: 20px 22px; }
 
     /* ── Main content ── */
     main {
@@ -207,7 +111,7 @@
     }
 
     .page-banner h1 {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       color: #fff;
       font-weight: 700;
       margin-bottom: 4px;
@@ -215,7 +119,7 @@
 
     .page-banner .banner-sub {
       color: #C9A44A;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 600;
     }
 
@@ -227,7 +131,7 @@
       border-radius: 6px;
       padding: 12px 16px;
       margin-bottom: 20px;
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       color: #5a4a00;
       line-height: 1.5;
     }
@@ -269,7 +173,7 @@
     }
 
     .concert-date-badge .badge-month {
-      font-size: 0.75rem;
+      font-size: 0.65rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -336,157 +240,44 @@
       background: #1F4E79;
       color: #c5d8ee;
       text-align: center;
-      font-size: 0.88rem;
+      font-size: 0.75rem;
       padding: 14px 20px;
       margin-top: auto;
     }
 
     footer a { color: #C9A44A; text-decoration: underline; }
 
-
-    /* ── Accordion sidebar nav ── */
-    .acc-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 14px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      color: #1F4E79;
-      border-bottom: 1px solid #eef0f3;
-      background: white;
-      transition: background 0.15s;
-      font-weight: 600;
-      user-select: none;
-    }
-    .acc-header:hover { background: #E7F1FB; }
-    .acc-header.open { background: #E7F1FB; color: #1F4E79; }
-    .acc-arrow { font-size: 0.7rem; color: #aaa; transition: transform 0.2s; }
-    .acc-header.open .acc-arrow { transform: rotate(180deg); }
-    .acc-body { display: none; }
-    .acc-body.open { display: block; }
-    .acc-body .sidebar-links li a {
-      padding-left: 22px;
-      font-size: 0.9rem;
-      color: #444;
-    }
-    .acc-body .sidebar-links li a:hover,
-    .acc-body .sidebar-links li a.active {
-      background: #E7F1FB;
-      color: #1F4E79;
-      font-weight: 600;
-    }
-
     /* ── Responsive ── */
     @media (max-width: 680px) {
-      .page-wrapper { flex-direction: column; }
+      .page-wrapper { max-width: 100%; padding: 20px 22px; }
       .sidebar { width: 100%; }
       .page-banner::after { display: none; }
     }
   </style>
 </head>
 <body>
+<script src="sidebar.js"></script>
 
 <!-- ══════════════ HEADER ══════════════ -->
-<header>
-  <div class="header-logo-area">
-    <div class="header-title">Bridgeman Downs <span>Residents' Hub</span></div>
-    <div class="header-subtitle">Aveo Retirement Village — Community Information</div>
-  </div>
-  <div class="header-right">Community Portal</div>
+<header style="background:#1F4E79;color:white;padding:30px 20px;text-align:center;">
+  <h1 style="font-size:2em;font-weight:700;">Bridgeman Downs Retirement Village</h1>
+  <p style="margin-top:8px;font-size:0.95em;opacity:0.88;">Residents' Information Hub</p>
+  <p style="margin-top:14px;font-size:1.1em;font-weight:600;">
+    <span style="display:inline-block;background:rgba(255,255,255,0.18);border-radius:6px;padding:6px 22px;">🎵 City Hall Concerts</span>
+  </p>
 </header>
 
 <!-- ══════════════ BREADCRUMB ══════════════ -->
-<div class="breadcrumb-bar">
-  <a href="index.html">🏠 Home</a>
-  <span>›</span>
-  <strong>City Hall Concerts</strong>
+<div class="breadcrumbs" style="padding:12px 25px;background:#E7F1FB;font-size:16px;border-bottom:2px solid #c5d8ee;display:flex;align-items:center;flex-wrap:wrap;gap:4px;">
+  <a href="index.html" style="color:#1F4E79;text-decoration:none;font-weight:700;background:white;border:1px solid #c5d8ee;border-radius:6px;padding:5px 12px;font-size:15px;">🏠 Home</a>
+  <span style="color:#aaa;font-size:14px;">›</span>
+  <strong style="color:#444;font-weight:600;font-size:15px;">City Hall Concerts</strong>
 </div>
 
 <!-- ══════════════ PAGE WRAPPER ══════════════ -->
-<div class="page-wrapper">
+<div class="container"><div class="page-wrapper">
 
-  <!-- ── SIDEBAR ── -->
-  <aside class="sidebar">
 
-    <!-- Quick nav highlight for this month's concerts -->
-    <div class="sidebar-concert-box">
-      <div class="scb-label">May 2026 Concerts</div>
-      <div class="scb-title">Lord Mayor's City Hall Concert Series</div>
-      <ul class="scb-dates">
-        <li>Tue 5 May — Que Sera</li>
-        <li>Tue 12 May — Rock 'n' Roll Tribute</li>
-        <li>Tue 19 May — Riverside Guitar</li>
-        <li>Tue 26 May — Beethoven Sonatas</li>
-      </ul>
-    </div>
-
-    <!-- Accordion navigation -->
-    <div class="sidebar-section">
-      <div class="sidebar-heading" style="line-height:1.4;">
-        Click a <span style="font-size:1.1em;">▼</span> arrow to see what's here
-      </div>
-
-      <!-- Always visible: Home -->
-      <ul class="sidebar-links">
-        <li><a href="index.html">🏠 Home</a></li>
-      </ul>
-
-      <!-- News & Events accordion -->
-      <div class="acc-header" onclick="toggleAcc('acc-news')">
-        📰 News &amp; Events <span class="acc-arrow">▼</span>
-      </div>
-      <div class="acc-body" id="acc-news">
-        <ul class="sidebar-links">
-          <li><a href="news.html">📰 Village News</a></li>
-          <li><a href="activities.html">🎯 Activities</a></li>
-        </ul>
-      </div>
-
-      <!-- Community accordion -->
-      <div class="acc-header" onclick="toggleAcc('acc-community')">
-        🌺 Community <span class="acc-arrow">▼</span>
-      </div>
-      <div class="acc-body" id="acc-community">
-        <ul class="sidebar-links">
-          <li><a href="concerts.html" class="active">🎵 City Hall Concerts</a></li>
-          <li><a href="savings.html">🛒 Best Buys</a></li>
-          <li><a href="info-sessions.html">🎓 Information Sessions</a></li>
-          <li><a href="memories.html">🕰️ Down Memory Lane</a></li>
-          <li><a href="community-life.html">🌺 Community Life</a></li>
-          <li><a href="village-map.html">🗺️ Village Map</a></li>
-        </ul>
-      </div>
-
-      <!-- Information accordion -->
-      <div class="acc-header" onclick="toggleAcc('acc-info')">
-        💡 Information <span class="acc-arrow">▼</span>
-      </div>
-      <div class="acc-body" id="acc-info">
-        <ul class="sidebar-links">
-          <li><a href="useful-links.html">🔗 Useful Links</a></li>
-          <li><a href="how-to.html">❓ Help &amp; How To</a></li>
-          <li><a href="documents.html">📄 Documents</a></li>
-          <li><a href="contacts.html">📞 Contacts</a></li>
-        </ul>
-      </div>
-
-      <!-- Residents Only -->
-      <ul class="sidebar-links">
-        <li><a href="community-info.html" style="color:#7a5200;background:#fffdf5;">🔒 Residents Only</a></li>
-      </ul>
-
-    </div>
-
-    <!-- About these concerts -->
-    <div class="sidebar-section">
-      <div class="sidebar-heading">About</div>
-      <ul class="sidebar-links">
-        <li><a href="https://www.brisbane.qld.gov.au/community-and-safety/community-support/city-hall-concerts" target="_blank">BCC Concerts Website ↗</a></li>
-      </ul>
-    </div>
-
-  </aside>
 
   <!-- ── MAIN CONTENT ── -->
   <main>
@@ -644,32 +435,13 @@
   </main>
 </div>
 
+</div><!-- end container -->
+
 <!-- ══════════════ FOOTER ══════════════ -->
 <footer>
   Bridgeman Downs Residents' Hub &nbsp;|&nbsp; Managed by the Residents Committee &nbsp;|&nbsp;
   Concert information sourced from <a href="https://www.brisbane.qld.gov.au" target="_blank">Brisbane City Council</a>
 </footer>
 
-
-<script>
-function toggleAcc(id) {
-  var body   = document.getElementById(id);
-  var header = body.previousElementSibling;
-  var isOpen = body.classList.contains('open');
-  body.classList.toggle('open', !isOpen);
-  header.classList.toggle('open', !isOpen);
-}
-// Auto-open the accordion that contains the active link
-document.addEventListener('DOMContentLoaded', function() {
-  var active = document.querySelector('.acc-body .active');
-  if (active) {
-    var body = active.closest('.acc-body');
-    if (body) {
-      body.classList.add('open');
-      body.previousElementSibling.classList.add('open');
-    }
-  }
-});
-</script>
 </body>
 </html>

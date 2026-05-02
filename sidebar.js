@@ -83,7 +83,8 @@
     }
     .sb-links li:last-child a { border-bottom: none; }
     .sb-links li a:hover    { background: #E7F1FB; font-weight: 600; }
-    .sb-links li a.sb-active { background: #E7F1FB; font-weight: 700; color: #1F4E79; }
+    .sb-links li a.sb-active { background: #ddeef8; font-weight: 700; color: #1F4E79; border-left: 3px solid #1F4E79; padding-left: 9px; }
+    .sb-links li a.sb-active:hover { background: #c5d8ee; }
     .sb-links li a.sb-lock  { color: #7a5200; background: #fffdf5; }
     .sb-links li a.sb-lock:hover { background: #fff3cc; }
 
@@ -303,23 +304,31 @@
 
     // Find the container that holds the page content
     // Most Hub pages use .container or .page-wrapper or direct body children
-    var container = document.querySelector('.container') ||
-                    document.querySelector('.page-wrapper');
+    // Find the main page container
+    var container = document.querySelector('.container');
+    
+    // If page-wrapper is inside container, use container
+    // If page-wrapper is standalone, use it
+    if (!container) {
+      container = document.querySelector('.page-wrapper');
+    }
 
     if (container) {
-      // Insert wrapper before the container
+      // Insert hub-wrapper before the container, move container inside hub-main
       container.parentNode.insertBefore(wrapper, container);
       wrapper.appendChild(aside);
       wrapper.appendChild(mainDiv);
       mainDiv.appendChild(container);
     } else {
-      // Fallback: wrap all body children
-      var children = Array.from(body.childNodes);
+      // Fallback: wrap all direct body children except scripts
+      var children = Array.from(body.childNodes).filter(function(n) {
+        return !(n.nodeName === 'SCRIPT');
+      });
       body.appendChild(wrapper);
       wrapper.appendChild(aside);
       wrapper.appendChild(mainDiv);
       children.forEach(function (child) {
-        if (child !== wrapper) mainDiv.appendChild(child);
+        mainDiv.appendChild(child);
       });
     }
   });
