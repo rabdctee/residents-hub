@@ -36,7 +36,7 @@
       background: white;
     }
     .hub-sidebar {
-      width: 210px;
+      width: 230px;
       flex-shrink: 0;
       padding: 14px 10px;
       border-right: 2px solid #c5d8ee;
@@ -59,10 +59,10 @@
     .sb-heading {
       background: #1F4E79;
       color: #C9A44A;
-      font-size: 0.72em;
+      font-size: 0.68em;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.4px;
       padding: 9px 12px;
       line-height: 1.5;
     }
@@ -71,12 +71,15 @@
     .sb-links { list-style: none; }
     .sb-links li a {
       display: block;
-      padding: 9px 12px;
-      font-size: 0.88em;
+      padding: 8px 12px;
+      font-size: 0.82em;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
       transition: background 0.15s;
       text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .sb-links li:last-child a { border-bottom: none; }
     .sb-links li a:hover    { background: #E7F1FB; font-weight: 600; }
@@ -89,18 +92,20 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 9px 12px;
+      padding: 8px 12px;
       cursor: pointer;
-      font-size: 0.88em;
-      font-weight: 600;
+      font-size: 0.82em;
+      font-weight: 700;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
       background: white;
       transition: background 0.15s;
       user-select: none;
+      white-space: nowrap;
     }
     .sb-acc-header:hover,
     .sb-acc-header.open { background: #E7F1FB; }
+    .sb-acc-header.open { border-left: 3px solid #1F4E79; padding-left: 9px; }
     .sb-acc-arrow {
       font-size: 0.6em;
       color: #aaa;
@@ -112,21 +117,29 @@
 
     /* Accordion bodies */
     .sb-acc-body { display: none; }
-    .sb-acc-body.open { display: block; }
-    .sb-acc-body .sb-links li a {
-      padding-left: 20px;
-      font-size: 0.84em;
-      color: #444;
+    .sb-acc-body.open {
+      display: block;
+      background: #f8fafc;
+      border-bottom: 1px solid #c5d8ee;
     }
+    .sb-acc-body .sb-links li a {
+      padding-left: 22px;
+      font-size: 0.82em;
+      color: #444;
+      border-bottom: 1px solid #eef0f3;
+    }
+    .sb-acc-body .sb-links li:last-child a { border-bottom: none; }
     .sb-acc-body .sb-links li a:hover {
       background: #E7F1FB;
       color: #1F4E79;
       font-weight: 600;
     }
     .sb-acc-body .sb-links li a.sb-active {
-      background: #E7F1FB;
+      background: #ddeef8;
       color: #1F4E79;
       font-weight: 700;
+      border-left: 3px solid #1F4E79;
+      padding-left: 19px;
     }
 
     /* Hub footer */
