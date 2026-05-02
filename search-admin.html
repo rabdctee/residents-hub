@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Search Manager | Bridgeman Downs Residents' Hub</title>
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:16px;
+      color:#222;
+    }
+    .container{ max-width:1100px; margin:auto; background:white; box-shadow:0 2px 10px rgba(0,0,0,0.1); min-height:100vh; }
+
+    header{
+      background:#1F4E79;
+      color:white;
+      padding:22px 28px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    header h1{ font-size:1.4em; }
+    header p { font-size:0.82em; opacity:0.8; margin-top:3px; }
+    .back-link{ color:white; text-decoration:none; font-size:0.85em; opacity:0.8; }
+    .back-link:hover{ opacity:1; text-decoration:underline; }
+
+    .config-bar{
+      background:#fff9e6;
+      border-bottom:2px solid #e8d5a3;
+      padding:14px 28px;
+      font-size:0.85em;
+      color:#5a3e00;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .config-bar strong{ color:#7a5200; }
+    .config-bar input{
+      flex:1;
+      min-width:300px;
+      border:1px solid #e8d5a3;
+      border-radius:5px;
+      padding:7px 12px;
+      font-size:0.95em;
+      font-family:inherit;
+      background:white;
+    }
+    .config-bar input:focus{ outline:none; border-color:#C9A44A; }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:8px 16px;
+      background:#1F4E79;
+      color:white;
+      border:none;
+      border-radius:5px;
+      font-size:0.88em;
+      font-weight:600;
+      font-family:inherit;
+      cursor:pointer;
+      transition:background 0.2s;
+    }
+    .btn:hover{ background:#163d60; }
+    .btn-sm{ padding:5px 11px; font-size:0.82em; }
+    .btn-gold{ background:#C9A44A; }
+    .btn-gold:hover{ background:#a97a2e; }
+    .btn-danger{ background:#d32f2f; }
+    .btn-danger:hover{ background:#b71c1c; }
+    .btn-outline{ background:white; color:#1F4E79; border:2px solid #1F4E79; }
+    .btn-outline:hover{ background:#E7F1FB; }
+
+    .tabs{
+      display:flex;
+      border-bottom:2px solid #c5d8ee;
+      background:#E7F1FB;
+    }
+    .tab{
+      padding:12px 24px;
+      font-weight:700;
+      font-size:0.9em;
+      color:#1F4E79;
+      cursor:pointer;
+      border-bottom:3px solid transparent;
+      transition:all 0.15s;
+      user-select:none;
+    }
+    .tab:hover{ background:#d0e6f7; }
+    .tab.active{ border-bottom-color:#1F4E79; background:white; }
+
+    .tab-panel{ display:none; padding:24px 28px; }
+    .tab-panel.active{ display:block; }
+
+    .section-title{
+      font-size:1.05em;
+      font-weight:700;
+      color:#1F4E79;
+      border-bottom:2px solid #c5d8ee;
+      padding-bottom:8px;
+      margin-bottom:16px;
+    }
+
+    /* ── Add mapping form ── */
+    .add-form{
+      background:#f8f9fa;
+      border:1px solid #e0e0e0;
+      border-radius:8px;
+      padding:18px 20px;
+      margin-bottom:24px;
+    }
+    .form-grid{
+      display:grid;
+      grid-template-columns:2fr 1fr 1fr 2fr auto;
+      gap:10px;
+      align-items:end;
+    }
+    .form-group{ display:flex; flex-direction:column; gap:4px; }
+    .form-group label{ font-size:0.78em; font-weight:700; color:#555; }
+    .form-group input, .form-group select{
+      border:1.5px solid #e0e0e0;
+      border-radius:5px;
+      padding:8px 10px;
+      font-size:0.88em;
+      font-family:inherit;
+      background:white;
+    }
+    .form-group input:focus, .form-group select:focus{
+      outline:none;
+      border-color:#1F4E79;
+    }
+
+    /* ── Index table ── */
+    .index-table{ width:100%; border-collapse:collapse; font-size:0.88em; }
+    .index-table thead{ background:#1F4E79; color:white; }
+    .index-table th{ padding:10px 12px; text-align:left; font-size:0.82em; text-transform:uppercase; letter-spacing:0.04em; }
+    .index-table tbody tr{ border-bottom:1px solid #e0e0e0; transition:background 0.15s; }
+    .index-table tbody tr:nth-child(even){ background:#f9f9f9; }
+    .index-table tbody tr:hover{ background:#E3F2FD; }
+    .index-table td{ padding:9px 12px; vertical-align:middle; }
+    .index-table tr.inactive td{ opacity:0.45; }
+    .keyword-cell{ font-weight:700; color:#1F4E79; }
+    .page-cell{ font-size:0.85em; color:#555; }
+    .badge-active  { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:4px; padding:2px 8px; font-size:0.78em; font-weight:700; }
+    .badge-inactive{ background:#f5f5f5; color:#999; border:1px solid #ddd; border-radius:4px; padding:2px 8px; font-size:0.78em; font-weight:700; }
+
+    /* ── Log table ── */
+    .log-table{ width:100%; border-collapse:collapse; font-size:0.88em; }
+    .log-table thead{ background:#1F4E79; color:white; }
+    .log-table th{ padding:10px 12px; text-align:left; font-size:0.82em; text-transform:uppercase; }
+    .log-table tbody tr{ border-bottom:1px solid #e0e0e0; }
+    .log-table tbody tr:nth-child(even){ background:#f9f9f9; }
+    .log-table td{ padding:8px 12px; }
+    .no-results{ color:#999; font-size:0.85em; padding:2px 8px; border-radius:4px; background:#fff3e0; border:1px solid #ffe0b2; }
+    .has-results{ color:#2e7d32; font-size:0.85em; font-weight:700; }
+
+    /* ── Stats ── */
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(160px,1fr));
+      gap:12px;
+      margin-bottom:24px;
+    }
+    .stat-card{
+      background:#f8f9fa;
+      border:1px solid #e0e0e0;
+      border-radius:8px;
+      padding:16px;
+      text-align:center;
+    }
+    .stat-card .stat-num{ font-size:2em; font-weight:700; color:#1F4E79; }
+    .stat-card .stat-label{ font-size:0.78em; color:#666; margin-top:4px; }
+
+    /* ── Top terms ── */
+    .top-terms{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+    .term-pill{
+      background:#E7F1FB;
+      border:1px solid #c5d8ee;
+      border-radius:20px;
+      padding:4px 14px;
+      font-size:0.82em;
+      font-weight:600;
+      color:#1F4E79;
+      cursor:pointer;
+      transition:all 0.15s;
+    }
+    .term-pill:hover{ background:#1F4E79; color:white; }
+    .term-pill .count{
+      background:#1F4E79;
+      color:white;
+      border-radius:10px;
+      padding:1px 7px;
+      font-size:0.78em;
+      margin-left:5px;
+    }
+    .term-pill:hover .count{ background:white; color:#1F4E79; }
+    .term-pill.no-match{ border-color:#ffcc80; background:#fff3e0; }
+    .term-pill.no-match .count{ background:#e65100; }
+
+    /* ── Toast ── */
+    #toast{
+      position:fixed;
+      bottom:24px;
+      left:50%;
+      transform:translateX(-50%) translateY(80px);
+      background:#1F4E79;
+      color:white;
+      padding:10px 24px;
+      border-radius:5px;
+      font-weight:700;
+      font-size:0.9em;
+      box-shadow:0 4px 16px rgba(0,0,0,0.22);
+      z-index:9999;
+      transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+      opacity:0;
+      pointer-events:none;
+    }
+    #toast.show{ transform:translateX(-50%) translateY(0); opacity:1; }
+
+    .loading{ color:#aaa; font-style:italic; padding:20px; text-align:center; }
+
+    @media(max-width:768px){
+      .form-grid{ grid-template-columns:1fr 1fr; }
+      .form-grid .btn{ grid-column:span 2; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div>
+      <h1>🔍 Search Manager</h1>
+      <p>Bridgeman Downs Residents' Hub — Admin Tool</p>
+    </div>
+    <a class="back-link" href="index.html">← Back to Hub</a>
+  </header>
+
+  <!-- CONFIG BAR -->
+  <div class="config-bar">
+    <strong>⚙️ Apps Script URL:</strong>
+    <input type="text" id="scriptUrl" placeholder="Paste your SearchLogger Apps Script URL here…"
+           oninput="saveConfig()" />
+    <button class="btn btn-gold btn-sm" onclick="loadAll()">🔄 Load Data</button>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('tab-index')">📋 Search Index</div>
+    <div class="tab" onclick="switchTab('tab-log')">📊 Search Log</div>
+    <div class="tab" onclick="switchTab('tab-stats')">📈 Statistics</div>
+  </div>
+
+  <!-- ── TAB: SEARCH INDEX ── -->
+  <div class="tab-panel active" id="tab-index">
+
+    <div class="section-title">Add a New Search Mapping</div>
+    <div class="add-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Search term / keyword *</label>
+          <input type="text" id="new-keyword" placeholder="e.g. dining menu, pool, Candice"/>
+        </div>
+        <div class="form-group">
+          <label>Page *</label>
+          <select id="new-page">
+            <option value="">— select —</option>
+            <option value="home">🏠 Home</option>
+            <option value="events">🗓️ Events</option>
+            <option value="activity-contacts">🎉 Activities & Groups</option>
+            <option value="newsletter">📰 Newsletter</option>
+            <option value="contact">📞 Contacts</option>
+            <option value="about">📖 About</option>
+            <option value="useful-links">🔗 Useful Links</option>
+            <option value="village-info">🔒 Residents Only</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Section ID (optional)</label>
+          <input type="text" id="new-section" placeholder="e.g. meetings, financials"/>
+        </div>
+        <div class="form-group">
+          <label>Display title *</label>
+          <input type="text" id="new-title" placeholder="e.g. 🗓️ Events Calendar"/>
+        </div>
+        <button class="btn" onclick="addMapping()">➕ Add</button>
+      </div>
+      <div style="margin-top:10px;font-size:0.8em;color:#888;">
+        💡 The keyword is what residents type. The page is where they'll be taken. Title is what appears in search results.
+      </div>
+    </div>
+
+    <div class="section-title">Current Search Mappings</div>
+    <div id="indexTableWrap" class="loading">Loading…</div>
+
+  </div>
+
+  <!-- ── TAB: SEARCH LOG ── -->
+  <div class="tab-panel" id="tab-log">
+    <div class="section-title">Recent Search Terms (last 200)</div>
+    <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <input type="text" id="logFilter" placeholder="Filter by term…"
+             oninput="filterLog()"
+             style="border:1.5px solid #c5d8ee;border-radius:5px;padding:8px 12px;font-size:0.88em;font-family:inherit;width:250px;"/>
+      <button class="btn btn-outline btn-sm" onclick="loadLog()">🔄 Refresh</button>
+      <span style="font-size:0.8em;color:#888;" id="log-count"></span>
+    </div>
+    <div id="logTableWrap" class="loading">Loading…</div>
+  </div>
+
+  <!-- ── TAB: STATISTICS ── -->
+  <div class="tab-panel" id="tab-stats">
+    <div class="section-title">Search Statistics</div>
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total Searches</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-unique">—</div><div class="stat-label">Unique Terms</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-noresults">—</div><div class="stat-label">No Results Found</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-mappings">—</div><div class="stat-label">Active Mappings</div></div>
+    </div>
+
+    <div class="section-title">Most Searched Terms</div>
+    <p style="font-size:0.85em;color:#666;margin-bottom:12px;">
+      Terms in <span style="background:#fff3e0;border:1px solid #ffcc80;border-radius:10px;padding:1px 8px;font-size:0.9em;">orange</span>
+      had no results — consider adding a mapping for them.
+      Click any term to pre-fill the Add Mapping form.
+    </p>
+    <div class="top-terms" id="topTerms"><span class="loading">Loading…</span></div>
+  </div>
+
+</div><!-- end container -->
+
+<div id="toast"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+var SCRIPT_URL = localStorage.getItem('bdrc_search_logger_url') || '';
+document.getElementById('scriptUrl').value = SCRIPT_URL;
+
+function saveConfig() {
+  SCRIPT_URL = document.getElementById('scriptUrl').value.trim();
+  localStorage.setItem('bdrc_search_logger_url', SCRIPT_URL);
+}
+
+// ── DATA ──────────────────────────────────────────────────────
+var indexData = [];
+var logData   = [];
+
+function loadAll() {
+  if (!SCRIPT_URL) { toast('⚠️ Please enter your Apps Script URL first', true); return; }
+  loadIndex();
+  loadLog();
+}
+
+// ── SEARCH INDEX ──────────────────────────────────────────────
+function loadIndex() {
+  document.getElementById('indexTableWrap').innerHTML = '<div class="loading">Loading index…</div>';
+  fetch(SCRIPT_URL + '?action=getIndex')
+    .then(r => r.json())
+    .then(data => {
+      indexData = data.items || [];
+      renderIndex();
+      document.getElementById('stat-mappings').textContent =
+        indexData.filter(i => i.active).length;
+    })
+    .catch(() => {
+      document.getElementById('indexTableWrap').innerHTML =
+        '<div class="loading">Could not load index. Check your Apps Script URL.</div>';
+    });
+}
+
+function renderIndex() {
+  if (!indexData.length) {
+    document.getElementById('indexTableWrap').innerHTML =
+      '<div class="loading">No mappings yet. Add one above.</div>';
+    return;
+  }
+  var html = '<table class="index-table"><thead><tr>' +
+    '<th>Keyword / Phrase</th><th>Goes To</th><th>Section</th>' +
+    '<th>Display Title</th><th>Status</th><th>Actions</th>' +
+    '</tr></thead><tbody>';
+  indexData.forEach(function(item) {
+    html += '<tr class="' + (item.active ? '' : 'inactive') + '">' +
+      '<td class="keyword-cell">' + esc(item.keyword) + '</td>' +
+      '<td class="page-cell">' + esc(item.page) + '</td>' +
+      '<td class="page-cell">' + (item.section ? esc(item.section) : '<span style="color:#ccc;">—</span>') + '</td>' +
+      '<td>' + esc(item.title) + '</td>' +
+      '<td><span class="' + (item.active ? 'badge-active' : 'badge-inactive') + '">' +
+        (item.active ? 'Active' : 'Off') + '</span></td>' +
+      '<td style="white-space:nowrap;">' +
+        '<button class="btn btn-outline btn-sm" onclick="toggleMapping(' + item.row + ')" style="margin-right:4px;">' +
+          (item.active ? '⏸ Pause' : '▶ Enable') + '</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="deleteMapping(' + item.row + ',\'' + esc(item.keyword) + '\')">🗑</button>' +
+      '</td></tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('indexTableWrap').innerHTML = html;
+}
+
+function addMapping() {
+  var kw   = document.getElementById('new-keyword').value.trim();
+  var page = document.getElementById('new-page').value;
+  var sec  = document.getElementById('new-section').value.trim();
+  var title= document.getElementById('new-title').value.trim();
+
+  if (!kw || !page || !title) {
+    toast('⚠️ Keyword, page and title are required', true); return;
+  }
+  if (!SCRIPT_URL) { toast('⚠️ No Apps Script URL configured', true); return; }
+
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action:'addMapping', keyword:kw, page:page, section:sec, title:title })
+  })
+  .then(r => r.json())
+  .then(() => {
+    toast('✅ Mapping added: "' + kw + '"');
+    document.getElementById('new-keyword').value = '';
+    document.getElementById('new-section').value = '';
+    document.getElementById('new-title').value   = '';
+    document.getElementById('new-page').value    = '';
+    loadIndex();
+  })
+  .catch(() => toast('⚠️ Failed to add mapping', true));
+}
+
+function deleteMapping(row, keyword) {
+  if (!confirm('Remove mapping for "' + keyword + '"?')) return;
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action:'deleteMapping', row:row })
+  })
+  .then(r => r.json())
+  .then(() => { toast('🗑️ Mapping removed'); loadIndex(); })
+  .catch(() => toast('⚠️ Failed to delete', true));
+}
+
+function toggleMapping(row) {
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action:'toggleMapping', row:row })
+  })
+  .then(r => r.json())
+  .then(data => {
+    toast(data.active ? '▶ Mapping enabled' : '⏸ Mapping paused');
+    loadIndex();
+  })
+  .catch(() => toast('⚠️ Failed to toggle', true));
+}
+
+// ── SEARCH LOG ────────────────────────────────────────────────
+function loadLog() {
+  document.getElementById('logTableWrap').innerHTML = '<div class="loading">Loading log…</div>';
+  fetch(SCRIPT_URL + '?action=getLog')
+    .then(r => r.json())
+    .then(data => {
+      logData = data.items || [];
+      renderLog(logData);
+      buildStats();
+    })
+    .catch(() => {
+      document.getElementById('logTableWrap').innerHTML =
+        '<div class="loading">Could not load log.</div>';
+    });
+}
+
+function renderLog(items) {
+  document.getElementById('log-count').textContent = items.length + ' entries';
+  if (!items.length) {
+    document.getElementById('logTableWrap').innerHTML =
+      '<div class="loading">No searches logged yet.</div>';
+    return;
+  }
+  var html = '<table class="log-table"><thead><tr>' +
+    '<th>When</th><th>Search Term</th><th>Results</th>' +
+    '</tr></thead><tbody>';
+  items.forEach(function(item) {
+    html += '<tr>' +
+      '<td style="color:#888;font-size:0.85em;white-space:nowrap;">' + esc(String(item.timestamp)) + '</td>' +
+      '<td style="font-weight:600;">' + esc(item.term) + '</td>' +
+      '<td>' + (item.results > 0
+        ? '<span class="has-results">' + item.results + ' found</span>'
+        : '<span class="no-results">0 — no results</span>') +
+      '</td></tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('logTableWrap').innerHTML = html;
+}
+
+function filterLog() {
+  var q = document.getElementById('logFilter').value.toLowerCase();
+  var filtered = logData.filter(i => i.term.toLowerCase().includes(q));
+  renderLog(filtered);
+}
+
+// ── STATISTICS ────────────────────────────────────────────────
+function buildStats() {
+  var total     = logData.length;
+  var noResults = logData.filter(i => i.results == 0).length;
+  var termCount = {};
+  logData.forEach(function(i) {
+    termCount[i.term] = (termCount[i.term] || 0) + 1;
+  });
+  var unique = Object.keys(termCount).length;
+
+  document.getElementById('stat-total').textContent     = total;
+  document.getElementById('stat-unique').textContent    = unique;
+  document.getElementById('stat-noresults').textContent = noResults;
+
+  // Top 30 terms
+  var sorted = Object.entries(termCount)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0, 30);
+
+  // Which terms have no mapping?
+  var mappedKeywords = indexData.map(i => i.keyword.toLowerCase());
+  var noResultTerms  = new Set(
+    logData.filter(i => i.results == 0).map(i => i.term.toLowerCase())
+  );
+
+  var html = sorted.map(function(entry) {
+    var term      = entry[0];
+    var count     = entry[1];
+    var hasNoMap  = noResultTerms.has(term.toLowerCase());
+    return '<span class="term-pill ' + (hasNoMap ? 'no-match' : '') + '" ' +
+      'onclick="prefillAdd(\'' + esc(term) + '\')" title="Click to add mapping">' +
+      esc(term) +
+      '<span class="count">' + count + '</span>' +
+      '</span>';
+  }).join('');
+
+  document.getElementById('topTerms').innerHTML = html || '<span class="loading">No data yet.</span>';
+}
+
+function prefillAdd(term) {
+  document.getElementById('new-keyword').value = term;
+  switchTab('tab-index');
+  document.getElementById('new-keyword').focus();
+  toast('💡 Term pre-filled — choose a page and title');
+}
+
+// ── TABS ──────────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  var tabs = ['tab-index','tab-log','tab-stats'];
+  var idx  = tabs.indexOf(id);
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+  if (id === 'tab-stats') buildStats();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+var toastTimer;
+function toast(msg, warn) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = warn ? '#d32f2f' : '#1F4E79';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Auto-load if URL is saved
+if (SCRIPT_URL) loadAll();
+</script>
+</body>
+</html>
