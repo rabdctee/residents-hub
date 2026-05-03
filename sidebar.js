@@ -36,8 +36,7 @@
       background: white;
     }
     .hub-sidebar {
-      width: 260px;
-      min-width: 260px;
+      width: 230px;
       flex-shrink: 0;
       padding: 14px 10px;
       border-right: 2px solid #c5d8ee;
@@ -66,9 +65,6 @@
       letter-spacing: 0.4px;
       padding: 9px 12px;
       line-height: 1.5;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: clip;
     }
 
     /* Sidebar links */
@@ -229,7 +225,7 @@
   var communityPages = ['concerts.html','savings.html','info-sessions.html',
                         'memories.html','community-life.html','village-map.html'];
   var newsPages      = ['index.html'];
-  var infoPages      = ['useful-links.html','how-to.html','contacts.html'];
+  var infoPages      = ['useful-links.html','how-to.html','contacts.html']; // Guides & Links
 
   var openNews      = newsPages.some(isActive)      ? ' open' : '';
   var openCommunity = communityPages.some(isActive)  ? ' open' : '';
@@ -275,7 +271,7 @@
 
         <!-- Information -->
         <div class="sb-acc-header${openInfo}" onclick="sbToggle('sba-info')">
-          💡 Information <span class="sb-acc-arrow">▼</span>
+          📚 Guides &amp; Links <span class="sb-acc-arrow">▼</span>
         </div>
         <div class="sb-acc-body${openInfo}" id="sba-info">
           <ul class="sb-links">
