@@ -135,6 +135,25 @@
     /* ===== Empty category ===== */
     .cat-empty{ padding:18px; text-align:center; color:#aaa; font-size:0.88em; font-style:italic; }
 
+    /* ===== Price freshness indicators ===== */
+    .freshness-dot{
+      display:inline-block; width:10px; height:10px; border-radius:50%;
+      margin-right:5px; vertical-align:middle; flex-shrink:0;
+    }
+    .fresh .freshness-dot{ background:#2e7d32; }
+    .ageing .freshness-dot{ background:#f9a825; }
+    .stale .freshness-dot{ background:#c62828; }
+    .no-price-dot .freshness-dot{ background:#bdbdbd; }
+
+    /* ===== Price freshness summary notice ===== */
+    .freshness-summary{
+      display:none; background:#fff9e6; border-left:4px solid #C9A44A;
+      border-radius:4px; padding:10px 16px; margin-bottom:14px;
+      font-size:0.82em; color:#5a3e00; line-height:1.6;
+    }
+    .freshness-summary.visible{ display:block; }
+    .freshness-summary strong{ color:#5a3e00; }
+
     /* ===== AI Assistant ===== */
     .ai-box{
       background:#f8f9fa; border:2px solid #1F4E79;
@@ -302,6 +321,7 @@
 
     <!-- CATEGORY LIST -->
     <div class="section-heading">📋 Items &amp; Best Prices</div>
+    <div class="freshness-summary" id="freshnessSummary"></div>
     <div class="category-list" id="categoryList"></div>
 
     <!-- QUICK CHECK STORES -->
@@ -470,7 +490,13 @@ function renderCategories(){
       <tr id="row-${item.id}">
         <td class="item-name">${esc(item.name)}<br><span style="font-weight:400;color:#888;font-size:0.8em;">${esc(item.note||'')} </span></td>
         <td class="${item.price!==null?'price-cell':'price-cell no-price'}">
-          ${item.price!==null?'$'+Number(item.price).toFixed(2):'—'}
+          ${(()=>{
+            if(item.price===null) return '<span class="no-price-dot"><span class="freshness-dot"></span>—</span>';
+            const age = priceAge(item.date);
+            const cls = age||'fresh';
+            const label = age==='ageing'?'Getting old':age==='stale'?'Stale':'Fresh';
+            return `<span class="${cls}" title="${label}"><span class="freshness-dot"></span>$${Number(item.price).toFixed(2)}</span>`;
+          })()}
           ${item.aiSaved?'<span class="ai-tag">AI</span>':''}</td>
         <td class="store-cell">${esc(item.store||'—')}</td>
         <td class="date-cell">${fmtDate(item.date)||'—'}</td>
@@ -517,10 +543,33 @@ function toggleCat(id){
 }
 
 function fmtDate(d){ if(!d) return ''; return new Date(d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}); }
+function priceAge(d){
+  if(!d) return null;
+  const days = Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
+  if(days <= 14) return 'fresh';
+  if(days <= 60) return 'ageing';
+  return 'stale';
+}
 function updateLabel(){
   const dated=items.filter(i=>i.date).map(i=>i.date).sort();
   document.getElementById('lastUpdatedLabel').textContent =
     dated.length ? 'Last update: '+fmtDate(dated[dated.length-1]) : 'No prices recorded yet';
+
+  // Freshness summary
+  const ageing = items.filter(i=>i.price!==null && priceAge(i.date)==='ageing').length;
+  const stale  = items.filter(i=>i.price!==null && priceAge(i.date)==='stale').length;
+  const noPrice= items.filter(i=>i.price===null).length;
+  const box = document.getElementById('freshnessSummary');
+  const parts = [];
+  if(stale)   parts.push(`<span style="color:#c62828;">● ${stale} stale price${stale!==1?'s':''} (over 60 days old)</span>`);
+  if(ageing)  parts.push(`<span style="color:#f9a825;">● ${ageing} price${ageing!==1?'s':''} getting old (14–60 days)</span>`);
+  if(noPrice) parts.push(`<span style="color:#888;">● ${noPrice} item${noPrice!==1?'s':''} with no price yet</span>`);
+  if(parts.length){
+    box.innerHTML = '<strong>⚠️ Prices needing attention:</strong> &nbsp;' + parts.join(' &nbsp;|&nbsp; ');
+    box.className = 'freshness-summary visible';
+  } else {
+    box.className = 'freshness-summary';
+  }
 }
 
 // ── ADD ITEM ──────────────────────────────────────────────────
