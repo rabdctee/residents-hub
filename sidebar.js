@@ -59,7 +59,7 @@
     .sb-heading {
       background: #1F4E79;
       color: #C9A44A;
-      font-size: 11px;
+      font-size: 0.68em;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.4px;
@@ -148,7 +148,11 @@
       background: #E7F1FB;
       border-bottom: 2px solid #c5d8ee;
       padding: 10px 22px;
-      font-size: 14px;
+      font-size: 0.82em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
     .sb-breadcrumb a {
       color: #1F4E79;
@@ -172,7 +176,7 @@
       text-align: center;
       color: #5f6368;
       border-top: 1px solid #e0e0e0;
-      font-size: 13px;
+      font-size: 0.85em;
       width: 100%;
     }
 
@@ -236,7 +240,7 @@
 
         <!-- Home — always visible -->
         <ul class="sb-links">
-          <li><a href="index.html"${isActive('index.html') ? ' class="sb-active"' : ''} style="font-weight:700;">🏠 Home</a></li>
+          <li><a href="index.html"${isActive('index.html') ? ' class="sb-active"' : ''} style="font-weight:600;" style="font-weight:600;">🏠 Home</a></li>
         </ul>
 
         <!-- News & Events -->
@@ -288,7 +292,7 @@
 
         <!-- Residents Only — always visible -->
         <ul class="sb-links">
-          <li><a href="community-info.html" class="sb-lock${isActive('community-info.html') ? ' sb-active' : ''}" style="font-weight:700;">🔒 Residents Only</a></li>
+          <li><a href="community-info.html" class="sb-lock${isActive('community-info.html') ? ' sb-active' : ''}" style="font-weight:600;">🔒 Residents Only</a></li>
         </ul>
 
       </div>
@@ -369,7 +373,7 @@
           var bc = document.createElement('div');
           bc.className = 'sb-breadcrumb';
           bc.innerHTML =
-            '<a href="index.html">🏠 Home</a>' +
+            '<a href="index.html" style="font-weight:600;">🏠 Home</a>' +
             '<span>›</span>' +
             '<strong>' + pageTitle + '</strong>';
           // Insert after header inside hub-main (header is inside container/hub-main)
