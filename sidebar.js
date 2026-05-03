@@ -65,6 +65,9 @@
       letter-spacing: 0.4px;
       padding: 9px 12px;
       line-height: 1.5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: clip;
     }
 
     /* Sidebar links */
@@ -72,7 +75,7 @@
     .sb-links li a {
       display: block;
       padding: 8px 12px;
-      font-size: 0.82em;
+      font-size: 14px;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
       transition: background 0.15s;
@@ -95,7 +98,7 @@
       align-items: center;
       padding: 8px 12px;
       cursor: pointer;
-      font-size: 0.82em;
+      font-size: 14px;
       font-weight: 700;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
