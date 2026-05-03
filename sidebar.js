@@ -72,7 +72,7 @@
     .sb-links li a {
       display: block;
       padding: 8px 12px;
-      font-size: 14px;
+      font-size: 15px;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
       transition: background 0.15s;
@@ -240,7 +240,7 @@
 
         <!-- Home — always visible -->
         <ul class="sb-links">
-          <li><a href="index.html"${isActive('index.html') ? ' class="sb-active"' : ''}>🏠 Home</a></li>
+          <li><a href="index.html"${isActive('index.html') ? ' class="sb-active"' : ''} style="font-weight:700;">🏠 Home</a></li>
         </ul>
 
         <!-- News & Events -->
@@ -292,7 +292,7 @@
 
         <!-- Residents Only — always visible -->
         <ul class="sb-links">
-          <li><a href="community-info.html" class="sb-lock${isActive('community-info.html') ? ' sb-active' : ''}">🔒 Residents Only</a></li>
+          <li><a href="community-info.html" class="sb-lock${isActive('community-info.html') ? ' sb-active' : ''}" style="font-weight:700;">🔒 Residents Only</a></li>
         </ul>
 
       </div>
