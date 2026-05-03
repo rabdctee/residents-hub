@@ -677,6 +677,7 @@ async function runAiSearch(){
     resultBox.innerHTML=`<strong>⚠️ Search could not complete.</strong><br><span style="font-size:0.88em;color:#666;">${esc(err.message)}</span>`;
   }finally{
     btn.disabled=false; btn.innerHTML='🔍 Search';
+    document.getElementById('aiQuery').value='';
   }
 }
 
