@@ -59,7 +59,7 @@
     .sb-heading {
       background: #1F4E79;
       color: #C9A44A;
-      font-size: 0.68em;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.4px;
@@ -125,7 +125,7 @@
     }
     .sb-acc-body .sb-links li a {
       padding-left: 22px;
-      font-size: 0.82em;
+      font-size: 13px;
       color: #444;
       border-bottom: 1px solid #eef0f3;
     }
@@ -148,11 +148,7 @@
       background: #E7F1FB;
       border-bottom: 2px solid #c5d8ee;
       padding: 10px 22px;
-      font-size: 0.82em;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
+      font-size: 14px;
     }
     .sb-breadcrumb a {
       color: #1F4E79;
@@ -176,7 +172,7 @@
       text-align: center;
       color: #5f6368;
       border-top: 1px solid #e0e0e0;
-      font-size: 0.85em;
+      font-size: 13px;
       width: 100%;
     }
 
