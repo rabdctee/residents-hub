@@ -95,7 +95,7 @@
       align-items: center;
       padding: 8px 12px;
       cursor: pointer;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 700;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
