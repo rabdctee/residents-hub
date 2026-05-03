@@ -919,7 +919,8 @@ border-bottom:2px solid #000;
   background: white;
 }
 .hub-sidebar {
-  width: 210px;
+  width: 260px;
+  min-width: 260px;
   flex-shrink: 0;
   padding: 14px 10px;
   border-right: 2px solid #c5d8ee;
@@ -967,13 +968,14 @@ border-bottom:2px solid #000;
   align-items: center;
   padding: 8px 12px;
   cursor: pointer;
-  font-size: 0.85em;
+  font-size: 14px;
   font-weight: 600;
   color: #1F4E79;
   border-bottom: 1px solid #eef0f3;
   background: white;
   transition: background 0.15s;
   user-select: none;
+  white-space: nowrap;
 }
 .sb-acc-header:hover, .sb-acc-header.open { background: #E7F1FB; }
 .sb-acc-arrow { font-size: 0.6em; color: #aaa; transition: transform 0.2s; margin-left: 4px; }
@@ -993,7 +995,7 @@ border-bottom:2px solid #000;
   width: 100%;
 }
 @media(max-width:900px){
-  .hub-sidebar { width: 180px; }
+  .hub-sidebar { width: 200px; min-width: 200px; }
 }
 @media(max-width:768px){
   .hub-wrapper { flex-direction: column; }
@@ -1904,7 +1906,8 @@ function parseCSVLine(line) {
   background: white;
 }
 .hub-sidebar {
-  width: 210px;
+  width: 260px;
+  min-width: 260px;
   flex-shrink: 0;
   padding: 14px 10px;
   border-right: 2px solid #c5d8ee;
@@ -1952,13 +1955,14 @@ function parseCSVLine(line) {
   align-items: center;
   padding: 8px 12px;
   cursor: pointer;
-  font-size: 0.85em;
+  font-size: 14px;
   font-weight: 600;
   color: #1F4E79;
   border-bottom: 1px solid #eef0f3;
   background: white;
   transition: background 0.15s;
   user-select: none;
+  white-space: nowrap;
 }
 .sb-acc-header:hover, .sb-acc-header.open { background: #E7F1FB; }
 .sb-acc-arrow { font-size: 0.6em; color: #aaa; transition: transform 0.2s; margin-left: 4px; }
@@ -1978,7 +1982,7 @@ function parseCSVLine(line) {
   width: 100%;
 }
 @media(max-width:900px){
-  .hub-sidebar { width: 180px; }
+  .hub-sidebar { width: 200px; min-width: 200px; }
 }
 @media(max-width:768px){
   .hub-wrapper { flex-direction: column; }
@@ -2219,7 +2223,8 @@ Advocacy, advice and support for retirement village residents in Queensland
   background: white;
 }
 .hub-sidebar {
-  width: 210px;
+  width: 260px;
+  min-width: 260px;
   flex-shrink: 0;
   padding: 14px 10px;
   border-right: 2px solid #c5d8ee;
@@ -2267,13 +2272,14 @@ Advocacy, advice and support for retirement village residents in Queensland
   align-items: center;
   padding: 8px 12px;
   cursor: pointer;
-  font-size: 0.85em;
+  font-size: 14px;
   font-weight: 600;
   color: #1F4E79;
   border-bottom: 1px solid #eef0f3;
   background: white;
   transition: background 0.15s;
   user-select: none;
+  white-space: nowrap;
 }
 .sb-acc-header:hover, .sb-acc-header.open { background: #E7F1FB; }
 .sb-acc-arrow { font-size: 0.6em; color: #aaa; transition: transform 0.2s; margin-left: 4px; }
@@ -2293,7 +2299,7 @@ Advocacy, advice and support for retirement village residents in Queensland
   width: 100%;
 }
 @media(max-width:900px){
-  .hub-sidebar { width: 180px; }
+  .hub-sidebar { width: 200px; min-width: 200px; }
 }
 @media(max-width:768px){
   .hub-wrapper { flex-direction: column; }
@@ -2799,14 +2805,7 @@ var searchableContent = [
     } else {
         var html = '<div style="padding:10px;color:#666;font-weight:600;">Found ' + results.length + ' result(s):</div>';
         results.forEach(function(result) {
-            var onclick, displayTitle;
-            if (result.url) {
-                // External page — navigate directly
-                onclick = 'window.location.href=\'' + result.url + '\';';
-                onclick += 'document.getElementById(\'searchResults\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\';';
-                displayTitle = '↗ ' + result.title + ' <span style="font-size:0.8em;color:#888;">(click to open page)</span>';
-            } else {
-                onclick = 'showPage(\'' + result.page + '\');';
+            var onclick = 'showPage(\'' + result.page + '\');';
             if (result.section) {
                 // Navigate to page then open the matching section
                 onclick += 'setTimeout(function(){' +
@@ -2817,9 +2816,7 @@ var searchableContent = [
                     '},200);';
             }
             onclick += 'document.getElementById(\'searchResults\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\';';
-                displayTitle = '→ ' + result.title + ' <span style="font-size:0.8em;color:#888;">(click to open)</span>';
-            }
-            html += '<div class="search-result-item" onclick="' + onclick + '">' + displayTitle + '</div>';
+            html += '<div class="search-result-item" onclick="' + onclick + '">' + result.title + '</div>';
         });
         resultsDiv.innerHTML = html;
         resultsDiv.style.display = 'block';

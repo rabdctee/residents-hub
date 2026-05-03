@@ -36,7 +36,8 @@
       background: white;
     }
     .hub-sidebar {
-      width: 250px;
+      width: 260px;
+      min-width: 260px;
       flex-shrink: 0;
       padding: 14px 10px;
       border-right: 2px solid #c5d8ee;
