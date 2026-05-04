@@ -5,182 +5,714 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Best Buys | Bridgeman Downs Residents Hub</title>
   <style>
-    /* ... (All your existing styles remain exactly as you have them) ... */
     *{margin:0;padding:0;box-sizing:border-box;}
     html{scroll-behavior:smooth;}
-    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f5f5;font-size:19px;line-height:1.6;color:#222;transition: background 0.3s, color 0.3s;}
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:19px;
+      line-height:1.6;
+      color:#222;
+    }
     .container{ max-width:1200px; margin:auto; background:white; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+
+    /* ===== Header ===== */
     header{ background:#1F4E79; color:white; padding:24px 20px; text-align:center; }
     header h1{ font-size:1.9em; }
     header .sub{ font-size:0.82em; opacity:0.85; margin-top:5px; }
-    .notice-bar{ background:#e8f4f8; border-left:4px solid #1F4E79; padding:10px 22px; font-size:0.82em; color:#333; }
+    header .credit{ font-size:0.7em; opacity:0.65; font-style:italic; margin-top:6px; }
+
+    /* ===== Breadcrumbs ===== */
+    .breadcrumbs{
+      padding:10px 22px; background:#E7F1FB; font-size:15px;
+      border-bottom:2px solid #c5d8ee; display:flex; align-items:center; flex-wrap:wrap; gap:4px;
+    }
+    .breadcrumbs a{
+      color:#1F4E79; text-decoration:none; font-weight:700; background:white;
+      border:1px solid #c5d8ee; border-radius:6px; padding:4px 10px; font-size:14px; transition:all 0.15s;
+    }
+    .breadcrumbs a:hover{ background:#1F4E79; color:white; }
+    .breadcrumbs span{ color:#aaa; font-size:13px; }
+    .breadcrumbs strong{ color:#444; font-size:14px; padding:4px; }
+
+    /* ===== Notice bar ===== */
+    .notice-bar{
+      background:#e8f4f8; border-left:4px solid #1F4E79;
+      padding:10px 22px; font-size:0.82em; color:#333;
+      display:flex; align-items:center; gap:10px;
+    }
+    .notice-bar strong{ color:#1F4E79; }
+
+    /* ===== Page content ===== */
     .page-content{ padding:20px 22px 60px; }
-    .section-heading{ font-size:1.1em; font-weight:700; color:#1F4E79; border-bottom:2px solid #c5d8ee; padding-bottom:7px; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+
+    /* ===== Section headings ===== */
+    .section-heading{
+      font-size:1.1em; font-weight:700; color:#1F4E79;
+      border-bottom:2px solid #c5d8ee; padding-bottom:7px; margin-bottom:14px;
+      display:flex; align-items:center; gap:8px;
+    }
+
+    /* ===== Action bar ===== */
     .action-bar{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; align-items:center; }
-    .btn{ display:inline-flex; align-items:center; gap:6px; padding:9px 18px; background:#1F4E79; color:white; border:none; border-radius:5px; font-size:0.88em; font-weight:600; cursor:pointer; }
+    .action-bar .spacer{ flex:1; }
+    .last-updated{
+      font-size:0.78em; color:#555; background:#E7F1FB;
+      border:1px solid #c5d8ee; border-radius:5px; padding:4px 10px;
+    }
+
+    /* ===== Buttons ===== */
+    .btn{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:9px 18px; background:#1F4E79; color:white; border:none;
+      border-radius:5px; font-size:0.88em; font-weight:600; font-family:inherit;
+      cursor:pointer; text-decoration:none; transition:background 0.2s; white-space:nowrap;
+    }
+    .btn:hover{ background:#1e4178; }
     .btn-outline{ background:white; color:#1F4E79; border:2px solid #1F4E79; }
-    .ai-box{ background:#f8f9fa; border:2px solid #1F4E79; border-radius:8px; padding:18px 20px; margin-bottom:24px; }
-    .ai-search-row{ display:flex; gap:8px; flex-wrap:wrap; }
-    .ai-search-row input{ flex:1; min-width:180px; border:2px solid #c5d8ee; border-radius:5px; padding:10px 13px; }
-    #toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#1F4E79; color:white; padding:10px 24px; border-radius:5px; z-index:9999; transition:0.35s; opacity:0; }
+    .btn-outline:hover{ background:#E7F1FB; }
+    .btn-gold{ background:#C9A44A; color:white; border:none; }
+    .btn-gold:hover{ background:#a97a2e; }
+    .btn-danger{ background:#d32f2f; color:white; border:none; }
+    .btn-danger:hover{ background:#b71c1c; }
+    .btn-sm{ padding:6px 12px; font-size:0.82em; }
+
+    /* ===== Category accordion ===== */
+    .category-list{ margin-bottom:24px; }
+    .cat-header{
+      background:#E7F1FB; border:1px solid #c5d8ee; border-radius:6px;
+      padding:12px 16px; cursor:pointer; display:flex; justify-content:space-between;
+      align-items:center; margin-bottom:6px; transition:all 0.15s; user-select:none;
+    }
+    .cat-header:hover{ background:#d0e6f7; border-color:#1F4E79; }
+    .cat-header.open{ background:#1F4E79; color:white; border-color:#1F4E79; border-radius:6px 6px 0 0; margin-bottom:0; }
+    .cat-title{ font-weight:700; font-size:1em; display:flex; align-items:center; gap:8px; }
+    .cat-badge{
+      background:rgba(255,255,255,0.25); color:inherit;
+      border-radius:20px; padding:2px 10px; font-size:0.75em; font-weight:600;
+    }
+    .cat-header:not(.open) .cat-badge{ background:#1F4E79; color:white; }
+    .cat-arrow{ font-size:1.1em; transition:transform 0.25s; }
+    .cat-header.open .cat-arrow{ transform:rotate(180deg); }
+
+    .cat-body{
+      display:none; border:1px solid #1F4E79; border-top:none;
+      border-radius:0 0 6px 6px; overflow:hidden; margin-bottom:6px;
+    }
+    .cat-body.open{ display:block; }
+
+    /* ===== Items table ===== */
+    .table-wrap{ overflow:hidden; }
+    table{ width:100%; border-collapse:collapse; }
+    thead{ background:#1F4E79; color:white; }
+    thead th{
+      padding:10px 14px; text-align:left; font-size:0.8em;
+      font-weight:700; text-transform:uppercase; letter-spacing:0.04em;
+    }
+    tbody tr{ border-bottom:1px solid #e0e0e0; transition:background 0.15s; }
+    tbody tr:nth-child(even){ background:#f9f9f9; }
+    tbody tr:last-child{ border-bottom:none; }
+    tbody tr:hover{ background:#E3F2FD; }
+    tbody td{ padding:10px 14px; font-size:0.9em; vertical-align:middle; }
+    .item-name{ font-weight:700; color:#1F4E79; }
+    .price-cell{ font-weight:700; color:#1F4E79; }
+    .price-cell.no-price{ color:#aaa; font-weight:400; font-size:0.85em; font-style:italic; }
+    .store-cell{ color:#555; font-size:0.88em; }
+    .date-cell{ color:#999; font-size:0.8em; }
+    .ai-tag{
+      display:inline-block; background:#fff9e6; border:1px solid #C9A44A;
+      color:#7a5200; border-radius:3px; padding:1px 6px; font-size:0.7em; font-weight:700;
+      margin-left:4px; vertical-align:middle;
+    }
+    .edit-inline{ display:flex; gap:5px; align-items:center; flex-wrap:wrap; }
+    .edit-inline input{
+      border:2px solid #1F4E79; border-radius:5px; padding:4px 7px;
+      font-size:0.85em; font-family:inherit;
+    }
+    .ep-input{ width:80px; }
+    .es-input{ width:130px; }
+
+    /* ===== Empty category ===== */
+    .cat-empty{ padding:18px; text-align:center; color:#aaa; font-size:0.88em; font-style:italic; }
+
+    /* ===== Price freshness indicators ===== */
+    .freshness-dot{
+      display:inline-block; width:10px; height:10px; border-radius:50%;
+      margin-right:5px; vertical-align:middle; flex-shrink:0;
+    }
+    .fresh .freshness-dot{ background:#2e7d32; }
+    .ageing .freshness-dot{ background:#f9a825; }
+    .stale .freshness-dot{ background:#c62828; }
+    .no-price-dot .freshness-dot{ background:#bdbdbd; }
+
+    /* ===== Price freshness summary notice ===== */
+    .freshness-summary{
+      display:none; background:#fff9e6; border-left:4px solid #C9A44A;
+      border-radius:4px; padding:10px 16px; margin-bottom:14px;
+      font-size:0.82em; color:#5a3e00; line-height:1.6;
+    }
+    .freshness-summary.visible{ display:block; }
+    .freshness-summary strong{ color:#5a3e00; }
+
+    /* ===== AI Assistant ===== */
+    .ai-box{
+      background:#f8f9fa; border:2px solid #1F4E79;
+      border-radius:8px; padding:18px 20px; margin-bottom:24px;
+    }
+    .ai-tagline{ font-size:0.85em; color:#555; margin-bottom:12px; }
+    .ai-search-row{ display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end; margin-bottom:14px; }
+    .ai-search-row input{
+      flex:1; min-width:180px; border:2px solid #c5d8ee; border-radius:5px;
+      padding:10px 13px; font-size:0.95em; font-family:inherit; background:white; color:#222;
+    }
+    .ai-search-row input:focus{ outline:none; border-color:#1F4E79; box-shadow:0 0 0 3px rgba(31,78,121,0.1); }
+    .ai-result-box{
+      background:white; border:1px solid #e0e0e0; border-radius:5px;
+      padding:14px 16px; font-size:0.88em; line-height:1.6; display:none;
+    }
+    .ai-result-box.visible{ display:block; }
+    .ai-result-box.error{ background:#fff5f5; border-color:#e8b4b4; }
+    .ai-summary{ margin-bottom:10px; font-size:0.9em; color:#333; }
+    .ai-thinking{ display:flex; align-items:center; gap:10px; color:#666; font-style:italic; }
+    .ai-spinner{
+      width:18px; height:18px; border:3px solid #c5d8ee;
+      border-top-color:#1F4E79; border-radius:50%; animation:spin 0.8s linear infinite; flex-shrink:0;
+    }
+    @keyframes spin{ to{ transform:rotate(360deg); } }
+    .ai-saved-notice{
+      margin-top:10px; background:#fff9e6; border-left:4px solid #C9A44A;
+      border-radius:4px; padding:9px 14px; font-size:0.85em; color:#5a3e00; display:none;
+    }
+    .ai-saved-notice.visible{ display:block; }
+    .ai-disclaimer{ margin-top:10px; font-size:0.75em; color:#aaa; font-style:italic; }
+
+    /* ===== AI results price table ===== */
+    .ai-prices-table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:0.88em; }
+    .ai-prices-table thead{ background:#1F4E79; color:white; }
+    .ai-prices-table th{ padding:8px 12px; text-align:left; font-size:0.8em; text-transform:uppercase; }
+    .ai-prices-table td{ padding:8px 12px; border-bottom:1px solid #e0e0e0; }
+    .ai-prices-table tbody tr:nth-child(even){ background:#f9f9f9; }
+    .ai-prices-table tbody tr.best-row{ background:#e8f4f8 !important; font-weight:700; }
+    .ai-prices-table .price-col{ color:#1F4E79; font-weight:700; }
+
+    /* ===== Add item form ===== */
+    .add-box{
+      background:#f8f9fa; border:1px solid #e0e0e0;
+      border-radius:8px; padding:16px 18px; margin-bottom:24px;
+    }
+    .form-row{ display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; }
+    .form-group{ display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
+    .form-group label{ font-weight:700; font-size:0.78em; color:#555; }
+    .form-group input, .form-group select{
+      border:2px solid #e0e0e0; border-radius:5px; padding:8px 11px;
+      font-size:0.88em; font-family:inherit; background:white; color:#222;
+    }
+    .form-group input:focus, .form-group select:focus{
+      outline:none; border-color:#1F4E79; box-shadow:0 0 0 3px rgba(31,78,121,0.1);
+    }
+
+    /* ===== Quick-check store cards ===== */
+    .store-grid{
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(195px,1fr));
+      gap:10px; margin-bottom:24px;
+    }
+    .store-card{
+      background:#f8f9fa; border:1px solid #e0e0e0;
+      border-radius:8px; padding:13px; transition:all 0.2s;
+    }
+    .store-card:hover{ border-color:#1F4E79; background:#E7F1FB; }
+    .store-card .store-name{ font-weight:700; color:#1F4E79; font-size:0.9em; margin-bottom:3px; }
+    .store-card .store-desc{ font-size:0.75em; color:#666; line-height:1.3; margin-bottom:8px; }
+    .store-card .store-links{ display:flex; flex-wrap:wrap; gap:5px; }
+    .store-link{
+      display:inline-block; background:white; color:#1F4E79; border:1px solid #c5d8ee;
+      border-radius:5px; padding:3px 10px; font-size:0.76em; font-weight:600;
+      text-decoration:none; transition:all 0.15s;
+    }
+    .store-link:hover{ background:#1F4E79; color:white; }
+
+    /* ===== Share box ===== */
+    .share-box{
+      background:#fff9e6; border-left:4px solid #C9A44A; border-radius:4px;
+      padding:14px 18px; display:flex; flex-wrap:wrap; align-items:center; gap:12px;
+    }
+    .share-box .share-text{ flex:1; min-width:180px; }
+    .share-box .share-text strong{ display:block; font-size:0.88em; color:#5a3e00; }
+    .share-box .share-text span{ font-size:0.78em; color:#7a6030; }
+
+    /* ===== Toast ===== */
+    #toast{
+      position:fixed; bottom:24px; left:50%;
+      transform:translateX(-50%) translateY(80px);
+      background:#1F4E79; color:white; padding:10px 24px;
+      border-radius:5px; font-weight:700; font-size:0.88em;
+      box-shadow:0 4px 16px rgba(0,0,0,0.22); z-index:9999;
+      transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+      opacity:0; pointer-events:none;
+    }
     #toast.show{ transform:translateX(-50%) translateY(0); opacity:1; }
-    
-    /* High Contrast Styles */
-    body.high-contrast { background: #000 !important; color: #fff !important; }
-    .high-contrast .container { background: #111 !important; color: #fff !important; border: 2px solid #fff; }
-    .high-contrast .cat-header { background: #444 !important; color: #ffff00 !important; }
-    .unit-price { display: block; font-size: 0.75em; color: #666; font-style: italic; margin-top: 2px; }
+
+    /* ===== Print ===== */
+    .print-header{ display:none; }
+    @media print{
+      header, .breadcrumbs, .notice-bar, .action-bar .btn, .ai-box,
+      .add-box, .store-grid, .share-box, #toast, .actions-cell,
+      .cat-header .cat-arrow{ display:none !important; }
+      .cat-body{ display:block !important; }
+      body{ background:white; font-size:13px; }
+      .table-wrap{ box-shadow:none; }
+      .page-content{ padding:0; }
+      .print-header{ display:block !important; text-align:center; margin-bottom:16px; }
+      .print-header h2{ font-size:1.2rem; color:#1F4E79; }
+      .print-header p{ font-size:0.82rem; color:#666; }
+    }
+
+    @media(max-width:768px){
+      body{ font-size:20px; }
+      thead th:nth-child(3), tbody td:nth-child(3),
+      thead th:nth-child(5), tbody td:nth-child(5){ display:none; }
+      .page-content{ padding:14px 12px 50px; }
+    }
   </style>
 </head>
 <body>
+<script src="sidebar.js"></script>
 <div class="container">
+
+  <div class="print-header">
+    <h2>🛒 Best Buys — Bridgeman Downs Residents</h2>
+    <p id="print-date"></p>
+  </div>
+
   <header>
     <h1>🛒 Best Buys</h1>
     <p class="sub">Community price tracker — helping every dollar go further.</p>
+    <p class="credit">A community idea kindly suggested by John Thompson.</p>
   </header>
 
   <div class="notice-bar">
-    ⚠️ <span><strong>Price checking only</strong> — Always visit the store directly to purchase.</span>
+    ⚠️ <span><strong>Price checking only</strong> — not for online shopping or Click &amp; Collect. Always visit the store directly to purchase.</span>
   </div>
 
   <div class="page-content">
-    <div class="action-bar">
+
+    <!-- ACTION BAR -->
+    <div class="action-bar" style="margin-top:4px;">
       <button class="btn btn-outline" onclick="window.print()">🖨️ Print</button>
-      <button class="btn btn-outline" onclick="toggleContrast()">👁️ High Contrast</button>
-      <div style="flex:1"></div>
-      <div id="lastUpdatedLabel">Syncing with Google...</div>
+      <button class="btn btn-gold" onclick="emailList()">📧 Email</button>
+      <div class="spacer"></div>
+      <div class="last-updated" id="lastUpdatedLabel">Loading…</div>
     </div>
 
+    <!-- AI PRICE ASSISTANT -->
     <div class="section-heading">🤖 AI Price Assistant</div>
     <div class="ai-box">
+      <p class="ai-tagline">Type any item to search Woolworths, Coles, Chemist Warehouse, Amazon AU, eBay AU, iHerb and more for today's best price.</p>
       <div class="ai-search-row">
-        <input type="text" id="aiQuery" placeholder="e.g. Nutella 400g..." onkeydown="if(event.key==='Enter') runAiSearch()"/>
+        <input type="text" id="aiQuery"
+          placeholder="e.g. Metamucil 500g, Lurpak butter, Ostelin D3…"
+          onkeydown="if(event.key==='Enter') runAiSearch()"/>
         <button class="btn" onclick="runAiSearch()" id="aiSearchBtn">🔍 Search</button>
+      </div>
+      <div class="ai-result-box" id="aiResultBox"></div>
+      <div class="ai-saved-notice" id="aiSavedNotice"></div>
+      <p class="ai-disclaimer">ⓘ Prices sourced from the web — verify before purchasing. AI-saved prices are labelled "AI".</p>
+    </div>
+
+    <!-- CATEGORY LIST -->
+    <div class="section-heading">📋 Items &amp; Best Prices</div>
+    <div class="freshness-summary" id="freshnessSummary"></div>
+    <div class="category-list" id="categoryList"></div>
+
+    <!-- QUICK CHECK STORES -->
+    <div class="section-heading">🔎 Quick-Check at These Stores</div>
+    <div class="store-grid">
+      <div class="store-card">
+        <div class="store-name">🟢 Woolworths</div>
+        <div class="store-desc">Full grocery, pharmacy and health range.</div>
+        <div class="store-links">
+          <a class="store-link" href="https://www.woolworths.com.au" target="_blank" rel="noopener">Visit</a>
+          <a class="store-link" href="https://www.woolworths.com.au/shop/search/products?searchTerm=metamucil" target="_blank" rel="noopener">Example</a>
+        </div>
+      </div>
+      <div class="store-card">
+        <div class="store-name">🔴 Coles</div>
+        <div class="store-desc">Groceries, health &amp; beauty, weekly specials.</div>
+        <div class="store-links">
+          <a class="store-link" href="https://www.coles.com.au" target="_blank" rel="noopener">Visit</a>
+          <a class="store-link" href="https://www.coles.com.au/search?q=lurpak" target="_blank" rel="noopener">Example</a>
+        </div>
+      </div>
+      <div class="store-card">
+        <div class="store-name">💊 Chemist Warehouse</div>
+        <div class="store-desc">Best for vitamins, skin care and health products.</div>
+        <div class="store-links">
+          <a class="store-link" href="https://www.chemistwarehouse.com.au" target="_blank" rel="noopener">Visit</a>
+          <a class="store-link" href="https://www.chemistwarehouse.com.au/search?q=ostelin" target="_blank" rel="noopener">Example</a>
+        </div>
+      </div>
+      <div class="store-card">
+        <div class="store-name">🛒 Aldi</div>
+        <div class="store-desc">Often cheapest on basics. In-store only.</div>
+        <div class="store-links">
+          <a class="store-link" href="https://www.aldi.com.au/en/groceries/" target="_blank" rel="noopener">Specials</a>
+        </div>
+      </div>
+      <div class="store-card">
+        <div class="store-name">💙 Priceline</div>
+        <div class="store-desc">Good for Aveeno, QV, Ostelin and personal care.</div>
+        <div class="store-links">
+          <a class="store-link" href="https://www.priceline.com.au" target="_blank" rel="noopener">Visit</a>
+        </div>
+      </div>
+      <div class="store-card">
+        <div class="store-name">📦 Amazon Australia</div>
+        <div class="store-desc">Health, pantry and personal care. Good for vitamins.</div>
+        <div class="store-links">
+          <a class="store-link" href="https://www.amazon.com.au" target="_blank" rel="noopener">Visit</a>
+          <a class="store-link" href="https://www.amazon.com.au/s?k=metamucil" target="_blank" rel="noopener">Example</a>
+        </div>
+      </div>
+      <div class="store-card">
+        <div class="store-name">🏷️ eBay Australia</div>
+        <div class="store-desc">Great for multipacks. Check seller ratings.</div>
+        <div class="store-links">
+          <a class="store-link" href="https://www.ebay.com.au" target="_blank" rel="noopener">Visit</a>
+        </div>
+      </div>
+      <div class="store-card">
+        <div class="store-name">🌿 iHerb</div>
+        <div class="store-desc">Excellent for vitamins and supplements. Ships to AU.</div>
+        <div class="store-links">
+          <a class="store-link" href="https://au.iherb.com" target="_blank" rel="noopener">Visit</a>
+        </div>
+      </div>
+      <div class="store-card">
+        <div class="store-name">📊 GetPriceList</div>
+        <div class="store-desc">Australian price comparison across many retailers.</div>
+        <div class="store-links">
+          <a class="store-link" href="https://www.getpricelist.com.au" target="_blank" rel="noopener">Compare</a>
+        </div>
       </div>
     </div>
 
-    <div class="section-heading">📋 Items &amp; Best Prices</div>
-    <div id="categoryList"></div>
-
-    <div class="section-heading">➕ Add New Item</div>
-    <div class="ai-box">
-      <div class="ai-search-row">
-        <input type="text" id="newItemName" placeholder="Item Name"/>
-        <input type="text" id="newItemNote" placeholder="Size (e.g. 500g)"/>
+    <!-- ADD ITEM -->
+    <div class="section-heading">➕ Add a New Item to the List</div>
+    <div class="add-box">
+      <div class="form-row">
+        <div class="form-group" style="flex:2;min-width:180px;">
+          <label for="newItem">Item name</label>
+          <input type="text" id="newItem" placeholder="e.g. Metamucil Fibre Powder 500g"/>
+        </div>
+        <div class="form-group">
+          <label for="newCategory">Category</label>
+          <select id="newCategory">
+            <option>Health &amp; Vitamins</option>
+            <option>Skin Care</option>
+            <option>Dairy &amp; Spreads</option>
+            <option>Pantry</option>
+            <option>Personal Care</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="newNote">Notes (optional)</label>
+          <input type="text" id="newNote" placeholder="e.g. 200g tub"/>
+        </div>
         <button class="btn" onclick="addItem()">➕ Add</button>
       </div>
     </div>
+
+    <!-- SHARE -->
+    <div class="share-box">
+      <span style="font-size:1.6rem;">📤</span>
+      <div class="share-text">
+        <strong>Share this list</strong>
+        <span>Print a copy for shopping or email it to a friend.</span>
+      </div>
+      <button class="btn btn-outline" onclick="window.print()">🖨️ Print</button>
+      <button class="btn btn-gold" onclick="emailList()">📧 Email</button>
+    </div>
+
   </div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyI7M2AsmQCUrWbHPbmHIdowQWIRpjU1KzIddF_Wv4IfEpDJaWGGnrzJU9fHVdU_NE6/exec";
-let items = [];
+const STORAGE_KEY = 'bdrc_bestbuys_v1';
+const PROXY_URL   = 'https://script.google.com/macros/s/AKfycbyrA1HsUCvhD1oNUFn-C9W-qchWpGIGj51uUCIC1p7_jYegXBQI0p7sZLFHO2iRx3jU/exec';
 
-// 1. Accessibility
-function toggleContrast() {
-  document.body.classList.toggle('high-contrast');
-  localStorage.setItem('bdrc_contrast', document.body.classList.contains('high-contrast'));
+const STARTER_ITEMS = [
+  { id:1, name:'Metamucil Fibre Powder',      category:'Health & Vitamins', note:'300g or 500g',        price:null, store:'', date:'', aiSaved:false },
+  { id:2, name:'Aveeno Intensive Skin Cream', category:'Skin Care',         note:'300ml pump or 500ml', price:null, store:'', date:'', aiSaved:false },
+  { id:3, name:'QV Moisturiser Cream',        category:'Skin Care',         note:'Tub or pump',         price:null, store:'', date:'', aiSaved:false },
+  { id:4, name:'Nutella',                     category:'Pantry',            note:'400g jar',            price:null, store:'', date:'', aiSaved:false },
+  { id:5, name:'Lurpak Butter',               category:'Dairy & Spreads',   note:'250g or 500g block',  price:null, store:'', date:'', aiSaved:false },
+  { id:6, name:'Ostelin Vitamin D3',          category:'Health & Vitamins', note:'60 or 130 capsules',  price:null, store:'', date:'', aiSaved:false },
+];
+
+const CATEGORY_ICONS = {
+  'Health & Vitamins': '💊',
+  'Skin Care':         '🧴',
+  'Dairy & Spreads':   '🧈',
+  'Pantry':            '🥫',
+  'Personal Care':     '🪥',
+  'Other':             '🛍️'
+};
+
+function loadItems(){
+  try{ const s=localStorage.getItem(STORAGE_KEY); if(s) return JSON.parse(s); }catch(e){}
+  return JSON.parse(JSON.stringify(STARTER_ITEMS));
 }
+function saveItems(arr){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(arr)); }catch(e){} }
 
-// 2. Load from Sheet (Fixes CORS error)
-async function loadFromSheet() {
-  try {
-    const response = await fetch(GOOGLE_SCRIPT_URL);
-    items = await response.json();
-    renderCategories();
-    document.getElementById('lastUpdatedLabel').textContent = "Synced with Cloud";
-  } catch (e) {
-    document.getElementById('lastUpdatedLabel').textContent = "Offline Mode";
-  }
-}
+let items  = loadItems();
+let nextId = items.length ? Math.max(...items.map(i=>i.id))+1 : 1;
 
-// 3. AI Search Function (Restored)
-async function runAiSearch() {
-  const query = document.getElementById('aiQuery').value.trim();
-  if (!query) { toast('⚠️ Please type an item'); return; }
-  
-  const btn = document.getElementById('aiSearchBtn');
-  btn.disabled = true; btn.textContent = '⏳ Searching...';
-
-  try {
-    await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({ action: 'search', query: query })
-    });
-    toast("🔍 AI search sent to Google Sheet...");
-    setTimeout(loadFromSheet, 3000); // Reload to check for updates
-  } catch (e) {
-    toast("⚠️ Search failed");
-  } finally {
-    btn.disabled = false; btn.textContent = '🔍 Search';
-  }
-}
-
-// 4. Add New Item (Sends to Sheet)
-async function addItem() {
-  const name = document.getElementById('newItemName').value;
-  const note = document.getElementById('newItemNote').value;
-  if (!name) return;
-
-  toast("Adding item...");
-  await fetch(GOOGLE_SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: JSON.stringify({ action: 'add', name, note })
-  });
-  
-  document.getElementById('newItemName').value = '';
-  document.getElementById('newItemNote').value = '';
-  setTimeout(loadFromSheet, 2000);
-}
-
-// 5. Render Logic
-function renderCategories() {
+// ── RENDER CATEGORIES ─────────────────────────────────────────
+function renderCategories(){
   const container = document.getElementById('categoryList');
-  if(!items.length) { container.innerHTML = "<p>No items found. Add one below!</p>"; return; }
-  
-  const usedCats = [...new Set(items.map(i => i.category || 'General'))];
+  const cats = [...new Set(items.map(i=>i.category))];
+  // Also show any categories that have no items yet
+  const allCats = ['Health & Vitamins','Skin Care','Dairy & Spreads','Pantry','Personal Care','Other'];
+  const usedCats = cats.filter(c=>items.some(i=>i.category===c));
+
+  if(!usedCats.length){
+    container.innerHTML = '<p style="color:#aaa;font-style:italic;padding:12px;">No items yet — add your first item below!</p>';
+    updateLabel(); return;
+  }
+
   container.innerHTML = usedCats.map(cat => {
-    const catItems = items.filter(i => (i.category || 'General') === cat);
+    const catItems = items.filter(i=>i.category===cat);
+    const icon = CATEGORY_ICONS[cat] || '🛍️';
     const rows = catItems.map(item => `
-      <tr>
-        <td><strong>${item.name}</strong><br><small>${item.note||''}</small></td>
-        <td>${item.price ? '$'+Number(item.price).toFixed(2) : '—'}</td>
-        <td>${item.store || '—'}</td>
-        <td><button class="btn btn-sm" onclick="showEdit(${item.id})">✏️</button></td>
+      <tr id="row-${item.id}">
+        <td class="item-name">${esc(item.name)}<br><span style="font-weight:400;color:#888;font-size:0.8em;">${esc(item.note||'')} </span></td>
+        <td class="${item.price!==null?'price-cell':'price-cell no-price'}">
+          ${(()=>{
+            if(item.price===null) return '<span class="no-price-dot"><span class="freshness-dot"></span>—</span>';
+            const age = priceAge(item.date);
+            const cls = age||'fresh';
+            const label = age==='ageing'?'Getting old':age==='stale'?'Stale':'Fresh';
+            return `<span class="${cls}" title="${label}"><span class="freshness-dot"></span>$${Number(item.price).toFixed(2)}</span>`;
+          })()}
+          ${item.aiSaved?'<span class="ai-tag">AI</span>':''}</td>
+        <td class="store-cell">${esc(item.store||'—')}</td>
+        <td class="date-cell">${fmtDate(item.date)||'—'}</td>
+        <td class="actions-cell" style="white-space:nowrap;">
+          <button class="btn btn-sm" onclick="showEdit(${item.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" style="margin-left:3px;" onclick="delItem(${item.id})">🗑</button>
+        </td>
       </tr>
-      <tr id="edit-${item.id}" style="display:none; background:#f9f9f9;">
-        <td colspan="4">
-          $<input type="number" id="p-${item.id}" step="0.01" style="width:70px"> 
-          <input type="text" id="s-${item.id}" placeholder="Store">
-          <button class="btn btn-sm" onclick="savePrice(${item.id})">✅ Save</button>
+      <tr id="edit-row-${item.id}" style="display:none;background:#E7F1FB;">
+        <td colspan="5" style="padding:8px 14px;">
+          <div class="edit-inline">
+            <strong>$</strong>
+            <input class="ep-input" type="number" id="ep-${item.id}" min="0" step="0.01" placeholder="0.00"/>
+            <input class="es-input" type="text" id="es-${item.id}" placeholder="Store name"/>
+            <button class="btn btn-sm" onclick="savePrice(${item.id})">✅ Save</button>
+            <button class="btn btn-outline btn-sm" onclick="cancelEdit(${item.id})">Cancel</button>
+          </div>
         </td>
       </tr>`).join('');
-    return `<div style="background:#1F4E79; color:white; padding:10px; margin-top:10px;">${cat}</div>
-            <table style="width:100%; border-collapse:collapse;">${rows}</table>`;
+
+    return `
+      <div class="cat-header" onclick="toggleCat('cat-${cat.replace(/[^a-z0-9]/gi,'_')}')" id="hdr-cat-${cat.replace(/[^a-z0-9]/gi,'_')}">
+        <div class="cat-title">${icon} ${esc(cat)} <span class="cat-badge">${catItems.length} item${catItems.length!==1?'s':''}</span></div>
+        <span class="cat-arrow">▼</span>
+      </div>
+      <div class="cat-body" id="cat-${cat.replace(/[^a-z0-9]/gi,'_')}">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Best Price</th><th>Where Found</th><th>Updated</th><th></th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      </div>`;
   }).join('');
+  updateLabel();
 }
 
-async function savePrice(id) {
-  const price = document.getElementById(`p-${id}`).value;
-  const store = document.getElementById(`s-${id}`).value;
-  await fetch(GOOGLE_SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: JSON.stringify({ action: 'update', id, price, store })
+function toggleCat(id){
+  const body = document.getElementById(id);
+  const hdr  = document.getElementById('hdr-'+id);
+  const open = body.classList.contains('open');
+  body.classList.toggle('open', !open);
+  hdr.classList.toggle('open', !open);
+}
+
+function fmtDate(d){ if(!d) return ''; return new Date(d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}); }
+function priceAge(d){
+  if(!d) return null;
+  const days = Math.floor((Date.now() - new Date(d).getTime()) / 86400000);
+  if(days <= 14) return 'fresh';
+  if(days <= 60) return 'ageing';
+  return 'stale';
+}
+function updateLabel(){
+  const dated=items.filter(i=>i.date).map(i=>i.date).sort();
+  document.getElementById('lastUpdatedLabel').textContent =
+    dated.length ? 'Last update: '+fmtDate(dated[dated.length-1]) : 'No prices recorded yet';
+
+  // Freshness summary
+  const ageing = items.filter(i=>i.price!==null && priceAge(i.date)==='ageing').length;
+  const stale  = items.filter(i=>i.price!==null && priceAge(i.date)==='stale').length;
+  const noPrice= items.filter(i=>i.price===null).length;
+  const box = document.getElementById('freshnessSummary');
+  const parts = [];
+  if(stale)   parts.push(`<span style="color:#c62828;">● ${stale} stale price${stale!==1?'s':''} (over 60 days old)</span>`);
+  if(ageing)  parts.push(`<span style="color:#f9a825;">● ${ageing} price${ageing!==1?'s':''} getting old (14–60 days)</span>`);
+  if(noPrice) parts.push(`<span style="color:#888;">● ${noPrice} item${noPrice!==1?'s':''} with no price yet</span>`);
+  if(parts.length){
+    box.innerHTML = '<strong>⚠️ Prices needing attention:</strong> &nbsp;' + parts.join(' &nbsp;|&nbsp; ');
+    box.className = 'freshness-summary visible';
+  } else {
+    box.className = 'freshness-summary';
+  }
+}
+
+// ── ADD ITEM ──────────────────────────────────────────────────
+function addItem(){
+  const name=document.getElementById('newItem').value.trim();
+  const cat=document.getElementById('newCategory').value;
+  const note=document.getElementById('newNote').value.trim();
+  if(!name){ toast('⚠️ Please enter an item name',true); return; }
+  items.push({id:nextId++,name,category:cat,note,price:null,store:'',date:'',aiSaved:false});
+  saveItems(items); renderCategories();
+  document.getElementById('newItem').value='';
+  document.getElementById('newNote').value='';
+  toast('✅ '+name+' added!');
+  // Auto-open the category it was added to
+  const cid = 'cat-'+cat.replace(/[^a-z0-9]/gi,'_');
+  const body = document.getElementById(cid);
+  const hdr  = document.getElementById('hdr-'+cid);
+  if(body && !body.classList.contains('open')){ body.classList.add('open'); hdr.classList.add('open'); }
+}
+
+// ── EDIT / SAVE ───────────────────────────────────────────────
+function showEdit(id){ document.getElementById('edit-row-'+id).style.display=''; document.getElementById('ep-'+id).focus(); }
+function cancelEdit(id){ document.getElementById('edit-row-'+id).style.display='none'; }
+function savePrice(id){
+  const p=parseFloat(document.getElementById('ep-'+id).value);
+  const s=document.getElementById('es-'+id).value.trim();
+  if(isNaN(p)||p<0){ toast('⚠️ Please enter a valid price',true); return; }
+  const item=items.find(i=>i.id===id);
+  if(item){ item.price=p; item.store=s||'Not specified'; item.date=today(); item.aiSaved=false; }
+  saveItems(items); cancelEdit(id); renderCategories();
+  toast('✅ Price updated for '+item.name);
+}
+
+// ── DELETE ────────────────────────────────────────────────────
+function delItem(id){
+  const item=items.find(i=>i.id===id);
+  if(!item||!confirm('Remove "'+item.name+'" from the list?')) return;
+  items=items.filter(i=>i.id!==id);
+  saveItems(items); renderCategories();
+  toast('🗑️ '+item.name+' removed');
+}
+
+// ── AI ASSISTANT ──────────────────────────────────────────────
+async function runAiSearch(){
+  const query=document.getElementById('aiQuery').value.trim();
+  if(!query){ toast('⚠️ Please type an item to search',true); return; }
+  const resultBox=document.getElementById('aiResultBox');
+  const savedNotice=document.getElementById('aiSavedNotice');
+  const btn=document.getElementById('aiSearchBtn');
+  resultBox.className='ai-result-box visible';
+  savedNotice.className='ai-saved-notice';
+  btn.disabled=true; btn.textContent='⏳ Searching…';
+  resultBox.innerHTML=`<div class="ai-thinking"><div class="ai-spinner"></div><span>Searching for <strong>${esc(query)}</strong>…</span></div>`;
+
+  try{
+    const resp = await fetch(PROXY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ query, tracked: items.map(i=>i.name).join(', ') })
+    });
+    let result;
+    const respText = await resp.text();
+    try{ result = JSON.parse(respText); }
+    catch(e){
+      const match = respText.match(/\{[\s\S]*\}/);
+      if(match){ try{ result=JSON.parse(match[0]); }catch(e2){ throw new Error('Could not read search results.'); } }
+      else{ throw new Error('Could not read search results.'); }
+    }
+    if(result.error){ throw new Error(result.error); }
+
+    // Build display — summary + table (filter out $0 rows)
+    let html='';
+    const pricesWithValue = result.allPrices ? result.allPrices.filter(p=>p.price>0) : [];
+    if(pricesWithValue.length){
+      html+=`<table class="ai-prices-table">
+        <thead><tr><th>Store</th><th>Price</th><th>Notes</th></tr></thead><tbody>`;
+      pricesWithValue.forEach(p=>{
+        const best=p.price===result.bestPrice&&p.store===result.bestStore;
+        html+=`<tr class="${best?'best-row':''}">
+          <td>${best?'🏆 ':''} ${esc(p.store)}</td>
+          <td class="price-col">$${Number(p.price).toFixed(2)}</td>
+          <td style="color:#666;">${esc(p.note||'')} </td></tr>`;
+      });
+      html+=`</tbody></table>`;
+    }
+    resultBox.className='ai-result-box visible';
+    resultBox.innerHTML=html;
+
+    if(result.itemMatched&&result.bestPrice&&result.bestStore){
+      const matched=items.find(i=>
+        i.name.toLowerCase().includes(result.itemMatched.toLowerCase().split(' ')[0])||
+        result.itemMatched.toLowerCase().includes(i.name.toLowerCase().split(' ')[0])
+      );
+      if(matched){
+        matched.price=result.bestPrice; matched.store=result.bestStore;
+        matched.date=today(); matched.aiSaved=true;
+        saveItems(items); renderCategories();
+        savedNotice.className='ai-saved-notice visible';
+        savedNotice.innerHTML=`✅ <strong>Saved!</strong> $${Number(result.bestPrice).toFixed(2)} at <strong>${esc(result.bestStore)}</strong> added to <strong>${esc(matched.name)}</strong>.`;
+        toast('✅ Price saved for '+matched.name);
+      }
+    }
+  }catch(err){
+    resultBox.className='ai-result-box visible error';
+    resultBox.innerHTML=`<strong>⚠️ Search could not complete.</strong><br><span style="font-size:0.88em;color:#666;">${esc(err.message)}</span>`;
+  }finally{
+    btn.disabled=false; btn.innerHTML='🔍 Search';
+    document.getElementById('aiQuery').value='';
+  }
+}
+
+// ── EMAIL ─────────────────────────────────────────────────────
+function emailList(){
+  const d=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  let body='Best Buys List – Bridgeman Downs Residents\nPrepared: '+d+'\n\n';
+  body+='─────────────────────────────────\n';
+  items.forEach(item=>{
+    body+=item.name; if(item.note) body+=' ('+item.note+')'; body+='\n';
+    if(item.price!==null){
+      body+='  $'+Number(item.price).toFixed(2);
+      if(item.store) body+=' at '+item.store;
+      if(item.aiSaved) body+=' [AI]';
+      if(item.date) body+=' ('+fmtDate(item.date)+')';
+    } else { body+='  Not yet recorded'; }
+    body+='\n\n';
   });
-  toast("✅ Price saved!");
-  setTimeout(loadFromSheet, 1500);
+  body+='─────────────────────────────────\nVisit the Residents Hub for more community resources.\n';
+  window.location.href='mailto:?subject=Best Buys – Bridgeman Downs '+d+'&body='+encodeURIComponent(body);
 }
 
-function showEdit(id) { document.getElementById(`edit-${id}`).style.display = 'table-row'; }
-function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
-
-loadFromSheet();
+// ── HELPERS ───────────────────────────────────────────────────
+function today(){ return new Date().toISOString().split('T')[0]; }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+let toastTimer;
+function toast(msg,warn){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background=warn?'#d32f2f':'#1F4E79';
+  t.classList.add('show'); clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+document.getElementById('newItem').addEventListener('keydown',e=>{ if(e.key==='Enter') addItem(); });
+document.getElementById('print-date').textContent='Printed: '+new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+renderCategories();
 </script>
 </body>
 </html>
