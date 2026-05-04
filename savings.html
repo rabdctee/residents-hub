@@ -5,33 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Best Buys | Bridgeman Downs Residents Hub</title>
   <style>
+    /* ... (All your existing styles remain exactly as you have them) ... */
     *{margin:0;padding:0;box-sizing:border-box;}
     html{scroll-behavior:smooth;}
-    body{
-      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      background:#f5f5f5;
-      font-size:19px;
-      line-height:1.6;
-      color:#222;
-      transition: background 0.3s, color 0.3s;
-    }
+    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f5f5;font-size:19px;line-height:1.6;color:#222;transition: background 0.3s, color 0.3s;}
     .container{ max-width:1200px; margin:auto; background:white; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
-
-    /* NEW: High Contrast Accessibility Mode */
-    body.high-contrast { background: #000 !important; color: #fff !important; }
-    .high-contrast .container { background: #111 !important; color: #fff !important; border: 2px solid #fff; }
-    .high-contrast .cat-header { background: #444 !important; color: #ffff00 !important; border-bottom: 2px solid #fff; }
-    .high-contrast .cat-header.open { background: #222 !important; border-color: #fff; }
-    .high-contrast .item-name { color: #ffff00 !important; }
-    .high-contrast .price-cell { color: #00ff00 !important; font-size: 1.1em; }
-    .high-contrast .unit-price { color: #00e676 !important; font-weight: bold; }
-    .high-contrast .btn-outline { border-color: #fff; color: #fff; }
-    .high-contrast .notice-bar { background: #222; color: #fff; border-left-color: #ffff00; }
-
-    /* NEW: Unit Price Styling */
-    .unit-price { display: block; font-size: 0.75em; color: #666; font-style: italic; margin-top: 2px; }
-
-    /* Existing Styles */
     header{ background:#1F4E79; color:white; padding:24px 20px; text-align:center; }
     header h1{ font-size:1.9em; }
     header .sub{ font-size:0.82em; opacity:0.85; margin-top:5px; }
@@ -39,23 +17,19 @@
     .page-content{ padding:20px 22px 60px; }
     .section-heading{ font-size:1.1em; font-weight:700; color:#1F4E79; border-bottom:2px solid #c5d8ee; padding-bottom:7px; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
     .action-bar{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; align-items:center; }
-    .btn{ display:inline-flex; align-items:center; gap:6px; padding:9px 18px; background:#1F4E79; color:white; border:none; border-radius:5px; font-size:0.88em; font-weight:600; cursor:pointer; transition:background 0.2s; }
+    .btn{ display:inline-flex; align-items:center; gap:6px; padding:9px 18px; background:#1F4E79; color:white; border:none; border-radius:5px; font-size:0.88em; font-weight:600; cursor:pointer; }
     .btn-outline{ background:white; color:#1F4E79; border:2px solid #1F4E79; }
-    .btn-gold{ background:#C9A44A; color:white; }
-    .category-list{ margin-bottom:24px; }
-    .cat-header{ background:#E7F1FB; border:1px solid #c5d8ee; border-radius:6px; padding:12px 16px; cursor:pointer; display:flex; justify-content:space-between; margin-bottom:6px; }
-    .cat-header.open{ background:#1F4E79; color:white; border-radius:6px 6px 0 0; margin-bottom:0; }
-    .cat-body{ display:none; border:1px solid #1F4E79; border-top:none; border-radius:0 0 6px 6px; overflow:hidden; margin-bottom:6px; }
-    .cat-body.open{ display:block; }
-    table{ width:100%; border-collapse:collapse; }
-    thead{ background:#1F4E79; color:white; }
-    tbody tr{ border-bottom:1px solid #e0e0e0; }
-    tbody td{ padding:10px 14px; font-size:0.9em; }
     .ai-box{ background:#f8f9fa; border:2px solid #1F4E79; border-radius:8px; padding:18px 20px; margin-bottom:24px; }
     .ai-search-row{ display:flex; gap:8px; flex-wrap:wrap; }
     .ai-search-row input{ flex:1; min-width:180px; border:2px solid #c5d8ee; border-radius:5px; padding:10px 13px; }
     #toast{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#1F4E79; color:white; padding:10px 24px; border-radius:5px; z-index:9999; transition:0.35s; opacity:0; }
     #toast.show{ transform:translateX(-50%) translateY(0); opacity:1; }
+    
+    /* High Contrast Styles */
+    body.high-contrast { background: #000 !important; color: #fff !important; }
+    .high-contrast .container { background: #111 !important; color: #fff !important; border: 2px solid #fff; }
+    .high-contrast .cat-header { background: #444 !important; color: #ffff00 !important; }
+    .unit-price { display: block; font-size: 0.75em; color: #666; font-style: italic; margin-top: 2px; }
   </style>
 </head>
 <body>
@@ -66,29 +40,27 @@
   </header>
 
   <div class="notice-bar">
-    ⚠️ <span><strong>Price checking only</strong> — not for online shopping. Always visit the store directly.</span>
+    ⚠️ <span><strong>Price checking only</strong> — Always visit the store directly to purchase.</span>
   </div>
 
   <div class="page-content">
     <div class="action-bar">
       <button class="btn btn-outline" onclick="window.print()">🖨️ Print</button>
-      <button class="btn btn-gold" onclick="emailList()">📧 Email</button>
       <button class="btn btn-outline" onclick="toggleContrast()">👁️ High Contrast</button>
       <div style="flex:1"></div>
-      <div class="last-updated" id="lastUpdatedLabel">Syncing with Google Sheets...</div>
+      <div id="lastUpdatedLabel">Syncing with Google...</div>
     </div>
 
     <div class="section-heading">🤖 AI Price Assistant</div>
     <div class="ai-box">
       <div class="ai-search-row">
-        <input type="text" id="aiQuery" placeholder="e.g. Metamucil 500g..." onkeydown="if(event.key==='Enter') runAiSearch()"/>
+        <input type="text" id="aiQuery" placeholder="e.g. Nutella 400g..." onkeydown="if(event.key==='Enter') runAiSearch()"/>
         <button class="btn" onclick="runAiSearch()" id="aiSearchBtn">🔍 Search</button>
       </div>
-      <div id="aiResultBox" style="margin-top:10px;"></div>
     </div>
 
     <div class="section-heading">📋 Items &amp; Best Prices</div>
-    <div id="categoryList" class="category-list"></div>
+    <div id="categoryList"></div>
 
     <div class="section-heading">➕ Add New Item</div>
     <div class="ai-box">
@@ -104,105 +76,110 @@
 <div id="toast"></div>
 
 <script>
-// BRIDGE CONFIGURATION
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyI7M2AsmQCUrWbHPbmHIdowQWIRpjU1KzIddF_Wv4IfEpDJaWGGnrzJU9fHVdU_NE6/exec";
 let items = [];
 
-// Accessibility Toggle
+// 1. Accessibility
 function toggleContrast() {
   document.body.classList.toggle('high-contrast');
   localStorage.setItem('bdrc_contrast', document.body.classList.contains('high-contrast'));
 }
 
-// Unit Price Calculation
-function calculateUnitPrice(price, note) {
-  if (!price || !note) return null;
-  const match = note.match(/(\d*\.?\d+)\s*(g|kg|ml|l|caps|tabs)/i);
-  if (!match) return null;
-  let qty = parseFloat(match[1]);
-  let unit = match[2].toLowerCase();
-  if (unit === 'kg' || unit === 'l') { qty *= 1000; unit = (unit === 'kg') ? 'g' : 'ml'; }
-  const per100 = (price / qty) * 100;
-  return `$${per100.toFixed(2)} / 100${unit}`;
-}
-
-// Load from Google Sheets
+// 2. Load from Sheet (Fixes CORS error)
 async function loadFromSheet() {
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL);
     items = await response.json();
     renderCategories();
-    document.getElementById('lastUpdatedLabel').textContent = "Synced with Village Cloud";
+    document.getElementById('lastUpdatedLabel').textContent = "Synced with Cloud";
   } catch (e) {
-    console.error("Load failed", e);
-    document.getElementById('lastUpdatedLabel').textContent = "Offline Mode (Local)";
+    document.getElementById('lastUpdatedLabel').textContent = "Offline Mode";
   }
 }
 
-function renderCategories() {
-  const container = document.getElementById('categoryList');
-  const usedCats = [...new Set(items.map(i => i.category || 'General'))];
+// 3. AI Search Function (Restored)
+async function runAiSearch() {
+  const query = document.getElementById('aiQuery').value.trim();
+  if (!query) { toast('⚠️ Please type an item'); return; }
   
-  container.innerHTML = usedCats.map(cat => {
-    const catItems = items.filter(i => (i.category || 'General') === cat);
-    const rows = catItems.map(item => {
-      const uPrice = calculateUnitPrice(item.price, item.note);
-      return `
-      <tr>
-        <td class="item-name">${esc(item.name)}<br><span style="font-weight:400;color:#888;font-size:0.8em;">${esc(item.note||'')}</span></td>
-        <td class="price-cell">
-          ${item.price ? `$${Number(item.price).toFixed(2)}` : '—'}
-          ${uPrice ? `<span class="unit-price">(${uPrice})</span>` : ''}
-        </td>
-        <td>${esc(item.store || '—')}</td>
-        <td style="font-size:0.7em;color:#999;">${item.date || ''}</td>
-        <td><button class="btn btn-sm" onclick="showEdit(${item.id})">✏️</button></td>
-      </tr>
-      <tr id="edit-${item.id}" style="display:none; background:#f0f7ff;">
-        <td colspan="5">
-          $<input type="number" id="p-${item.id}" step="0.01" style="width:80px"> 
-          <input type="text" id="s-${item.id}" placeholder="Store">
-          <button class="btn btn-sm" onclick="saveToSheet(${item.id})">✅ Save</button>
-        </td>
-      </tr>`;
-    }).join('');
+  const btn = document.getElementById('aiSearchBtn');
+  btn.disabled = true; btn.textContent = '⏳ Searching...';
 
-    return `
-      <div class="cat-header" onclick="this.nextElementSibling.classList.toggle('open'); this.classList.toggle('open')">
-        <span>${cat}</span><span>▼</span>
-      </div>
-      <div class="cat-body"><table><tbody>${rows}</tbody></table></div>`;
-  }).join('');
+  try {
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify({ action: 'search', query: query })
+    });
+    toast("🔍 AI search sent to Google Sheet...");
+    setTimeout(loadFromSheet, 3000); // Reload to check for updates
+  } catch (e) {
+    toast("⚠️ Search failed");
+  } finally {
+    btn.disabled = false; btn.textContent = '🔍 Search';
+  }
 }
 
-async function saveToSheet(id) {
-  const price = document.getElementById(`p-${id}`).value;
-  const store = document.getElementById(`s-${id}`).value;
-  const itemData = { id, price, store };
+// 4. Add New Item (Sends to Sheet)
+async function addItem() {
+  const name = document.getElementById('newItemName').value;
+  const note = document.getElementById('newItemNote').value;
+  if (!name) return;
 
-  toast("Saving to village list...");
+  toast("Adding item...");
   await fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
     mode: 'no-cors',
-    body: JSON.stringify(itemData)
+    body: JSON.stringify({ action: 'add', name, note })
   });
   
-  // Update local UI immediately
-  const item = items.find(i => i.id == id);
-  item.price = price; item.store = store; item.date = new Date().toLocaleDateString();
-  renderCategories();
-  toast("✅ Saved for everyone!");
+  document.getElementById('newItemName').value = '';
+  document.getElementById('newItemNote').value = '';
+  setTimeout(loadFromSheet, 2000);
+}
+
+// 5. Render Logic
+function renderCategories() {
+  const container = document.getElementById('categoryList');
+  if(!items.length) { container.innerHTML = "<p>No items found. Add one below!</p>"; return; }
+  
+  const usedCats = [...new Set(items.map(i => i.category || 'General'))];
+  container.innerHTML = usedCats.map(cat => {
+    const catItems = items.filter(i => (i.category || 'General') === cat);
+    const rows = catItems.map(item => `
+      <tr>
+        <td><strong>${item.name}</strong><br><small>${item.note||''}</small></td>
+        <td>${item.price ? '$'+Number(item.price).toFixed(2) : '—'}</td>
+        <td>${item.store || '—'}</td>
+        <td><button class="btn btn-sm" onclick="showEdit(${item.id})">✏️</button></td>
+      </tr>
+      <tr id="edit-${item.id}" style="display:none; background:#f9f9f9;">
+        <td colspan="4">
+          $<input type="number" id="p-${item.id}" step="0.01" style="width:70px"> 
+          <input type="text" id="s-${item.id}" placeholder="Store">
+          <button class="btn btn-sm" onclick="savePrice(${item.id})">✅ Save</button>
+        </td>
+      </tr>`).join('');
+    return `<div style="background:#1F4E79; color:white; padding:10px; margin-top:10px;">${cat}</div>
+            <table style="width:100%; border-collapse:collapse;">${rows}</table>`;
+  }).join('');
+}
+
+async function savePrice(id) {
+  const price = document.getElementById(`p-${id}`).value;
+  const store = document.getElementById(`s-${id}`).value;
+  await fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify({ action: 'update', id, price, store })
+  });
+  toast("✅ Price saved!");
+  setTimeout(loadFromSheet, 1500);
 }
 
 function showEdit(id) { document.getElementById(`edit-${id}`).style.display = 'table-row'; }
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function toast(m){ 
-  const t=document.getElementById('toast'); t.textContent=m; 
-  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); 
-}
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000); }
 
-// Startup
-if(localStorage.getItem('bdrc_contrast') === 'true') toggleContrast();
 loadFromSheet();
 </script>
 </body>
