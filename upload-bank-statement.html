@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Bank Statement | Bridgeman Downs Residents Hub</title>
+  <style>
+    :root {
+      --navy:       #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid:   #c5d8ee;
+      --gold:       #C9A44A;
+      --green:      #1a6b3a;
+      --green-bg:   #e8f5ee;
+      --red:        #c0392b;
+      --red-bg:     #fdf2f2;
+      --grey:       #5f6368;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; min-height:100vh; }
+    .top-bar {
+      background:var(--navy); padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px;
+    }
+    .top-bar-title { color:white; font-size:1em; font-weight:700; }
+    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      background:white; color:var(--navy); padding:9px 16px;
+      border-radius:7px; text-decoration:none; font-weight:700;
+      font-size:0.88em; border:2px solid white; white-space:nowrap;
+      transition:background 0.2s;
+    }
+    .back-btn:hover { background:var(--navy-light); }
+    .content { max-width:620px; margin:0 auto; padding:24px 16px 60px; }
+    .card {
+      background:white; border-radius:12px;
+      border:2px solid var(--navy-light);
+      box-shadow:0 2px 8px rgba(0,0,0,0.07);
+      overflow:hidden; margin-bottom:16px;
+    }
+    .card-header { background:var(--navy); padding:14px 20px; color:white; font-weight:700; font-size:0.95em; }
+    .card-body { padding:22px; }
+    .form-group { margin-bottom:18px; }
+    .form-group:last-child { margin-bottom:0; }
+    label { display:block; font-weight:600; font-size:0.88em; color:var(--navy); margin-bottom:6px; }
+    label .required { color:var(--red); margin-left:2px; }
+    select, input[type="text"], input[type="email"], input[type="month"] {
+      width:100%; padding:11px 13px; font-size:0.95em;
+      border:2px solid var(--navy-mid); border-radius:7px;
+      background:white; color:#333; font-family:inherit;
+      transition:border-color 0.15s; appearance:none;
+    }
+    select:focus, input:focus { outline:none; border-color:var(--navy); }
+    .info-box {
+      background:var(--navy-light); border-radius:8px;
+      padding:12px 16px; margin-bottom:18px;
+      font-size:0.85em; color:var(--navy); line-height:1.6;
+    }
+    .info-box strong { display:block; margin-bottom:4px; }
+    .naming-guide { background:var(--navy-light); border-radius:8px; padding:12px 16px; margin-bottom:18px; }
+    .naming-title { font-size:0.82em; font-weight:700; color:var(--navy); margin-bottom:8px; }
+    .naming-row { display:flex; justify-content:space-between; gap:10px; font-size:0.8em; padding:4px 0; }
+    .naming-label { color:var(--grey); flex-shrink:0; }
+    .naming-example { color:#333; font-style:italic; text-align:right; }
+    .drop-zone {
+      border:2px dashed var(--navy-mid); border-radius:9px; padding:28px 20px;
+      text-align:center; cursor:pointer; transition:all 0.2s; background:#fafcff;
+      position:relative;
+    }
+    .drop-zone:hover, .drop-zone.dragover { border-color:var(--navy); background:var(--navy-light); }
+    .drop-zone input[type="file"] { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+    .drop-icon { font-size:2em; margin-bottom:8px; }
+    .drop-text { font-size:0.9em; color:var(--grey); line-height:1.5; }
+    .drop-text strong { color:var(--navy); }
+    .file-selected {
+      display:none; margin-top:12px; padding:10px 14px;
+      background:var(--navy-light); border-radius:7px;
+      font-size:0.85em; color:var(--navy); font-weight:600;
+      align-items:center; gap:8px;
+    }
+    .file-selected.show { display:flex; }
+    .file-clear { margin-left:auto; cursor:pointer; color:var(--red); font-weight:700; font-size:1.1em; flex-shrink:0; background:none; border:none; padding:0 4px; }
+    .progress-wrap { display:none; margin-bottom:14px; background:#e0e0e0; border-radius:20px; overflow:hidden; height:8px; }
+    .progress-wrap.show { display:block; }
+    .progress-bar { height:100%; background:var(--navy); border-radius:20px; width:0%; transition:width 0.3s; }
+    .progress-label { font-size:0.82em; color:var(--grey); text-align:center; margin-top:6px; display:none; }
+    .progress-label.show { display:block; }
+    .alert { padding:12px 16px; border-radius:8px; font-size:0.88em; margin-bottom:16px; display:none; line-height:1.55; }
+    .alert.show { display:block; }
+    .alert-success { background:var(--green-bg); color:var(--green); border:1px solid #a8d5b8; }
+    .alert-error   { background:var(--red-bg);   color:var(--red);   border:1px solid #f1b0a8; }
+    .btn-primary {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      background:var(--navy); color:white; padding:13px 24px;
+      border-radius:8px; font-weight:700; font-size:0.95em;
+      border:none; cursor:pointer; width:100%; transition:background 0.2s;
+    }
+    .btn-primary:hover { background:#17406a; }
+    .btn-primary:disabled { background:#aaa; cursor:not-allowed; }
+    .spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .success-card { display:none; }
+    .success-card.show { display:block; }
+    .success-icon { font-size:3em; text-align:center; margin-bottom:12px; }
+    .success-detail { background:var(--navy-light); border-radius:8px; padding:12px 16px; font-size:0.88em; color:#333; margin:14px 0; line-height:1.6; }
+    .btn-another {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      background:white; color:var(--navy); padding:12px 24px;
+      border-radius:8px; font-weight:700; font-size:0.92em;
+      border:2px solid var(--navy); cursor:pointer; width:100%; transition:all 0.2s; margin-top:10px;
+    }
+    .btn-another:hover { background:var(--navy-light); }
+    @media(max-width:480px){ .top-bar { padding:10px 14px; } .back-btn { font-size:0.82em; padding:8px 12px; } .card-body { padding:16px; } }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div>
+    <div class="top-bar-title">&#127981; Upload Bank Statement</div>
+    <div class="top-bar-sub">Bridgeman Downs &#8212; Committee use only</div>
+  </div>
+  <a class="back-btn" href="index.html#committee">&#8592; Back</a>
+</div>
+
+<div class="content">
+
+  <div class="card" id="uploadCard">
+    <div class="card-header">&#127981; Upload Bank Statement to the Hub</div>
+    <div class="card-body">
+
+      <div id="alertMsg" class="alert"></div>
+
+      <div class="info-box">
+        <strong>&#128161; About this form</strong>
+        Bank statements are saved to the <strong>Bank Statements</strong> folder in Google Drive
+        and will appear on the Hub automatically for residents to view.
+      </div>
+
+      <div class="form-group">
+        <label for="statementMonth">Statement month <span class="required">*</span></label>
+        <input type="month" id="statementMonth" onchange="updateFileName()">
+      </div>
+
+      <div class="naming-guide">
+        <div class="naming-title">&#128221; Suggested file name format</div>
+        <div class="naming-row">
+          <span class="naming-label">Statement</span>
+          <span class="naming-example" id="namingExample">04-Bank Statement - Apr 26.pdf</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="docName">File name <span class="required">*</span>
+          <span style="font-weight:400;color:var(--grey);font-size:0.9em;"> &#8212; must end in .pdf</span>
+        </label>
+        <input type="text" id="docName" placeholder="e.g. 04-Bank Statement - Apr 26.pdf">
+      </div>
+
+      <div class="form-group">
+        <label>Select PDF file <span class="required">*</span></label>
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept=".pdf,application/pdf" onchange="handleFileSelect(this)">
+          <div class="drop-icon">&#128196;</div>
+          <div class="drop-text">
+            <strong>Click to choose a PDF file</strong><br>
+            or drag and drop it here
+          </div>
+        </div>
+        <div class="file-selected" id="fileSelected">
+          <span id="fileSelectedName"></span>
+          <button class="file-clear" onclick="clearFile()" title="Remove file">&#10005;</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="docUploader">Your committee email <span class="required">*</span></label>
+        <input type="email" id="docUploader" placeholder="e.g. rabd.treasurer@gmail.com">
+      </div>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-label" id="progressLabel"></div>
+
+      <button class="btn-primary" id="uploadBtn" onclick="uploadDocument()">
+        &#127981; Upload Bank Statement
+      </button>
+
+    </div>
+  </div>
+
+  <div class="card success-card" id="successCard">
+    <div class="card-header">&#9989; Upload Complete</div>
+    <div class="card-body">
+      <div class="success-icon">&#127881;</div>
+      <p style="text-align:center;font-weight:700;color:var(--navy);margin-bottom:6px;">Bank statement uploaded successfully!</p>
+      <p style="text-align:center;font-size:0.88em;color:var(--grey);margin-bottom:14px;">
+        The statement is now saved to Google Drive and will appear on the Hub automatically.
+      </p>
+      <div class="success-detail" id="successDetail"></div>
+      <button class="btn-another" onclick="resetForm()">&#127981; Upload Another Statement</button>
+      <a class="back-btn" href="index.html#committee" style="margin-top:10px;justify-content:center;display:flex;">
+        &#8592; Back to Committee Page
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxgoNq2hDH4jAKiMuXIFBmcTipxor9e2aO6ylEjcilem4A7e8ARzSmdToOKvzBVH7ncNw/exec';
+
+  var MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun',
+                     'Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  var selectedFile = null;
+
+  function updateFileName() {
+    var val = document.getElementById('statementMonth').value;
+    if (!val) return;
+    var parts = val.split('-');
+    var year  = parts[0].slice(2);
+    var month = parseInt(parts[1]) - 1;
+    var mm    = String(month + 1).padStart(2, '0');
+    var suggested = mm + '-Bank Statement - ' + MONTH_SHORT[month] + ' ' + year + '.pdf';
+    document.getElementById('docName').value = suggested;
+    document.getElementById('namingExample').textContent = suggested;
+  }
+
+  function handleFileSelect(input) {
+    var file = input.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+      showAlert('error','Please select a PDF file only.');
+      input.value = ''; return;
+    }
+    if (file.size > 50*1024*1024) {
+      showAlert('error','File is too large. Maximum size is 50 MB.');
+      input.value = ''; return;
+    }
+    selectedFile = file;
+    document.getElementById('fileSelectedName').textContent = file.name + ' (' + formatSize(file.size) + ')';
+    document.getElementById('fileSelected').classList.add('show');
+    if (!document.getElementById('docName').value) {
+      document.getElementById('docName').value = file.name;
+    }
+  }
+
+  function clearFile() {
+    selectedFile = null;
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileSelected').classList.remove('show');
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+
+  var dz = document.getElementById('dropZone');
+  dz.addEventListener('dragover',  function(e){ e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', function(){ dz.classList.remove('dragover'); });
+  dz.addEventListener('drop', function(e) {
+    e.preventDefault(); dz.classList.remove('dragover');
+    var file = e.dataTransfer.files[0];
+    if (file) {
+      try { var dt = new DataTransfer(); dt.items.add(file); document.getElementById('fileInput').files = dt.files; } catch(e) {}
+      handleFileSelect(document.getElementById('fileInput'));
+      if (!selectedFile) {
+        selectedFile = file;
+        document.getElementById('fileSelectedName').textContent = file.name + ' (' + formatSize(file.size) + ')';
+        document.getElementById('fileSelected').classList.add('show');
+        if (!document.getElementById('docName').value) document.getElementById('docName').value = file.name;
+      }
+    }
+  });
+
+  function uploadDocument() {
+    var name     = document.getElementById('docName').value.trim();
+    var uploader = document.getElementById('docUploader').value.trim();
+    var month    = document.getElementById('statementMonth').value;
+    if (!month)    { showAlert('error','Please select the statement month.'); return; }
+    if (!name)     { showAlert('error','Please enter a file name.'); return; }
+    if (!name.toLowerCase().endsWith('.pdf')) { showAlert('error','File name must end in .pdf'); return; }
+    if (!selectedFile) { showAlert('error','Please select a PDF file to upload.'); return; }
+    if (!uploader) { showAlert('error','Please enter your committee email address.'); return; }
+    hideAlert();
+    setProgress(10,'Reading file...');
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var base64 = e.target.result.split(',')[1];
+      setProgress(30,'Uploading to Google Drive...');
+      var btn = document.getElementById('uploadBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Uploading...';
+      fetch(SCRIPT_URL, {
+        method:'POST',
+        body: JSON.stringify({
+          action:   'uploadDocument',
+          fileName:  name,
+          fileData:  base64,
+          mimeType:  'application/pdf',
+          folder:    'Bank Statements',
+          uploader:  uploader
+        })
+      })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        setProgress(100,'Complete!');
+        btn.disabled = false;
+        btn.innerHTML = '&#127981; Upload Bank Statement';
+        hideProgress();
+        if (data.status === 'ok') { showSuccess(name); }
+        else { showAlert('error','Upload failed: ' + (data.message || 'Please try again or contact Rick.')); }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.innerHTML = '&#127981; Upload Bank Statement';
+        hideProgress();
+        showAlert('error','Upload failed. Please check your connection and try again, or contact Rick.');
+      });
+    };
+    reader.onerror = function(){ hideProgress(); showAlert('error','Could not read the file. Please try again.'); };
+    reader.readAsDataURL(selectedFile);
+  }
+
+  function setProgress(pct, label) {
+    document.getElementById('progressWrap').classList.add('show');
+    document.getElementById('progressLabel').classList.add('show');
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = label;
+  }
+  function hideProgress() {
+    setTimeout(function(){ document.getElementById('progressWrap').classList.remove('show'); document.getElementById('progressLabel').classList.remove('show'); }, 800);
+  }
+  function showAlert(type, msg) {
+    var el = document.getElementById('alertMsg');
+    el.className = 'alert alert-'+type+' show';
+    el.textContent = msg;
+    el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function hideAlert() {
+    var el = document.getElementById('alertMsg');
+    el.className = 'alert'; el.textContent = '';
+  }
+  function showSuccess(name) {
+    document.getElementById('uploadCard').style.display = 'none';
+    document.getElementById('successDetail').innerHTML =
+      '<strong>File:</strong> ' + name + '<br>' +
+      '<strong>Saved to:</strong> Bank Statements<br>' +
+      '<strong>Status:</strong> Shared with residents &#8212; visible on the Hub automatically';
+    document.getElementById('successCard').classList.add('show');
+    window.scrollTo(0,0);
+  }
+  function resetForm() {
+    document.getElementById('uploadCard').style.display = 'block';
+    document.getElementById('successCard').classList.remove('show');
+    document.getElementById('statementMonth').value = '';
+    document.getElementById('docName').value = '';
+    document.getElementById('docUploader').value = '';
+    document.getElementById('namingExample').textContent = '04-Bank Statement - Apr 26.pdf';
+    clearFile(); hideAlert(); window.scrollTo(0,0);
+  }
+</script>
+
+</body>
+</html>
