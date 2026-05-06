@@ -6,7 +6,7 @@
 <title>Correct a Transaction — Social Club Finances</title>
 <style>
   :root {
-    --navy: #1a3a6b;
+    --navy: #1F4E79;
     --navy-light: #2a4f8f;
     --gold: #c8a84b;
     --green: #2e7d32;
@@ -248,7 +248,25 @@
     cursor: pointer; transition: background 0.15s;
   }
   .pin-btn:hover { background: var(--navy-light); }
-  .pin-error { color: var(--red); font-family: Arial, sans-serif; font-size: 13px; margin-top: 12px; display: none; }
+ .pin-error {
+    color: var(--red); font-family: Arial, sans-serif;
+    font-size: 13px; margin-top: 12px; display: none;
+  }
+  .top-bar {
+    background: var(--navy); padding:12px 20px;
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:10px;
+  }
+  .top-bar-title { color:white; font-size:1em; font-weight:700; font-family:Arial,sans-serif; }
+  .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; font-family:Arial,sans-serif; }
+  .back-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    background:white; color:var(--navy); padding:9px 16px;
+    border-radius:7px; text-decoration:none; font-weight:700;
+    font-size:0.88em; border:2px solid white; white-space:nowrap;
+    transition:background 0.2s; font-family:Arial,sans-serif;
+  }
+  .back-btn:hover { background:#E7F1FB; }
 </style>
 </head>
 <body>
