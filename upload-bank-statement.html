@@ -313,13 +313,11 @@ var formData = new FormData();
         body: formData
       })
       .then(function() {
-      .then(function(data){
         setProgress(100,'Complete!');
         btn.disabled = false;
-        btn.innerHTML = '📤 Upload Bank Statement';
+        btn.innerHTML = '&#128228; Upload Bank Statement';
         hideProgress();
-        if (data.status === 'ok') { showSuccess(name); }
-        else { showAlert('error','Upload failed: ' + (data.message || 'Please try again or contact Rick.')); }
+        showSuccess(name);
       })
       .catch(function(){
         btn.disabled = false;
