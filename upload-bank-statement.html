@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📤 Upload Bank Statement | Bridgeman Downs Residents Hub</title>
+  <title>Upload Bank Statement | Bridgeman Downs Residents Hub</title>
   <style>
     :root {
       --navy:       #1F4E79;
@@ -59,11 +59,6 @@
       font-size:0.85em; color:var(--navy); line-height:1.6;
     }
     .info-box strong { display:block; margin-bottom:4px; }
-    .naming-guide { background:var(--navy-light); border-radius:8px; padding:12px 16px; margin-bottom:18px; }
-    .naming-title { font-size:0.82em; font-weight:700; color:var(--navy); margin-bottom:8px; }
-    .naming-row { display:flex; justify-content:space-between; gap:10px; font-size:0.8em; padding:4px 0; }
-    .naming-label { color:var(--grey); flex-shrink:0; }
-    .naming-example { color:#333; font-style:italic; text-align:right; }
     .drop-zone {
       border:2px dashed var(--navy-mid); border-radius:9px; padding:28px 20px;
       text-align:center; cursor:pointer; transition:all 0.2s; background:#fafcff;
@@ -119,43 +114,29 @@
 
 <div class="top-bar">
   <div>
-    <div class="top-bar-title"> 📤 Upload Bank Statement</div>
+    <div class="top-bar-title">&#127981; Upload Bank Statement</div>
     <div class="top-bar-sub">Bridgeman Downs &#8212; Committee use only</div>
   </div>
- <a class="back-btn" href="index.html?expand=sc-finance#committee">&#8592; Back to Committee Page</a>
+  <a class="back-btn" href="index.html?expand=sc-finance#committee">&#8592; Back to Committee Page</a>
 </div>
 
 <div class="content">
 
   <div class="card" id="uploadCard">
-    <div class="card-header"> 📤 Upload Bank Statement to the Hub</div>
+    <div class="card-header">&#127981; Upload Bank Statement to the Hub</div>
     <div class="card-body">
 
       <div id="alertMsg" class="alert"></div>
 
       <div class="info-box">
         <strong>&#128161; About this form</strong>
-        Bank statements are saved to the Community Finances folder and will appear on the Hub automatically for residents to view.
+        Select the statement month, choose the PDF file and click Upload.
+        The statement will be saved automatically and appear on the Hub for residents to view.
       </div>
 
       <div class="form-group">
         <label for="statementMonth">Statement month <span class="required">*</span></label>
-        <input type="month" id="statementMonth" onchange="updateFileName()">
-      </div>
-
-      <div class="naming-guide">
-        <div class="naming-title">&#128221; Suggested file name format</div>
-        <div class="naming-row">
-          <span class="naming-label">Statement</span>
-          <span class="naming-example" id="namingExample">04-Bank Statement - Apr 26.pdf</span>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="docName">File name <span class="required">*</span>
-          <span style="font-weight:400;color:var(--grey);font-size:0.9em;"> &#8212; must end in .pdf</span>
-        </label>
-        <input type="text" id="docName" placeholder="e.g. 04-Bank Statement - Apr 26.pdf">
+        <input type="month" id="statementMonth">
       </div>
 
       <div class="form-group">
@@ -185,7 +166,7 @@
       <div class="progress-label" id="progressLabel"></div>
 
       <button class="btn-primary" id="uploadBtn" onclick="uploadDocument()">
-         📤 Upload Bank Statement
+        &#127981; Upload Bank Statement
       </button>
 
     </div>
@@ -200,7 +181,7 @@
         The statement is now saved and will appear on the Hub automatically.
       </p>
       <div class="success-detail" id="successDetail"></div>
-      <button class="btn-another" onclick="resetForm()"> Upload Another Statement</button>
+      <button class="btn-another" onclick="resetForm()">&#127981; Upload Another Statement</button>
       <a class="back-btn" href="index.html?expand=sc-finance#committee" style="margin-top:10px;justify-content:center;display:flex;">
         &#8592; Back to Committee Page
       </a>
@@ -217,18 +198,6 @@
 
   var selectedFile = null;
 
-  function updateFileName() {
-    var val = document.getElementById('statementMonth').value;
-    if (!val) return;
-    var parts = val.split('-');
-    var year  = parts[0].slice(2);
-    var month = parseInt(parts[1]) - 1;
-    var mm    = String(month + 1).padStart(2, '0');
-    var suggested = mm + '-Bank Statement - ' + MONTH_SHORT[month] + ' ' + year + '.pdf';
-    document.getElementById('docName').value = suggested;
-    document.getElementById('namingExample').textContent = suggested;
-  }
-
   function handleFileSelect(input) {
     var file = input.files[0];
     if (!file) { return; }
@@ -243,9 +212,6 @@
     selectedFile = file;
     document.getElementById('fileSelectedName').textContent = file.name + ' (' + formatSize(file.size) + ')';
     document.getElementById('fileSelected').classList.add('show');
-    if (!document.getElementById('docName').value) {
-      document.getElementById('docName').value = file.name;
-    }
   }
 
   function clearFile() {
@@ -260,7 +226,7 @@
     return (bytes/(1024*1024)).toFixed(1) + ' MB';
   }
 
-window.addEventListener('DOMContentLoaded', function() {
+  window.addEventListener('DOMContentLoaded', function() {
     var dz = document.getElementById('dropZone');
     dz.addEventListener('dragover',  function(e){ e.preventDefault(); dz.classList.add('dragover'); });
     dz.addEventListener('dragleave', function(){ dz.classList.remove('dragover'); });
@@ -268,27 +234,27 @@ window.addEventListener('DOMContentLoaded', function() {
       e.preventDefault(); dz.classList.remove('dragover');
       var file = e.dataTransfer.files[0];
       if (file) {
-        try { var dt = new DataTransfer(); dt.items.add(file); document.getElementById('fileInput').files = dt.files; } catch(e) {}
+        try { var dt = new DataTransfer(); dt.items.add(file); document.getElementById('fileInput').files = dt.files; } catch(err) {}
         handleFileSelect(document.getElementById('fileInput'));
-        if (!selectedFile) {
-          selectedFile = file;
-          document.getElementById('fileSelectedName').textContent = file.name + ' (' + formatSize(file.size) + ')';
-          document.getElementById('fileSelected').classList.add('show');
-          if (!document.getElementById('docName').value) document.getElementById('docName').value = file.name;
-        }
       }
     });
   });
 
   function uploadDocument() {
-    var name     = document.getElementById('docName').value.trim();
+    var monthVal = document.getElementById('statementMonth').value;
     var uploader = document.getElementById('docUploader').value.trim();
-    var month    = document.getElementById('statementMonth').value;
-    if (!month)    { showAlert('error','Please select the statement month.'); return; }
-    if (!name)     { showAlert('error','Please enter a file name.'); return; }
-    if (!name.toLowerCase().endsWith('.pdf')) { showAlert('error','File name must end in .pdf'); return; }
+
+    if (!monthVal)   { showAlert('error','Please select the statement month.'); return; }
     if (!selectedFile) { showAlert('error','Please select a PDF file to upload.'); return; }
-    if (!uploader) { showAlert('error','Please enter your committee email address.'); return; }
+    if (!uploader)   { showAlert('error','Please enter your committee email address.'); return; }
+
+    // Auto-generate filename from selected month
+    var parts = monthVal.split('-');
+    var year  = parts[0].slice(2);
+    var month = parseInt(parts[1]) - 1;
+    var mm    = String(month + 1).padStart(2, '0');
+    var name  = mm + '-Bank Statement - ' + MONTH_SHORT[month] + ' ' + year + '.pdf';
+
     hideAlert();
     setProgress(10,'Reading file...');
     var reader = new FileReader();
@@ -298,35 +264,33 @@ window.addEventListener('DOMContentLoaded', function() {
       var btn = document.getElementById('uploadBtn');
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Uploading...';
-var formData = new FormData();
-      formData.append('payload', JSON.stringify({
-        action:   'uploadDocument',
-        fileName:  name,
-        fileData:  base64,
-        mimeType:  'application/pdf',
-        folder:    'Bank Statements',
-        uploader:  uploader
-      }));
-fetch(SCRIPT_URL, {
+      fetch(SCRIPT_URL, {
         method:'POST',
         body: JSON.stringify({
-          action:   'uploadDocument',
-          fileName:  name,
-          fileData:  base64,
-          mimeType:  'application/pdf',
-          folder:    'Community Finances',
-          uploader:  uploader
+          action:         'uploadDocument',
+          fileName:        name,
+          fileData:        base64,
+          mimeType:       'application/pdf',
+          folder:         'Bank Statements',
+          uploader:        uploader,
+          statementMonth:  monthVal
         })
       })
       .then(function(r){ return r.json(); })
       .then(function(data){
         setProgress(100,'Complete!');
         btn.disabled = false;
-        btn.innerHTML = '&#128228; Upload Bank Statement';
+        btn.innerHTML = '&#127981; Upload Bank Statement';
         hideProgress();
         if (data.status === 'ok') { showSuccess(name); }
         else { showAlert('error','Upload failed: ' + (data.message || 'Please try again or contact Rick.')); }
       })
+      .catch(function(){
+        btn.disabled = false;
+        btn.innerHTML = '&#127981; Upload Bank Statement';
+        hideProgress();
+        showAlert('error','Upload failed. Please check your connection and try again, or contact Rick.');
+      });
     };
     reader.onerror = function(){ hideProgress(); showAlert('error','Could not read the file. Please try again.'); };
     reader.readAsDataURL(selectedFile);
@@ -364,9 +328,7 @@ fetch(SCRIPT_URL, {
     document.getElementById('uploadCard').style.display = 'block';
     document.getElementById('successCard').classList.remove('show');
     document.getElementById('statementMonth').value = '';
-    document.getElementById('docName').value = '';
     document.getElementById('docUploader').value = '';
-    document.getElementById('namingExample').textContent = '04-Bank Statement - Apr 26.pdf';
     clearFile(); hideAlert(); window.scrollTo(0,0);
   }
 </script>
