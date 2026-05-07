@@ -231,14 +231,14 @@
 
   function handleFileSelect(input) {
     var file = input.files[0];
-    if (!file) return;
-    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+    if (!file) { return; }
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
       showAlert('error','Please select a PDF file only.');
-      input.value = ''; return;
+      input.value = ''; selectedFile = null; return;
     }
     if (file.size > 50*1024*1024) {
       showAlert('error','File is too large. Maximum size is 50 MB.');
-      input.value = ''; return;
+      input.value = ''; selectedFile = null; return;
     }
     selectedFile = file;
     document.getElementById('fileSelectedName').textContent = file.name + ' (' + formatSize(file.size) + ')';
