@@ -298,18 +298,21 @@ window.addEventListener('DOMContentLoaded', function() {
       var btn = document.getElementById('uploadBtn');
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Uploading...';
+var formData = new FormData();
+      formData.append('payload', JSON.stringify({
+        action:   'uploadDocument',
+        fileName:  name,
+        fileData:  base64,
+        mimeType:  'application/pdf',
+        folder:    'Community Finances',
+        uploader:  uploader
+      }));
       fetch(SCRIPT_URL, {
         method:'POST',
-        body: JSON.stringify({
-          action:   'uploadDocument',
-          fileName:  name,
-          fileData:  base64,
-          mimeType:  'application/pdf',
-          folder:    'Community Finances',
-          uploader:  uploader
-        })
+        mode: 'no-cors',
+        body: formData
       })
-      .then(function(r){ return r.json(); })
+      .then(function() {
       .then(function(data){
         setProgress(100,'Complete!');
         btn.disabled = false;
