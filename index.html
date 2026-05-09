@@ -3271,7 +3271,8 @@ function loadAnnouncements() {
                         link:         cols[3] || '',
                         linkLabel:    cols[4] || '',
                         displayFrom:  parseCSVDate(cols[5]),
-                        displayUntil: parseCSVDate(cols[6])
+                        displayUntil: parseCSVDate(cols[6]),
+                        position:     cols[7] ? parseInt(cols[7]) : 999
                     };
                 })
                 .filter(a => {
@@ -3280,11 +3281,7 @@ function loadAnnouncements() {
                     if (a.displayFrom && a.displayFrom > today) return false;
                     return true;
                 })
-                .sort((a, b) => {
-                    const aFrom = a.displayFrom ? a.displayFrom : new Date(a.timestamp);
-                    const bFrom = b.displayFrom ? b.displayFrom : new Date(b.timestamp);
-                    return aFrom - bFrom;
-                })
+                .sort((a, b) => a.position - b.position)
                 .slice(0, 3);
 
             displayAnnouncements(announcements);
