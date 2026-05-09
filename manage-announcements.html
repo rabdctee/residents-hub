@@ -183,6 +183,20 @@
     }
     .toast.show { transform:translateX(-50%) translateY(0); }
     .toast.error { background:#7a1a1a; }
+
+    .warning-banner {
+      display:none; background:#fff3cd; border:2px solid #f0ad4e;
+      border-radius:10px; padding:12px 16px; margin-bottom:16px;
+      font-size:0.85em; color:#7a5c00; line-height:1.6;
+    }
+    .warning-banner.show { display:block; }
+    .warning-banner strong { display:block; margin-bottom:4px; font-size:0.95em; }
+    .slots-banner {
+      display:none; background:var(--red-bg); border:2px solid #f1b0a8;
+      border-radius:10px; padding:12px 16px; margin-bottom:16px;
+      font-size:0.85em; color:var(--red); line-height:1.6;
+    }
+    .slots-banner.show { display:block; }
   </style>
 </head>
 <body>
@@ -215,6 +229,16 @@
     Up to <strong>3 active announcements</strong> are shown — most recent first.
     Use <strong>Display From</strong> to schedule a future announcement.
     Expired announcements are hidden from residents but kept here for your records.
+  </div>
+
+  <div class="warning-banner" id="expiryWarning">
+    <strong>⚠️ Announcements expiring soon</strong>
+    <span id="expiryWarningText"></span>
+  </div>
+
+  <div class="slots-banner" id="slotsBanner">
+    ⛔ All 3 announcement slots are currently filled with active announcements.
+    A new announcement will not be visible to residents until one expires or is deleted.
   </div>
 
   <button class="btn-add" onclick="openAddModal()">＋ Add Announcement</button>
@@ -370,6 +394,26 @@
   }
 
   function renderList() {
+    // ── Expiry warning banner ────────────────────────────────
+    var expiring = allAnn.filter(function(a) { return !isExpired(a) && expiresSoon(a); });
+    var expiryBanner = document.getElementById('expiryWarning');
+    if (expiring.length > 0) {
+      var names = expiring.map(function(a) { return '"' + a.title + '" (expires ' + formatDate(a.displayUntil) + ')'; }).join(', ');
+      document.getElementById('expiryWarningText').textContent = names;
+      expiryBanner.classList.add('show');
+    } else {
+      expiryBanner.classList.remove('show');
+    }
+
+    // ── Slots warning banner ─────────────────────────────────
+    var activeCount = allAnn.filter(function(a) { return isActive(a); }).length;
+    var slotsBanner = document.getElementById('slotsBanner');
+    if (activeCount >= 3) {
+      slotsBanner.classList.add('show');
+    } else {
+      slotsBanner.classList.remove('show');
+    }
+
     if (allAnn.length === 0) {
       document.getElementById('annList').innerHTML =
         '<div class="status-msg">No announcements yet. Click Add Announcement to get started.</div>';
@@ -469,6 +513,28 @@
     if (!message)      { showToast('Please enter a message.', true); return; }
     if (!displayUntil) { showToast('Please set a Display Until date.', true); return; }
 
+    // ── Validation: Display From must be before Display Until ─
+    if (displayFrom && displayUntil && displayFrom >= displayUntil) {
+      showToast('Display From must be before Display Until.', true); return;
+    }
+
+    // ── Validation: warn if all 3 slots full ──────────────────
+    var activeCount = allAnn.filter(function(a) {
+      return isActive(a) && (!editingRow || a.row !== editingRow);
+    }).length;
+    if (activeCount >= 3 && !displayFrom) {
+      showToast('⚠️ All 3 slots are full — this will not show until one expires.', true);
+      // Don't block — just warn. Allow save after 3 seconds.
+      var btn = document.getElementById('saveBtn');
+      btn.textContent = 'Save anyway?';
+      btn.onclick = function() { btn.onclick = saveAnnouncement; proceedSave(title, message, link, linkLabel, displayFrom, displayUntil); };
+      return;
+    }
+
+    proceedSave(title, message, link, linkLabel, displayFrom, displayUntil);
+  }
+
+  function proceedSave(title, message, link, linkLabel, displayFrom, displayUntil) {
     var btn = document.getElementById('saveBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
 
