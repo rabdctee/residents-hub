@@ -19,7 +19,6 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; color:#333; }
 
-    /* ── PIN overlay ── */
     #pinOverlay {
       position:fixed; inset:0; background:var(--navy);
       display:flex; align-items:center; justify-content:center; z-index:9999;
@@ -46,7 +45,6 @@
     .pin-btn:hover { background:#163d61; }
     .pin-error { color:var(--red); font-size:13px; margin-top:12px; display:none; }
 
-    /* ── Top bar ── */
     .top-bar {
       background:var(--navy); padding:12px 20px;
       display:flex; align-items:center; justify-content:space-between;
@@ -63,17 +61,14 @@
     }
     .back-btn:hover { background:var(--navy-light); }
 
-    /* ── Content ── */
     .content { padding:20px; max-width:680px; margin:0 auto; }
 
-    /* ── Info bar ── */
     .info-bar {
       background:var(--navy-light); border:2px solid var(--navy-mid);
       border-radius:10px; padding:12px 16px; margin-bottom:20px;
       font-size:0.85em; color:var(--navy); line-height:1.6;
     }
 
-    /* ── Announcement list ── */
     .ann-list { margin-bottom:20px; }
 
     .ann-card {
@@ -81,67 +76,50 @@
       border-radius:10px; padding:14px 16px; margin-bottom:10px;
     }
     .ann-card:hover { border-color:var(--navy-mid); }
-    .ann-card-header {
-      display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
-    }
-    .ann-title {
-      font-weight:700; color:var(--navy); font-size:0.95em; flex:1;
-    }
+    .ann-card-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .ann-title { font-weight:700; color:var(--navy); font-size:0.95em; flex:1; }
     .ann-actions { display:flex; gap:6px; flex-shrink:0; }
     .btn-edit, .btn-delete {
-      padding:6px 12px; border-radius:6px; font-size:0.82em;
-      font-weight:700; border:none; cursor:pointer;
+      padding:6px 12px; border-radius:6px; font-size:0.82em; font-weight:700; border:none; cursor:pointer;
     }
     .btn-edit   { background:var(--navy-light); color:var(--navy); }
     .btn-edit:hover { background:var(--navy-mid); }
     .btn-delete { background:var(--red-bg); color:var(--red); }
     .btn-delete:hover { background:#f5c6c2; }
-
-    .ann-message {
-      font-size:0.88em; color:#444; margin-top:6px; line-height:1.5;
-    }
-    .ann-meta {
-      display:flex; gap:16px; margin-top:8px; flex-wrap:wrap;
-    }
-    .ann-meta-item {
-      font-size:0.78em; color:var(--grey);
-    }
-    .ann-meta-item.expired { color:var(--red); font-weight:700; }
-    .ann-meta-item.expires-soon { color:#e67e22; font-weight:700; }
+    .ann-message { font-size:0.88em; color:#444; margin-top:6px; line-height:1.5; }
+    .ann-meta { display:flex; gap:16px; margin-top:8px; flex-wrap:wrap; }
+    .ann-meta-item { font-size:0.78em; color:var(--grey); }
+    .ann-meta-item.expired      { color:var(--red);  font-weight:700; }
+    .ann-meta-item.pending      { color:#8e44ad;     font-weight:700; }
+    .ann-meta-item.expires-soon { color:#e67e22;     font-weight:700; }
+    .badge-expired { display:inline-block; background:var(--red-bg);  color:var(--red);  font-size:0.72em; font-weight:700; padding:2px 8px; border-radius:4px; margin-left:8px; vertical-align:middle; }
+    .badge-pending { display:inline-block; background:#f0e6ff; color:#8e44ad; font-size:0.72em; font-weight:700; padding:2px 8px; border-radius:4px; margin-left:8px; vertical-align:middle; }
+    .badge-active  { display:inline-block; background:var(--green-bg); color:var(--green); font-size:0.72em; font-weight:700; padding:2px 8px; border-radius:4px; margin-left:8px; vertical-align:middle; }
 
     .status-msg {
       text-align:center; padding:30px; color:var(--grey);
-      font-style:italic; background:white; border-radius:10px;
-      border:2px solid var(--border);
+      font-style:italic; background:white; border-radius:10px; border:2px solid var(--border);
     }
 
-    /* ── Add button ── */
     .btn-add {
-      width:100%; background:var(--navy); color:white;
-      padding:13px; border-radius:10px; font-weight:700;
-      font-size:0.95em; border:none; cursor:pointer;
-      display:flex; align-items:center; justify-content:center; gap:8px;
-      margin-bottom:20px;
+      width:100%; background:var(--navy); color:white; padding:13px; border-radius:10px;
+      font-weight:700; font-size:0.95em; border:none; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:20px;
     }
     .btn-add:hover { background:#163d61; }
 
-    /* ── Preview panel ── */
     .preview-panel {
-      background:white; border:2px solid var(--navy-mid);
-      border-radius:10px; padding:16px; margin-bottom:20px;
+      background:white; border:2px solid var(--navy-mid); border-radius:10px; padding:16px; margin-bottom:20px;
     }
     .preview-title {
       font-size:0.8em; font-weight:700; color:var(--grey);
       text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;
     }
-    .preview-ann {
-      padding:10px 0; border-bottom:1px solid var(--navy-light);
-    }
+    .preview-ann { padding:10px 0; border-bottom:1px solid var(--navy-light); }
     .preview-ann:last-child { border-bottom:none; }
     .preview-ann-title { font-size:0.88em; font-weight:700; color:var(--navy); }
     .preview-ann-msg   { font-size:0.82em; color:#555; margin-top:3px; line-height:1.4; }
 
-    /* ── Modal ── */
     .modal-overlay {
       display:none; position:fixed; inset:0;
       background:rgba(0,0,0,0.5); z-index:200;
@@ -149,93 +127,66 @@
     }
     .modal-overlay.open { display:flex; }
     .modal {
-      background:white; border-radius:14px; padding:28px;
-      max-width:500px; width:100%;
-      box-shadow:0 20px 60px rgba(0,0,0,0.3);
-      max-height:90vh; overflow-y:auto;
+      background:white; border-radius:14px; padding:28px; max-width:500px; width:100%;
+      box-shadow:0 20px 60px rgba(0,0,0,0.3); max-height:90vh; overflow-y:auto;
     }
     .modal-title {
-      font-size:1.1em; font-weight:800; color:var(--navy);
-      margin-bottom:20px; padding-bottom:12px;
-      border-bottom:2px solid var(--navy-light);
+      font-size:1.1em; font-weight:800; color:var(--navy); margin-bottom:20px;
+      padding-bottom:12px; border-bottom:2px solid var(--navy-light);
     }
     .form-group { margin-bottom:16px; }
-    .form-label {
-      display:block; font-weight:700; font-size:0.85em;
-      color:var(--navy); margin-bottom:6px;
-    }
-    .form-hint { font-size:0.78em; color:var(--grey); margin-bottom:6px; }
+    .form-label { display:block; font-weight:700; font-size:0.85em; color:var(--navy); margin-bottom:6px; }
+    .form-hint  { font-size:0.78em; color:var(--grey); margin-bottom:6px; }
+    .form-row   { display:flex; gap:12px; }
+    .form-row .form-group { flex:1; }
     .form-input, .form-textarea {
       width:100%; padding:10px 12px; font-size:0.92em;
-      border:2px solid var(--border); border-radius:8px;
-      font-family:inherit; color:#333;
+      border:2px solid var(--border); border-radius:8px; font-family:inherit; color:#333;
     }
     .form-input:focus, .form-textarea:focus { outline:none; border-color:var(--navy); }
     .form-textarea { min-height:90px; resize:vertical; }
     .modal-btns { display:flex; gap:10px; margin-top:20px; }
     .btn-save {
-      flex:1; background:var(--navy); color:white; padding:12px;
-      border-radius:8px; font-weight:700; font-size:0.92em;
-      border:none; cursor:pointer; font-family:inherit;
+      flex:1; background:var(--navy); color:white; padding:12px; border-radius:8px;
+      font-weight:700; font-size:0.92em; border:none; cursor:pointer; font-family:inherit;
     }
     .btn-save:hover { background:#163d61; }
     .btn-cancel {
-      background:white; color:var(--grey); padding:12px 20px;
-      border-radius:8px; font-weight:700; font-size:0.92em;
-      border:2px solid var(--border); cursor:pointer; font-family:inherit;
+      background:white; color:var(--grey); padding:12px 20px; border-radius:8px;
+      font-weight:700; font-size:0.92em; border:2px solid var(--border); cursor:pointer; font-family:inherit;
     }
     .btn-cancel:hover { background:#f5f5f5; }
 
-    /* ── Delete confirm ── */
     .delete-confirm {
-      display:none; position:fixed; inset:0;
-      background:rgba(0,0,0,0.5); z-index:300;
-      align-items:center; justify-content:center; padding:20px;
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);
+      z-index:300; align-items:center; justify-content:center; padding:20px;
     }
     .delete-confirm.open { display:flex; }
     .delete-box {
-      background:white; border-radius:14px; padding:28px;
-      max-width:400px; width:100%; text-align:center;
-      box-shadow:0 20px 60px rgba(0,0,0,0.3);
+      background:white; border-radius:14px; padding:28px; max-width:400px; width:100%;
+      text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.3);
     }
     .delete-icon { font-size:2.5em; margin-bottom:10px; }
     .delete-name { font-weight:800; color:var(--navy); font-size:1em; margin:8px 0; }
     .delete-msg  { color:var(--grey); font-size:0.88em; margin-bottom:20px; }
     .delete-btns { display:flex; gap:10px; }
     .btn-confirm-delete {
-      flex:1; background:var(--red); color:white; padding:12px;
-      border-radius:8px; font-weight:700; border:none; cursor:pointer;
-      font-family:inherit;
+      flex:1; background:var(--red); color:white; padding:12px; border-radius:8px;
+      font-weight:700; border:none; cursor:pointer; font-family:inherit;
     }
     .btn-confirm-delete:hover { background:#a93226; }
 
-    /* ── Toast ── */
     .toast {
-      position:fixed; bottom:24px; left:50%;
-      transform:translateX(-50%) translateY(100px);
-      background:#1a3a1a; color:white; padding:12px 24px;
-      border-radius:8px; font-weight:700; font-size:0.9em;
-      z-index:500; transition:transform 0.3s; pointer-events:none;
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(100px);
+      background:#1a3a1a; color:white; padding:12px 24px; border-radius:8px;
+      font-weight:700; font-size:0.9em; z-index:500; transition:transform 0.3s; pointer-events:none;
     }
     .toast.show { transform:translateX(-50%) translateY(0); }
     .toast.error { background:#7a1a1a; }
-
-    /* ── Expired badge ── */
-    .badge-expired {
-      display:inline-block; background:var(--red-bg); color:var(--red);
-      font-size:0.72em; font-weight:700; padding:2px 8px;
-      border-radius:4px; margin-left:8px; vertical-align:middle;
-    }
-    .badge-active {
-      display:inline-block; background:var(--green-bg); color:var(--green);
-      font-size:0.72em; font-weight:700; padding:2px 8px;
-      border-radius:4px; margin-left:8px; vertical-align:middle;
-    }
   </style>
 </head>
 <body>
 
-<!-- PIN Overlay -->
 <div id="pinOverlay">
   <div class="pin-box">
     <div class="pin-logo">🔒</div>
@@ -260,9 +211,10 @@
 <div class="content">
 
   <div class="info-bar">
-    💡 Announcements added here appear on the <strong>Hub home page</strong> for all residents to see.
-    A maximum of <strong>3 announcements</strong> are shown at a time — the most recent first.
-    Expired announcements are hidden from residents but remain here for your records.
+    💡 Announcements appear on the <strong>Hub home page</strong> for all residents.
+    Up to <strong>3 active announcements</strong> are shown — most recent first.
+    Use <strong>Display From</strong> to schedule a future announcement.
+    Expired announcements are hidden from residents but kept here for your records.
   </div>
 
   <button class="btn-add" onclick="openAddModal()">＋ Add Announcement</button>
@@ -272,7 +224,7 @@
   </div>
 
   <div class="preview-panel">
-    <div class="preview-title">👁️ Home Page Preview — what residents see</div>
+    <div class="preview-title">👁️ Home Page Preview — what residents see now</div>
     <div id="previewList">
       <div style="color:#bbb;font-size:0.85em;font-style:italic;">No active announcements.</div>
     </div>
@@ -286,28 +238,34 @@
     <div class="modal-title" id="modalTitle">Add Announcement</div>
     <div class="form-group">
       <label class="form-label">Title *</label>
-      <div class="form-hint">A short, bold heading e.g. "Two important reminders this week"</div>
+      <div class="form-hint">A short bold heading e.g. "Important reminder this week"</div>
       <input class="form-input" type="text" id="editTitle" placeholder="e.g. Residents Committee Election">
     </div>
     <div class="form-group">
       <label class="form-label">Message *</label>
-      <div class="form-hint">The full announcement text</div>
       <textarea class="form-textarea" id="editMessage" placeholder="e.g. Voting closes Friday 8 May at 4:00 pm…"></textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">Link <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
-      <div class="form-hint">Paste a URL if you want to link to a document or page</div>
-      <input class="form-input" type="text" id="editLink" placeholder="e.g. https://bdrv.au/view-document.html?id=...">
+      <label class="form-label">Link URL <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
+      <div class="form-hint">Paste a URL to link to a document, page or external site</div>
+      <input class="form-input" type="text" id="editLink" placeholder="e.g. https://bdrv.au/community-info.html">
     </div>
     <div class="form-group">
       <label class="form-label">Link label <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
-      <div class="form-hint">Text to display for the link e.g. "Read the Newsletter"</div>
+      <div class="form-hint">Text shown on the link button e.g. "Read the Newsletter"</div>
       <input class="form-input" type="text" id="editLinkLabel" placeholder="e.g. Read the Newsletter">
     </div>
-    <div class="form-group">
-      <label class="form-label">Display until date *</label>
-      <div class="form-hint">Announcement will be hidden from residents after this date</div>
-      <input class="form-input" type="date" id="editExpires">
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Display from <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
+        <div class="form-hint">Leave blank to show immediately</div>
+        <input class="form-input" type="date" id="editDisplayFrom">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Display until *</label>
+        <div class="form-hint">Hidden from residents after this date</div>
+        <input class="form-input" type="date" id="editDisplayUntil">
+      </div>
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
@@ -329,18 +287,15 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmyqDFP8k9OvO3IViuin9iyVu7Ayp0SIu2l-Z1kTHHdzZ7iyGXbsEXCwgCtwTnTpEd8g/exec';
-  var CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQxCcCIb1p1QUMR1_eSSDXTF-Jfs0zsFe6KOFzR7FLGD03f57hCOSDc4U6UAimQV5oeHR8bTCX3xXFf/pub?gid=1110175067&single=true&output=csv';
 
   var allAnn     = [];
   var editingRow = null;
   var deleteRow  = null;
 
-  // ── PIN ───────────────────────────────────────────────────
   function checkPin() {
     var val = document.getElementById('pinInput').value;
     if (val === '5304') {
@@ -356,7 +311,6 @@
     }
   }
 
-  // ── Load ─────────────────────────────────────────────────
   function loadAnnouncements() {
     fetch(SCRIPT_URL + '?action=getAnnouncements')
       .then(function(r) { return r.json(); })
@@ -371,35 +325,50 @@
       });
   }
 
-  // ── Helpers ───────────────────────────────────────────────
-  function isExpired(expires) {
-    if (!expires) return false;
-    var today = new Date();
-    today.setHours(0,0,0,0);
-    return new Date(expires) < today;
+  function today() { var d = new Date(); d.setHours(0,0,0,0); return d; }
+
+  function parseDate(str) {
+    if (!str) return null;
+    var d = new Date(str);
+    return isNaN(d.getTime()) ? null : d;
   }
 
-  function expiresSoon(expires) {
-    if (!expires) return false;
-    var today = new Date();
-    today.setHours(0,0,0,0);
-    var exp = new Date(expires);
-    var diff = Math.ceil((exp - today) / (1000 * 60 * 60 * 24));
-    return diff >= 0 && diff <= 3;
+  function isActive(ann) {
+    var t     = today();
+    var from  = parseDate(ann.displayFrom);
+    var until = parseDate(ann.displayUntil);
+    if (until && until < t) return false;
+    if (from  && from  > t) return false;
+    return true;
   }
 
-  function formatDate(dateStr) {
-    if (!dateStr) return '';
-    var d = new Date(dateStr);
-    return d.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+  function isPending(ann) {
+    var from = parseDate(ann.displayFrom);
+    return from && from > today();
+  }
+
+  function isExpired(ann) {
+    var until = parseDate(ann.displayUntil);
+    return until && until < today();
+  }
+
+  function expiresSoon(ann) {
+    if (!isActive(ann)) return false;
+    var until = parseDate(ann.displayUntil);
+    if (!until) return false;
+    return Math.ceil((until - today()) / (1000*60*60*24)) <= 3;
+  }
+
+  function formatDate(str) {
+    if (!str) return '';
+    return new Date(str).toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
   }
 
   function esc(str) {
-    return (str || '').toString()
+    return (str||'').toString()
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  // ── Render list ───────────────────────────────────────────
   function renderList() {
     if (allAnn.length === 0) {
       document.getElementById('annList').innerHTML =
@@ -408,14 +377,15 @@
     }
     var html = '';
     allAnn.forEach(function(ann, idx) {
-      var expired = isExpired(ann.expires);
-      var soon    = !expired && expiresSoon(ann.expires);
+      var expired = isExpired(ann);
+      var pending = isPending(ann);
+      var soon    = expiresSoon(ann);
+      var badge   = expired ? '<span class="badge-expired">EXPIRED</span>'
+                  : pending ? '<span class="badge-pending">SCHEDULED</span>'
+                  :           '<span class="badge-active">ACTIVE</span>';
       html += '<div class="ann-card">' +
         '<div class="ann-card-header">' +
-          '<div class="ann-title">' + esc(ann.title) +
-            (expired ? '<span class="badge-expired">EXPIRED</span>' :
-                       '<span class="badge-active">ACTIVE</span>') +
-          '</div>' +
+          '<div class="ann-title">' + esc(ann.title) + badge + '</div>' +
           '<div class="ann-actions">' +
             '<button class="btn-edit" onclick="openEditModal(' + idx + ')">✏️ Edit</button>' +
             '<button class="btn-delete" onclick="openDeleteConfirm(' + idx + ')">🗑️</button>' +
@@ -423,51 +393,44 @@
         '</div>' +
         '<div class="ann-message">' + esc(ann.message) + '</div>' +
         '<div class="ann-meta">' +
-          (ann.link ? '<span class="ann-meta-item">🔗 ' + esc(ann.link) + '</span>' : '') +
-          (ann.expires ? '<span class="ann-meta-item' +
-            (expired ? ' expired' : (soon ? ' expires-soon' : '')) + '">' +
-            '📅 ' + (expired ? 'Expired: ' : (soon ? 'Expires soon: ' : 'Expires: ')) +
-            formatDate(ann.expires) + '</span>' : '') +
+          (ann.link ? '<span class="ann-meta-item">🔗 ' + esc(ann.linkLabel || ann.link) + '</span>' : '') +
+          (ann.displayFrom  ? '<span class="ann-meta-item' + (pending ? ' pending' : '') + '">📅 From: ' + formatDate(ann.displayFrom) + '</span>' : '') +
+          (ann.displayUntil ? '<span class="ann-meta-item' + (expired ? ' expired' : soon ? ' expires-soon' : '') + '">📅 ' + (expired ? 'Expired: ' : soon ? 'Expires soon: ' : 'Until: ') + formatDate(ann.displayUntil) + '</span>' : '') +
         '</div>' +
         '</div>';
     });
     document.getElementById('annList').innerHTML = html;
   }
 
-  // ── Render preview ────────────────────────────────────────
   function renderPreview() {
-    var active = allAnn.filter(function(a) { return !isExpired(a.expires); });
-    var shown  = active.slice(0, 3);
-    if (shown.length === 0) {
+    var active = allAnn.filter(function(a) { return isActive(a); }).slice(0, 3);
+    if (active.length === 0) {
       document.getElementById('previewList').innerHTML =
         '<div style="color:#bbb;font-size:0.85em;font-style:italic;">No active announcements.</div>';
       return;
     }
     var html = '';
-    shown.forEach(function(ann) {
+    active.forEach(function(ann) {
       html += '<div class="preview-ann">' +
         '<div class="preview-ann-title">' + esc(ann.title) + '</div>' +
         '<div class="preview-ann-msg">' + esc(ann.message) +
-          (ann.link ? ' <a href="' + esc(ann.link) + '" target="_blank" ' +
-            'style="color:var(--navy);font-weight:700;">View →</a>' : '') +
-        '</div>' +
-        '</div>';
+          (ann.link ? ' <a href="' + esc(ann.link) + '" target="_blank" style="color:var(--navy);font-weight:700;">' +
+            esc(ann.linkLabel || 'View →') + '</a>' : '') +
+        '</div></div>';
     });
     document.getElementById('previewList').innerHTML = html;
   }
 
-  // ── Add / Edit modal ──────────────────────────────────────
   function openAddModal() {
     editingRow = null;
-    document.getElementById('modalTitle').textContent = '➕ Add Announcement';
-    document.getElementById('editTitle').value    = '';
-    document.getElementById('editMessage').value  = '';
-    document.getElementById('editLink').value     = '';
-    document.getElementById('editLinkLabel').value = '';
-    // Default expiry 2 weeks from today
-    var d = new Date();
-    d.setDate(d.getDate() + 14);
-    document.getElementById('editExpires').value  =
+    document.getElementById('modalTitle').textContent    = '➕ Add Announcement';
+    document.getElementById('editTitle').value           = '';
+    document.getElementById('editMessage').value         = '';
+    document.getElementById('editLink').value            = '';
+    document.getElementById('editLinkLabel').value       = '';
+    document.getElementById('editDisplayFrom').value     = '';
+    var d = new Date(); d.setDate(d.getDate() + 14);
+    document.getElementById('editDisplayUntil').value =
       d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     document.getElementById('saveBtn').textContent = '💾 Add Announcement';
     document.getElementById('editModal').classList.add('open');
@@ -477,12 +440,13 @@
   function openEditModal(idx) {
     var ann = allAnn[idx];
     editingRow = ann.row;
-    document.getElementById('modalTitle').textContent = '✏️ Edit Announcement';
-    document.getElementById('editTitle').value     = ann.title;
-    document.getElementById('editMessage').value   = ann.message;
-    document.getElementById('editLink').value      = ann.link || '';
-    document.getElementById('editLinkLabel').value = ann.linkLabel || '';
-    document.getElementById('editExpires').value   = ann.expires || '';
+    document.getElementById('modalTitle').textContent    = '✏️ Edit Announcement';
+    document.getElementById('editTitle').value           = ann.title;
+    document.getElementById('editMessage').value         = ann.message;
+    document.getElementById('editLink').value            = ann.link        || '';
+    document.getElementById('editLinkLabel').value       = ann.linkLabel   || '';
+    document.getElementById('editDisplayFrom').value     = ann.displayFrom  || '';
+    document.getElementById('editDisplayUntil').value    = ann.displayUntil || '';
     document.getElementById('saveBtn').textContent = '💾 Save Changes';
     document.getElementById('editModal').classList.add('open');
     document.getElementById('editTitle').focus();
@@ -494,29 +458,27 @@
   }
 
   function saveAnnouncement() {
-    var title   = document.getElementById('editTitle').value.trim();
-    var message = document.getElementById('editMessage').value.trim();
-    var link    = document.getElementById('editLink').value.trim();
-    var linkLabel = document.getElementById('editLinkLabel').value.trim();
-    var expires = document.getElementById('editExpires').value;
+    var title        = document.getElementById('editTitle').value.trim();
+    var message      = document.getElementById('editMessage').value.trim();
+    var link         = document.getElementById('editLink').value.trim();
+    var linkLabel    = document.getElementById('editLinkLabel').value.trim();
+    var displayFrom  = document.getElementById('editDisplayFrom').value;
+    var displayUntil = document.getElementById('editDisplayUntil').value;
 
-    if (!title)   { showToast('Please enter a title.', true); return; }
-    if (!message) { showToast('Please enter a message.', true); return; }
-    if (!expires) { showToast('Please set a display until date.', true); return; }
+    if (!title)        { showToast('Please enter a title.', true); return; }
+    if (!message)      { showToast('Please enter a message.', true); return; }
+    if (!displayUntil) { showToast('Please set a Display Until date.', true); return; }
 
     var btn = document.getElementById('saveBtn');
-    btn.disabled = true;
-    btn.textContent = 'Saving…';
+    btn.disabled = true; btn.textContent = 'Saving…';
 
     var payload = editingRow
-      ? { action:'editAnnouncement', row:editingRow, title:title, message:message, link:link, linkLabel:linkLabel, expires:expires }
-      : { action:'addAnnouncement',  title:title, message:message, link:link, linkLabel:linkLabel, expires:expires };
+      ? { action:'editAnnouncement', row:editingRow, title:title, message:message,
+          link:link, linkLabel:linkLabel, displayFrom:displayFrom, displayUntil:displayUntil }
+      : { action:'addAnnouncement', title:title, message:message,
+          link:link, linkLabel:linkLabel, displayFrom:displayFrom, displayUntil:displayUntil };
 
-    fetch(SCRIPT_URL, {
-      method:'POST',
-      headers:{ 'Content-Type':'text/plain' },
-      body:JSON.stringify(payload)
-    })
+    fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(payload) })
     .then(function(r){ return r.json(); })
     .then(function() {
       var wasEditing = editingRow;
@@ -536,7 +498,6 @@
     });
   }
 
-  // ── Delete ────────────────────────────────────────────────
   function openDeleteConfirm(idx) {
     deleteRow = allAnn[idx].row;
     document.getElementById('deleteName').textContent = allAnn[idx].title;
@@ -551,28 +512,14 @@
   function confirmDelete() {
     if (!deleteRow) return;
     var btn = document.querySelector('.btn-confirm-delete');
-    btn.disabled = true;
-    btn.textContent = 'Removing…';
-
-    fetch(SCRIPT_URL, {
-      method:'POST',
-      headers:{ 'Content-Type':'text/plain' },
-      body:JSON.stringify({ action:'deleteAnnouncement', row:deleteRow })
-    })
+    btn.disabled = true; btn.textContent = 'Removing…';
+    fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({ action:'deleteAnnouncement', row:deleteRow }) })
     .then(function(r){ return r.json(); })
-    .then(function() {
-      closeDelete();
-      showToast('Announcement removed ✓');
-      setTimeout(loadAnnouncements, 800);
-    })
-    .catch(function() {
-      closeDelete();
-      showToast('Announcement removed ✓');
-      setTimeout(loadAnnouncements, 1500);
-    });
+    .then(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 800); })
+    .catch(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 1500); });
   }
 
-  // ── Toast ─────────────────────────────────────────────────
   function showToast(msg, isError) {
     var t = document.getElementById('toast');
     t.textContent = msg;
@@ -581,6 +528,5 @@
     setTimeout(function() { t.classList.remove('show'); }, 3000);
   }
 </script>
-
 </body>
 </html>
