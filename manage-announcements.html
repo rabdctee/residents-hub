@@ -74,8 +74,19 @@
     .ann-card {
       background:white; border:2px solid var(--border);
       border-radius:10px; padding:14px 16px; margin-bottom:10px;
+      cursor:grab;
     }
+    .ann-card.dragging { opacity:0.4; border:2px dashed var(--navy-mid); }
+    .ann-card.drag-over { border:2px solid var(--navy); background:var(--navy-light); }
     .ann-card:hover { border-color:var(--navy-mid); }
+    .drag-handle {
+      color:var(--navy-mid); font-size:1.2em; cursor:grab;
+      margin-right:8px; flex-shrink:0; user-select:none;
+    }
+    .drag-hint {
+      font-size:0.78em; color:var(--grey); text-align:center;
+      margin-bottom:8px; font-style:italic;
+    }
     .ann-card-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
     .ann-title { font-weight:700; color:var(--navy); font-size:0.95em; flex:1; }
     .ann-actions { display:flex; gap:6px; flex-shrink:0; }
@@ -242,6 +253,8 @@
   </div>
 
   <button class="btn-add" onclick="openAddModal()">＋ Add Announcement</button>
+
+  <div class="drag-hint" id="dragHint" style="display:none;">☰ Drag announcements to reorder — order is saved automatically</div>
 
   <div class="ann-list" id="annList">
     <div class="status-msg">Loading announcements…</div>
@@ -417,8 +430,10 @@
     if (allAnn.length === 0) {
       document.getElementById('annList').innerHTML =
         '<div class="status-msg">No announcements yet. Click Add Announcement to get started.</div>';
+      document.getElementById('dragHint').style.display = 'none';
       return;
     }
+    document.getElementById('dragHint').style.display = allAnn.length > 1 ? 'block' : 'none';
     var html = '';
     allAnn.forEach(function(ann, idx) {
       var expired = isExpired(ann);
@@ -427,8 +442,9 @@
       var badge   = expired ? '<span class="badge-expired">EXPIRED</span>'
                   : pending ? '<span class="badge-pending">SCHEDULED</span>'
                   :           '<span class="badge-active">ACTIVE</span>';
-      html += '<div class="ann-card">' +
+      html += '<div class="ann-card" draggable="true" data-idx="' + idx + '">' +
         '<div class="ann-card-header">' +
+          '<span class="drag-handle" title="Drag to reorder">☰</span>' +
           '<div class="ann-title">' + esc(ann.title) + badge + '</div>' +
           '<div class="ann-actions">' +
             '<button class="btn-edit" onclick="openEditModal(' + idx + ')">✏️ Edit</button>' +
@@ -444,6 +460,7 @@
         '</div>';
     });
     document.getElementById('annList').innerHTML = html;
+    initDrag();
   }
 
   function renderPreview() {
@@ -584,6 +601,64 @@
     .then(function(r){ return r.json(); })
     .then(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 800); })
     .catch(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 1500); });
+  }
+
+  // ── Drag to reorder ───────────────────────────────────────
+  var dragSrcIdx = null;
+
+  function initDrag() {
+    var cards = document.querySelectorAll('.ann-card');
+    cards.forEach(function(card) {
+      card.addEventListener('dragstart', function(e) {
+        dragSrcIdx = parseInt(card.getAttribute('data-idx'));
+        card.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      card.addEventListener('dragend', function() {
+        card.classList.remove('dragging');
+        document.querySelectorAll('.ann-card').forEach(function(c) {
+          c.classList.remove('drag-over');
+        });
+      });
+      card.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        card.classList.add('drag-over');
+      });
+      card.addEventListener('dragleave', function() {
+        card.classList.remove('drag-over');
+      });
+      card.addEventListener('drop', function(e) {
+        e.preventDefault();
+        card.classList.remove('drag-over');
+        var targetIdx = parseInt(card.getAttribute('data-idx'));
+        if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+
+        // Reorder allAnn array
+        var moved = allAnn.splice(dragSrcIdx, 1)[0];
+        allAnn.splice(targetIdx, 0, moved);
+
+        // Save new order to script
+        saveOrder();
+
+        // Re-render
+        renderList();
+        renderPreview();
+      });
+    });
+  }
+
+  function saveOrder() {
+    var order = allAnn.map(function(ann, idx) {
+      return { row: ann.row, position: idx + 1 };
+    });
+    fetch(SCRIPT_URL, {
+      method:'POST', headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({ action:'reorderAnnouncements', order:order })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function() { showToast('Order saved ✓'); })
+    .catch(function() { showToast('Order saved ✓'); });
   }
 
   function showToast(msg, isError) {
