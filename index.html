@@ -2410,12 +2410,26 @@ Advocacy, advice and support for retirement village residents in Queensland
          Add, edit or delete registrations for any event
       </span>
 </a>
+      </div>
+    </div>
+
+    <div class="sub-section">
+      <div class="sub-header" onclick="toggleSub('sc-homecontent', this)">
+        <div class="sub-header-left">
+          <div class="sub-title">📢 Home Page Content</div>
+          <div class="sub-hint">Manage announcements and upcoming events shown on the home page</div>
+        </div>
+        <span class="sub-arrow" id="sc-homecontent-arrow">▼</span>
+      </div>
+      <div class="sub-body" id="sc-homecontent-body">
+        <a href="manage-announcements.html" class="doc-link">
+          📢 Manage Announcements
+          <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Add, edit or delete announcements for residents — PIN required</span>
+        </a>
         <a href="manage-upcoming-events.html" class="doc-link" style="margin-top:8px;">
-  🗓️ Home Page — What's On
-  <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">
-    Update the Upcoming Events highlights shown on the Hub home page
-  </span>
-        </a>  
+          🗓️ Home Page — What's On
+          <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Update the Upcoming Events highlights shown on the Hub home page</span>
+        </a>
       </div>
     </div>
 
@@ -2685,7 +2699,7 @@ window.addEventListener('DOMContentLoaded', function() {
     if (expandParam) {
         setTimeout(function() {
             var parentMap = {
-                'sc-finance': 'sc', 'sc-events': 'sc', 'sc-docs': 'sc',
+                'sc-finance': 'sc', 'sc-events': 'sc', 'sc-docs': 'sc', 'sc-homecontent': 'sc',
                 'rc-docs': 'rc', 'rc-info': 'rc'
             };
             var parentId = parentMap[expandParam];
@@ -3217,37 +3231,58 @@ const API_KEY = 'AIzaSyBD8FWf12JVjXwSnFnqx0pLldSf1ZeYH1c';
 
 // Fetch and display announcements
 function loadAnnouncements() {
-    const range = 'Announcements!A2:F100';
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
-    
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            if (!data.values) return;
-            
-            // Filter and sort announcements
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQxCcCIb1p1QUMR1_eSSDXTF-Jfs0zsFe6KOFzR7FLGD03f57hCOSDc4U6UAimQV5oeHR8bTCX3xXFf/pub?gid=1110175067&single=true&output=csv';
+
+    fetch(CSV_URL)
+        .then(response => response.text())
+        .then(csvText => {
+            const lines = csvText.trim().split('\n').slice(1);
+            if (!lines.length || !lines[0].trim()) return;
+
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
-           const announcements = data.values
-    .map(row => {
-        // Parse DD/MM/YYYY format correctly
-        const dateParts = row[5].split('/');
-        const displayUntil = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-        
-        return {
-            timestamp: row[0],
-            name: row[1],
-            title: row[2],
-            message: row[3],
-            link: row[4],
-            displayUntil: displayUntil
-        };
-    })
-                .filter(a => a.displayUntil >= today)
+
+            const announcements = lines
+                .map(line => {
+                    const cols = [];
+                    let cur = '', inQ = false;
+                    for (let i = 0; i < line.length; i++) {
+                        const ch = line[i];
+                        if (ch === '"') { inQ = !inQ; }
+                        else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+                        else { cur += ch; }
+                    }
+                    cols.push(cur.trim());
+
+                    const parseCSVDate = (str) => {
+                        if (!str) return null;
+                        if (str.includes('-')) return new Date(str);
+                        if (str.includes('/')) {
+                            const p = str.split('/');
+                            return new Date(p[2], p[1]-1, p[0]);
+                        }
+                        return null;
+                    };
+
+                    return {
+                        timestamp:    cols[0] || '',
+                        title:        cols[1] || '',
+                        message:      cols[2] || '',
+                        link:         cols[3] || '',
+                        linkLabel:    cols[4] || '',
+                        displayFrom:  parseCSVDate(cols[5]),
+                        displayUntil: parseCSVDate(cols[6])
+                    };
+                })
+                .filter(a => {
+                    if (!a.title) return false;
+                    if (!a.displayUntil || a.displayUntil < today) return false;
+                    if (a.displayFrom && a.displayFrom > today) return false;
+                    return true;
+                })
                 .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
                 .slice(0, 3);
-            
+
             displayAnnouncements(announcements);
         })
         .catch(error => console.error('Error loading announcements:', error));
@@ -3285,10 +3320,13 @@ function displayAnnouncements(announcements) {
         `;
         
         if (announcement.link && announcement.link.trim()) {
+            const label = announcement.linkLabel && announcement.linkLabel.trim()
+                ? announcement.linkLabel
+                : '📄 View Document';
             html += `
                 <br><br>
                 <a href="${announcement.link}" target="_blank" style="display:inline-block; padding:10px 20px; background:#1F4E79; color:white; text-decoration:none; border-radius:5px; font-weight:bold;">
-                    📄 View Document
+                    ${label}
                 </a>
             `;
         }
@@ -3311,36 +3349,45 @@ function displayAnnouncements(announcements) {
 
 // Fetch and display events
 function loadEvents() {
-    const range = 'Events!A2:F100';
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
-    
-    fetch(url)
+    const CSV_EVENTS_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Events!A2:F100?key=${API_KEY}`;
+
+    fetch(CSV_EVENTS_URL)
         .then(response => response.json())
         .then(data => {
             if (!data.values) return;
-            
+
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             const events = data.values
-    .map(row => {
-        // Parse DD/MM/YYYY format correctly
-        const dateParts = row[3].split('/');
-        const eventDate = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
-        
-        return {
-            timestamp: row[0],
-            name: row[1],
-            eventName: row[2],
-            eventDate: eventDate,
-            eventTime: row[4],
-            location: row[5]
-        };
-    })
-                .filter(e => e.eventDate >= today)
+                .map(row => {
+                    // New column order: Timestamp | Event Name | Date | Display From | Event Time | Location
+                    const parseDateStr = (str) => {
+                        if (!str) return null;
+                        if (str.includes('-')) return new Date(str);
+                        if (str.includes('/')) {
+                            const p = str.split('/');
+                            return new Date(p[2], p[1]-1, p[0]);
+                        }
+                        return null;
+                    };
+                    return {
+                        timestamp:   row[0],
+                        eventName:   row[1] || '',
+                        eventDate:   parseDateStr(row[2]),
+                        displayFrom: parseDateStr(row[3]),
+                        eventTime:   row[4] || '',
+                        location:    row[5] || ''
+                    };
+                })
+                .filter(e => {
+                    if (!e.eventDate || e.eventDate < today) return false;
+                    if (e.displayFrom && e.displayFrom > today) return false;
+                    return true;
+                })
                 .sort((a, b) => a.eventDate - b.eventDate)
                 .slice(0, 4);
-            
+
             displayEvents(events);
         })
         .catch(error => console.error('Error loading events:', error));
