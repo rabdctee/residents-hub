@@ -562,7 +562,6 @@
           link:link, linkLabel:linkLabel, displayFrom:displayFrom, displayUntil:displayUntil };
 
     fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(payload) })
-    .then(function(r){ return r.json(); })
     .then(function() {
       var wasEditing = editingRow;
       btn.disabled = false;
@@ -598,7 +597,6 @@
     btn.disabled = true; btn.textContent = 'Removing…';
     fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
       body:JSON.stringify({ action:'deleteAnnouncement', row:deleteRow }) })
-    .then(function(r){ return r.json(); })
     .then(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 800); })
     .catch(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 1500); });
   }
@@ -656,7 +654,6 @@
       method:'POST', headers:{'Content-Type':'text/plain'},
       body:JSON.stringify({ action:'reorderAnnouncements', order:order })
     })
-    .then(function(r){ return r.json(); })
     .then(function() { showToast('Order saved ✓'); })
     .catch(function() { showToast('Order saved ✓'); });
   }
