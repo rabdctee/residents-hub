@@ -315,18 +315,6 @@
     </div>
 
 
-    <!-- 1. VILLAGE CONSTITUTION -->
-    <div id="sec-constitution"></div>
-    <div class="collapsible-header" onclick="toggleSection('constitution')">
-      <span class="collapsible-title">📜 Village Constitution</span>
-      <span id="constitution-arrow" class="collapsible-arrow">▼</span>
-    </div>
-    <div id="constitution" class="collapsible-content">
-      <p class="section-desc">Bridgeman Downs Retirement Village Constitution.</p>
-      <a href="view-document.html?id=1dA97VG7HlEFrXO3Kzqxf2UuygP7vdT7D&title=Village%20Constitution&back=community-info.html" target="_blank" class="doc-link">📄 View Village Constitution</a>
-    </div>
-
-
     <!-- 2. MEETINGS & MINUTES -->
     <div id="sec-meetings" style="margin-top:4px;"></div>
     <div class="collapsible-header" onclick="toggleSection('meetings')">
@@ -456,7 +444,6 @@
     if (query.length < 2) { resultsDiv.style.display = 'none'; return; }
 
     var sections = [
-      { id: 'constitution', anchor: 'sec-constitution', title: '📜 Village Constitution',             keywords: 'constitution rules village governing document' },
       { id: 'meetings',     anchor: 'sec-meetings',     title: '📝 Meetings & Minutes',               keywords: 'meetings minutes agenda agm quarterly annual general residents committee social club' },
       { id: 'financials',   anchor: 'sec-finances',     title: '💰 Finances & Reports',               keywords: 'finances financial reports bank statement income expenditure budget monthly quarterly' },
       { id: 'issues',       anchor: 'sec-issues',       title: '📊 Village Issues & Progress',        keywords: 'issues progress tracker maintenance updates village problems' },
@@ -525,7 +512,7 @@
   }
 
   function jumpToSection(sectionId, anchorId) {
-    var allSections = ['constitution','meetings','financials','issues','aveo'];
+    var allSections = ['meetings','financials','issues','aveo'];
     allSections.forEach(function(id) {
       var el  = document.getElementById(id);
       var arr = document.getElementById(id + '-arrow');
