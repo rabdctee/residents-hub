@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CM Update Form – Issues Tracker</title>
+<style>
+  :root {
+    --navy:        #1F4E79;
+    --navy-light:  #17406a;
+    --surface:     #E7F1FB;
+    --border:      #c5d8ee;
+    --text:        #1a1a1a;
+    --muted:       #5f6368;
+    --red:         #c0392b;
+    --green:       #155724;
+    --green-bg:    #d4edda;
+    --green-border:#28a745;
+    --radius:      8px;
+    --font:        'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    font-size: 18px;
+    background: #f0f4f8;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── PIN overlay ── */
+  #pinOverlay {
+    position: fixed; inset: 0;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  .pin-box {
+    background: white;
+    border-radius: 12px;
+    padding: 40px 36px;
+    max-width: 360px; width: 90%;
+    text-align: center;
+  }
+  .pin-logo { font-size: 36px; margin-bottom: 12px; }
+  .pin-box h2 { font-size: 18px; color: var(--navy); margin-bottom: 6px; }
+  .pin-box p  { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+  .pin-input {
+    width: 100%; padding: 14px;
+    font-size: 24px; letter-spacing: 10px; text-align: center;
+    border: 2px solid var(--border); border-radius: var(--radius);
+    font-family: var(--font); margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .pin-input:focus { outline: none; border-color: var(--navy); }
+  .pin-btn {
+    width: 100%; padding: 14px;
+    background: var(--navy); color: white;
+    border: none; border-radius: var(--radius);
+    font-family: var(--font); font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .pin-btn:hover { background: var(--navy-light); }
+  .pin-error { color: var(--red); font-size: 13px; margin-top: 12px; display: none; }
+
+  /* ── Header ── */
+  .page-header {
+    background: var(--navy);
+    color: white;
+    padding: 1.25rem 1.5rem;
+  }
+  .page-header h1 { font-size: 1.6em; font-weight: 700; margin-bottom: 0.1rem; }
+  .page-header p  { font-size: 0.88em; opacity: 0.85; }
+
+  /* ── Main ── */
+  .main {
+    max-width: 680px;
+    margin: 1.5rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* ── Tab switcher ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 12px 10px;
+    font-family: var(--font);
+    font-size: 0.92em;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    background: white;
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn.active {
+    background: var(--navy);
+    color: white;
+  }
+  .tab-btn:hover:not(.active) {
+    background: var(--surface);
+    color: var(--navy);
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: none;
+  }
+  .card.active { display: block; }
+  .card h2 {
+    font-size: 1.05em;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--surface);
+  }
+
+  /* ── Form elements ── */
+  .field { margin-bottom: 1.1rem; }
+  label {
+    display: block;
+    font-size: 0.88em;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 5px;
+  }
+  select, input[type="text"], textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.92em;
+    font-family: var(--font);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    background: white;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231F4E79' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--navy);
+  }
+  textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+
+  .field-hint {
+    font-size: 0.78em;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── Current notes preview ── */
+  .current-notes {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.85em;
+    color: var(--muted);
+    margin-bottom: 1.1rem;
+    display: none;
+    line-height: 1.5;
+  }
+  .current-notes strong { color: var(--navy); display: block; margin-bottom: 3px; font-size: 0.9em; }
+
+  /* ── Submit button ── */
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 1em;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.15s;
+  }
+  .submit-btn:hover { background: var(--navy-light); }
+  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+  /* ── Status messages ── */
+  .msg {
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 0.88em;
+    font-weight: 600;
+    margin-top: 1rem;
+    display: none;
+  }
+  .msg-success {
+    background: var(--green-bg);
+    color: var(--green);
+    border: 1px solid var(--green-border);
+  }
+  .msg-error {
+    background: #fdecea;
+    color: var(--red);
+    border: 1px solid #f5c6cb;
+  }
+
+  /* ── Loading spinner ── */
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media(max-width:600px){
+    .page-header h1 { font-size: 1.3em; }
+    .card { padding: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── PIN OVERLAY ── -->
+<div id="pinOverlay">
+  <div class="pin-box">
+    <div class="pin-logo">🔒</div>
+    <h2>CM Update Form</h2>
+    <p>This page is for Community Manager use only.<br>Please enter your PIN to continue.</p>
+    <input type="password" class="pin-input" id="pinInput" maxlength="4"
+           placeholder="••••" inputmode="numeric"
+           onkeydown="if(event.key==='Enter')checkPin()">
+    <button class="pin-btn" onclick="checkPin()">Enter</button>
+    <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
+  </div>
+</div>
+
+<!-- ── HEADER ── -->
+<div class="page-header">
+  <h1>📋 CM Update Form</h1>
+  <p>Issues Progress Tracker — Bridgeman Downs Retirement Village</p>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('update')">✏️ Update an Issue</button>
+    <button class="tab-btn" onclick="switchTab('add')">➕ Add a New Issue</button>
+  </div>
+
+  <!-- UPDATE EXISTING ISSUE -->
+  <div class="card active" id="card-update">
+    <h2>Update CM Notes on an Existing Issue</h2>
+
+    <div class="field">
+      <label for="upd-category">Category</label>
+      <select id="upd-category" onchange="populateIssues()">
+        <option value="">— Select a category —</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="upd-issue">Issue</label>
+      <select id="upd-issue" onchange="showCurrentNotes()" disabled>
+        <option value="">— Select an issue —</option>
+      </select>
+    </div>
+
+    <div class="current-notes" id="current-notes-box">
+      <strong>Current CM notes:</strong>
+      <span id="current-notes-text"></span>
+    </div>
+
+    <div class="field">
+      <label for="upd-notes">Updated CM Notes</label>
+      <textarea id="upd-notes" placeholder="Type the updated notes here…" rows="4"></textarea>
+      <div class="field-hint">This will replace the existing CM notes for this issue.</div>
+    </div>
+
+    <button class="submit-btn" id="upd-btn" onclick="submitUpdate()">Save Update</button>
+    <div class="msg msg-success" id="upd-success">✅ Notes updated successfully. The tracker will refresh within a few minutes.</div>
+    <div class="msg msg-error"   id="upd-error">⚠️ Something went wrong. Please try again.</div>
+  </div>
+
+  <!-- ADD NEW ISSUE -->
+  <div class="card" id="card-add">
+    <h2>Add a New Issue</h2>
+
+    <div class="field">
+      <label for="add-category">Category</label>
+      <select id="add-category">
+        <option value="">— Select a category —</option>
+        <option>Safety &amp; Emergency</option>
+        <option>Infrastructure &amp; Maintenance</option>
+        <option>Staffing &amp; Management</option>
+        <option>Facilities &amp; Amenity</option>
+        <option>Environment &amp; Grounds</option>
+        <option>Administration &amp; Finance</option>
+        <option>Security</option>
+        <option>Initiatives</option>
+      </select>
+      <div class="field-hint">Or type a new category name below if none of the above apply.</div>
+    </div>
+
+    <div class="field">
+      <label for="add-category-new">New category name <span style="font-weight:400;color:var(--muted)">(leave blank if using one above)</span></label>
+      <input type="text" id="add-category-new" placeholder="e.g. Transport">
+    </div>
+
+    <div class="field">
+      <label for="add-topic">Issue / Topic</label>
+      <input type="text" id="add-topic" placeholder="Brief description of the issue">
+    </div>
+
+    <div class="field">
+      <label for="add-notes">CM Notes</label>
+      <textarea id="add-notes" placeholder="Current status, actions taken, next steps…" rows="4"></textarea>
+    </div>
+
+    <div class="field">
+      <label for="add-status">Status</label>
+      <select id="add-status">
+        <option value="">— Select a status —</option>
+        <option>Not Started</option>
+        <option>In Progress</option>
+        <option>On Hold</option>
+        <option>Completed</option>
+      </select>
+    </div>
+
+    <button class="submit-btn" id="add-btn" onclick="submitAdd()">Add Issue</button>
+    <div class="msg msg-success" id="add-success">✅ New issue added successfully. The tracker will refresh within a few minutes.</div>
+    <div class="msg msg-error"   id="add-error">⚠️ Something went wrong. Please try again.</div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIGURATION ─────────────────────────────────────────────────────────────
+// Same CSV URL as progress-tracker.html
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?output=csv";
+
+// Apps Script URL — you will get this after deploying the Apps Script
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziqELvRy1-GKRoXvy-zS1N2xTGaz6xdX5AAusPwwuiUXi5cOpkQ1v6LWWyh-x2ee5APg/exec";
+
+// CM PIN
+const CM_PIN = "CMUD";
+// ─────────────────────────────────────────────────────────────────────────────
+
+let issueData = [];
+
+// ── PIN ──────────────────────────────────────────────────────────────────────
+function checkPin() {
+  const val = document.getElementById("pinInput").value;
+  if (val === CM_PIN) {
+    document.getElementById("pinOverlay").style.display = "none";
+    document.getElementById("pinInput").value = "";
+    loadIssues();
+  } else {
+    const err = document.getElementById("pinError");
+    err.style.display = "block";
+    setTimeout(() => err.style.display = "none", 3000);
+    document.getElementById("pinInput").value = "";
+  }
+}
+
+// ── TAB SWITCHER ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll(".tab-btn").forEach((b, i) =>
+    b.classList.toggle("active", (i === 0 && tab === "update") || (i === 1 && tab === "add"))
+  );
+  document.getElementById("card-update").classList.toggle("active", tab === "update");
+  document.getElementById("card-add").classList.toggle("active", tab === "add");
+}
+
+// ── LOAD ISSUES FROM SHEET ───────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = [];
+    let cur = "", inQ = false;
+    for (let c = 0; c < lines[i].length; c++) {
+      const ch = lines[i][c];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
+      else { cur += ch; }
+    }
+    cols.push(cur.trim());
+    const [category, topic, cmNotes, status] = cols;
+    if (category && topic) {
+      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes || "").trim(), status: (status || "").trim() });
+    }
+  }
+  return rows;
+}
+
+async function loadIssues() {
+  try {
+    const resp = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
+    const text = await resp.text();
+    issueData = parseCSV(text);
+    populateCategories();
+  } catch(e) {
+    console.error("Could not load issues:", e);
+  }
+}
+
+function populateCategories() {
+  const cats = [...new Set(issueData.map(i => i.category))];
+  const sel = document.getElementById("upd-category");
+  sel.innerHTML = '<option value="">— Select a category —</option>';
+  cats.forEach(c => {
+    const o = document.createElement("option");
+    o.value = c; o.textContent = c;
+    sel.appendChild(o);
+  });
+}
+
+function populateIssues() {
+  const cat = document.getElementById("upd-category").value;
+  const sel = document.getElementById("upd-issue");
+  sel.innerHTML = '<option value="">— Select an issue —</option>';
+  document.getElementById("current-notes-box").style.display = "none";
+
+  if (!cat) { sel.disabled = true; return; }
+
+  const issues = issueData.filter(i => i.category === cat);
+  issues.forEach(i => {
+    const o = document.createElement("option");
+    o.value = i.topic; o.textContent = i.topic;
+    o.dataset.notes = i.notes;
+    sel.appendChild(o);
+  });
+  sel.disabled = false;
+}
+
+function showCurrentNotes() {
+  const sel = document.getElementById("upd-issue");
+  const box = document.getElementById("current-notes-box");
+  const txt = document.getElementById("current-notes-text");
+  const chosen = sel.options[sel.selectedIndex];
+  if (!chosen || !chosen.value) { box.style.display = "none"; return; }
+  const notes = chosen.dataset.notes || "";
+  txt.textContent = notes || "(no notes recorded yet)";
+  box.style.display = "block";
+}
+
+// ── SUBMIT UPDATE ────────────────────────────────────────────────────────────
+async function submitUpdate() {
+  const category = document.getElementById("upd-category").value;
+  const topic    = document.getElementById("upd-issue").value;
+  const notes    = document.getElementById("upd-notes").value.trim();
+
+  if (!category || !topic) { alert("Please select a category and an issue."); return; }
+  if (!notes)               { alert("Please enter the updated CM notes."); return; }
+
+  const btn = document.getElementById("upd-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Saving…';
+
+  const payload = JSON.stringify({ action: "update", category, topic, notes });
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: payload,
+      mode: "no-cors"
+    });
+    showMsg("upd-success");
+    document.getElementById("upd-notes").value = "";
+    document.getElementById("upd-issue").value = "";
+    document.getElementById("upd-category").value = "";
+    document.getElementById("current-notes-box").style.display = "none";
+    document.getElementById("upd-issue").disabled = true;
+  } catch(e) {
+    showMsg("upd-error");
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "Save Update";
+}
+
+// ── SUBMIT ADD ───────────────────────────────────────────────────────────────
+async function submitAdd() {
+  const catSelect = document.getElementById("add-category").value;
+  const catNew    = document.getElementById("add-category-new").value.trim();
+  const category  = catNew || catSelect;
+  const topic     = document.getElementById("add-topic").value.trim();
+  const notes     = document.getElementById("add-notes").value.trim();
+  const status    = document.getElementById("add-status").value;
+
+  if (!category) { alert("Please select or enter a category."); return; }
+  if (!topic)    { alert("Please enter an issue topic."); return; }
+  if (!status)   { alert("Please select a status."); return; }
+
+  const btn = document.getElementById("add-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Adding…';
+
+  const payload = JSON.stringify({ action: "add", category, topic, notes, status });
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: payload,
+      mode: "no-cors"
+    });
+    showMsg("add-success");
+    document.getElementById("add-category").value = "";
+    document.getElementById("add-category-new").value = "";
+    document.getElementById("add-topic").value = "";
+    document.getElementById("add-notes").value = "";
+    document.getElementById("add-status").value = "";
+  } catch(e) {
+    showMsg("add-error");
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "Add Issue";
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function showMsg(id) {
+  const el = document.getElementById(id);
+  el.style.display = "block";
+  setTimeout(() => el.style.display = "none", 5000);
+}
+</script>
+</body>
+</html>
