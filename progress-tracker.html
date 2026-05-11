@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Issues Progress Tracker – Bridgeman Downs Residents Hub</title>
+<style>
+  :root {
+    --green-bg: #EAF3DE; --green-text: #27500A;
+    --blue-bg:  #E6F1FB; --blue-text:  #0C447C;
+    --amber-bg: #FAEEDA; --amber-text: #633806;
+    --gray-bg:  #F1EFE8; --gray-text:  #444441;
+    --border:   #e2e0d8;
+    --surface:  #f8f7f4;
+    --page-bg:  #ffffff;
+    --text:     #1a1a18;
+    --text-muted: #6b6b66;
+    --radius:   10px;
+    --font: 'Segoe UI', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--page-bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    background: #1F4E79;
+    color: #fff;
+    padding: 1.5rem 1.25rem 1.25rem;
+  }
+  .page-header h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.2rem;
+  }
+  .page-header p {
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+
+  /* ── Summary bar ── */
+  .summary-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 0.85rem 1.25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-chip {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+
+  /* ── Filter row ── */
+  .filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+  .filter-row span {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-right: 2px;
+  }
+  .filter-btn {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--page-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: var(--font);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .filter-btn.active {
+    background: #1F4E79;
+    color: #fff;
+    border-color: #1F4E79;
+  }
+  .filter-btn:hover:not(.active) {
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  /* ── Last updated notice ── */
+  .last-updated {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 0.45rem 1.25rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Main content ── */
+  .main { padding: 1rem 1.25rem 2rem; max-width: 860px; margin: 0 auto; }
+
+  /* ── Category blocks ── */
+  .cat-block {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 16px;
+    cursor: pointer;
+    background: var(--surface);
+    gap: 10px;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cat-header:hover { background: #f0ede6; }
+
+  .cat-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+  .cat-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .cat-mini-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+  .mini-pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+
+  .cat-chevron {
+    font-size: 18px;
+    color: var(--text-muted);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .cat-block.open .cat-chevron { transform: rotate(180deg); }
+
+  .cat-body {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .cat-block.open .cat-body { display: block; }
+
+  /* ── Issue rows ── */
+  .issue-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 10px 16px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--page-bg);
+  }
+  .issue-row:last-child { border-bottom: none; }
+  .issue-row.hidden { display: none; }
+
+  .issue-text { flex: 1; min-width: 0; }
+  .issue-name { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .issue-note { font-size: 12px; color: var(--text-muted); margin-top: 3px; line-height: 1.4; }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── Status colours ── */
+  .s-completed  { background: var(--green-bg); color: var(--green-text); }
+  .s-inprogress { background: var(--blue-bg);  color: var(--blue-text); }
+  .s-onhold     { background: var(--amber-bg); color: var(--amber-text); }
+  .s-notstarted { background: var(--gray-bg);  color: var(--gray-text); }
+
+  /* ── Loading / error states ── */
+  .state-msg {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  .state-msg .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+
+  /* ── No results ── */
+  .no-results {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--text-muted);
+    font-size: 14px;
+    display: none;
+  }
+
+  /* ── Expand/collapse all ── */
+  .expand-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 0.75rem;
+  }
+  .expand-btn {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font);
+    padding: 2px 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .expand-btn:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Issues Progress Tracker</h1>
+  <p>Bridgeman Downs Retirement Village — Residents Committee</p>
+</div>
+
+<div class="summary-bar" id="summary-bar">
+  <span class="stat-chip" style="background:#e8e5de;color:#444441">Loading…</span>
+</div>
+
+<div class="filter-row">
+  <span>Filter:</span>
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="Completed">Completed</button>
+  <button class="filter-btn" data-filter="In Progress">In progress</button>
+  <button class="filter-btn" data-filter="Not Started">Not started</button>
+  <button class="filter-btn" data-filter="On Hold">On hold</button>
+</div>
+
+<div class="last-updated" id="last-updated">Loading data…</div>
+
+<div class="main">
+  <div id="loading" class="state-msg">
+    <div class="icon">⏳</div>
+    <div>Loading tracker data…</div>
+  </div>
+  <div id="error" class="state-msg" style="display:none">
+    <div class="icon">⚠️</div>
+    <div id="error-msg">Unable to load data. Please try refreshing the page.</div>
+  </div>
+  <div id="content" style="display:none">
+    <div class="expand-row">
+      <button class="expand-btn" id="expand-all">Expand all</button>
+      <button class="expand-btn" id="collapse-all">Collapse all</button>
+    </div>
+    <div id="accordion"></div>
+    <div class="no-results" id="no-results">No issues match this filter.</div>
+  </div>
+</div>
+
+<script>
+// ── CONFIGURATION ─────────────────────────────────────────────────────────────
+// Replace this URL with your published Google Sheet CSV link
+// Sheet columns (in order): Category | Topic | CM Notes | Status
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?output=csv";
+
+// How often to refresh data (milliseconds). 300000 = 5 minutes.
+const REFRESH_INTERVAL = 300000;
+// ─────────────────────────────────────────────────────────────────────────────
+
+let allData = [];
+let activeFilter = "all";
+
+function statusClass(s) {
+  if (s === "Completed")   return "s-completed";
+  if (s === "In Progress") return "s-inprogress";
+  if (s === "On Hold")     return "s-onhold";
+  return "s-notstarted";
+}
+function statusLabel(s) {
+  if (s === "Completed")   return "Completed";
+  if (s === "In Progress") return "In progress";
+  if (s === "On Hold")     return "On hold";
+  return "Not started";
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split("\n");
+  if (lines.length < 2) return [];
+  // skip header row (row 0)
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    // simple CSV parse — handles quoted fields
+    const cols = [];
+    let cur = "", inQ = false;
+    for (let c = 0; c < lines[i].length; c++) {
+      const ch = lines[i][c];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
+      else { cur += ch; }
+    }
+    cols.push(cur.trim());
+    const [category, topic, cmNotes, status] = cols;
+    if (category && topic && status) {
+      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes || "").trim(), status: status.trim() });
+    }
+  }
+  return rows;
+}
+
+function groupByCategory(rows) {
+  const map = {};
+  rows.forEach(r => {
+    if (!map[r.category]) map[r.category] = [];
+    map[r.category].push(r);
+  });
+  return map;
+}
+
+function buildSummary(rows) {
+  const counts = { Completed: 0, "In Progress": 0, "Not Started": 0, "On Hold": 0 };
+  rows.forEach(r => { counts[r.status] = (counts[r.status] || 0) + 1; });
+  const total = rows.length;
+  const bar = document.getElementById("summary-bar");
+  bar.innerHTML = [
+    { label: total + " total",                      bg: "#e8e5de", col: "#444441" },
+    { label: counts["Completed"] + " completed",    bg: "#EAF3DE", col: "#27500A" },
+    { label: counts["In Progress"] + " in progress",bg: "#E6F1FB", col: "#0C447C" },
+    { label: counts["Not Started"] + " not started",bg: "#F1EFE8", col: "#444441" },
+    { label: counts["On Hold"] + " on hold",        bg: "#FAEEDA", col: "#633806" },
+  ].map(s =>
+    `<span class="stat-chip" style="background:${s.bg};color:${s.col}">${s.label}</span>`
+  ).join("");
+}
+
+function buildAccordion(grouped) {
+  const acc = document.getElementById("accordion");
+  acc.innerHTML = "";
+
+  Object.entries(grouped).forEach(([catName, issues]) => {
+    const catCounts = {};
+    issues.forEach(i => { catCounts[i.status] = (catCounts[i.status] || 0) + 1; });
+
+    const miniPills = Object.entries(catCounts).map(([s, n]) =>
+      `<span class="mini-pill ${statusClass(s)}">${n} ${statusLabel(s)}</span>`
+    ).join("");
+
+    const rows = issues.map(i =>
+      `<div class="issue-row" data-status="${i.status}">
+        <div class="issue-text">
+          <div class="issue-name">${escHtml(i.topic)}</div>
+          ${i.notes ? `<div class="issue-note">${escHtml(i.notes)}</div>` : ""}
+        </div>
+        <span class="badge ${statusClass(i.status)}">${statusLabel(i.status)}</span>
+      </div>`
+    ).join("");
+
+    const block = document.createElement("div");
+    block.className = "cat-block";
+    block.dataset.cat = catName;
+    block.innerHTML = `
+      <div class="cat-header">
+        <div class="cat-left">
+          <span class="cat-name">${escHtml(catName)}</span>
+          <div class="cat-mini-pills">${miniPills}</div>
+        </div>
+        <span class="cat-chevron">&#8964;</span>
+      </div>
+      <div class="cat-body">${rows}</div>`;
+
+    block.querySelector(".cat-header").addEventListener("click", () => block.classList.toggle("open"));
+    acc.appendChild(block);
+  });
+}
+
+function applyFilter(filter) {
+  activeFilter = filter;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === filter));
+
+  let anyVisible = false;
+  document.querySelectorAll(".cat-block").forEach(block => {
+    let catHasVisible = false;
+    block.querySelectorAll(".issue-row").forEach(row => {
+      const show = filter === "all" || row.dataset.status === filter;
+      row.classList.toggle("hidden", !show);
+      if (show) catHasVisible = true;
+    });
+    block.style.display = catHasVisible ? "" : "none";
+    if (catHasVisible) anyVisible = true;
+  });
+
+  document.getElementById("no-results").style.display = anyVisible ? "none" : "block";
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+async function loadData() {
+  try {
+    const resp = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    const text = await resp.text();
+    allData = parseCSV(text);
+    if (!allData.length) throw new Error("No data rows found");
+
+    const grouped = groupByCategory(allData);
+    buildSummary(allData);
+    buildAccordion(grouped);
+    applyFilter(activeFilter);
+
+    document.getElementById("last-updated").textContent =
+      "Last refreshed: " + new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" });
+
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("error").style.display   = "none";
+    document.getElementById("content").style.display = "block";
+
+  } catch (err) {
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("error-msg").textContent = "Unable to load data. Please try refreshing the page. (" + err.message + ")";
+    document.getElementById("error").style.display = "block";
+  }
+}
+
+// Filter buttons
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => applyFilter(btn.dataset.filter));
+});
+
+// Expand / collapse all
+document.getElementById("expand-all").addEventListener("click", () => {
+  document.querySelectorAll(".cat-block").forEach(b => { if (b.style.display !== "none") b.classList.add("open"); });
+});
+document.getElementById("collapse-all").addEventListener("click", () => {
+  document.querySelectorAll(".cat-block").forEach(b => b.classList.remove("open"));
+});
+
+// Initial load + auto-refresh
+loadData();
+setInterval(loadData, REFRESH_INTERVAL);
+</script>
+</body>
+</html>
