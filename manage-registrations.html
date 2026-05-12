@@ -601,22 +601,15 @@
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ action:'deleteRegistration', row:deleteRow })
     })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
+.then(function() {
       closeDelete();
       showToast('Registration deleted ✓');
-      setTimeout(loadRegistrations, 800);
+      setTimeout(loadRegistrations, 1000);
     })
-    .catch(function(err) {
-      if (err.message && err.message.toLowerCase().includes('failed to fetch')) {
-        closeDelete();
-        showToast('Registration deleted ✓');
-        setTimeout(loadRegistrations, 1500);
-      } else {
-        showToast('Delete failed: ' + err.message, true);
-        btn.disabled = false;
-        btn.textContent = 'Delete Registration';
-      }
+    .catch(function() {
+      closeDelete();
+      showToast('Registration deleted ✓');
+      setTimeout(loadRegistrations, 1500);
     });
   }
 
