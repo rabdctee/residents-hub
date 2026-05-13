@@ -248,6 +248,43 @@
       left: 0;
     }
 
+    /* ===== Toggle button tooltip ===== */
+    .sidebar-toggle .sb-tooltip {
+      position: absolute;
+      left: 44px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1F4E79;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      padding: 5px 10px;
+      border-radius: 5px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    /* Small arrow pointing left from tooltip box */
+    .sidebar-toggle .sb-tooltip::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-right-color: #1F4E79;
+    }
+    .sidebar-toggle:hover .sb-tooltip {
+      opacity: 1;
+    }
+    /* When collapsed, tooltip appears on the right of the button */
+    @media (min-width: 769px) {
+      .hub-wrapper.sb-collapsed .sidebar-toggle .sb-tooltip {
+        left: 44px;
+      }
+    }
     @media (max-width: 900px) {
       .sidebar-toggle { left: 182px; }
       .hub-wrapper.sb-collapsed .sidebar-toggle { left: 0; }
@@ -450,7 +487,7 @@
       toggleBtn.onclick = sbToggleSidebar;
       toggleBtn.title = 'Show/hide sidebar';
       toggleBtn.setAttribute('aria-label', 'Toggle sidebar');
-      toggleBtn.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span>';
+      toggleBtn.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>';
       wrapper.appendChild(toggleBtn);
     } else {
       // Fallback: wrap all direct body children except scripts
@@ -470,7 +507,7 @@
       toggleBtn2.onclick = sbToggleSidebar;
       toggleBtn2.title = 'Show/hide sidebar';
       toggleBtn2.setAttribute('aria-label', 'Toggle sidebar');
-      toggleBtn2.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span>';
+      toggleBtn2.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>';
       wrapper.appendChild(toggleBtn2);
     }
 
@@ -548,6 +585,9 @@
     } else {
       wrapper.classList.remove('sb-collapsed');
     }
+    // Set tooltip text to match initial state
+    var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
+    if (tooltip) tooltip.textContent = shouldCollapse ? 'Show menu' : 'Hide menu';
   }
 
   window.sbToggleSidebar = function () {
@@ -555,6 +595,9 @@
     if (!wrapper) return;
     var isNowCollapsed = wrapper.classList.toggle('sb-collapsed');
     localStorage.setItem(SB_PREF_KEY, isNowCollapsed ? 'true' : 'false');
+    // Update tooltip text to reflect new state
+    var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
+    if (tooltip) tooltip.textContent = isNowCollapsed ? 'Show menu' : 'Hide menu';
   };
 
   // Initialise after DOM is ready (sidebar has been injected by then)
