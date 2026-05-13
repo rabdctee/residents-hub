@@ -204,6 +204,11 @@
       overflow: hidden;
     }
 
+    /* Give hub-main a left indent so the toggle button is never covered */
+    .hub-main {
+      padding-left: 22px;
+    }
+
     /* Toggle button — always visible, anchored between sidebar and main content */
     .sidebar-toggle {
       position: absolute;
@@ -256,6 +261,9 @@
 
     /* Mobile: sidebar stacks vertically, toggle sits below it */
     @media (max-width: 768px) {
+      .hub-main {
+        padding-left: 0;
+      }
       .hub-sidebar {
         transition: height 0.3s ease, padding 0.3s ease;
       }
