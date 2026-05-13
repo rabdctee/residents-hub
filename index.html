@@ -1108,6 +1108,36 @@ border-bottom:2px solid #000;
   }
 }
 
+
+/* ===== Toggle button tooltip ===== */
+.sidebar-toggle .sb-tooltip {
+  position: absolute;
+  left: 44px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1F4E79;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 5px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.sidebar-toggle .sb-tooltip::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: #1F4E79;
+}
+.sidebar-toggle:hover .sb-tooltip {
+  opacity: 1;
+}
 </style>
 </head>
 <body>
@@ -1171,7 +1201,7 @@ border-bottom:2px solid #000;
 
 <!-- Sidebar toggle button — always visible, anchored to left of main content -->
 <button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
-  <span class="sb-toggle-arrow">&#9664;</span>
+  <span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>
 </button>
 
 <!-- ── MAIN CONTENT ── -->
@@ -3304,12 +3334,16 @@ function initSidebar() {
   } else {
     wrapper.classList.remove('sb-collapsed');
   }
+  var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
+  if (tooltip) tooltip.textContent = shouldCollapse ? 'Show menu' : 'Hide menu';
 }
 
 function toggleSidebar() {
   var wrapper = document.getElementById('hubWrapper');
   var isNowCollapsed = wrapper.classList.toggle('sb-collapsed');
   localStorage.setItem(SIDEBAR_PREF_KEY, isNowCollapsed ? 'true' : 'false');
+  var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
+  if (tooltip) tooltip.textContent = isNowCollapsed ? 'Show menu' : 'Hide menu';
 }
 
 // Initialise on page load
