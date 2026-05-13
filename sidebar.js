@@ -206,7 +206,7 @@
     /* Toggle button — fixed so it travels with the scroll */
     .sidebar-toggle {
       position: fixed;
-      top: 20px;
+      top: 260px;
       left: 212px;
       z-index: 200;
       width: 36px;
@@ -527,6 +527,16 @@
   // ── COLLAPSIBLE SIDEBAR ────────────────────────────────────
   var SB_PREF_KEY = 'bdrv_sidebar_collapsed';
 
+  function sbPositionToggle() {
+    var btn = document.getElementById('sidebarToggleBtn') || document.getElementById('sidebarToggleBtn2');
+    var sidebar = document.querySelector('.hub-sidebar');
+    if (!btn || !sidebar) return;
+    var sidebarRect = sidebar.getBoundingClientRect();
+    // Position button at top of sidebar + scroll offset + small margin
+    var targetTop = sidebarRect.top + window.scrollY + 20;
+    btn.style.top = targetTop + 'px';
+  }
+
   function sbInitSidebar() {
     var wrapper = document.querySelector('.hub-wrapper');
     if (!wrapper) return;
@@ -548,6 +558,9 @@
   };
 
   // Initialise after DOM is ready (sidebar has been injected by then)
-  document.addEventListener('DOMContentLoaded', sbInitSidebar);
+  document.addEventListener('DOMContentLoaded', function() {
+    sbInitSidebar();
+    sbPositionToggle();
+  });
 
 })();
