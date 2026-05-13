@@ -193,6 +193,103 @@
         align-self: auto;
       }
     }
+
+    /* ===== Collapsible Sidebar ===== */
+    .hub-wrapper {
+      position: relative;
+    }
+    .hub-sidebar {
+      position: relative;
+      transition: width 0.3s ease, min-width 0.3s ease, padding 0.3s ease;
+      overflow: hidden;
+    }
+
+    /* Toggle button — always visible, anchored between sidebar and main content */
+    .sidebar-toggle {
+      position: absolute;
+      top: 20px;
+      left: 212px;
+      z-index: 200;
+      width: 36px;
+      height: 36px;
+      background: #1F4E79;
+      color: white;
+      border: 2px solid white;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: background 0.2s, left 0.3s ease;
+      line-height: 1;
+    }
+    .sidebar-toggle:hover { background: #163d60; }
+
+    /* Arrow rotates when collapsed */
+    .sidebar-toggle .sb-toggle-arrow {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+    /* Collapsed: arrow points right (▶) — click to expand */
+    .hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Collapsed state — sidebar shrinks to nothing */
+    .hub-wrapper.sb-collapsed .hub-sidebar {
+      width: 0 !important;
+      min-width: 0 !important;
+      padding: 0 !important;
+      border-right: none !important;
+    }
+    /* Button moves to left edge when sidebar is hidden */
+    .hub-wrapper.sb-collapsed .sidebar-toggle {
+      left: 0;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar-toggle { left: 182px; }
+      .hub-wrapper.sb-collapsed .sidebar-toggle { left: 0; }
+    }
+
+    /* Mobile: sidebar stacks vertically, toggle sits below it */
+    @media (max-width: 768px) {
+      .hub-sidebar {
+        transition: height 0.3s ease, padding 0.3s ease;
+      }
+      .hub-wrapper.sb-collapsed .hub-sidebar {
+        width: 100% !important;
+        min-width: 0 !important;
+        height: 0 !important;
+        padding: 0 !important;
+        border-bottom: none !important;
+      }
+      .sidebar-toggle,
+      .hub-wrapper:not(.sb-collapsed) .sidebar-toggle,
+      .hub-wrapper.sb-collapsed .sidebar-toggle {
+        position: relative;
+        top: auto;
+        left: auto;
+        display: block;
+        margin: 6px auto 0;
+        border-radius: 20px;
+        width: auto;
+        height: auto;
+        padding: 6px 18px;
+        font-size: 13px;
+      }
+      /* Mobile open: arrow points up */
+      .hub-wrapper:not(.sb-collapsed) .sidebar-toggle .sb-toggle-arrow {
+        transform: rotate(90deg);
+      }
+      /* Mobile collapsed: arrow points down */
+      .hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
+        transform: rotate(270deg);
+      }
+    }
+
   `;
 
   // ── INJECT CSS ─────────────────────────────────────────────
@@ -296,6 +393,11 @@
         </ul>
 
       </div>
+
+      <!-- Sidebar toggle button — always visible -->
+      <button class="sidebar-toggle" id="sidebarToggleBtn" onclick="sbToggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
+        <span class="sb-toggle-arrow">&#9664;</span>
+      </button>
     </aside>
   `;
 
@@ -407,5 +509,32 @@
       if (header) header.classList.add('open');
     }
   };
+
+
+  // ── COLLAPSIBLE SIDEBAR ────────────────────────────────────
+  var SB_PREF_KEY = 'bdrv_sidebar_collapsed';
+
+  function sbInitSidebar() {
+    var wrapper = document.querySelector('.hub-wrapper');
+    if (!wrapper) return;
+    var isMobile = window.innerWidth <= 768;
+    var saved = localStorage.getItem(SB_PREF_KEY);
+    var shouldCollapse = (saved !== null) ? (saved === 'true') : isMobile;
+    if (shouldCollapse) {
+      wrapper.classList.add('sb-collapsed');
+    } else {
+      wrapper.classList.remove('sb-collapsed');
+    }
+  }
+
+  window.sbToggleSidebar = function () {
+    var wrapper = document.querySelector('.hub-wrapper');
+    if (!wrapper) return;
+    var isNowCollapsed = wrapper.classList.toggle('sb-collapsed');
+    localStorage.setItem(SB_PREF_KEY, isNowCollapsed ? 'true' : 'false');
+  };
+
+  // Initialise after DOM is ready (sidebar has been injected by then)
+  document.addEventListener('DOMContentLoaded', sbInitSidebar);
 
 })();
