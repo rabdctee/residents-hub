@@ -203,9 +203,9 @@
       overflow: hidden;
     }
 
-    /* Toggle button — always visible, anchored between sidebar and main content */
+    /* Toggle button — fixed so it travels with the scroll */
     .sidebar-toggle {
-      position: absolute;
+      position: fixed;
       top: 20px;
       left: 212px;
       z-index: 200;
