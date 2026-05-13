@@ -199,14 +199,8 @@
       position: relative;
     }
     .hub-sidebar {
-      position: relative;
       transition: width 0.3s ease, min-width 0.3s ease, padding 0.3s ease;
       overflow: hidden;
-    }
-
-    /* Give hub-main a left indent so the toggle button is never covered */
-    .hub-main {
-      padding-left: 22px;
     }
 
     /* Toggle button — always visible, anchored between sidebar and main content */
@@ -261,9 +255,6 @@
 
     /* Mobile: sidebar stacks vertically, toggle sits below it */
     @media (max-width: 768px) {
-      .hub-main {
-        padding-left: 0;
-      }
       .hub-sidebar {
         transition: height 0.3s ease, padding 0.3s ease;
       }
@@ -402,10 +393,6 @@
 
       </div>
 
-      <!-- Sidebar toggle button — always visible -->
-      <button class="sidebar-toggle" id="sidebarToggleBtn" onclick="sbToggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
-        <span class="sb-toggle-arrow">&#9664;</span>
-      </button>
     </aside>
   `;
 
@@ -456,6 +443,15 @@
       wrapper.appendChild(aside);
       wrapper.appendChild(mainDiv);
       mainDiv.appendChild(container);
+      // Inject toggle button as direct child of hub-wrapper (never clipped by sidebar or content)
+      var toggleBtn = document.createElement('button');
+      toggleBtn.className = 'sidebar-toggle';
+      toggleBtn.id = 'sidebarToggleBtn';
+      toggleBtn.onclick = sbToggleSidebar;
+      toggleBtn.title = 'Show/hide sidebar';
+      toggleBtn.setAttribute('aria-label', 'Toggle sidebar');
+      toggleBtn.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span>';
+      wrapper.appendChild(toggleBtn);
     } else {
       // Fallback: wrap all direct body children except scripts
       var children = Array.from(body.childNodes).filter(function(n) {
@@ -467,6 +463,15 @@
       children.forEach(function (child) {
         mainDiv.appendChild(child);
       });
+      // Inject toggle button as direct child of hub-wrapper
+      var toggleBtn2 = document.createElement('button');
+      toggleBtn2.className = 'sidebar-toggle';
+      toggleBtn2.id = 'sidebarToggleBtn';
+      toggleBtn2.onclick = sbToggleSidebar;
+      toggleBtn2.title = 'Show/hide sidebar';
+      toggleBtn2.setAttribute('aria-label', 'Toggle sidebar');
+      toggleBtn2.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span>';
+      wrapper.appendChild(toggleBtn2);
     }
 
     // ── INJECT BREADCRUMB BAR ──────────────────────────────
