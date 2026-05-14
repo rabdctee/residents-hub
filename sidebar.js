@@ -203,10 +203,10 @@
       overflow: hidden;
     }
 
-    /* Toggle button — fixed so it travels with the scroll */
+    /* Toggle button — absolute within hub-wrapper, always at sidebar right edge */
     .sidebar-toggle {
-      position: fixed;
-      top: 260px;
+      position: absolute;
+      top: 12px;
       left: 212px;
       z-index: 200;
       width: 36px;
@@ -231,21 +231,29 @@
       display: inline-block;
       transition: transform 0.3s ease;
     }
-    /* Collapsed: arrow points right (▶) — click to expand */
     .hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
       transform: rotate(180deg);
     }
 
-    /* Collapsed state — sidebar shrinks to nothing */
+    /* Collapsed state */
     .hub-wrapper.sb-collapsed .hub-sidebar {
       width: 0 !important;
       min-width: 0 !important;
       padding: 0 !important;
       border-right: none !important;
     }
-    /* Button moves to left edge when sidebar is hidden */
     .hub-wrapper.sb-collapsed .sidebar-toggle {
       left: 0;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar-toggle { left: 182px; }
+      .hub-wrapper.sb-collapsed .sidebar-toggle { left: 0; }
+    }
+
+    /* Mobile: hide toggle button entirely — sidebar stacks and breadcrumb is enough */
+    @media (max-width: 768px) {
+      .sidebar-toggle { display: none !important; }
     }
 
     /* ===== Toggle button tooltip ===== */
@@ -564,16 +572,6 @@
   // ── COLLAPSIBLE SIDEBAR ────────────────────────────────────
   var SB_PREF_KEY = 'bdrv_sidebar_collapsed';
 
-  function sbPositionToggle() {
-    var btn = document.getElementById('sidebarToggleBtn') || document.getElementById('sidebarToggleBtn2');
-    var sidebar = document.querySelector('.hub-sidebar');
-    if (!btn || !sidebar) return;
-    var sidebarRect = sidebar.getBoundingClientRect();
-    // Position button at top of sidebar + scroll offset + small margin
-    var targetTop = sidebarRect.top + window.scrollY + 20;
-    btn.style.top = targetTop + 'px';
-  }
-
   function sbInitSidebar() {
     var wrapper = document.querySelector('.hub-wrapper');
     if (!wrapper) return;
@@ -601,9 +599,6 @@
   };
 
   // Initialise after DOM is ready (sidebar has been injected by then)
-  document.addEventListener('DOMContentLoaded', function() {
-    sbInitSidebar();
-    sbPositionToggle();
-  });
+  document.addEventListener('DOMContentLoaded', sbInitSidebar);
 
 })();
