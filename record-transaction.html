@@ -558,16 +558,26 @@ function loadCategories() {
   fetch(TX_CSV_URL)
     .then(function(r) { return r.text(); })
     .then(function(csv) {
-      var lines = csv.trim().split('\n').slice(1); // skip header row
+      var lines = csv.trim().split('\n');
+      if (lines.length < 2) return;
+
+      // Find column index of 'Detailed Category' from header row
+      var headers = lines[0].split(',').map(function(h) {
+        return h.replace(/^"|"$/g, '').trim();
+      });
+      var catIndex = headers.indexOf('Detailed Category');
+      if (catIndex === -1) catIndex = 2; // fallback to column C
+
       var categories = [];
-      lines.forEach(function(line) {
-        // Column C (index 2) is Detailed Category
+      lines.slice(1).forEach(function(line) {
         var cols = line.split(',');
-        var cat = (cols[2] || '').replace(/^"|"$/g, '').trim();
-        if (cat && categories.indexOf(cat) === -1) {
+        var cat = (cols[catIndex] || '').replace(/^"|"$/g, '').trim();
+        // Skip empty values and pure numbers (e.g. years)
+        if (cat && !cat.match(/^\d+$/) && categories.indexOf(cat) === -1) {
           categories.push(cat);
         }
       });
+
       categories.sort();
       sel.innerHTML = '<option value="">— Select a category —</option>';
       categories.forEach(function(cat) {
