@@ -552,37 +552,47 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 function loadCategories() {
-  // Categories are hardcoded from Data List sheet to avoid CORS issues
-  // Update this list if new categories are added to the Data List sheet
-  const categories = [
-    'Australia Day',
-    'Anzac Day',
-    'Bar Expenses',
-    'Bar Takings',
-    'Bank Fees',
-    'Community Morning Tea',
-    'Containers for Change',
-    'Craft Fair',
-    'Donations',
-    'Fashion Show',
-    'Happy Hour',
-    'Miscellaneous',
-    'Movie Afternoon',
-    'Pantry Expenses',
-    'Pizza Lunch',
-    'Raffles',
-    'Show Day BBQ',
-    'Xmas Lunch'
-  ];
+  var sel = document.getElementById('txCategory');
+  sel.innerHTML = '<option value="">— Loading categories… —</option>';
 
-  const sel = document.getElementById('txCategory');
-  sel.innerHTML = '<option value="">— Select a category —</option>';
-  categories.forEach(function(cat) {
-    const opt = document.createElement('option');
-    opt.value = cat;
-    opt.textContent = cat;
-    sel.appendChild(opt);
-  });
+  fetch(TX_CSV_URL)
+    .then(function(r) { return r.text(); })
+    .then(function(csv) {
+      var lines = csv.trim().split('\n').slice(1); // skip header row
+      var categories = [];
+      lines.forEach(function(line) {
+        // Column C (index 2) is Detailed Category
+        var cols = line.split(',');
+        var cat = (cols[2] || '').replace(/^"|"$/g, '').trim();
+        if (cat && categories.indexOf(cat) === -1) {
+          categories.push(cat);
+        }
+      });
+      categories.sort();
+      sel.innerHTML = '<option value="">— Select a category —</option>';
+      categories.forEach(function(cat) {
+        var opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        sel.appendChild(opt);
+      });
+    })
+    .catch(function() {
+      // Fallback to hardcoded list if CSV fetch fails
+      var fallback = [
+        'Australia Day','Anzac Day','Bar Expenses','Bar Takings','Bank Fees',
+        'Community Morning Tea','Containers for Change','Craft Fair','Donations',
+        'Fashion Show','Happy Hour','Miscellaneous','Movie Afternoon',
+        'Pantry Expenses','Pizza Lunch','Raffles','Show Day BBQ','Xmas Lunch'
+      ];
+      sel.innerHTML = '<option value="">— Select a category —</option>';
+      fallback.forEach(function(cat) {
+        var opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        sel.appendChild(opt);
+      });
+    });
 }
 
 function selectType(type) {
