@@ -1,0 +1,212 @@
+[
+  {
+    "page": "home",
+    "section": null,
+    "title": "🏠 Home",
+    "description": "Welcome page – announcements, upcoming events, weather, quote of the day",
+    "keywords": "home welcome hub announcements latest news weather upcoming events quote question ask feedback"
+  },
+  {
+    "page": "newsletter",
+    "section": null,
+    "title": "📰 Village News & Newsletter Archive",
+    "description": "Past newsletters and village news items",
+    "keywords": "newsletter archive news village news bulletin edition past newsletters read download"
+  },
+  {
+    "page": "events",
+    "section": null,
+    "title": "🎉 Events & Activities",
+    "description": "Upcoming social events, activities calendar, dining",
+    "keywords": "events activities calendar upcoming social club outings trips excursions dining lunch dinner breakfast meal menu morning tea afternoon tea concert show theatre movie film outing bus trip craft exercise fitness bingo cards games trivia quiz singalong sing-along music entertainment programme program schedule what's on"
+  },
+  {
+    "page": "activity-contacts",
+    "section": null,
+    "title": "🚶 Activities & Contacts",
+    "description": "Village activity groups, contacts for each group",
+    "keywords": "activities groups contacts aqua aerobics pool swimming water exercise walking bowls lawn bowls tai chi yoga crafts art knitting sewing choir singing cards bridge mahjong scrabble book club library reading games trivia painting photography computer tech class fitness gym stretch pilates choir concert music band entertainment convenor coordinator leader contact phone"
+  },
+  {
+    "page": "contact",
+    "section": null,
+    "title": "📞 Contacts",
+    "description": "All village contacts – emergency, committee, community manager",
+    "keywords": "contact contacts phone number email committee residents committee social club aveo manager community manager office staff feedback send message query enquiry question"
+  },
+  {
+    "page": "contact",
+    "section": "emergency",
+    "title": "🚨 Emergency Contacts",
+    "description": "Emergency phone numbers – ambulance, fire, police, nurse call",
+    "keywords": "emergency ambulance fire police nurse call help urgent hospital doctor medical urgent care after hours GP nurse on call emergency contacts 000 security"
+  },
+  {
+    "page": "contact",
+    "section": "committee",
+    "title": "🏛️ Committee Contacts",
+    "description": "Residents Committee and Social Club office bearers",
+    "keywords": "committee residents committee social club chair chairman chairperson treasurer secretary convenor office bearers officers Rick Fay Jocelyn Kathy Judy Marie email"
+  },
+  {
+    "page": "contact",
+    "section": "aveo",
+    "title": "🏢 Aveo / Community Manager",
+    "description": "Aveo management and community manager contact",
+    "keywords": "aveo community manager office management maintenance repair request village manager Candice staff contact"
+  },
+  {
+    "page": "village-info",
+    "section": null,
+    "title": "📁 Village Documents",
+    "description": "Official village documents – meeting minutes, financial reports, bank statements, Aveo documents",
+    "keywords": "documents village documents official files"
+  },
+  {
+    "page": "village-info",
+    "section": "meetings",
+    "title": "📄 Meeting Minutes",
+    "description": "Minutes from Residents Committee and Social Club meetings",
+    "keywords": "minutes meeting minutes residents committee social club meeting notes AGM annual general meeting agenda"
+  },
+  {
+    "page": "village-info",
+    "section": "financial",
+    "title": "📊 Financial Reports",
+    "description": "Monthly financial reports for all precincts",
+    "keywords": "financial report finance quarterly monthly budget precinct freehold leasehold serviced apartments aveo way maintenance reserve fund MRF income expenditure expenses bank balance accounts treasurer figures money funds report"
+  },
+  {
+    "page": "village-info",
+    "section": "bank",
+    "title": "🏦 Bank Statements",
+    "description": "Bank statements for Social Club and Residents Committee accounts",
+    "keywords": "bank statement bank account transaction social club residents committee balance statement"
+  },
+  {
+    "page": "village-info",
+    "section": "aveo-docs",
+    "title": "📄 Aveo Documents",
+    "description": "Official documents from Aveo management",
+    "keywords": "aveo document aveo communication resident agreement village rules contract legal notice"
+  },
+  {
+    "page": "useful-links",
+    "section": null,
+    "title": "🔗 Useful Links",
+    "description": "Helpful external websites – health, government, transport, local services",
+    "keywords": "useful links website links external resources health government transport myGov Medicare Centrelink seniors card shopping savings discounts local services Bridgeman Downs Brisbane council transport bus train"
+  },
+  {
+    "page": "noticeboard",
+    "section": null,
+    "title": "📌 Community Noticeboard",
+    "description": "Resident posts, notices, items for sale, swap or wanted",
+    "keywords": "noticeboard notice board community posts resident post sale sell swap wanted lost found announcement message board buy sell"
+  },
+  {
+    "page": "about",
+    "section": null,
+    "title": "ℹ️ About This Website",
+    "description": "Information about the Hub website and how to use it",
+    "keywords": "about website hub information how to use help guide instructions tips bookmark website information hub tech support"
+  },
+  {
+    "page": "events",
+    "section": null,
+    "title": "🎉 Register for an Event",
+    "description": "Register your name for upcoming events",
+    "keywords": "register registration sign up book event booking rsvp reserve place"
+  },
+  {
+    "page": "events",
+    "section": null,
+    "title": "🎉 Dining Menu",
+    "description": "Current dining menu for the restaurant",
+    "keywords": "dining menu restaurant food meal lunch dinner breakfast weekly menu"
+  },
+  {
+    "page": "contact",
+    "section": null,
+    "title": "✉️ Send Feedback",
+    "description": "Send a message or feedback to the committee",
+    "keywords": "feedback send message comment suggestion complaint idea contact form email committee"
+  },
+  {
+    "page": "newsletter",
+    "section": null,
+    "title": "📰 Latest Newsletter",
+    "description": "Most recent village newsletter",
+    "keywords": "latest newsletter current recent edition new news"
+  },
+  {
+    "page": "village-info",
+    "section": "financial",
+    "title": "📊 Precinct Financial Reports",
+    "description": "Quarterly financial summaries for each precinct",
+    "keywords": "precinct one two three four freehold leasehold serviced apartments aveo way Q1 Q2 Q3 Q4 FY2025 FY2026 quarter financial summary report income expenses"
+  },
+  {
+    "page": "home",
+    "section": null,
+    "title": "🗓️ Upcoming Events Widget",
+    "description": "Quick view of next events on the home page",
+    "keywords": "next event coming soon this week this month upcoming soon"
+  },
+  {
+    "page": "useful-links",
+    "section": null,
+    "title": "💰 Savings & Discounts",
+    "description": "Links to savings, discounts, and senior-friendly pricing",
+    "keywords": "savings discounts senior discount cheap deals specials sale price comparison cheaper savings hub savings page shop special offer"
+  },
+  {
+    "page": "activity-contacts",
+    "section": null,
+    "title": "🏊 Pool & Aqua Activities",
+    "description": "Pool, aqua aerobics, and swimming activities",
+    "keywords": "pool swimming aqua aerobics water exercise lap swim pool schedule"
+  },
+  {
+    "page": "village-info",
+    "section": "meetings",
+    "title": "📋 AGM Documents",
+    "description": "Annual General Meeting agenda and minutes",
+    "keywords": "AGM annual general meeting agenda notice proxy vote election committee election results"
+  },
+  {
+    "page": "contact",
+    "section": "maintenance",
+    "title": "🔧 Maintenance Requests",
+    "description": "How to lodge a maintenance or repair request",
+    "keywords": "maintenance repair request lodge fix broken fault issue report plumber electrician repair job work order aveo maintenance"
+  },
+  {
+    "page": "village-info",
+    "section": null,
+    "title": "📁 Village Map",
+    "description": "Map of the village showing all precincts and facilities",
+    "keywords": "map village map layout precinct location directions find where plan"
+  },
+  {
+    "page": "events",
+    "section": null,
+    "title": "🚌 Outings & Bus Trips",
+    "description": "Organised outings, bus trips and day excursions",
+    "keywords": "bus trip outing excursion day trip shopping trip tour travel organised trip group trip"
+  },
+  {
+    "page": "noticeboard",
+    "section": null,
+    "title": "📢 Items for Sale or Wanted",
+    "description": "Residents selling, swapping or looking for items",
+    "keywords": "for sale wanted swap free give away donate second hand items residents selling"
+  },
+  {
+    "page": "home",
+    "section": null,
+    "title": "🌤️ Weather",
+    "description": "Current weather for Bridgeman Downs",
+    "keywords": "weather forecast temperature rain sunny cloudy Bridgeman Downs Brisbane"
+  }
+]
