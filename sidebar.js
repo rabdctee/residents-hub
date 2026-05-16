@@ -207,39 +207,43 @@
       overflow: hidden;
     }
 
-    /* Toggle button — fixed position, JS keeps it at sidebar right edge */
-    .sidebar-toggle {
+    /* "Hide Menu" button inside sidebar heading */
+    .sb-hide-btn {
+      float: right;
+      background: rgba(255,255,255,0.18);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 0.78em;
+      cursor: pointer;
+      line-height: 1.6;
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+    .sb-hide-btn:hover { background: rgba(255,255,255,0.30); }
+
+    /* Fixed "☰ Menu" tab shown only when sidebar is collapsed */
+    .sb-show-tab {
+      display: none;
       position: fixed;
-      top: 60px;
-      left: 260px;
-      transform: translateX(-50%);
+      top: 80px;
+      left: 0;
       z-index: 9999;
-      width: 28px;
-      height: 28px;
       background: #1F4E79;
       color: white;
-      border: 2px solid white;
-      border-radius: 50%;
+      border: none;
+      border-radius: 0 6px 6px 0;
+      padding: 10px 8px;
+      font-size: 0.82em;
       cursor: pointer;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: background 0.2s;
-      line-height: 1;
-      flex-shrink: 0;
+      writing-mode: vertical-lr;
+      text-orientation: mixed;
+      letter-spacing: 0.05em;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.25);
     }
-    .sidebar-toggle:hover { background: #163d60; }
-
-    /* Arrow rotates when collapsed */
-    .sidebar-toggle .sb-toggle-arrow {
-      display: inline-block;
-      transition: transform 0.3s ease;
-    }
-    .hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
-      transform: rotate(180deg);
-    }
+    .sb-show-tab:hover { background: #163d60; }
+    .hub-wrapper.sb-collapsed .sb-show-tab { display: block; }
 
     /* Collapsed state */
     .hub-wrapper.sb-collapsed .hub-sidebar {
@@ -250,9 +254,9 @@
       overflow: hidden !important;
     }
 
-    /* Mobile: hide toggle button entirely — sidebar stacks and breadcrumb is enough */
     @media (max-width: 768px) {
-      .sidebar-toggle { display: none !important; }
+      .sb-hide-btn { display: none; }
+      .sb-show-tab { display: none !important; }
     }
 
     /* ===== Toggle button tooltip ===== */
@@ -375,6 +379,7 @@
     <aside class="hub-sidebar" id="hubSidebar">
       <div class="sb-section">
         <div class="sb-heading">
+          <button class="sb-hide-btn" onclick="sbToggleSidebar()" title="Hide sidebar menu">✕ Hide</button>
           Click a <span style="font-size:1.1em;">&#9660;</span> arrow to see what's here
         </div>
 
@@ -487,15 +492,14 @@
       wrapper.appendChild(aside);
       wrapper.appendChild(mainDiv);
       mainDiv.appendChild(container);
-      // Inject toggle button as direct child of hub-wrapper (never clipped by sidebar or content)
-      var toggleBtn = document.createElement('button');
-      toggleBtn.className = 'sidebar-toggle';
-      toggleBtn.id = 'sidebarToggleBtn';
-      toggleBtn.onclick = sbToggleSidebar;
-      toggleBtn.title = 'Show/hide sidebar';
-      toggleBtn.setAttribute('aria-label', 'Toggle sidebar');
-      toggleBtn.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>';
-      wrapper.appendChild(toggleBtn);
+      // Inject "☰ Menu" show-tab (only visible when sidebar is collapsed)
+      var showTab = document.createElement('button');
+      showTab.className = 'sb-show-tab';
+      showTab.onclick = sbToggleSidebar;
+      showTab.title = 'Show sidebar menu';
+      showTab.setAttribute('aria-label', 'Show menu');
+      showTab.textContent = '☰ Menu';
+      wrapper.appendChild(showTab);
     } else {
       // Fallback: wrap all direct body children except scripts
       var children = Array.from(body.childNodes).filter(function(n) {
@@ -507,35 +511,18 @@
       children.forEach(function (child) {
         mainDiv.appendChild(child);
       });
-      // Inject toggle button as direct child of hub-wrapper
-      var toggleBtn2 = document.createElement('button');
-      toggleBtn2.className = 'sidebar-toggle';
-      toggleBtn2.id = 'sidebarToggleBtn';
-      toggleBtn2.onclick = sbToggleSidebar;
-      toggleBtn2.title = 'Show/hide sidebar';
-      toggleBtn2.setAttribute('aria-label', 'Toggle sidebar');
-      toggleBtn2.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>';
-      wrapper.appendChild(toggleBtn2);
+      // Inject "☰ Menu" show-tab (only visible when sidebar is collapsed)
+      var showTab2 = document.createElement('button');
+      showTab2.className = 'sb-show-tab';
+      showTab2.onclick = sbToggleSidebar;
+      showTab2.title = 'Show sidebar menu';
+      showTab2.setAttribute('aria-label', 'Show menu');
+      showTab2.textContent = '☰ Menu';
+      wrapper.appendChild(showTab2);
     }
 
 
-  // Keep toggle button pinned to sidebar right edge on scroll/resize
-  function updateTogglePos() {
-    var btn = document.getElementById('sidebarToggleBtn');
-    var sidebar = document.querySelector('.hub-sidebar');
-    if (!btn || !sidebar) return;
-    var rect = sidebar.getBoundingClientRect();
-    // Guard: if sidebar hasn't rendered yet, use the CSS default
-    if (rect.right < 10) return;
-    btn.style.left = rect.right + 'px';
-  }
-  window.addEventListener('scroll', updateTogglePos, {passive: true});
-  window.addEventListener('resize', updateTogglePos, {passive: true});
-  window.addEventListener('load', function() {
-    updateTogglePos();
-    setTimeout(updateTogglePos, 200);
-    setTimeout(updateTogglePos, 600);
-  });
+
 
     // ── INJECT BREADCRUMB BAR ──────────────────────────────
     // Add "Home › Page Name" bar after header, inside hub-main
@@ -601,9 +588,7 @@
     } else {
       wrapper.classList.remove('sb-collapsed');
     }
-    // Set tooltip text to match initial state
-    var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
-    if (tooltip) tooltip.textContent = shouldCollapse ? 'Show menu' : 'Hide menu';
+
   }
 
   window.sbToggleSidebar = function () {
@@ -611,9 +596,6 @@
     if (!wrapper) return;
     var isNowCollapsed = wrapper.classList.toggle('sb-collapsed');
     localStorage.setItem(SB_PREF_KEY, isNowCollapsed ? 'true' : 'false');
-    // Update tooltip text to reflect new state
-    var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
-    if (tooltip) tooltip.textContent = isNowCollapsed ? 'Show menu' : 'Hide menu';
   };
 
   // Initialise after DOM is ready (sidebar has been injected by then)
