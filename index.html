@@ -1170,11 +1170,10 @@ border-bottom:2px solid #000;
       <li><a href="community-info.html" class="sb-lock" style="font-weight:700;">🔒 Residents Only</a></li>
     </ul>
   </div>
-</aside>
-<!-- Move sidebar toggle button inside sidebar so it sticks when scrolling -->
 <button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
   <span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>
 </button>
+</aside>
 
 <!-- ── MAIN CONTENT ── -->
 <div class="hub-main">
@@ -2023,6 +2022,8 @@ function parseCSVLine(line) {
   border-right: 2px solid #c5d8ee;
   background: white;
   align-self: flex-start;
+  position: sticky;
+  top: 0;
 }
 .hub-main {
   flex: 1;
@@ -2341,6 +2342,8 @@ Advocacy, advice and support for retirement village residents in Queensland
   border-right: 2px solid #c5d8ee;
   background: white;
   align-self: flex-start;
+  position: sticky;
+  top: 0;
 }
 .hub-main {
   flex: 1;
