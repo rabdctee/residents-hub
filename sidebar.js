@@ -36,12 +36,15 @@
       background: white;
     }
     .hub-sidebar {
-      width: 230px;
+      width: 260px;
+      min-width: 260px;
       flex-shrink: 0;
       padding: 14px 10px;
       border-right: 2px solid #c5d8ee;
       background: white;
-      align-self: stretch;
+      align-self: flex-start;
+      position: sticky;
+      top: 0;
     }
     .hub-main {
       flex: 1;
@@ -182,7 +185,7 @@
 
     /* Responsive */
     @media (max-width: 900px) {
-      .hub-sidebar { width: 200px; }
+      .hub-sidebar { width: 200px; min-width: 200px; }
     }
     @media (max-width: 768px) {
       .hub-wrapper   { flex-direction: column; }
@@ -197,32 +200,34 @@
     /* ===== Collapsible Sidebar ===== */
     .hub-wrapper {
       position: relative;
+      overflow: visible;
     }
     .hub-sidebar {
       transition: width 0.3s ease, min-width 0.3s ease, padding 0.3s ease;
       overflow: hidden;
     }
 
-    /* Toggle button — absolute within hub-wrapper, always at sidebar right edge */
+    /* Toggle button — sits outside aside, anchored to hub-wrapper right edge of sidebar */
     .sidebar-toggle {
       position: absolute;
       top: 12px;
-      left: 212px;
-      z-index: 200;
-      width: 36px;
-      height: 36px;
+      left: 260px;
+      z-index: 500;
+      width: 28px;
+      height: 28px;
       background: #1F4E79;
       color: white;
       border: 2px solid white;
       border-radius: 50%;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       transition: background 0.2s, left 0.3s ease;
       line-height: 1;
+      transform: translateX(-50%);
     }
     .sidebar-toggle:hover { background: #163d60; }
 
@@ -241,14 +246,16 @@
       min-width: 0 !important;
       padding: 0 !important;
       border-right: none !important;
+      overflow: hidden !important;
     }
     .hub-wrapper.sb-collapsed .sidebar-toggle {
       left: 0;
+      transform: translateX(0);
     }
 
     @media (max-width: 900px) {
-      .sidebar-toggle { left: 182px; }
-      .hub-wrapper.sb-collapsed .sidebar-toggle { left: 0; }
+      .sidebar-toggle { left: 200px; }
+      .hub-wrapper.sb-collapsed .sidebar-toggle { left: 0; transform: translateX(0); }
     }
 
     /* Mobile: hide toggle button entirely — sidebar stacks and breadcrumb is enough */
