@@ -1016,25 +1016,25 @@ border-bottom:2px solid #000;
   overflow: hidden;
 }
 
-/* hub-wrapper needs relative positioning so the toggle button can anchor to it */
+/* ── Sidebar toggle button ── */
+/* hub-wrapper is position:relative so the button anchors to it */
 .hub-wrapper {
   position: relative;
+  overflow: visible;
 }
-
-/* Raise sidebar toggle z-index so it's never obscured by page content */
 .sidebar-toggle {
   position: absolute;
   top: 12px;
-  left: 0;
-  z-index: 1000;
-  width: 36px;
-  height: 36px;
+  left: 260px; /* sits right at the sidebar right edge */
+  z-index: 500;
+  width: 28px;
+  height: 28px;
   background: #1F4E79;
   color: white;
   border: 2px solid white;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1042,17 +1042,12 @@ border-bottom:2px solid #000;
   transition: background 0.2s, left 0.3s ease;
   flex-shrink: 0;
   line-height: 1;
+  transform: translateX(-50%); /* centre the button on the sidebar edge */
 }
 .sidebar-toggle:hover { background: #163d60; }
 
-/* Fix toggle button z-index layering over hub-main content */
-.hub-wrapper:not(.sb-collapsed) .sidebar-toggle {
-  left: 242px;
-  z-index: 1001;
-}
-}
 @media(max-width:900px){
-  .hub-wrapper:not(.sb-collapsed) .sidebar-toggle { left: 182px; }
+  .sidebar-toggle { left: 200px; }
 }
 
 /* Arrow rotates when collapsed */
@@ -1060,23 +1055,22 @@ border-bottom:2px solid #000;
   display: inline-block;
   transition: transform 0.3s ease;
 }
-/* Arrow points left (◀) when open — click to collapse */
-/* Arrow points right (▶) when collapsed — click to expand */
 .hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
   transform: rotate(180deg);
 }
 
-/* Fix collapsed sidebar — keep toggle button visible when sidebar is hidden */
+/* Collapsed state — sidebar shrinks to nothing */
 .hub-wrapper.sb-collapsed .hub-sidebar {
   width: 0 !important;
   min-width: 0 !important;
   padding: 0 !important;
   border-right: none !important;
-  overflow: visible !important;
+  overflow: hidden !important;
 }
-/* Collapsed: move button back to left edge */
+/* Collapsed: move button to left edge */
 .hub-wrapper.sb-collapsed .sidebar-toggle {
   left: 0;
+  transform: translateX(0);
 }
 
 /* On mobile (stacked layout), collapse means zero height */
@@ -1174,10 +1168,10 @@ border-bottom:2px solid #000;
       <li><a href="community-info.html" class="sb-lock" style="font-weight:700;">🔒 Residents Only</a></li>
     </ul>
   </div>
+</aside>
 <button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
   <span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>
 </button>
-</aside>
 
 <!-- ── MAIN CONTENT ── -->
 <div class="hub-main">
