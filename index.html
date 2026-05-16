@@ -1063,12 +1063,13 @@ border-bottom:2px solid #000;
   transform: rotate(180deg);
 }
 
-/* Collapsed state — sidebar shrinks to nothing */
+/* Fix collapsed sidebar — keep toggle button visible when sidebar is hidden */
 .hub-wrapper.sb-collapsed .hub-sidebar {
   width: 0 !important;
   min-width: 0 !important;
   padding: 0 !important;
   border-right: none !important;
+  overflow: visible !important;
 }
 /* Collapsed: move button back to left edge */
 .hub-wrapper.sb-collapsed .sidebar-toggle {
