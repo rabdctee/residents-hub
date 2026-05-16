@@ -1019,7 +1019,7 @@ border-bottom:2px solid #000;
 
 /* Toggle button — fixed to the left edge of the main content, always visible */
 .sidebar-toggle {
-  position: sticky;
+  position: fixed;
   top: 12px;
   left: 0;
   z-index: 200;
@@ -1043,7 +1043,7 @@ border-bottom:2px solid #000;
 
 /* When sidebar is open, push the button to sit at the right edge of the sidebar */
 .hub-wrapper:not(.sb-collapsed) .sidebar-toggle {
-  left: 242px; /* sidebar width (260px) minus half button width, pushed right of sidebar */
+  left: 244px;
 }
 }
 @media(max-width:900px){
