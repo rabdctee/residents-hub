@@ -1114,6 +1114,7 @@ border-bottom:2px solid #000;
 <aside class="hub-sidebar">
   <div class="sb-section">
     <div class="sb-heading" style="line-height:1.4;">
+      <button class="sb-hide-btn" onclick="toggleSidebar()" title="Hide menu">✕ Hide</button>
       Click a <span style="font-size:1.1em;">▼</span> arrow to see what's here
     </div>
     <ul class="sb-links">
@@ -1158,9 +1159,7 @@ border-bottom:2px solid #000;
     </ul>
   </div>
 </aside>
-<button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
-  <span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>
-</button>
+<button class="sb-show-tab" onclick="toggleSidebar()" title="Show menu" aria-label="Show menu">☰ Menu</button>
 
 <!-- ── MAIN CONTENT ── -->
 <div class="hub-main">
@@ -3655,27 +3654,6 @@ function submitHomeQuestion() {
 }
 
 </script>
-<script>
-/* ── Keep toggle button pinned to sidebar right edge ── */
-(function() {
-  function updateTogglePos() {
-    var btn = document.getElementById('sidebarToggleBtn');
-    var sidebar = document.querySelector('.hub-sidebar');
-    if (!btn || !sidebar) return;
-    var rect = sidebar.getBoundingClientRect();
-    // Guard: if sidebar hasn't rendered yet, use the CSS default
-    if (rect.right < 10) return;
-    btn.style.left = rect.right + 'px';
-  }
-  window.addEventListener('scroll', updateTogglePos, {passive: true});
-  window.addEventListener('resize', updateTogglePos, {passive: true});
-  // Run after layout is complete
-  window.addEventListener('load', function() {
-    updateTogglePos();
-    setTimeout(updateTogglePos, 200);
-    setTimeout(updateTogglePos, 600);
-  });
-})();
-</script>
+
 </body>
 </html>
