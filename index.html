@@ -1003,10 +1003,6 @@ border-bottom:2px solid #000;
   .hub-sidebar { width: 200px; min-width: 200px; }
 }
 @media(max-width:768px){
-  .hub-wrapper { flex-direction: column; }
-  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee;
-    position: static; align-self: auto; }
-  .hub-main { position: static; z-index: auto; padding-left: 0; }
   .quick-tiles { grid-template-columns: repeat(2,1fr); }
 }
 
@@ -1018,44 +1014,48 @@ border-bottom:2px solid #000;
   overflow: hidden;
 }
 
-/* ── Sidebar toggle button ── */
+/* ── Sidebar hide/show ── */
 .hub-wrapper {
   position: relative;
   overflow: visible;
 }
-.sidebar-toggle {
+/* "Hide Menu" button inside the sidebar heading */
+.sb-hide-btn {
+  float: right;
+  background: rgba(255,255,255,0.18);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 0.78em;
+  cursor: pointer;
+  line-height: 1.6;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+.sb-hide-btn:hover { background: rgba(255,255,255,0.30); }
+/* Fixed "☰ Menu" tab shown only when sidebar is collapsed */
+.sb-show-tab {
+  display: none;
   position: fixed;
-  top: 60px;
-  left: 260px; /* updated by JS on scroll/resize */
-  transform: translateX(-50%);
+  top: 80px;
+  left: 0;
   z-index: 9999;
-  width: 28px;
-  height: 28px;
   background: #1F4E79;
   color: white;
-  border: 2px solid white;
-  border-radius: 50%;
+  border: none;
+  border-radius: 0 6px 6px 0;
+  padding: 10px 8px;
+  font-size: 0.82em;
   cursor: pointer;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: background 0.2s;
-  line-height: 1;
+  writing-mode: vertical-lr;
+  text-orientation: mixed;
+  letter-spacing: 0.05em;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.25);
 }
-.sidebar-toggle:hover { background: #163d60; }
-
-/* Arrow rotates when collapsed */
-.sidebar-toggle .sb-toggle-arrow {
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
-.hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
-  transform: rotate(180deg);
-}
-
-/* Collapsed state — sidebar shrinks to nothing */
+.sb-show-tab:hover { background: #163d60; }
+.hub-wrapper.sb-collapsed .sb-show-tab { display: block; }
+/* Collapsed state */
 .hub-wrapper.sb-collapsed .hub-sidebar {
   width: 0 !important;
   min-width: 0 !important;
@@ -1063,16 +1063,14 @@ border-bottom:2px solid #000;
   border-right: none !important;
   overflow: hidden !important;
 }
-
 @media(max-width:768px){
-  .sidebar-toggle { display: none !important; }
+  .sb-hide-btn { display: none; }
+  .sb-show-tab { display: none !important; }
+  .hub-wrapper { flex-direction: column; }
+  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee;
+    position: static; align-self: auto; }
+  .hub-main { position: static; z-index: auto; padding-left: 0; }
 }
-
-@media(max-width:768px){
-  /* Hide toggle button on mobile — sidebar stacks and breadcrumb handles navigation */
-  .sidebar-toggle { display: none !important; }
-}
-
 
 /* ===== Toggle button tooltip ===== */
 .sidebar-toggle .sb-tooltip {
@@ -1119,6 +1117,7 @@ border-bottom:2px solid #000;
 <aside class="hub-sidebar">
   <div class="sb-section">
     <div class="sb-heading" style="line-height:1.4;">
+      <button class="sb-hide-btn" onclick="toggleSidebar()" title="Hide menu">✕ Hide</button>
       Click a <span style="font-size:1.1em;">▼</span> arrow to see what's here
     </div>
     <ul class="sb-links">
@@ -1163,9 +1162,7 @@ border-bottom:2px solid #000;
     </ul>
   </div>
 </aside>
-<button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
-  <span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>
-</button>
+<button class="sb-show-tab" onclick="toggleSidebar()" title="Show menu" aria-label="Show menu">☰ Menu</button>
 
 <!-- ── MAIN CONTENT ── -->
 <div class="hub-main">
@@ -2088,10 +2085,6 @@ function parseCSVLine(line) {
   .hub-sidebar { width: 200px; min-width: 200px; }
 }
 @media(max-width:768px){
-  .hub-wrapper { flex-direction: column; }
-  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee;
-    position: static; align-self: auto; }
-  .hub-main { position: static; z-index: auto; padding-left: 0; }
   .quick-tiles { grid-template-columns: repeat(2,1fr); }
 }
 
@@ -2410,10 +2403,6 @@ Advocacy, advice and support for retirement village residents in Queensland
   .hub-sidebar { width: 200px; min-width: 200px; }
 }
 @media(max-width:768px){
-  .hub-wrapper { flex-direction: column; }
-  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee;
-    position: static; align-self: auto; }
-  .hub-main { position: static; z-index: auto; padding-left: 0; }
   .quick-tiles { grid-template-columns: repeat(2,1fr); }
 }
 
@@ -3353,8 +3342,6 @@ function toggleSidebar() {
   var wrapper = document.getElementById('hubWrapper');
   var isNowCollapsed = wrapper.classList.toggle('sb-collapsed');
   localStorage.setItem(SIDEBAR_PREF_KEY, isNowCollapsed ? 'true' : 'false');
-  var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
-  if (tooltip) tooltip.textContent = isNowCollapsed ? 'Show menu' : 'Hide menu';
 }
 
 // Initialise on page load
@@ -3656,27 +3643,6 @@ function submitHomeQuestion() {
 }
 
 </script>
-<script>
-/* ── Keep toggle button pinned to sidebar right edge ── */
-(function() {
-  function updateTogglePos() {
-    var btn = document.getElementById('sidebarToggleBtn');
-    var sidebar = document.querySelector('.hub-sidebar');
-    if (!btn || !sidebar) return;
-    var rect = sidebar.getBoundingClientRect();
-    // Guard: if sidebar hasn't rendered yet, use the CSS default
-    if (rect.right < 10) return;
-    btn.style.left = rect.right + 'px';
-  }
-  window.addEventListener('scroll', updateTogglePos, {passive: true});
-  window.addEventListener('resize', updateTogglePos, {passive: true});
-  // Run after layout is complete
-  window.addEventListener('load', function() {
-    updateTogglePos();
-    setTimeout(updateTogglePos, 200);
-    setTimeout(updateTogglePos, 600);
-  });
-})();
-</script>
+
 </body>
 </html>
