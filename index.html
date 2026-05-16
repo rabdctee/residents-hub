@@ -8,7 +8,7 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-V5X3VEVK8R');
-    </scrip
+    </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -2869,12 +2869,44 @@ function updateBreadcrumbs(pageId) {
 function performSearch() {
     var query = document.getElementById('searchInput').value.toLowerCase().trim();
     var resultsDiv = document.getElementById('searchResults');
-    
+
     if (query.length < 2) {
         resultsDiv.style.display = 'none';
         return;
     }
-    
+
+    // ── Site-wide index search (from search-index.json) ──────────
+    if (siteSearchIndex.length > 0) {
+        var idxResults = [];
+        var idxSeen = {};
+        siteSearchIndex.forEach(function(e) {
+            var s = ((e.keywords||'') + ' ' + (e.title||'') + ' ' + (e.description||'')).toLowerCase();
+            if (s.indexOf(query) !== -1) {
+                var k = (e.page||'') + '|' + (e.section||'');
+                if (!idxSeen[k]) { idxSeen[k] = true; idxResults.push(e); }
+            }
+        });
+        if (idxResults.length > 0) {
+            var idxHtml = '<div style="padding:10px;color:#666;font-weight:600;">Found ' + idxResults.length + ' result(s):</div>';
+            idxResults.forEach(function(r) {
+                var onclick = 'showPage(\'' + (r.page||'home') + '\');';
+                if (r.section) {
+                    onclick += 'setTimeout(function(){var el=document.getElementById(\'' + r.section + '\');if(el){el.scrollIntoView({behavior:\'smooth\',block:\'start\'});}},200);';
+                }
+                onclick += 'document.getElementById(\'searchResults\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\';';
+                idxHtml += '<div class="search-result-item" onclick="' + onclick + '">' +
+                    '<strong>' + (r.title||'') + '</strong>' +
+                    (r.description ? '<div style="font-size:0.82em;color:#666;margin-top:2px;">' + r.description + '</div>' : '') +
+                    '</div>';
+            });
+            resultsDiv.innerHTML = idxHtml;
+            resultsDiv.style.display = 'block';
+            logSearchTerm(query, idxResults.length);
+            return;
+        }
+    }
+    // ── End site-wide index — fall through to built-in search ────
+
 var searchableContent = [
     // ── Top-level pages ──────────────────────────────────────
     {page: 'events',            section: null, title: '🗓️ Events Calendar',           keywords: 'events calendar activities schedule social what on anzac day gunfire breakfast singalong opera ballet show upcoming'},
