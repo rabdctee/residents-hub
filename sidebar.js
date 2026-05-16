@@ -207,11 +207,12 @@
       overflow: hidden;
     }
 
-    /* Toggle button — sits outside aside, anchored to hub-wrapper right edge of sidebar */
+    /* Toggle button — sticky so it stays visible when scrolling */
     .sidebar-toggle {
-      position: absolute;
+      position: sticky;
       top: 12px;
-      left: 260px;
+      align-self: flex-start;
+      margin-left: -14px;
       z-index: 500;
       width: 28px;
       height: 28px;
@@ -225,9 +226,9 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: background 0.2s, left 0.3s ease;
+      transition: background 0.2s;
       line-height: 1;
-      transform: translateX(-50%);
+      flex-shrink: 0;
     }
     .sidebar-toggle:hover { background: #163d60; }
 
@@ -248,14 +249,9 @@
       border-right: none !important;
       overflow: hidden !important;
     }
-    .hub-wrapper.sb-collapsed .sidebar-toggle {
-      left: 0;
-      transform: translateX(0);
-    }
 
     @media (max-width: 900px) {
-      .sidebar-toggle { left: 200px; }
-      .hub-wrapper.sb-collapsed .sidebar-toggle { left: 0; transform: translateX(0); }
+      .sidebar-toggle { margin-left: -14px; }
     }
 
     /* Mobile: hide toggle button entirely — sidebar stacks and breadcrumb is enough */
