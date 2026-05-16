@@ -1019,12 +1019,12 @@ border-bottom:2px solid #000;
   position: relative;
 }
 
-/* Toggle button — fixed to the left edge of the main content, always visible */
+/* Raise sidebar toggle z-index so it's never obscured by page content */
 .sidebar-toggle {
   position: absolute;
   top: 12px;
   left: 0;
-  z-index: 200;
+  z-index: 1000;
   width: 36px;
   height: 36px;
   background: #1F4E79;
