@@ -525,12 +525,17 @@
     var sidebar = document.querySelector('.hub-sidebar');
     if (!btn || !sidebar) return;
     var rect = sidebar.getBoundingClientRect();
+    // Guard: if sidebar hasn't rendered yet, use the CSS default
+    if (rect.right < 10) return;
     btn.style.left = rect.right + 'px';
   }
   window.addEventListener('scroll', updateTogglePos, {passive: true});
   window.addEventListener('resize', updateTogglePos, {passive: true});
-  setTimeout(updateTogglePos, 100);
-  setTimeout(updateTogglePos, 500);
+  window.addEventListener('load', function() {
+    updateTogglePos();
+    setTimeout(updateTogglePos, 200);
+    setTimeout(updateTogglePos, 600);
+  });
 
     // ── INJECT BREADCRUMB BAR ──────────────────────────────
     // Add "Home › Page Name" bar after header, inside hub-main

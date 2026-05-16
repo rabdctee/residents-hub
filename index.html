@@ -3658,20 +3658,18 @@ function submitHomeQuestion() {
     var sidebar = document.querySelector('.hub-sidebar');
     if (!btn || !sidebar) return;
     var rect = sidebar.getBoundingClientRect();
+    // Guard: if sidebar hasn't rendered yet, use the CSS default
+    if (rect.right < 10) return;
     btn.style.left = rect.right + 'px';
   }
   window.addEventListener('scroll', updateTogglePos, {passive: true});
   window.addEventListener('resize', updateTogglePos, {passive: true});
-  // Run immediately and after a short delay for dynamic pages
-  document.addEventListener('DOMContentLoaded', function() {
+  // Run after layout is complete
+  window.addEventListener('load', function() {
     updateTogglePos();
-    setTimeout(updateTogglePos, 300);
+    setTimeout(updateTogglePos, 200);
+    setTimeout(updateTogglePos, 600);
   });
-  // Also run now in case DOM is already ready
-  if (document.readyState !== 'loading') {
-    updateTogglePos();
-    setTimeout(updateTogglePos, 300);
-  }
 })();
 </script>
 </body>
