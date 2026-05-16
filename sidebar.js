@@ -207,13 +207,13 @@
       overflow: hidden;
     }
 
-    /* Toggle button — sticky so it stays visible when scrolling */
+    /* Toggle button — fixed position, JS keeps it at sidebar right edge */
     .sidebar-toggle {
-      position: sticky;
-      top: 12px;
-      align-self: flex-start;
-      margin-left: -14px;
-      z-index: 500;
+      position: fixed;
+      top: 60px;
+      left: 260px;
+      transform: translateX(-50%);
+      z-index: 9999;
       width: 28px;
       height: 28px;
       background: #1F4E79;
@@ -248,10 +248,6 @@
       padding: 0 !important;
       border-right: none !important;
       overflow: hidden !important;
-    }
-
-    @media (max-width: 900px) {
-      .sidebar-toggle { margin-left: -14px; }
     }
 
     /* Mobile: hide toggle button entirely — sidebar stacks and breadcrumb is enough */
@@ -521,6 +517,20 @@
       toggleBtn2.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>';
       wrapper.appendChild(toggleBtn2);
     }
+
+
+  // Keep toggle button pinned to sidebar right edge on scroll/resize
+  function updateTogglePos() {
+    var btn = document.getElementById('sidebarToggleBtn');
+    var sidebar = document.querySelector('.hub-sidebar');
+    if (!btn || !sidebar) return;
+    var rect = sidebar.getBoundingClientRect();
+    btn.style.left = rect.right + 'px';
+  }
+  window.addEventListener('scroll', updateTogglePos, {passive: true});
+  window.addEventListener('resize', updateTogglePos, {passive: true});
+  setTimeout(updateTogglePos, 100);
+  setTimeout(updateTogglePos, 500);
 
     // ── INJECT BREADCRUMB BAR ──────────────────────────────
     // Add "Home › Page Name" bar after header, inside hub-main

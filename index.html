@@ -1021,13 +1021,12 @@ border-bottom:2px solid #000;
   position: relative;
   overflow: visible;
 }
-/* Toggle is sticky so it stays on screen when scrolling */
 .sidebar-toggle {
-  position: sticky;
-  top: 12px;
-  align-self: flex-start;
-  margin-left: -14px;
-  z-index: 500;
+  position: fixed;
+  top: 60px;
+  left: 260px; /* updated by JS on scroll/resize */
+  transform: translateX(-50%);
+  z-index: 9999;
   width: 28px;
   height: 28px;
   background: #1F4E79;
@@ -1041,7 +1040,6 @@ border-bottom:2px solid #000;
   justify-content: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   transition: background 0.2s;
-  flex-shrink: 0;
   line-height: 1;
 }
 .sidebar-toggle:hover { background: #163d60; }
@@ -1064,7 +1062,10 @@ border-bottom:2px solid #000;
   overflow: hidden !important;
 }
 
-/* On mobile (stacked layout), collapse means zero height */
+@media(max-width:768px){
+  .sidebar-toggle { display: none !important; }
+}
+
 @media(max-width:768px){
   /* Hide toggle button on mobile — sidebar stacks and breadcrumb handles navigation */
   .sidebar-toggle { display: none !important; }
@@ -1159,10 +1160,10 @@ border-bottom:2px solid #000;
       <li><a href="community-info.html" class="sb-lock" style="font-weight:700;">🔒 Residents Only</a></li>
     </ul>
   </div>
+</aside>
 <button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
   <span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>
 </button>
-</aside>
 
 <!-- ── MAIN CONTENT ── -->
 <div class="hub-main">
@@ -3648,6 +3649,30 @@ function submitHomeQuestion() {
   });
 }
 
+</script>
+<script>
+/* ── Keep toggle button pinned to sidebar right edge ── */
+(function() {
+  function updateTogglePos() {
+    var btn = document.getElementById('sidebarToggleBtn');
+    var sidebar = document.querySelector('.hub-sidebar');
+    if (!btn || !sidebar) return;
+    var rect = sidebar.getBoundingClientRect();
+    btn.style.left = rect.right + 'px';
+  }
+  window.addEventListener('scroll', updateTogglePos, {passive: true});
+  window.addEventListener('resize', updateTogglePos, {passive: true});
+  // Run immediately and after a short delay for dynamic pages
+  document.addEventListener('DOMContentLoaded', function() {
+    updateTogglePos();
+    setTimeout(updateTogglePos, 300);
+  });
+  // Also run now in case DOM is already ready
+  if (document.readyState !== 'loading') {
+    updateTogglePos();
+    setTimeout(updateTogglePos, 300);
+  }
+})();
 </script>
 </body>
 </html>
