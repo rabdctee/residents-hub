@@ -1045,9 +1045,10 @@ border-bottom:2px solid #000;
 }
 .sidebar-toggle:hover { background: #163d60; }
 
-/* When sidebar is open, push the button to sit at the right edge of the sidebar */
+/* Fix toggle button z-index layering over hub-main content */
 .hub-wrapper:not(.sb-collapsed) .sidebar-toggle {
-  left: 244px;
+  left: 242px;
+  z-index: 1001;
 }
 }
 @media(max-width:900px){
