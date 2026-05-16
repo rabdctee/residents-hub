@@ -8,7 +8,7 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-V5X3VEVK8R');
-    </script>
+    </scrip
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -3248,10 +3248,18 @@ function displayQuoteOfDay() {
 var SEARCH_LOGGER_URL = 'https://script.google.com/macros/s/AKfycbwEz5REE0zfEGy6FSpK-7s_2muOJr4lFaGagipFu31WPdxHO-90Qr_f8ekJgIt0RkcbKg/exec';
 // Custom mappings loaded from Google Sheet at startup
 var customSearchMappings = [];
+var siteSearchIndex = [];
 
+    function loadSearchIndex() {
+          fetch('search-index.json')
+            .then(function(r){ return r.json(); })
+            .then(function(data){ siteSearchIndex = data; })
+            .catch(function(){ siteSearchIndex = []; });
+    }
+    
 function loadCustomMappings() {
   if (!SEARCH_LOGGER_URL || SEARCH_LOGGER_URL === 'YOUR_SEARCH_LOGGER_URL_HERE') return;
-  fetch(SEARCH_LOGGER_URL + '?action=getIndex')
+    fetch(SEARCH_LOGGER_URL + '?action=getIndex')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       customSearchMappings = (data.items || [])
@@ -3581,6 +3589,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCustomMappings();
 });
 
+        loadSearchIndex();
 // Refresh every 5 minutes
 setInterval(function() {
     loadAnnouncements();
