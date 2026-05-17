@@ -1291,7 +1291,7 @@ setInterval(loadWeather, 1800000);
         events.forEach(function(ev) {
           html += '<div class="event-item">';
           if (ev.link) {
-            html += '<a href="' + ev.link + '" style="text-decoration:none;color:inherit;">';
+            html += '<a href="' + ev.link + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">';
             html += '<div class="event-date" style="cursor:pointer;">' + ev.date + '</div>';
             html += '</a>';
           } else {
