@@ -758,7 +758,7 @@
   function checkPin() {
     var val = document.getElementById('pinInput').value;
     if (val === RESIDENT_PIN) {
-      sessionStorage.setItem('residentPinOk', '1');
+      localStorage.setItem('residentPinOk', '1');
       document.getElementById('pinOverlay').style.display = 'none';
       document.getElementById('pinInput').value = '';
     } else {
@@ -772,7 +772,7 @@
 
   // Check session on load — skip PIN if already authenticated this session
   (function() {
-    if (sessionStorage.getItem('residentPinOk') === '1') {
+    if (localStorage.getItem('residentPinOk') === '1') {
       document.getElementById('pinOverlay').style.display = 'none';
     }
   })();
