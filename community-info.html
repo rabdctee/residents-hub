@@ -723,7 +723,7 @@
     ul.innerHTML = baseHtml || '<li style="color:#888;font-style:italic;">No documents yet.</li>';
     // Then fetch Registry Sheet for any additional files for this quarter
     if (!qData.registryFolder) return;
-    var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtAar-VwmAowIRfzJumkbIfSW82SM4xnwDk12RlVAfuLZZ-xeOJHAA3lb_UeK4as78WRp3u_GmpHLI/pub?gid=0&single=true&output=csv';
+    var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
     var existingIds = (qData.files || []).map(function(f) { return f.id; });
     fetch(csvUrl)
       .then(function(r) { return r.text(); })
@@ -763,7 +763,7 @@
     ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
     var folderName = FOLDER_KEY_TO_NAME[key];
     if (!folderName) return;
-    var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtAar-VwmAowIRfzJumkbIfSW82SM4xnwDk12RlVAfuLZZ-xeOJHAA3lb_UeK4as78WRp3u_GmpHLI/pub?gid=0&single=true&output=csv';
+    var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
     fetch(csvUrl)
       .then(function(r) { return r.text(); })
       .then(function(csvText) {
@@ -841,7 +841,7 @@
 
 
   // ── Registry-driven dropdowns ─────────────────────────────────────────
-  var REGISTRY_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtAar-VwmAowIRfzJumkbIfSW82SM4xnwDk12RlVAfuLZZ-xeOJHAA3lb_UeK4as78WRp3u_GmpHLI/pub?gid=0&single=true&output=csv';
+  var REGISTRY_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
 
   function loadDropdowns() {
     fetch(REGISTRY_CSV)
