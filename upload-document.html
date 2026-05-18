@@ -130,7 +130,7 @@
 
       <div class="form-group">
         <label for="docFolder">Destination folder <span class="required">*</span></label>
-        <select id="docFolder" onchange="updateNamingGuide()">
+        <select id="docFolder" onchange="updateFolderFields()">
           <option value="">&#8212; Select a folder &#8212;</option>
           <optgroup label="Residents Committee">
             <option value="Annual General Meetings">Annual General Meetings</option>
@@ -153,6 +153,15 @@
         </select>
       </div>
 
+      <div class="form-group" id="subfolderGroup" style="display:none;">
+        <label for="docSubfolder">Sub-folder <span class="required">*</span>
+          <span style="font-weight:400;color:var(--grey);font-size:0.9em;"> — select the period this document belongs to</span>
+        </label>
+        <select id="docSubfolder">
+          <option value="">— Select period —</option>
+        </select>
+      </div>
+
       <div class="naming-guide" id="namingGuide" style="display:none;">
         <div class="naming-title">&#128221; Suggested file name format</div>
         <div id="namingRows"></div>
@@ -160,9 +169,9 @@
 
       <div class="form-group">
         <label for="docName">File name <span class="required">*</span>
-          <span style="font-weight:400;color:var(--grey);font-size:0.9em;"> &#8212; must end in .pdf</span>
+          <span style="font-weight:400;color:var(--grey);font-size:0.9em;"> &#8212; do not include .pdf</span>
         </label>
-        <input type="text" id="docName" placeholder="e.g. Apr 2026 - Minutes.pdf">
+        <input type="text" id="docName" placeholder="e.g. Minutes">
       </div>
 
       <div class="form-group">
@@ -217,20 +226,51 @@
 </div>
 
 <script>
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywdH4fh95RRspDJsLgKDJ8SXqODbLKio230Le_am16muLRgnm3rQ6YIOeLbvs0T4HR/exec';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwya128saiqJPHdrUonuHXQnHfAUqlFwNuxcuPBOcSnpWl9wOaxgXCr9j5l-K8qt_HN/exec';
 
   var NAMING_GUIDES = {
-    'Annual General Meetings': [['AGM Minutes','2026 AGM - Minutes.pdf'],['AGM Agenda','2026 AGM - Agenda.pdf']],
-    'Residents Committee - Monthly Meetings': [['Agenda','Apr 2026 - Agenda.pdf'],['Minutes','Apr 2026 - Minutes.pdf'],['Reports','Apr 2026 - Community Managers Report.pdf']],
-    'Residents Quarterly Meetings': [['Agenda','Q2 2026 - Quarterly Meeting Agenda.pdf'],['Minutes','Q2 2026 - Quarterly Meeting Minutes.pdf']],
-    'Social Club Committee - Monthly Meetings': [['Agenda','Apr 2026 - SC Agenda.pdf'],['Minutes','Apr 2026 - SC Minutes.pdf']],
-    'Newsletters': [['Newsletter','May 2026 - Newsletter.pdf']],
-    'Monthly Financial Reports': [['Report','April 2026.pdf']],
-    'Bank Statements': [['Statement','04-Bank Statement - Apr 26.pdf']],
-    'Aveo Documents': [['Presentation','Aveo Roundtable Presentation - Apr 2026.pdf'],['Policy','Aveo Pet Policy.pdf']]
+    'Annual General Meetings':                  [['AGM Minutes','2026 AGM - Minutes'],['AGM Agenda','2026 AGM - Agenda']],
+    'Residents Committee - Monthly Meetings':   [['Agenda','Agenda'],['Minutes','Minutes'],['Reports','Community Managers Report']],
+    'Residents Quarterly Meetings':             [['Agenda','Agenda'],['Minutes','Minutes'],['Presentation','Presentation']],
+    'Social Club Committee - Monthly Meetings': [['Agenda','Agenda'],['Minutes','Minutes']],
+    'Newsletters':                              [['Newsletter','May 2026 - Social Club Newsletter']],
+    'Monthly Financial Reports':                [['Report','April 2026']],
+    'Bank Statements':                          [['Statement','April 2026 - Bank Statement']],
+    'Aveo Documents':                           [['Presentation','Aveo Roundtable Presentation'],['Policy','Aveo Pet Policy']]
+  };
+
+  // Folders that use sub-folder grouping
+  var SUBFOLDER_OPTIONS = {
+    'Residents Committee - Monthly Meetings':   ['Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026','Jun 2026','Jul 2026','Aug 2026','Sep 2026','Oct 2026','Nov 2026','Dec 2026'],
+    'Residents Quarterly Meetings':             ['Q1 2026','Q2 2026','Q3 2026','Q4 2026'],
+    'Social Club Committee - Monthly Meetings': ['Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026','Jun 2026','Jul 2026','Aug 2026','Sep 2026','Oct 2026','Nov 2026','Dec 2026'],
+    'Annual General Meetings':                  ['RC 2026','SC 2026']
   };
 
   var selectedFile = null;
+
+  function updateNamingGuide() {
+  function updateFolderFields() {
+    updateNamingGuide();
+    updateSubfolderField();
+  }
+
+  function updateSubfolderField() {
+    var folder = document.getElementById('docFolder').value;
+    var group  = document.getElementById('subfolderGroup');
+    var sel    = document.getElementById('docSubfolder');
+    var opts   = SUBFOLDER_OPTIONS[folder];
+    if (opts) {
+      sel.innerHTML = '<option value="">— Select period —</option>';
+      opts.forEach(function(o) {
+        sel.innerHTML += '<option value="' + o + '">' + o + '</option>';
+      });
+      group.style.display = 'block';
+    } else {
+      sel.innerHTML = '<option value="">— Select period —</option>';
+      group.style.display = 'none';
+    }
+  }
 
   function updateNamingGuide() {
     var folder = document.getElementById('docFolder').value;
@@ -294,14 +334,22 @@
   });
 
   function uploadDocument() {
-    var folder   = document.getElementById('docFolder').value;
-    var name     = document.getElementById('docName').value.trim();
-    var uploader = document.getElementById('docUploader').value.trim();
-    if (!folder)     { showAlert('error','Please select a destination folder.'); return; }
-    if (!name)       { showAlert('error','Please enter a file name.'); return; }
-    if (!name.toLowerCase().endsWith('.pdf')) { showAlert('error','File name must end in .pdf'); return; }
-    if (!selectedFile) { showAlert('error','Please select a PDF file to upload.'); return; }
-    if (!uploader)   { showAlert('error','Please enter your committee email address.'); return; }
+    var folder    = document.getElementById('docFolder').value;
+    var nameRaw   = document.getElementById('docName').value.trim();
+    var uploader  = document.getElementById('docUploader').value.trim();
+    var subfolder = document.getElementById('docSubfolder').value.trim();
+    var subReq    = !!document.getElementById('subfolderGroup').style.display && document.getElementById('subfolderGroup').style.display !== 'none';
+
+    if (!folder)            { showAlert('error','Please select a destination folder.'); return; }
+    if (subReq && !subfolder) { showAlert('error','Please select a sub-folder period.'); return; }
+    if (!nameRaw)           { showAlert('error','Please enter a file name.'); return; }
+    if (!selectedFile)      { showAlert('error','Please select a PDF file to upload.'); return; }
+    if (!uploader)          { showAlert('error','Please enter your committee email address.'); return; }
+
+    // Strip .pdf if user typed it, then add it back for Drive filename
+    var nameClean = nameRaw.replace(/\.pdf$/i, '');
+    var driveFileName = nameClean + '.pdf';
+
     hideAlert();
     setProgress(10,'Reading file...');
     var reader = new FileReader();
@@ -314,11 +362,13 @@
       fetch(SCRIPT_URL, {
         method:'POST',
         body: JSON.stringify({
-          action:    'uploadDocument',
-          fileName:   name,
+          action:     'uploadDocument',
+          fileName:   driveFileName,
+          displayName: nameClean,
           fileData:   base64,
-          mimeType:  'application/pdf',
+          mimeType:   'application/pdf',
           folder:     folder,
+          subfolder:  subfolder,
           uploader:   uploader
         })
       })
@@ -328,7 +378,7 @@
         btn.disabled = false;
         btn.innerHTML = '&#128228; Upload Document';
         hideProgress();
-        if (data.status === 'ok') { showSuccess(name, folder); }
+        if (data.status === 'ok') { showSuccess(nameClean, folder, subfolder); }
         else { showAlert('error','Upload failed: ' + (data.message || 'Please try again or contact Rick.')); }
       })
       .catch(function(){
@@ -361,11 +411,12 @@
     var el = document.getElementById('alertMsg');
     el.className = 'alert'; el.textContent = '';
   }
-  function showSuccess(name, folder) {
+  function showSuccess(name, folder, subfolder) {
     document.getElementById('uploadCard').style.display = 'none';
+    var loc = folder + (subfolder ? ' › ' + subfolder : '');
     document.getElementById('successDetail').innerHTML =
       '<strong>File:</strong> ' + name + '<br>' +
-      '<strong>Saved to:</strong> ' + folder + '<br>' +
+      '<strong>Saved to:</strong> ' + loc + '<br>' +
       '<strong>Status:</strong> Shared with residents &#8212; visible on the Hub automatically';
     document.getElementById('successCard').classList.add('show');
     window.scrollTo(0,0);
@@ -376,6 +427,8 @@
     document.getElementById('docFolder').value = '';
     document.getElementById('docName').value = '';
     document.getElementById('docUploader').value = '';
+    document.getElementById('docSubfolder').value = '';
+    document.getElementById('subfolderGroup').style.display = 'none';
     clearFile(); hideAlert(); updateNamingGuide(); window.scrollTo(0,0);
   }
 </script>
