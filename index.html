@@ -1005,109 +1005,6 @@ border-bottom:2px solid #000;
 }
 
 
-/* ===== Collapsible Sidebar ===== */
-/* Sidebar transition */
-.hub-sidebar {
-  transition: width 0.3s ease, min-width 0.3s ease, padding 0.3s ease;
-  overflow: hidden;
-}
-
-/* hub-wrapper needs relative positioning so the toggle button can anchor to it */
-.hub-wrapper {
-  position: relative;
-}
-
-/* Toggle button — fixed to the left edge of the main content, always visible */
-.sidebar-toggle {
-  position: absolute;
-  top: 12px;
-  left: 0;
-  z-index: 200;
-  width: 36px;
-  height: 36px;
-  background: #1F4E79;
-  color: white;
-  border: 2px solid white;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 13px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: background 0.2s, left 0.3s ease;
-  flex-shrink: 0;
-  line-height: 1;
-}
-.sidebar-toggle:hover { background: #163d60; }
-
-/* When sidebar is open, push the button to sit at the right edge of the sidebar */
-.hub-wrapper:not(.sb-collapsed) .sidebar-toggle {
-  left: 212px; /* sidebar width (260px) minus half button width */
-}
-@media(max-width:900px){
-  .hub-wrapper:not(.sb-collapsed) .sidebar-toggle { left: 182px; }
-}
-
-/* Arrow rotates when collapsed */
-.sidebar-toggle .sb-toggle-arrow {
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
-/* Arrow points left (◀) when open — click to collapse */
-/* Arrow points right (▶) when collapsed — click to expand */
-.hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
-  transform: rotate(180deg);
-}
-
-/* Collapsed state — sidebar shrinks to nothing */
-.hub-wrapper.sb-collapsed .hub-sidebar {
-  width: 0 !important;
-  min-width: 0 !important;
-  padding: 0 !important;
-  border-right: none !important;
-}
-/* Collapsed: move button back to left edge */
-.hub-wrapper.sb-collapsed .sidebar-toggle {
-  left: 0;
-}
-
-/* On mobile (stacked layout), collapse means zero height */
-@media(max-width:768px){
-  /* Hide toggle button on mobile — sidebar stacks and breadcrumb handles navigation */
-  .sidebar-toggle { display: none !important; }
-}
-
-
-/* ===== Toggle button tooltip ===== */
-.sidebar-toggle .sb-tooltip {
-  position: absolute;
-  left: 44px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: #1F4E79;
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-  padding: 5px 10px;
-  border-radius: 5px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s ease;
-}
-.sidebar-toggle .sb-tooltip::before {
-  content: '';
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%);
-  border: 5px solid transparent;
-  border-right-color: #1F4E79;
-}
-.sidebar-toggle:hover .sb-tooltip {
-  opacity: 1;
-}
 </style>
 </head>
 <body>
@@ -1168,11 +1065,6 @@ border-bottom:2px solid #000;
     </ul>
   </div>
 </aside>
-
-<!-- Sidebar toggle button — always visible, anchored to left of main content -->
-<button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
-  <span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>
-</button>
 
 <!-- ── MAIN CONTENT ── -->
 <div class="hub-main">
@@ -3283,57 +3175,6 @@ function logSearchTerm(term, resultCount) {
 }
 
 // ── SIDEBAR ACCORDION ─────────────────────────────────────────────────
-
-// ===== Collapsible Sidebar =====
-// Key used to remember the user's preference across visits
-var SIDEBAR_PREF_KEY = 'bdrv_sidebar_collapsed';
-
-function initSidebar() {
-  var wrapper = document.getElementById('hubWrapper');
-  var isMobile = window.innerWidth <= 768;
-  // On mobile: always show sidebar, ignore any saved preference
-  if (isMobile) {
-    wrapper.classList.remove('sb-collapsed');
-    return;
-  }
-  // Desktop: respect saved preference, default to open
-  var saved = localStorage.getItem(SIDEBAR_PREF_KEY);
-  var shouldCollapse = (saved === 'true');
-  if (shouldCollapse) {
-    wrapper.classList.add('sb-collapsed');
-  } else {
-    wrapper.classList.remove('sb-collapsed');
-  }
-  var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
-  if (tooltip) tooltip.textContent = shouldCollapse ? 'Show menu' : 'Hide menu';
-}
-
-function toggleSidebar() {
-  var wrapper = document.getElementById('hubWrapper');
-  var isNowCollapsed = wrapper.classList.toggle('sb-collapsed');
-  // Only save preference on desktop — mobile always resets to open
-  if (window.innerWidth > 768) {
-    localStorage.setItem(SIDEBAR_PREF_KEY, isNowCollapsed ? 'true' : 'false');
-  }
-  var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
-  if (tooltip) tooltip.textContent = isNowCollapsed ? 'Show menu' : 'Hide menu';
-}
-
-// Initialise on page load
-document.addEventListener('DOMContentLoaded', initSidebar);
-
-function toggleSbAcc(id) {
-  var body   = document.getElementById(id);
-  var header = body.previousElementSibling;
-  var isOpen = body.classList.contains('open');
-  document.querySelectorAll('.sb-acc-body').forEach(function(b){ b.classList.remove('open'); });
-  document.querySelectorAll('.sb-acc-header').forEach(function(h){ h.classList.remove('open'); });
-  if (!isOpen) {
-    body.classList.add('open');
-    header.classList.add('open');
-  }
-}
-
 
 // ============================================
 // HAVE A QUESTION — HOME PAGE FORM

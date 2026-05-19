@@ -194,145 +194,6 @@
       }
     }
 
-    /* ===== Collapsible Sidebar ===== */
-    .hub-wrapper {
-      position: relative;
-    }
-    .hub-sidebar {
-      transition: width 0.3s ease, min-width 0.3s ease, padding 0.3s ease;
-      overflow: hidden;
-    }
-
-    /* Toggle button — absolute within hub-wrapper, always at sidebar right edge */
-    .sidebar-toggle {
-      position: absolute;
-      top: 12px;
-      left: 212px;
-      z-index: 200;
-      width: 36px;
-      height: 36px;
-      background: #1F4E79;
-      color: white;
-      border: 2px solid white;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 13px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: background 0.2s, left 0.3s ease;
-      line-height: 1;
-    }
-    .sidebar-toggle:hover { background: #163d60; }
-
-    /* Arrow rotates when collapsed */
-    .sidebar-toggle .sb-toggle-arrow {
-      display: inline-block;
-      transition: transform 0.3s ease;
-    }
-    .hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
-      transform: rotate(180deg);
-    }
-
-    /* Collapsed state */
-    .hub-wrapper.sb-collapsed .hub-sidebar {
-      width: 0 !important;
-      min-width: 0 !important;
-      padding: 0 !important;
-      border-right: none !important;
-    }
-    .hub-wrapper.sb-collapsed .sidebar-toggle {
-      left: 0;
-    }
-
-    @media (max-width: 900px) {
-      .sidebar-toggle { left: 182px; }
-      .hub-wrapper.sb-collapsed .sidebar-toggle { left: 0; }
-    }
-
-    /* Mobile: hide toggle button entirely — sidebar stacks and breadcrumb is enough */
-    @media (max-width: 768px) {
-      .sidebar-toggle { display: none !important; }
-    }
-
-    /* ===== Toggle button tooltip ===== */
-    .sidebar-toggle .sb-tooltip {
-      position: absolute;
-      left: 44px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: #1F4E79;
-      color: white;
-      font-size: 12px;
-      font-weight: 600;
-      white-space: nowrap;
-      padding: 5px 10px;
-      border-radius: 5px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.15s ease;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    /* Small arrow pointing left from tooltip box */
-    .sidebar-toggle .sb-tooltip::before {
-      content: '';
-      position: absolute;
-      right: 100%;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 5px solid transparent;
-      border-right-color: #1F4E79;
-    }
-    .sidebar-toggle:hover .sb-tooltip {
-      opacity: 1;
-    }
-    /* When collapsed, tooltip appears on the right of the button */
-    @media (min-width: 769px) {
-      .hub-wrapper.sb-collapsed .sidebar-toggle .sb-tooltip {
-        left: 44px;
-      }
-    }
-    @media (max-width: 900px) {
-      .sidebar-toggle { left: 182px; }
-      .hub-wrapper.sb-collapsed .sidebar-toggle { left: 0; }
-    }
-
-    /* Mobile: sidebar stacks vertically, toggle sits below it */
-    @media (max-width: 768px) {
-      .hub-sidebar {
-        transition: height 0.3s ease, padding 0.3s ease;
-      }
-      .hub-wrapper.sb-collapsed .hub-sidebar {
-        width: 100% !important;
-        min-width: 0 !important;
-        height: 0 !important;
-        padding: 0 !important;
-        border-bottom: none !important;
-      }
-      .sidebar-toggle,
-      .hub-wrapper:not(.sb-collapsed) .sidebar-toggle,
-      .hub-wrapper.sb-collapsed .sidebar-toggle {
-        position: relative;
-        top: auto;
-        left: auto;
-        display: block;
-        margin: 6px auto 0;
-        border-radius: 20px;
-        width: auto;
-        height: auto;
-        padding: 6px 18px;
-        font-size: 13px;
-      }
-      /* Mobile open: arrow points up */
-      .hub-wrapper:not(.sb-collapsed) .sidebar-toggle .sb-toggle-arrow {
-        transform: rotate(90deg);
-      }
-      /* Mobile collapsed: arrow points down */
-      .hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
-        transform: rotate(270deg);
-      }
-    }
 
   `;
 
@@ -488,15 +349,6 @@
       wrapper.appendChild(aside);
       wrapper.appendChild(mainDiv);
       mainDiv.appendChild(container);
-      // Inject toggle button as direct child of hub-wrapper (never clipped by sidebar or content)
-      var toggleBtn = document.createElement('button');
-      toggleBtn.className = 'sidebar-toggle';
-      toggleBtn.id = 'sidebarToggleBtn';
-      toggleBtn.onclick = sbToggleSidebar;
-      toggleBtn.title = 'Show/hide sidebar';
-      toggleBtn.setAttribute('aria-label', 'Toggle sidebar');
-      toggleBtn.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>';
-      wrapper.appendChild(toggleBtn);
     } else {
       // Fallback: wrap all direct body children except scripts
       var children = Array.from(body.childNodes).filter(function(n) {
@@ -508,15 +360,6 @@
       children.forEach(function (child) {
         mainDiv.appendChild(child);
       });
-      // Inject toggle button as direct child of hub-wrapper
-      var toggleBtn2 = document.createElement('button');
-      toggleBtn2.className = 'sidebar-toggle';
-      toggleBtn2.id = 'sidebarToggleBtn';
-      toggleBtn2.onclick = sbToggleSidebar;
-      toggleBtn2.title = 'Show/hide sidebar';
-      toggleBtn2.setAttribute('aria-label', 'Toggle sidebar');
-      toggleBtn2.innerHTML = '<span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>';
-      wrapper.appendChild(toggleBtn2);
     }
 
     // ── INJECT BREADCRUMB BAR ──────────────────────────────
@@ -569,45 +412,5 @@
   };
 
 
-  // ── COLLAPSIBLE SIDEBAR ────────────────────────────────────
-  var SB_PREF_KEY = 'bdrv_sidebar_collapsed';
-
-  function sbInitSidebar() {
-    var wrapper = document.querySelector('.hub-wrapper');
-    if (!wrapper) return;
-    var isMobile = window.innerWidth <= 768;
-    // On mobile: always show sidebar, ignore any saved preference
-    if (isMobile) {
-      wrapper.classList.remove('sb-collapsed');
-      return;
-    }
-    // Desktop: respect saved preference, default to open
-    var saved = localStorage.getItem(SB_PREF_KEY);
-    var shouldCollapse = (saved === 'true');
-    if (shouldCollapse) {
-      wrapper.classList.add('sb-collapsed');
-    } else {
-      wrapper.classList.remove('sb-collapsed');
-    }
-    // Set tooltip text to match initial state
-    var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
-    if (tooltip) tooltip.textContent = shouldCollapse ? 'Show menu' : 'Hide menu';
-  }
-
-  window.sbToggleSidebar = function () {
-    var wrapper = document.querySelector('.hub-wrapper');
-    if (!wrapper) return;
-    var isNowCollapsed = wrapper.classList.toggle('sb-collapsed');
-    // Only save preference on desktop — mobile always resets to open
-    if (window.innerWidth > 768) {
-      localStorage.setItem(SB_PREF_KEY, isNowCollapsed ? 'true' : 'false');
-    }
-    // Update tooltip text to reflect new state
-    var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
-    if (tooltip) tooltip.textContent = isNowCollapsed ? 'Show menu' : 'Hide menu';
-  };
-
-  // Initialise after DOM is ready (sidebar has been injected by then)
-  document.addEventListener('DOMContentLoaded', sbInitSidebar);
 
 })();
