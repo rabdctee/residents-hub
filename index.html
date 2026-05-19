@@ -925,16 +925,12 @@ border-bottom:2px solid #000;
   padding: 14px 10px;
   border-right: 2px solid #c5d8ee;
   background: white;
-  align-self: flex-start;
-  position: sticky;
-  top: 0;
+  align-self: stretch;
 }
 .hub-main {
   flex: 1;
   min-width: 0;
   padding-left: 22px;
-  position: relative;
-  z-index: 1;
 }
 .sb-section {
   background: white;
@@ -1002,14 +998,10 @@ border-bottom:2px solid #000;
 @media(max-width:900px){
   .hub-sidebar { width: 200px; min-width: 200px; }
 }
-@media(max-width:900px){
+@media(max-width:768px){
   .hub-wrapper { flex-direction: column; }
-  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee;
-    position: static !important; align-self: auto !important; }
-  .hub-main { position: static !important; z-index: auto !important; padding-left: 0 !important; }
+  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee; }
   .quick-tiles { grid-template-columns: repeat(2,1fr); }
-  .sb-hide-btn { display: none !important; }
-  .sb-show-tab { display: none !important; }
 }
 
 
@@ -1020,57 +1012,72 @@ border-bottom:2px solid #000;
   overflow: hidden;
 }
 
-/* ── Sidebar hide/show ── */
+/* hub-wrapper needs relative positioning so the toggle button can anchor to it */
 .hub-wrapper {
   position: relative;
-  overflow: visible;
 }
-/* "✕ Hide" button inside the sidebar heading */
-.sb-hide-btn {
-  float: right;
-  background: rgba(255,255,255,0.18);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.4);
-  border-radius: 4px;
-  padding: 1px 7px;
-  font-size: 0.78em;
-  cursor: pointer;
-  line-height: 1.6;
-  white-space: nowrap;
-  margin-top: 1px;
-}
-.sb-hide-btn:hover { background: rgba(255,255,255,0.30); }
 
-/* "☰ Menu" tab — fixed to left edge, only visible when sidebar is collapsed */
-.sb-show-tab {
-  display: none;
-  position: fixed;
-  top: 80px;
+/* Toggle button — fixed to the left edge of the main content, always visible */
+.sidebar-toggle {
+  position: absolute;
+  top: 12px;
   left: 0;
-  z-index: 9999;
+  z-index: 200;
+  width: 36px;
+  height: 36px;
   background: #1F4E79;
   color: white;
-  border: none;
-  border-radius: 0 6px 6px 0;
-  padding: 10px 8px;
-  font-size: 0.82em;
+  border: 2px solid white;
+  border-radius: 50%;
   cursor: pointer;
-  writing-mode: vertical-lr;
-  text-orientation: mixed;
-  letter-spacing: 0.05em;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.25);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: background 0.2s, left 0.3s ease;
+  flex-shrink: 0;
+  line-height: 1;
 }
-.sb-show-tab:hover { background: #163d60; }
-.hub-wrapper.sb-collapsed .sb-show-tab { display: block; }
+.sidebar-toggle:hover { background: #163d60; }
 
-/* Collapsed state */
+/* When sidebar is open, push the button to sit at the right edge of the sidebar */
+.hub-wrapper:not(.sb-collapsed) .sidebar-toggle {
+  left: 212px; /* sidebar width (260px) minus half button width */
+}
+@media(max-width:900px){
+  .hub-wrapper:not(.sb-collapsed) .sidebar-toggle { left: 182px; }
+}
+
+/* Arrow rotates when collapsed */
+.sidebar-toggle .sb-toggle-arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+/* Arrow points left (◀) when open — click to collapse */
+/* Arrow points right (▶) when collapsed — click to expand */
+.hub-wrapper.sb-collapsed .sidebar-toggle .sb-toggle-arrow {
+  transform: rotate(180deg);
+}
+
+/* Collapsed state — sidebar shrinks to nothing */
 .hub-wrapper.sb-collapsed .hub-sidebar {
   width: 0 !important;
   min-width: 0 !important;
   padding: 0 !important;
   border-right: none !important;
-  overflow: hidden !important;
 }
+/* Collapsed: move button back to left edge */
+.hub-wrapper.sb-collapsed .sidebar-toggle {
+  left: 0;
+}
+
+/* On mobile (stacked layout), collapse means zero height */
+@media(max-width:768px){
+  /* Hide toggle button on mobile — sidebar stacks and breadcrumb handles navigation */
+  .sidebar-toggle { display: none !important; }
+}
+
 
 /* ===== Toggle button tooltip ===== */
 .sidebar-toggle .sb-tooltip {
@@ -1117,7 +1124,6 @@ border-bottom:2px solid #000;
 <aside class="hub-sidebar">
   <div class="sb-section">
     <div class="sb-heading" style="line-height:1.4;">
-      <button class="sb-hide-btn" onclick="toggleSidebar()" title="Hide menu">✕ Hide</button>
       Click a <span style="font-size:1.1em;">▼</span> arrow to see what's here
     </div>
     <ul class="sb-links">
@@ -1162,7 +1168,11 @@ border-bottom:2px solid #000;
     </ul>
   </div>
 </aside>
-<button class="sb-show-tab" onclick="toggleSidebar()" title="Show menu" aria-label="Show menu">☰ Menu</button>
+
+<!-- Sidebar toggle button — always visible, anchored to left of main content -->
+<button class="sidebar-toggle" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Show/hide sidebar" aria-label="Toggle sidebar">
+  <span class="sb-toggle-arrow">&#9664;</span><span class="sb-tooltip">Hide menu</span>
+</button>
 
 <!-- ── MAIN CONTENT ── -->
 <div class="hub-main">
@@ -1208,8 +1218,7 @@ if (month === 2 && day === 17) {
 <!-- MANUAL FALLBACK ANNOUNCEMENTS -->
 <div class="announcement">
 <div class="announcement-text">
-<strong>Social Club Events:</strong> A number of great events are scheduled for the next couple of months. Check out the Social Club happenings in the <a href="https://bdrv.au/view-document.html?id=1bKyZ57OwL5LbuW37vGe-9YPnQASE81Rg&title=May%202026%20-%20Newsletter.pdf&back=community-info/view" target="_blank" style="color:#2c5aa0; font-weight:bold;">Newsletter</a>. Stay safe and enjoy.
-</div>
+<strong> 💐 Happy Mothers's Day:</strong> Happy Mother's Day to all the remarkable Mums in our village - the stories you carry and the love you've given are treasures beyond measure. Hope you get lots of spoiling today.</div>
 </div>
 
 <div class="announcement">
@@ -1292,7 +1301,7 @@ setInterval(loadWeather, 1800000);
         events.forEach(function(ev) {
           html += '<div class="event-item">';
           if (ev.link) {
-            html += '<a href="' + ev.link + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">';
+            html += '<a href="' + ev.link + '" style="text-decoration:none;color:inherit;">';
             html += '<div class="event-date" style="cursor:pointer;">' + ev.date + '</div>';
             html += '</a>';
           } else {
@@ -2011,9 +2020,7 @@ function parseCSVLine(line) {
   padding: 14px 10px;
   border-right: 2px solid #c5d8ee;
   background: white;
-  align-self: flex-start;
-  position: sticky;
-  top: 0;
+  align-self: stretch;
 }
 .hub-main {
   flex: 1;
@@ -2085,14 +2092,10 @@ function parseCSVLine(line) {
 @media(max-width:900px){
   .hub-sidebar { width: 200px; min-width: 200px; }
 }
-@media(max-width:900px){
+@media(max-width:768px){
   .hub-wrapper { flex-direction: column; }
-  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee;
-    position: static !important; align-self: auto !important; }
-  .hub-main { position: static !important; z-index: auto !important; padding-left: 0 !important; }
+  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee; }
   .quick-tiles { grid-template-columns: repeat(2,1fr); }
-  .sb-hide-btn { display: none !important; }
-  .sb-show-tab { display: none !important; }
 }
 
 </style>
@@ -2335,9 +2338,7 @@ Advocacy, advice and support for retirement village residents in Queensland
   padding: 14px 10px;
   border-right: 2px solid #c5d8ee;
   background: white;
-  align-self: flex-start;
-  position: sticky;
-  top: 0;
+  align-self: stretch;
 }
 .hub-main {
   flex: 1;
@@ -2409,14 +2410,10 @@ Advocacy, advice and support for retirement village residents in Queensland
 @media(max-width:900px){
   .hub-sidebar { width: 200px; min-width: 200px; }
 }
-@media(max-width:900px){
+@media(max-width:768px){
   .hub-wrapper { flex-direction: column; }
-  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee;
-    position: static !important; align-self: auto !important; }
-  .hub-main { position: static !important; z-index: auto !important; padding-left: 0 !important; }
+  .hub-sidebar { width: 100%; border-right: none; border-bottom: 2px solid #c5d8ee; }
   .quick-tiles { grid-template-columns: repeat(2,1fr); }
-  .sb-hide-btn { display: none !important; }
-  .sb-show-tab { display: none !important; }
 }
 
 </style>
@@ -2872,44 +2869,12 @@ function updateBreadcrumbs(pageId) {
 function performSearch() {
     var query = document.getElementById('searchInput').value.toLowerCase().trim();
     var resultsDiv = document.getElementById('searchResults');
-
+    
     if (query.length < 2) {
         resultsDiv.style.display = 'none';
         return;
     }
-
-    // ── Site-wide index search (from search-index.json) ──────────
-    if (siteSearchIndex.length > 0) {
-        var idxResults = [];
-        var idxSeen = {};
-        siteSearchIndex.forEach(function(e) {
-            var s = ((e.keywords||'') + ' ' + (e.title||'') + ' ' + (e.description||'')).toLowerCase();
-            if (s.indexOf(query) !== -1) {
-                var k = (e.page||'') + '|' + (e.section||'');
-                if (!idxSeen[k]) { idxSeen[k] = true; idxResults.push(e); }
-            }
-        });
-        if (idxResults.length > 0) {
-            var idxHtml = '<div style="padding:10px;color:#666;font-weight:600;">Found ' + idxResults.length + ' result(s):</div>';
-            idxResults.forEach(function(r) {
-                var onclick = 'showPage(\'' + (r.page||'home') + '\');';
-                if (r.section) {
-                    onclick += 'setTimeout(function(){var el=document.getElementById(\'' + r.section + '\');if(el){el.scrollIntoView({behavior:\'smooth\',block:\'start\'});}},200);';
-                }
-                onclick += 'document.getElementById(\'searchResults\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\';';
-                idxHtml += '<div class="search-result-item" onclick="' + onclick + '">' +
-                    '<strong>' + (r.title||'') + '</strong>' +
-                    (r.description ? '<div style="font-size:0.82em;color:#666;margin-top:2px;">' + r.description + '</div>' : '') +
-                    '</div>';
-            });
-            resultsDiv.innerHTML = idxHtml;
-            resultsDiv.style.display = 'block';
-            logSearchTerm(query, idxResults.length);
-            return;
-        }
-    }
-    // ── End site-wide index — fall through to built-in search ────
-
+    
 var searchableContent = [
     // ── Top-level pages ──────────────────────────────────────
     {page: 'events',            section: null, title: '🗓️ Events Calendar',           keywords: 'events calendar activities schedule social what on anzac day gunfire breakfast singalong opera ballet show upcoming'},
@@ -3283,18 +3248,10 @@ function displayQuoteOfDay() {
 var SEARCH_LOGGER_URL = 'https://script.google.com/macros/s/AKfycbwEz5REE0zfEGy6FSpK-7s_2muOJr4lFaGagipFu31WPdxHO-90Qr_f8ekJgIt0RkcbKg/exec';
 // Custom mappings loaded from Google Sheet at startup
 var customSearchMappings = [];
-var siteSearchIndex = [];
 
-    function loadSearchIndex() {
-          fetch('search-index.json')
-            .then(function(r){ return r.json(); })
-            .then(function(data){ siteSearchIndex = data; })
-            .catch(function(){ siteSearchIndex = []; });
-    }
-    
 function loadCustomMappings() {
   if (!SEARCH_LOGGER_URL || SEARCH_LOGGER_URL === 'YOUR_SEARCH_LOGGER_URL_HERE') return;
-    fetch(SEARCH_LOGGER_URL + '?action=getIndex')
+  fetch(SEARCH_LOGGER_URL + '?action=getIndex')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       customSearchMappings = (data.items || [])
@@ -3334,14 +3291,14 @@ var SIDEBAR_PREF_KEY = 'bdrv_sidebar_collapsed';
 function initSidebar() {
   var wrapper = document.getElementById('hubWrapper');
   var isMobile = window.innerWidth <= 768;
-  // Read saved preference; default is collapsed on mobile, open on desktop
-  var saved = localStorage.getItem(SIDEBAR_PREF_KEY);
-  var shouldCollapse;
-  if (saved !== null) {
-    shouldCollapse = (saved === 'true');
-  } else {
-    shouldCollapse = isMobile;  // auto-collapse on mobile by default
+  // On mobile: always show sidebar, ignore any saved preference
+  if (isMobile) {
+    wrapper.classList.remove('sb-collapsed');
+    return;
   }
+  // Desktop: respect saved preference, default to open
+  var saved = localStorage.getItem(SIDEBAR_PREF_KEY);
+  var shouldCollapse = (saved === 'true');
   if (shouldCollapse) {
     wrapper.classList.add('sb-collapsed');
   } else {
@@ -3354,7 +3311,10 @@ function initSidebar() {
 function toggleSidebar() {
   var wrapper = document.getElementById('hubWrapper');
   var isNowCollapsed = wrapper.classList.toggle('sb-collapsed');
-  localStorage.setItem(SIDEBAR_PREF_KEY, isNowCollapsed ? 'true' : 'false');
+  // Only save preference on desktop — mobile always resets to open
+  if (window.innerWidth > 768) {
+    localStorage.setItem(SIDEBAR_PREF_KEY, isNowCollapsed ? 'true' : 'false');
+  }
   var tooltip = document.querySelector('.sidebar-toggle .sb-tooltip');
   if (tooltip) tooltip.textContent = isNowCollapsed ? 'Show menu' : 'Hide menu';
 }
@@ -3624,7 +3584,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadCustomMappings();
 });
 
-        loadSearchIndex();
 // Refresh every 5 minutes
 setInterval(function() {
     loadAnnouncements();
@@ -3657,28 +3616,6 @@ function submitHomeQuestion() {
   });
 }
 
-</script>
-<script>
-/* ── Keep toggle button pinned to sidebar right edge ── */
-(function() {
-  function updateTogglePos() {
-    var btn = document.getElementById('sidebarToggleBtn');
-    var sidebar = document.querySelector('.hub-sidebar');
-    if (!btn || !sidebar) return;
-    var rect = sidebar.getBoundingClientRect();
-    // Guard: if sidebar hasn't rendered yet, use the CSS default
-    if (rect.right < 10) return;
-    btn.style.left = rect.right + 'px';
-  }
-  window.addEventListener('scroll', updateTogglePos, {passive: true});
-  window.addEventListener('resize', updateTogglePos, {passive: true});
-  // Run after layout is complete
-  window.addEventListener('load', function() {
-    updateTogglePos();
-    setTimeout(updateTogglePos, 200);
-    setTimeout(updateTogglePos, 600);
-  });
-})();
 </script>
 </body>
 </html>
