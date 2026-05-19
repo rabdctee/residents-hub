@@ -288,7 +288,7 @@
             <li style="background:#f0f6fc;"><a href="#group-new-tech"        style="padding-left:30px;font-size:0.8em;color:#555;">🤖 New Technology</a></li>
             ` : ''}
             <li><a href="index.html" onclick="if(window.showPage){showPage('contact');return false;}else{window.location.href='index.html?page=contact';return false;}"${isActive('contacts.html') ? ' class="sb-active"' : ''}>📞 Contacts</a></li>
-            <li><a href="index.html" onclick="if(window.showPage){showPage('about');return false;}else{window.location.href='index.html?page=about';return false;">📖 About This Website</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('about');return false;}else{window.location.href='index.html?page=about';return false;}">📖 About This Website</a></li>
           </ul>
         </div>
 
