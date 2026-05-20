@@ -1041,6 +1041,7 @@ border-bottom:2px solid #000;
   </div>
     <div class="sb-acc-body" id="sba-community">
       <ul class="sb-links">
+        <li><a href="classifieds.html">📌 Classifieds</a></li>
         <li><a href="concerts.html">🎵 City Hall Concerts</a></li>
         <li><a href="savings.html">🛒 Best Buys</a></li>
         <li><a href="info-sessions.html">🎓 Information Sessions</a></li>
@@ -1560,49 +1561,10 @@ For Manor events use the sign-up sheets in the Manor.
 
 <!-- NOTICEBOARD -->
 <div id="noticeboard" class="page-content">
-
-<!-- STICKY SUBMIT BUTTON -->
-<div class="sticky-action-bar">
-<div class="sticky-action-box">
-<a href="https://docs.google.com/forms/d/e/1FAIpQLSfQ7UZfN6l5_oefSrtckF87-taz0IjkZycCX_7w8fFh2I-3Mw/viewform" target="_blank" class="btn">
-✏️ Post something on the Noticeboard
-</a>
+<div style="padding:40px;text-align:center;">
+  <p style="color:#888;margin-bottom:16px;">The Notice Board has moved.</p>
+  <a href="classifieds.html" style="display:inline-block;padding:12px 28px;background:#1F4E79;color:white;border-radius:6px;font-weight:700;text-decoration:none;">📌 Go to Classifieds</a>
 </div>
-</div>
-
-
-<h2 style="margin-bottom:15px;">Community Noticeboard</h2>
-<p style="color:#5f6368;margin-bottom:20px;">Share items for sale, wanted items, announcements and connect with your neighbours</p>
-
-<div class="info-box">
-<strong>📝 Want to share something?</strong><br>
-Use the blue button at the top to submit a post. Your post will be published as soon as possible.<br><strong>Please use the feedback button to let us know when to take down your post.</strong>
-</div>
-
-<h3 style="color:#202124;font-size:1.4em;margin-bottom:15px;">Recent Posts</h3>
-
-<!-- UPDATE NOTICEBOARD POSTS HERE -->
-<div style="background:white;border:1px solid #e0e0e0;border-radius:8px;padding:20px;margin-bottom:20px;">
-<div style="color:#1F4E79;font-size:0.85em;font-weight:600;margin-bottom:5px;">FOR SALE</div>
-<div style="font-weight:600;margin-bottom:5px;">Maggie & Max May • Unit NN</div>
-<div style="color:#5f6368;font-size:0.85em;margin-bottom:10px;">Posted February 20, 2026</div>
-<div style="line-height:1.6;">
-<strong>Dining Table and 4 Chairs - $150</strong><br>
-Beautiful wooden dining set in excellent condition. Table extends to seat 6. Downsizing and must sell. Contact me at Unit NN or call NNNN NNN NNN.
-</div>
-</div>
-
-<div style="background:white;border:1px solid #e0e0e0;border-radius:8px;padding:20px;margin-bottom:20px;">
-<div style="color:#1F4E79;font-size:0.85em;font-weight:600;margin-bottom:5px;">ANNOUNCEMENT</div>
-<div style="font-weight:600;margin-bottom:5px;">Mickey Mouse • Unit NN</div>
-<div style="color:#5f6368;font-size:0.85em;margin-bottom:10px;">Posted February 21, 2026</div>
-<div style="line-height:1.6;">
-<strong>Lost Cat - Please Help!</strong><br>
-Our grey tabby cat "Smokey" has been missing since Wednesday evening. Very friendly, wearing a blue collar. If you see him, please call NNNN NNN NNN. Reward offered!
-</div>
-</div>
-<!-- END OF NOTICEBOARD POSTS -->
-
 </div>
 
 <!-- VILLAGE INFO -->
@@ -1618,7 +1580,7 @@ This page contains village documents and financial information for residents onl
   <a href="index.html" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">🏠 Home</a>
   <a onclick="showPage('about',this)" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;cursor:pointer;">📖 About This Website</a>
   <a onclick="showPage('useful-links',this)" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;cursor:pointer;">🔗 Useful Links</a>
-  <a onclick="showPage('noticeboard',this)" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;cursor:pointer;">📌 Notice Board</a>
+  <a href="classifieds.html" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;">📌 Classifieds</a>
 </div>
 
 <h3 style="margin-bottom:15px;color:#1F4E79;">📁 Village Documents</h3>
@@ -2631,7 +2593,7 @@ var PAGE_TITLES = {
     'newsletter':       '📰 News',
     'events':           '🎉 Events',
     'activity-contacts':'🚶 Activities',
-    'noticeboard':      '📌 Notice Board',
+    'noticeboard':      '📌 Classifieds',
     'village-info':     '🔒 Resident-Only',
     'useful-links':     '🔗 Useful Links',
     'committee':        '👥 Committees',
@@ -2683,6 +2645,11 @@ function goBack() {
 // Load page from URL hash on startup, then expand sub-section if ?expand= param present
 window.addEventListener('DOMContentLoaded', function() {
     var hash = window.location.hash.replace('#', '');
+    // Redirect retired page hashes
+    if (hash === 'noticeboard') {
+        window.location.href = 'classifieds.html';
+        return;
+    }
     if (hash && document.getElementById(hash)) {
         pageHistory = ['home', hash];
         showPage(hash);
@@ -2776,7 +2743,7 @@ var searchableContent = [
     {page: 'newsletter',        section: null, title: '📰 Newsletter',                 keywords: 'news newsletter announcements notices updates information social club march april'},
     {page: 'committee',         section: null, title: '👥 Committees',                 keywords: 'committee upload documents record transaction finances social club delete correct'},
     {page: 'useful-links',      section: null, title: '🔗 Useful Websites',            keywords: 'links websites resources government health myGov centrelink aged care qld retirement village translink library brisbane safety online'},
-    {page: 'noticeboard',       section: null, title: '📌 Community Board',            keywords: 'classifieds buy sell wanted notice board community ads post'},
+    {url:  'classifieds.html',                 title: '📌 Classifieds',                keywords: 'classifieds buy sell wanted free swap lost found services notice board community ads post listing'},
     {page: 'about',             section: null, title: '📖 About This Website',         keywords: 'about website help information how guide feedback suggestions improve'},
     {page: 'home',              section: null, title: '🏠 Home',                       keywords: 'home welcome announcements latest news bookmark start'},
     {url:  'how-to.html',                      title: '❓ Help & How To',               keywords: 'help how to guide instructions tips delete messages email phone photos wifi internet settings apps computer tablet ipad android'},
@@ -2818,15 +2785,19 @@ var searchableContent = [
     } else {
         var html = '<div style="padding:10px;color:#666;font-weight:600;">Found ' + results.length + ' result(s):</div>';
         results.forEach(function(result) {
-            var onclick = 'showPage(\'' + result.page + '\');';
-            if (result.section) {
-                // Navigate to page then open the matching section
-                onclick += 'setTimeout(function(){' +
-                    'var el=document.getElementById(\'' + result.section + '\');' +
-                    'var arr=document.getElementById(\'' + result.section + '-arrow\');' +
-                    'if(el&&!el.classList.contains(\'open\')){el.classList.add(\'open\');if(arr)arr.classList.add(\'open\');}' +
-                    'if(el)el.scrollIntoView({behavior:\'smooth\',block:\'start\'});' +
-                    '},200);';
+            var onclick;
+            if (result.url) {
+                onclick = 'window.location.href=\'' + result.url + '\';';
+            } else {
+                onclick = 'showPage(\'' + result.page + '\');';
+                if (result.section) {
+                    onclick += 'setTimeout(function(){' +
+                        'var el=document.getElementById(\'' + result.section + '\');' +
+                        'var arr=document.getElementById(\'' + result.section + '-arrow\');' +
+                        'if(el&&!el.classList.contains(\'open\')){el.classList.add(\'open\');if(arr)arr.classList.add(\'open\');}' +
+                        'if(el)el.scrollIntoView({behavior:\'smooth\',block:\'start\'});' +
+                        '},200);';
+                }
             }
             onclick += 'document.getElementById(\'searchResults\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\';';
             html += '<div class="search-result-item" onclick="' + onclick + '">' + result.title + '</div>';
