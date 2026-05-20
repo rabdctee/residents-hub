@@ -3406,7 +3406,9 @@ function loadEvents() {
                             const p = str.split('/');
                             return new Date(p[2], p[1]-1, p[0]);
                         }
-                        return null;
+                        // Fallback: let JS parse full date strings from Sheets API
+                        const d = new Date(str);
+                        return isNaN(d) ? null : d;
                     };
                     return {
                         timestamp:   row[0],
