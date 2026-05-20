@@ -1041,6 +1041,7 @@ border-bottom:2px solid #000;
   </div>
     <div class="sb-acc-body" id="sba-community">
       <ul class="sb-links">
+        <li><a href="classifieds.html">📌 Classifieds</a></li>
         <li><a href="concerts.html">🎵 City Hall Concerts</a></li>
         <li><a href="savings.html">🛒 Best Buys</a></li>
         <li><a href="info-sessions.html">🎓 Information Sessions</a></li>
@@ -2792,7 +2793,7 @@ var searchableContent = [
     {page: 'newsletter',        section: null, title: '📰 Newsletter',                 keywords: 'news newsletter announcements notices updates information social club march april'},
     {page: 'committee',         section: null, title: '👥 Committees',                 keywords: 'committee upload documents record transaction finances social club delete correct'},
     {page: 'useful-links',      section: null, title: '🔗 Useful Websites',            keywords: 'links websites resources government health myGov centrelink aged care qld retirement village translink library brisbane safety online'},
-    {page: 'noticeboard',       section: null, title: '📌 Community Board',            keywords: 'classifieds buy sell wanted notice board community ads post'},
+    {url:  'classifieds.html',                 title: '📌 Classifieds',                keywords: 'classifieds buy sell wanted free swap lost found services notice board community ads post listing'},
     {page: 'about',             section: null, title: '📖 About This Website',         keywords: 'about website help information how guide feedback suggestions improve'},
     {page: 'home',              section: null, title: '🏠 Home',                       keywords: 'home welcome announcements latest news bookmark start'},
     {url:  'how-to.html',                      title: '❓ Help & How To',               keywords: 'help how to guide instructions tips delete messages email phone photos wifi internet settings apps computer tablet ipad android'},
@@ -2834,7 +2835,21 @@ var searchableContent = [
     } else {
         var html = '<div style="padding:10px;color:#666;font-weight:600;">Found ' + results.length + ' result(s):</div>';
         results.forEach(function(result) {
-            var onclick = 'showPage(\'' + result.page + '\');';
+            var onclick;
+            if (result.url) {
+                onclick = 'window.location.href=\'' + result.url + '\';';
+            } else {
+                onclick = 'showPage(\'' + result.page + '\');';
+                if (result.section) {
+                    onclick += 'setTimeout(function(){' +
+                        'var el=document.getElementById(\'' + result.section + '\');' +
+                        'var arr=document.getElementById(\'' + result.section + '-arrow\');' +
+                        'if(el&&!el.classList.contains(\'open\')){el.classList.add(\'open\');if(arr)arr.classList.add(\'open\');}' +
+                        'if(el)el.scrollIntoView({behavior:\'smooth\',block:\'start\'});' +
+                        '},200);';
+                }
+            }
+            onclick += 'document.getElementById(\'searchResults\').style.display=\'none\';document.getElementById(\'searchInput\').value=\'\';';
             if (result.section) {
                 // Navigate to page then open the matching section
                 onclick += 'setTimeout(function(){' +
