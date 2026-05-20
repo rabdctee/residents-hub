@@ -3397,7 +3397,11 @@ function loadEvents() {
                     // New column order: Timestamp | Event Name | Date | Display From | Event Time | Location
                     const parseDateStr = (str) => {
                         if (!str) return null;
-                        if (str.includes('-')) return new Date(str);
+                        if (str.includes('-')) {
+                            // Parse as local date (not UTC) to avoid timezone shift
+                            const p = str.split('-');
+                            return new Date(p[0], p[1]-1, p[2]);
+                        }
                         if (str.includes('/')) {
                             const p = str.split('/');
                             return new Date(p[2], p[1]-1, p[0]);
@@ -3446,7 +3450,9 @@ function displayEvents(events) {
         div.className = 'event-item';
         
         const options = { weekday: 'short', month: 'short', day: 'numeric' };
-        const dateStr = event.eventDate.toLocaleDateString('en-AU', options);
+        const dateStr = (event.eventDate instanceof Date && !isNaN(event.eventDate))
+            ? event.eventDate.toLocaleDateString('en-AU', options)
+            : String(event.eventDate);
         
         div.innerHTML = `
             <a href="#" onclick="showPage('events', document.querySelector('.nav-item:nth-child(4)')); return false;" style="text-decoration:none; color:inherit;">
