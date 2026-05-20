@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classifieds Administration – Residents Hub</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: #1F4E79;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  header h1 { font-size: 1.8em; }
+  header p  { font-size: 0.82em; opacity: 0.85; margin-top: 6px; }
+
+  /* ── Back bar ── */
+  .back-bar {
+    background: #E7F1FB;
+    padding: 10px 20px;
+    border-bottom: 2px solid #c5d8ee;
+  }
+  .back-bar a {
+    color: #1F4E79;
+    background: white;
+    border: 2px solid #c5d8ee;
+    border-radius: 10px;
+    padding: 7px 16px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .back-bar a:hover { background: #E7F1FB; border-color: #1F4E79; }
+
+  /* ── Content ── */
+  .content-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 25px 60px;
+  }
+
+  .section-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #1F4E79;
+    border-bottom: 3px solid #C9A44A;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+  }
+
+  /* ── Tabs ── */
+  .tab-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #c5d8ee;
+    padding-bottom: 0;
+  }
+  .tab-btn {
+    background: white;
+    border: 2px solid #c5d8ee;
+    border-bottom: none;
+    color: #1F4E79;
+    padding: 9px 22px;
+    border-radius: 6px 6px 0 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    bottom: -2px;
+    transition: all 0.15s;
+  }
+  .tab-btn.active {
+    background: #1F4E79;
+    color: white;
+    border-color: #1F4E79;
+  }
+  .tab-btn:hover:not(.active) { background: #E7F1FB; }
+
+  .tab-badge {
+    display: inline-block;
+    background: #C9A44A;
+    color: white;
+    border-radius: 10px;
+    font-size: 0.75em;
+    font-weight: 700;
+    padding: 1px 7px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* ── Cards ── */
+  .cards-list { display: grid; gap: 16px; }
+
+  .admin-card {
+    background: white;
+    border: 1px solid #c5d8ee;
+    border-radius: 8px;
+    border-left: 5px solid #1F4E79;
+    padding: 18px 20px;
+    transition: box-shadow 0.2s;
+  }
+  .admin-card:hover { box-shadow: 0 3px 12px rgba(31,78,121,0.10); }
+
+  .admin-card[data-cat="For Sale"]          { border-left-color: #1F4E79; }
+  .admin-card[data-cat="Wanted"]            { border-left-color: #6a1b9a; }
+  .admin-card[data-cat="Free to Good Home"] { border-left-color: #2e7d32; }
+  .admin-card[data-cat="Lost & Found"]      { border-left-color: #e65100; }
+  .admin-card[data-cat="Services"]          { border-left-color: #00838f; }
+  .admin-card[data-cat="General Notice"]    { border-left-color: #C9A44A; }
+
+  .card-cat {
+    display: inline-block;
+    font-size: 0.70em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: white;
+    background: #1F4E79;
+    border-radius: 4px;
+    padding: 2px 10px;
+    margin-bottom: 8px;
+  }
+  .admin-card[data-cat="Wanted"]            .card-cat { background: #6a1b9a; }
+  .admin-card[data-cat="Free to Good Home"] .card-cat { background: #2e7d32; }
+  .admin-card[data-cat="Lost & Found"]      .card-cat { background: #e65100; }
+  .admin-card[data-cat="Services"]          .card-cat { background: #00838f; }
+  .admin-card[data-cat="General Notice"]    .card-cat { background: #7a6200; }
+
+  .card-headline {
+    font-size: 1.05em;
+    font-weight: 700;
+    color: #1F4E79;
+    margin-bottom: 5px;
+  }
+  .card-details {
+    color: #444;
+    font-size: 0.88em;
+    margin-bottom: 12px;
+    line-height: 1.55;
+  }
+  .card-meta {
+    font-size: 0.78em;
+    color: #5f6368;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  /* ── Action buttons ── */
+  .card-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  .btn-publish, .btn-reject {
+    border: none;
+    border-radius: 5px;
+    padding: 8px 22px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn-publish { background: #2e7d32; color: white; }
+  .btn-publish:hover { opacity: 0.85; }
+  .btn-reject  { background: #c0392b; color: white; }
+  .btn-reject:hover  { opacity: 0.85; }
+  .btn-publish:disabled,
+  .btn-reject:disabled  { opacity: 0.45; cursor: not-allowed; }
+
+  .btn-unpublish {
+    border: 2px solid #c5d8ee;
+    border-radius: 5px;
+    padding: 7px 18px;
+    background: white;
+    color: #1F4E79;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-unpublish:hover { background: #E7F1FB; border-color: #1F4E79; }
+  .btn-unpublish:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .card-status-msg {
+    font-size: 0.82em;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+  .card-status-msg.ok  { color: #2e7d32; }
+  .card-status-msg.err { color: #c0392b; }
+
+  /* ── Empty / loading states ── */
+  .state-msg {
+    text-align: center;
+    padding: 40px 20px;
+    color: #5f6368;
+    font-style: italic;
+    font-size: 0.92em;
+  }
+
+  /* ── Reload button ── */
+  .reload-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+  .btn-reload {
+    background: white;
+    border: 2px solid #c5d8ee;
+    border-radius: 6px;
+    color: #1F4E79;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.82em;
+    font-weight: 700;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-reload:hover { background: #E7F1FB; border-color: #1F4E79; }
+
+  /* ── Info box ── */
+  .info-box {
+    background: #E7F1FB;
+    border-left: 4px solid #1F4E79;
+    border-radius: 4px;
+    padding: 13px 16px;
+    font-size: 0.85em;
+    color: #222;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* ── Footer ── */
+  .hub-footer {
+    background: #f8f9fa;
+    padding: 16px 30px;
+    text-align: center;
+    color: #5f6368;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.72em;
+  }
+
+  @media (max-width: 600px) {
+    .content-wrap { padding: 20px 14px 50px; }
+    .tab-btn { padding: 8px 14px; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+  <h1>Bridgeman Downs Retirement Village<br>Residents' Information Hub</h1>
+  <p>Committee Area — Classifieds Administration</p>
+</header>
+
+<div class="back-bar">
+  <a href="index.html#committee">🏠 Back to Hub</a>
+</div>
+
+<div class="content-wrap">
+
+  <h2 class="section-title">📌 Classifieds Administration</h2>
+
+  <div class="info-box">
+    <strong>How this works:</strong> Submissions from residents appear here as <em>Pending</em>.
+    Click <strong>Publish</strong> to make a listing visible on the Classifieds page, or
+    <strong>Reject</strong> to decline it. Published listings can be unpublished at any time
+    using the <strong>Unpublish</strong> button on the Published tab.
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-pending"   onclick="showTab('pending')">
+      Pending <span class="tab-badge" id="badge-pending">…</span>
+    </button>
+    <button class="tab-btn" id="tab-published" onclick="showTab('published')">
+      Published <span class="tab-badge" id="badge-published">…</span>
+    </button>
+    <button class="tab-btn" id="tab-rejected"  onclick="showTab('rejected')">
+      Rejected <span class="tab-badge" id="badge-rejected">…</span>
+    </button>
+  </div>
+
+  <div class="reload-row">
+    <button class="btn-reload" onclick="loadAll()">🔄 Refresh</button>
+  </div>
+
+  <div class="cards-list" id="cards-container">
+    <div class="state-msg">⏳ Loading submissions…</div>
+  </div>
+
+</div>
+
+<div class="hub-footer">
+  Bridgeman Downs Retirement Village Residents' Information Hub &nbsp;|&nbsp;
+  © 2026 | Contact: rabd.ctee@gmail.com | Emergency: 000
+</div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3ShlYfYLviLL5qBoC9lxHUwfodY6tUH-epZvP06vNHbfcic_fkWq8N8NLSD0OraLQhQ/exec';
+const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9iLsP7-_JlI3QhKso9O0kMdLpwPzr4Y87YbHDeeVOW4Pg1U0_QZvTr1O2PRP4kevvh0PmnCCmfE7W/pub?gid=0&single=true&output=csv';
+
+let allRows    = [];
+let activeTab  = 'pending';
+
+// ── LOAD ────────────────────────────────────────────────────────────────────
+async function loadAll() {
+  document.getElementById('cards-container').innerHTML = '<div class="state-msg">⏳ Loading submissions…</div>';
+  try {
+    const resp = await fetch(CSV_URL + '&t=' + Date.now());
+    const text = await resp.text();
+    allRows = parseCSV(text);
+    updateBadges();
+    renderTab();
+  } catch(err) {
+    document.getElementById('cards-container').innerHTML =
+      '<div class="state-msg">❌ Could not load submissions. Please try refreshing.</div>';
+  }
+}
+
+// ── PARSE CSV ────────────────────────────────────────────────────────────────
+// Cols: Timestamp(0) Name(1) Unit(2) Phone(3) Category(4) Headline(5) Details(6) Status(7)
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const rows  = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = splitCSVLine(lines[i]);
+    if (cols.length < 6) continue;
+    rows.push({
+      timestamp : cols[0].trim(),
+      name      : cols[1].trim(),
+      unit      : cols[2].trim(),
+      phone     : cols[3].trim(),
+      category  : cols[4].trim(),
+      headline  : cols[5].trim(),
+      details   : cols[6] ? cols[6].trim() : '',
+      status    : (cols[7] || '').trim().toLowerCase()
+    });
+  }
+  return rows.reverse(); // newest first
+}
+
+function splitCSVLine(line) {
+  const result = [];
+  let cur = '', inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i+1] === '"') { cur += '"'; i++; }
+      else inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) { result.push(cur); cur = ''; }
+    else { cur += ch; }
+  }
+  result.push(cur);
+  return result;
+}
+
+// ── BADGES ──────────────────────────────────────────────────────────────────
+function updateBadges() {
+  document.getElementById('badge-pending').textContent   = allRows.filter(r => r.status === 'pending').length;
+  document.getElementById('badge-published').textContent = allRows.filter(r => r.status === 'published').length;
+  document.getElementById('badge-rejected').textContent  = allRows.filter(r => r.status === 'rejected').length;
+}
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  activeTab = tab;
+  ['pending','published','rejected'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+  });
+  renderTab();
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function renderTab() {
+  const container = document.getElementById('cards-container');
+  const rows = allRows.filter(r => r.status === activeTab);
+
+  if (rows.length === 0) {
+    const msgs = {
+      pending:   'No pending submissions — all caught up! ✅',
+      published: 'No published listings at the moment.',
+      rejected:  'No rejected submissions.'
+    };
+    container.innerHTML = '<div class="state-msg">' + msgs[activeTab] + '</div>';
+    return;
+  }
+
+  container.innerHTML = rows.map((r, idx) => {
+    const dateStr = formatDate(r.timestamp);
+    const contact = [r.unit ? 'Unit ' + r.unit : '', r.phone].filter(Boolean).join(' · ');
+    const cardId  = 'card-' + activeTab + '-' + idx;
+
+    let actions = '';
+    if (activeTab === 'pending') {
+      actions = `
+        <button class="btn-publish" onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','published','${cardId}')">✅ Publish</button>
+        <button class="btn-reject"  onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','rejected','${cardId}')">❌ Reject</button>
+        <span class="card-status-msg" id="msg-${cardId}"></span>`;
+    } else if (activeTab === 'published') {
+      actions = `
+        <button class="btn-unpublish" onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','pending','${cardId}')">↩️ Unpublish</button>
+        <span class="card-status-msg" id="msg-${cardId}"></span>`;
+    } else {
+      actions = `
+        <button class="btn-publish" onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','published','${cardId}')">✅ Publish anyway</button>
+        <button class="btn-unpublish" onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','pending','${cardId}')">↩️ Return to Pending</button>
+        <span class="card-status-msg" id="msg-${cardId}"></span>`;
+    }
+
+    return `<div class="admin-card" id="${cardId}" data-cat="${esc(r.category)}">
+  <div class="card-cat">${esc(r.category)}</div>
+  <div class="card-headline">${esc(r.headline)}</div>
+  <div class="card-details">${esc(r.details)}</div>
+  <div class="card-meta">
+    <span>👤 ${esc(r.name)}</span>
+    ${contact ? `<span>📍 ${esc(contact)}</span>` : ''}
+    ${dateStr ? `<span>📅 ${dateStr}</span>`      : ''}
+  </div>
+  <div class="card-actions">${actions}</div>
+</div>`;
+  }).join('');
+}
+
+// ── SET STATUS ───────────────────────────────────────────────────────────────
+async function setStatus(btnEl, timestamp, headline, newStatus, cardId) {
+  const msgEl   = document.getElementById('msg-' + cardId);
+  const cardEl  = document.getElementById(cardId);
+  const buttons = cardEl.querySelectorAll('button');
+
+  buttons.forEach(b => b.disabled = true);
+  msgEl.className = 'card-status-msg';
+  msgEl.textContent = 'Saving…';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method : 'POST',
+      mode   : 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body   : JSON.stringify({ action: 'setStatus', timestamp, headline, status: newStatus })
+    });
+
+    // no-cors — assume success, update local data and re-render
+    const row = allRows.find(r => r.timestamp === timestamp && r.headline === headline);
+    if (row) row.status = newStatus;
+    updateBadges();
+
+    msgEl.className = 'card-status-msg ok';
+    const labels = { published: 'Published ✅', rejected: 'Rejected ❌', pending: 'Returned to Pending ↩️' };
+    msgEl.textContent = labels[newStatus] || 'Updated';
+
+    // Fade card out then re-render
+    setTimeout(function() {
+      cardEl.style.transition = 'opacity 0.4s';
+      cardEl.style.opacity    = '0';
+      setTimeout(function() { renderTab(); }, 420);
+    }, 800);
+
+  } catch(err) {
+    buttons.forEach(b => b.disabled = false);
+    msgEl.className   = 'card-status-msg err';
+    msgEl.textContent = '❌ Error — please try again.';
+  }
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str)
+    .replace(/\\/g,'\\\\').replace(/'/g,"\\'")
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function formatDate(raw) {
+  if (!raw) return '';
+  const d = new Date(raw);
+  if (isNaN(d)) return raw;
+  return d.toLocaleDateString('en-AU', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+loadAll();
+</script>
+</body>
+</html>
