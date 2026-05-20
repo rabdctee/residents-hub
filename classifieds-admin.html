@@ -357,16 +357,15 @@ function parseCSV(text) {
   for (let i = 1; i < lines.length; i++) {
     const cols = splitCSVLine(lines[i]);
     if (cols.length < 6) continue;
-    rows.push({
-      timestamp : cols[0].trim(),
-      name      : cols[1].trim(),
-      unit      : cols[2].trim(),
-      phone     : cols[3].trim(),
-      category  : cols[4].trim(),
-      headline  : cols[5].trim(),
-      details   : cols[6] ? cols[6].trim() : '',
-      status    : (cols[7] || '').trim().toLowerCase()
-    });
+    const timestamp = cols[0].trim();
+    const name      = cols[1].trim();
+    const unit      = cols[2].trim();
+    const phone     = cols[3].trim();
+    const category  = cols[4].trim();
+    const headline  = cols[5].trim();
+    const details   = cols.slice(6, cols.length - 1).join(',').trim();
+    const status    = cols[cols.length - 1].trim().toLowerCase();
+    rows.push({ timestamp, name, unit, phone, category, headline, details, status });
   }
   return rows.reverse(); // newest first
 }
