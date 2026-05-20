@@ -283,30 +283,37 @@
   }
   .confirm-icon { font-size: 3em; margin-bottom: 16px; }
   .confirm-box h2 { color: #1F4E79; font-size: 1.3em; margin-bottom: 12px; }
-  .confirm-box p  { color: #444; font-size: 0.9em; line-height: 1.6; margin-bottom: 20px; }
-
-  .confirm-countdown {
-    font-size: 0.85em;
-    color: #5f6368;
-    margin-bottom: 20px;
+  .confirm-box p  { color: #444; font-size: 0.9em; line-height: 1.6; margin-bottom: 24px; }
+  .confirm-box .prompt {
+    font-size: 0.92em;
+    font-weight: 700;
+    color: #1F4E79;
+    margin-bottom: 16px;
   }
-  .confirm-countdown strong { color: #1F4E79; }
-
-  .btn-go-now {
-    display: inline-block;
-    background: #1F4E79;
-    color: white;
-    border: none;
+  .confirm-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .confirm-actions a, .confirm-actions button {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
     border-radius: 6px;
-    padding: 11px 28px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.95em;
     font-weight: 700;
     cursor: pointer;
     text-decoration: none;
-    transition: background 0.2s;
+    text-align: center;
+    transition: opacity 0.2s;
+    border: none;
   }
-  .btn-go-now:hover { background: #163d60; }
+  .confirm-actions a:hover,
+  .confirm-actions button:hover { opacity: 0.85; }
+  .confirm-btn-primary   { background: #1F4E79; color: white; }
+  .confirm-btn-secondary { background: #2e7d32; color: white; }
+  .confirm-btn-tertiary  { background: white; color: #1F4E79; border: 2px solid #c5d8ee !important; }
 
 
   @media (max-width: 768px) {
@@ -356,7 +363,7 @@
 
   <div class="form-intro">
     📋 <strong>Please note:</strong> 
-    Listings are published weekly and remain visible for 60 days. 
+    Listings are published as soon as possible and remain visible for 60 days. 
   </div>
 
   <div class="form-grid">
@@ -441,18 +448,22 @@ function parseCSV(text) {
   const rows  = [];
   for (let i = 1; i < lines.length; i++) {
     const cols   = splitCSVLine(lines[i]);
-    if (cols.length < 7) continue;
-    const status = (cols[7] || '').trim().toLowerCase();
+    if (cols.length < 6) continue;
+    // Status is always the last column (col H = index 7, but if timestamp
+    // contains a comma it may shift — so read from the end instead)
+    const status = cols[cols.length - 1].trim().toLowerCase();
     if (status !== 'published') continue;
-    rows.push({
-      timestamp: cols[0].trim(),
-      name     : cols[1].trim(),
-      unit     : cols[2].trim(),
-      phone    : cols[3].trim(),
-      category : cols[4].trim(),
-      headline : cols[5].trim(),
-      details  : cols[6].trim()
-    });
+    // Data columns are always A-G regardless of split count
+    // Reconstruct by joining any overflow back into the details field
+    const timestamp = cols[0].trim();
+    const name      = cols[1].trim();
+    const unit      = cols[2].trim();
+    const phone     = cols[3].trim();
+    const category  = cols[4].trim();
+    const headline  = cols[5].trim();
+    // Everything between headline and the last (status) column is details
+    const details   = cols.slice(6, cols.length - 1).join(',').trim();
+    rows.push({ timestamp, name, unit, phone, category, headline, details });
   }
   return rows.reverse();
 }
@@ -557,18 +568,8 @@ async function submitListing() {
       body   : JSON.stringify({ action: 'submit', name, unit, phone, category, headline, details })
     });
 
-    // Show confirmation overlay with countdown
+    // Show confirmation overlay
     document.getElementById('confirm-overlay').classList.add('show');
-    let secs = 4;
-    const countEl = document.getElementById('countdown-num');
-    const timer = setInterval(function() {
-      secs--;
-      countEl.textContent = secs;
-      if (secs <= 0) {
-        clearInterval(timer);
-        window.location.href = 'classifieds.html';
-      }
-    }, 1000);
 
   } catch (err) {
     statusEl.className = 'error';
@@ -576,6 +577,19 @@ async function submitListing() {
     btn.disabled = false;
     btn.textContent = 'Submit Listing';
   }
+}
+
+function resetForm() {
+  ['f-name','f-unit','f-phone','f-headline','f-details'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('f-category').value = '';
+  document.getElementById('headline-hint').textContent = '0 / 100';
+  document.getElementById('details-hint').textContent  = '0 / 600';
+  document.getElementById('confirm-overlay').classList.remove('show');
+  document.getElementById('submit-btn').disabled = false;
+  document.getElementById('submit-btn').textContent = 'Submit Listing';
+  window.scrollTo({ top: document.querySelector('.section-title').offsetTop - 20, behavior: 'smooth' });
 }
 
 loadListings();
@@ -589,10 +603,12 @@ loadListings();
       Thank you — your listing has been received. It will be reviewed by the committee
       and published on the Classifieds page shortly.
     </p>
-    <div class="confirm-countdown" id="confirm-countdown">
-      Returning to Classifieds in <strong id="countdown-num">4</strong> seconds…
+    <div class="prompt">What would you like to do next?</div>
+    <div class="confirm-actions">
+      <a href="classifieds.html" class="confirm-btn-primary">📌 Review current listings</a>
+      <button class="confirm-btn-secondary" onclick="resetForm()">✏️ Submit another listing</button>
+      <a href="index.html" class="confirm-btn-tertiary">🏠 Go back to Home</a>
     </div>
-    <a href="classifieds.html" class="btn-go-now">Go there now</a>
   </div>
 </div>
 
