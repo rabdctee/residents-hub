@@ -352,37 +352,44 @@ async function loadAll() {
 // ── PARSE CSV ────────────────────────────────────────────────────────────────
 // Cols: Timestamp(0) Name(1) Unit(2) Phone(3) Category(4) Headline(5) Details(6) Status(7)
 function parseCSV(text) {
-  const lines = text.trim().split('\n');
   const rows  = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cols = splitCSVLine(lines[i]);
-    if (cols.length < 6) continue;
-    const timestamp = cols[0].trim();
-    const name      = cols[1].trim();
-    const unit      = cols[2].trim();
-    const phone     = cols[3].trim();
-    const category  = cols[4].trim();
-    const headline  = cols[5].trim();
-    const details   = cols.slice(6, cols.length - 1).join(',').trim();
-    const status    = cols[cols.length - 1].trim().toLowerCase();
+  const cols  = splitCSV(text);
+  for (let i = 1; i < cols.length; i++) {
+    const row = cols[i];
+    if (row.length < 6) continue;
+    const timestamp = row[0].trim();
+    const name      = row[1].trim();
+    const unit      = row[2].trim();
+    const phone     = row[3].trim();
+    const category  = row[4].trim();
+    const headline  = row[5].trim();
+    const details   = row.slice(6, row.length - 1).join(',').trim();
+    const status    = row[row.length - 1].trim().toLowerCase();
     rows.push({ timestamp, name, unit, phone, category, headline, details, status });
   }
   return rows.reverse(); // newest first
 }
 
-function splitCSVLine(line) {
-  const result = [];
-  let cur = '', inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i+1] === '"') { cur += '"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (ch === ',' && !inQuotes) { result.push(cur); cur = ''; }
-    else { cur += ch; }
+// Full RFC-4180 CSV parser — handles quoted fields containing commas AND newlines
+function splitCSV(text) {
+  const rows = [];
+  let row = [], cur = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i], nx = text[i + 1];
+    if (inQ) {
+      if (ch === '"' && nx === '"') { cur += '"'; i++; }
+      else if (ch === '"')          { inQ = false; }
+      else                          { cur += ch; }
+    } else {
+      if      (ch === '"')                  { inQ = true; }
+      else if (ch === ',')                  { row.push(cur); cur = ''; }
+      else if (ch === '\r' && nx === '\n')  { row.push(cur); cur = ''; rows.push(row); row = []; i++; }
+      else if (ch === '\n' || ch === '\r')  { row.push(cur); cur = ''; rows.push(row); row = []; }
+      else                                  { cur += ch; }
+    }
   }
-  result.push(cur);
-  return result;
+  if (cur || row.length) { row.push(cur); rows.push(row); }
+  return rows;
 }
 
 // ── BADGES ──────────────────────────────────────────────────────────────────
