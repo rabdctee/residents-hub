@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Survey | Bridgeman Downs Residents' Hub</title>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body {
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:18px;
+      line-height:1.7;
+      color:#222;
+    }
+    .container {
+      max-width:1200px;
+      margin:auto;
+      background:white;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Header */
+    header {
+      background:#1F4E79;
+      color:white;
+      padding:30px 20px;
+      text-align:center;
+    }
+    header h1 { font-size:2em; }
+
+    /* Page area */
+    .page-area { padding:30px 40px 50px; }
+
+    /* Page title */
+    .page-title {
+      font-size:1.5em;
+      font-weight:700;
+      color:#1F4E79;
+      border-bottom:3px solid #C9A44A;
+      padding-bottom:10px;
+      margin-bottom:20px;
+    }
+
+    /* Intro box */
+    .intro-box {
+      background:#E7F1FB;
+      border-left:5px solid #1F4E79;
+      border-radius:6px;
+      padding:18px 22px;
+      margin-bottom:24px;
+      font-size:0.92em;
+      color:#333;
+    }
+    .intro-box p + p { margin-top:10px; }
+    .intro-box strong { color:#1F4E79; }
+
+    /* Deadline banner */
+    .deadline-banner {
+      background:#fff8e6;
+      border:2px solid #C9A44A;
+      border-radius:6px;
+      padding:12px 18px;
+      margin-bottom:24px;
+      font-size:0.88em;
+      color:#7a5200;
+      font-weight:600;
+    }
+
+    /* Survey form */
+    .survey-form { max-width:700px; }
+
+    /* Section label */
+    .section-label {
+      font-size:1em;
+      font-weight:700;
+      color:#1F4E79;
+      margin-bottom:14px;
+    }
+
+    /* Option cards */
+    .options-grid {
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-bottom:28px;
+    }
+    .option-card {
+      border:2px solid #c5d8ee;
+      border-radius:8px;
+      padding:16px 18px;
+      cursor:pointer;
+      transition:all 0.2s;
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      background:white;
+    }
+    .option-card:hover:not(.disabled) {
+      border-color:#1F4E79;
+      background:#E7F1FB;
+    }
+    .option-card.selected {
+      border-color:#1F4E79;
+      background:#E7F1FB;
+    }
+    .option-card.disabled {
+      background:#f5f5f5;
+      border-color:#ddd;
+      cursor:not-allowed;
+      opacity:0.6;
+    }
+    .option-card input[type="radio"] { display:none; }
+    .option-number {
+      background:#1F4E79;
+      color:white;
+      font-weight:700;
+      font-size:0.88em;
+      border-radius:50%;
+      width:28px;
+      height:28px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      margin-top:2px;
+    }
+    .option-card.disabled .option-number {
+      background:#aaa;
+    }
+    .option-info { flex:1; }
+    .option-title {
+      font-weight:700;
+      color:#1F4E79;
+      font-size:0.95em;
+      margin-bottom:2px;
+    }
+    .option-card.disabled .option-title { color:#888; }
+    .option-cost {
+      font-size:0.82em;
+      color:#555;
+    }
+    .option-card.disabled .option-cost { color:#aaa; }
+    .over-budget {
+      display:inline-block;
+      font-size:0.75em;
+      background:#fdecea;
+      color:#b71c1c;
+      border-radius:4px;
+      padding:1px 7px;
+      font-weight:700;
+      margin-left:6px;
+    }
+
+    /* Optional fields */
+    .optional-section {
+      margin-bottom:24px;
+    }
+    label.field-label {
+      display:block;
+      font-size:0.88em;
+      font-weight:700;
+      color:#333;
+      margin-bottom:6px;
+    }
+    .optional-tag {
+      font-weight:400;
+      color:#888;
+      font-size:0.85em;
+      margin-left:6px;
+    }
+    input[type="text"], textarea {
+      width:100%;
+      padding:10px 12px;
+      font-size:15px;
+      border:2px solid #c5d8ee;
+      border-radius:6px;
+      font-family:'Segoe UI',sans-serif;
+      color:#222;
+      transition:border-color 0.2s;
+    }
+    input[type="text"]:focus, textarea:focus {
+      outline:none;
+      border-color:#1F4E79;
+    }
+    textarea { min-height:90px; resize:vertical; }
+
+    /* Submit button */
+    .btn-submit {
+      width:100%;
+      padding:14px;
+      background:#1F4E79;
+      color:white;
+      border:none;
+      border-radius:6px;
+      font-size:1em;
+      font-weight:700;
+      cursor:pointer;
+      transition:background 0.2s;
+      font-family:'Segoe UI',sans-serif;
+    }
+    .btn-submit:hover { background:#163a5c; }
+    .btn-submit:disabled { background:#aaa; cursor:not-allowed; }
+
+    /* Status */
+    .status-msg {
+      display:none;
+      padding:14px 18px;
+      border-radius:6px;
+      font-size:0.92em;
+      font-weight:600;
+      margin-top:14px;
+      text-align:center;
+    }
+    .status-msg.success { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; }
+    .status-msg.error   { background:#fdecea; color:#b71c1c; border:1px solid #ef9a9a; }
+
+    /* Thank you panel */
+    .thankyou-panel {
+      display:none;
+      background:#e8f5e9;
+      border:2px solid #a5d6a7;
+      border-radius:8px;
+      padding:30px;
+      text-align:center;
+      margin-top:20px;
+    }
+    .thankyou-panel .ty-icon { font-size:2.5em; margin-bottom:12px; }
+    .thankyou-panel h2 { color:#2e7d32; margin-bottom:8px; }
+    .thankyou-panel p  { color:#444; font-size:0.9em; }
+
+    /* Closed panel */
+    .closed-panel {
+      display:none;
+      background:#fff8e6;
+      border:2px solid #C9A44A;
+      border-radius:8px;
+      padding:30px;
+      text-align:center;
+    }
+    .closed-panel h2 { color:#8a6000; margin-bottom:8px; }
+    .closed-panel p  { color:#555; font-size:0.9em; }
+
+    /* Footer */
+    .hub-footer {
+      background:#f8f9fa;
+      padding:16px 30px;
+      text-align:center;
+      color:#5f6368;
+      border-top:1px solid #e0e0e0;
+      font-size:0.85em;
+    }
+
+    @media (max-width:768px) {
+      .page-area { padding:20px 16px 40px; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <script src="sidebar.js"></script>
+
+  <header>
+    <h1>Bridgeman Downs Retirement Village<br>Residents' Information Hub</h1>
+  </header>
+
+  <div class="page-area">
+
+    <h1 class="page-title">📋 Community Survey — Referral Money</h1>
+
+    <!-- Survey closed panel (shown if survey is closed) -->
+    <div class="closed-panel" id="closedPanel">
+      <h2>⏰ This Survey is Now Closed</h2>
+      <p>Thank you to everyone who responded. The Residents Committee will advise of the outcome shortly.</p>
+    </div>
+
+    <!-- Survey content (shown when open) -->
+    <div id="surveyContent">
+
+      <div class="intro-box">
+        <p>Your views will help <strong>decide how the Referral Money is invested</strong>.</p>
+        <p>At the AGM on 12 May 2026, Residents were informed about the <strong>$2,446.73 of Referral Money</strong> that must be spent by 30 June 2026 to prevent the funds being forfeited. This is considered Community money to be spent for the benefit of all residents.</p>
+        <p>Please choose <strong>one option</strong> from the list below. Options 3 and 4 are outside the available budget and are not available for selection.</p>
+      </div>
+
+      <div class="deadline-banner">
+        ⏰ Responses required by <strong>4:00pm, Thursday 29 May 2026</strong>
+      </div>
+
+      <div class="survey-form">
+
+        <!-- Options -->
+        <div class="section-label">Please select one option:</div>
+        <div class="options-grid">
+
+          <label class="option-card" id="card-1" onclick="selectOption(1)">
+            <input type="radio" name="survey-choice" value="Option 1 — Park Bench on concrete pad">
+            <div class="option-number">1</div>
+            <div class="option-info">
+              <div class="option-title">Park Bench on concrete pad</div>
+              <div class="option-cost">Estimated cost: $1,200 – $1,900 &nbsp;✅ Within budget</div>
+            </div>
+          </label>
+
+          <label class="option-card" id="card-2" onclick="selectOption(2)">
+            <input type="radio" name="survey-choice" value="Option 2 — Internet Café (Shared Computers)">
+            <div class="option-number">2</div>
+            <div class="option-info">
+              <div class="option-title">Internet Café (Shared Computers)</div>
+              <div class="option-cost">Estimated cost: $2,100 – $2,250 &nbsp;✅ Within budget</div>
+            </div>
+          </label>
+
+          <label class="option-card disabled" id="card-3">
+            <input type="radio" name="survey-choice" value="Option 3 — Carpet Bowls Matting" disabled>
+            <div class="option-number">3</div>
+            <div class="option-info">
+              <div class="option-title">Carpet Bowls Matting × 2 <span class="over-budget">Over budget</span></div>
+              <div class="option-cost">Estimated cost: $4,500 – $5,700 &nbsp;— not available for selection</div>
+            </div>
+          </label>
+
+          <label class="option-card disabled" id="card-4">
+            <input type="radio" name="survey-choice" value="Option 4 — Chilled Water and Ice Dispenser" disabled>
+            <div class="option-number">4</div>
+            <div class="option-info">
+              <div class="option-title">Chilled Water and Ice Dispenser <span class="over-budget">Over budget</span></div>
+              <div class="option-cost">Estimated cost: $5,000 – $6,500 &nbsp;— not available for selection</div>
+            </div>
+          </label>
+
+        </div>
+
+        <!-- Optional name/unit -->
+        <div class="optional-section">
+          <label class="field-label" for="resident-name">
+            Your Name or Unit Number <span class="optional-tag">(optional)</span>
+          </label>
+          <input type="text" id="resident-name" placeholder="e.g. Unit 42, or leave blank to respond anonymously">
+        </div>
+
+        <!-- Optional comment -->
+        <div class="optional-section">
+          <label class="field-label" for="resident-comment">
+            Any other suggestions or comments <span class="optional-tag">(optional)</span>
+          </label>
+          <textarea id="resident-comment" placeholder="e.g. I'd prefer the bench near the MRC garden…"></textarea>
+        </div>
+
+        <button class="btn-submit" id="submitBtn" onclick="submitSurvey()">
+          ✅ Submit My Response
+        </button>
+        <div class="status-msg" id="statusMsg"></div>
+
+      </div><!-- end survey-form -->
+
+      <!-- Thank you panel -->
+      <div class="thankyou-panel" id="thankyouPanel">
+        <div class="ty-icon">🎉</div>
+        <h2>Thank You!</h2>
+        <p>Your response has been recorded. The Residents Committee will announce the outcome after the survey closes on 29 May 2026.</p>
+      </div>
+
+    </div><!-- end surveyContent -->
+
+  </div><!-- end page-area -->
+
+  <footer class="hub-footer">
+    <p>Bridgeman Downs Retirement Village &mdash; Residents' Information Hub &mdash; <a href="index.html" style="color:#1F4E79;">Home</a></p>
+  </footer>
+
+</div><!-- end container -->
+
+<script>
+  var SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbyvm8OvQ2QX3axgUWpZlWrE3iVVZNRpTYyfK5i2b6MySQQJBajMvv8AwS-vyPQcWvWEgg/exec';
+
+  // ── Set to true to close the survey ──────────────────────────
+  var SURVEY_CLOSED = false;
+
+  var selectedChoice = null;
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (SURVEY_CLOSED) {
+      document.getElementById('surveyContent').style.display = 'none';
+      document.getElementById('closedPanel').style.display   = 'block';
+    }
+    // Prevent already-voted residents from voting again this session
+    if (sessionStorage.getItem('surveySubmitted') === '1') {
+      showThankyou();
+    }
+  });
+
+  function selectOption(num) {
+    if (SURVEY_CLOSED) return;
+    selectedChoice = num;
+    [1,2,3,4].forEach(function(n) {
+      var card = document.getElementById('card-' + n);
+      if (card && !card.classList.contains('disabled')) {
+        card.classList.toggle('selected', n === num);
+      }
+    });
+  }
+
+  function submitSurvey() {
+    if (!selectedChoice) {
+      showStatus('Please select an option before submitting.', 'error');
+      return;
+    }
+    var choiceInput = document.querySelector('input[name="survey-choice"]:checked');
+    if (!choiceInput) {
+      showStatus('Please select an option before submitting.', 'error');
+      return;
+    }
+
+    var name    = document.getElementById('resident-name').value.trim();
+    var comment = document.getElementById('resident-comment').value.trim();
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Submitting…';
+
+    fetch(SCRIPT_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        action:  'survey',
+        name:    name || 'Anonymous',
+        choice:  choiceInput.value,
+        comment: comment
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        sessionStorage.setItem('surveySubmitted', '1');
+        document.getElementById('survey-form') && (document.getElementById('survey-form').style.display = 'none');
+        showThankyou();
+      } else {
+        showStatus('❌ Error: ' + data.message, 'error');
+        btn.disabled    = false;
+        btn.textContent = '✅ Submit My Response';
+      }
+    })
+    .catch(function() {
+      showStatus('❌ Could not connect. Please try again shortly.', 'error');
+      btn.disabled    = false;
+      btn.textContent = '✅ Submit My Response';
+    });
+  }
+
+  function showThankyou() {
+    document.querySelector('.survey-form').style.display   = 'none';
+    document.querySelector('.deadline-banner').style.display = 'none';
+    document.querySelector('.intro-box').style.display     = 'none';
+    document.getElementById('thankyouPanel').style.display  = 'block';
+  }
+
+  function showStatus(msg, type) {
+    var el = document.getElementById('statusMsg');
+    el.textContent   = msg;
+    el.className     = 'status-msg ' + type;
+    el.style.display = 'block';
+    setTimeout(function() { el.style.display = 'none'; }, 5000);
+  }
+</script>
+
+</body>
+</html>

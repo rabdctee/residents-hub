@@ -282,6 +282,44 @@
       <div class="status-msg" id="statusMsg"></div>
     </div>
 
+    <!-- SURVEY RESULTS -->
+    <div class="form-card">
+      <h2>📊 Survey Results — Referral Money</h2>
+
+      <div id="surveyStats" style="margin-bottom:18px;">
+        <div class="loading-msg" id="surveyLoadingMsg">Loading results…</div>
+        <div id="surveyStatsContent" style="display:none;">
+          <div style="margin-bottom:14px;font-size:0.88em;color:#555;">
+            Total responses: <strong id="totalResponses">0</strong>
+            &nbsp;|&nbsp; Last updated: <span id="lastUpdated">—</span>
+            &nbsp;|&nbsp; <a href="#" onclick="loadSurveyResults();return false;" style="color:#1F4E79;font-weight:600;">↻ Refresh</a>
+          </div>
+
+          <!-- Bar chart -->
+          <div id="surveyBars" style="margin-bottom:18px;"></div>
+
+          <!-- Response table -->
+          <div style="margin-top:18px;">
+            <div style="font-size:0.88em;font-weight:700;color:#1F4E79;margin-bottom:8px;">Individual Responses</div>
+            <div style="overflow-x:auto;">
+              <table id="surveyTable" style="width:100%;border-collapse:collapse;font-size:0.82em;">
+                <thead>
+                  <tr>
+                    <th style="background:#1F4E79;color:white;padding:8px 10px;text-align:left;">Time</th>
+                    <th style="background:#1F4E79;color:white;padding:8px 10px;text-align:left;">Name/Unit</th>
+                    <th style="background:#1F4E79;color:white;padding:8px 10px;text-align:left;">Choice</th>
+                    <th style="background:#1F4E79;color:white;padding:8px 10px;text-align:left;">Comment</th>
+                  </tr>
+                </thead>
+                <tbody id="surveyTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="noSurveyMsg" style="display:none;" class="loading-msg">No survey responses yet.</div>
+      </div>
+    </div>
+
     <!-- EXISTING NOTICES -->
     <div class="form-card">
       <h2>📄 Existing Notices</h2>
@@ -314,8 +352,9 @@
 <script>
 
   // ── Configuration ──────────────────────────────────────────
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvm8OvQ2QX3axgUWpZlWrE3iVVZNRpTYyfK5i2b6MySQQJBajMvv8AwS-vyPQcWvWEgg/exec';
-  var CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
+  var SCRIPT_URL   = 'https://script.google.com/macros/s/AKfycbyvm8OvQ2QX3axgUWpZlWrE3iVVZNRpTYyfK5i2b6MySQQJBajMvv8AwS-vyPQcWvWEgg/exec';
+  var CSV_URL      = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
+  var SURVEY_CSV   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=1&single=true&output=csv';
 
   // ── Selected type ──────────────────────────────────────────
   var selectedType = 'Residents'; // default
@@ -323,14 +362,88 @@
   // Set default selection on load
   document.addEventListener('DOMContentLoaded', function() {
     selectType('Residents');
-    // Set today's date as default
     var today = new Date();
     var dd    = String(today.getDate()).padStart(2,'0');
     var mm    = String(today.getMonth()+1).padStart(2,'0');
     var yyyy  = today.getFullYear();
     document.getElementById('notice-date').value = yyyy + '-' + mm + '-' + dd;
     loadNotices();
+    loadSurveyResults();
   });
+
+  // ── Load Survey Results ──────────────────────────────────────
+  function loadSurveyResults() {
+    document.getElementById('surveyLoadingMsg').style.display   = 'block';
+    document.getElementById('surveyStatsContent').style.display = 'none';
+    document.getElementById('noSurveyMsg').style.display        = 'none';
+
+    fetch(SURVEY_CSV + '&t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var lines = csv.trim().split('\n');
+        if (lines.length <= 1) {
+          document.getElementById('surveyLoadingMsg').style.display = 'none';
+          document.getElementById('noSurveyMsg').style.display      = 'block';
+          return;
+        }
+        var responses = [];
+        var tally     = {};
+        for (var i = 1; i < lines.length; i++) {
+          var cols   = parseCSV(lines[i]);
+          var ts     = cols[0] ? cols[0].trim() : '';
+          var name   = cols[1] ? cols[1].trim() : '';
+          var choice = cols[2] ? cols[2].trim() : '';
+          var comment= cols[3] ? cols[3].trim() : '';
+          if (!choice) continue;
+          responses.push({ ts:ts, name:name, choice:choice, comment:comment });
+          tally[choice] = (tally[choice] || 0) + 1;
+        }
+        if (responses.length === 0) {
+          document.getElementById('surveyLoadingMsg').style.display = 'none';
+          document.getElementById('noSurveyMsg').style.display      = 'block';
+          return;
+        }
+        document.getElementById('totalResponses').textContent = responses.length;
+        document.getElementById('lastUpdated').textContent    = new Date().toLocaleTimeString('en-AU');
+        // Bar chart
+        var barHtml    = '';
+        var barColours = { 'Option 1': '#1F4E79', 'Option 2': '#2e7d32' };
+        Object.keys(tally).sort().forEach(function(choice) {
+          var count  = tally[choice];
+          var pct    = Math.round((count / responses.length) * 100);
+          var label  = choice.length > 50 ? choice.substring(0,50) + '…' : choice;
+          var colKey = choice.substring(0,8);
+          var colour = barColours[colKey] || '#1F4E79';
+          barHtml +=
+            '<div style="margin-bottom:12px;">' +
+            '<div style="font-size:0.82em;font-weight:700;color:#333;margin-bottom:4px;">' + label + '</div>' +
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<div style="flex:1;background:#eef0f3;border-radius:4px;height:22px;overflow:hidden;">' +
+            '<div style="width:' + pct + '%;background:' + colour + ';height:100%;border-radius:4px;"></div>' +
+            '</div>' +
+            '<span style="font-size:0.82em;font-weight:700;color:#333;min-width:65px;">' + count + ' (' + pct + '%)</span>' +
+            '</div></div>';
+        });
+        document.getElementById('surveyBars').innerHTML = barHtml;
+        // Response table
+        var tbody = document.getElementById('surveyTableBody');
+        tbody.innerHTML = '';
+        responses.slice().reverse().forEach(function(r) {
+          tbody.innerHTML +=
+            '<tr>' +
+            '<td style="padding:7px 10px;border-bottom:1px solid #eef0f3;">' + r.ts + '</td>' +
+            '<td style="padding:7px 10px;border-bottom:1px solid #eef0f3;">' + (r.name||'—') + '</td>' +
+            '<td style="padding:7px 10px;border-bottom:1px solid #eef0f3;font-weight:600;color:#1F4E79;">' + r.choice + '</td>' +
+            '<td style="padding:7px 10px;border-bottom:1px solid #eef0f3;color:#555;">' + (r.comment||'—') + '</td>' +
+            '</tr>';
+        });
+        document.getElementById('surveyLoadingMsg').style.display   = 'none';
+        document.getElementById('surveyStatsContent').style.display = 'block';
+      })
+      .catch(function() {
+        document.getElementById('surveyLoadingMsg').textContent = 'Could not load survey results.';
+      });
+  }
 
   function selectType(type) {
     selectedType = type;
