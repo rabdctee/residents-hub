@@ -196,6 +196,78 @@
     }
     textarea { min-height:90px; resize:vertical; }
 
+    /* Detail panels */
+    .option-wrapper { margin-bottom:12px; }
+    .detail-toggle {
+      display:inline-block;
+      margin-top:6px;
+      font-size:0.78em;
+      color:#1F4E79;
+      cursor:pointer;
+      font-weight:600;
+      text-decoration:underline;
+      user-select:none;
+    }
+    .option-card.disabled .detail-toggle { color:#888; }
+    .detail-panel {
+      display:none;
+      background:#f8fbff;
+      border:1px solid #c5d8ee;
+      border-top:none;
+      border-radius:0 0 8px 8px;
+      padding:16px 20px;
+      font-size:0.82em;
+      color:#333;
+      line-height:1.6;
+    }
+    .detail-panel.disabled-detail {
+      background:#f5f5f5;
+      border-color:#ddd;
+    }
+    .detail-panel h4 {
+      color:#1F4E79;
+      font-size:0.95em;
+      margin:12px 0 6px;
+    }
+    .detail-panel h4:first-child { margin-top:0; }
+    .detail-panel p { margin-bottom:8px; }
+    .detail-panel ul {
+      margin:6px 0 10px 18px;
+    }
+    .detail-panel ul li { margin-bottom:3px; }
+    .cost-table {
+      width:100%;
+      border-collapse:collapse;
+      margin:8px 0 10px;
+      font-size:0.95em;
+    }
+    .cost-table th {
+      background:#1F4E79;
+      color:white;
+      padding:6px 10px;
+      text-align:left;
+    }
+    .detail-panel.disabled-detail .cost-table th { background:#aaa; }
+    .cost-table td {
+      padding:6px 10px;
+      border-bottom:1px solid #e0e0e0;
+    }
+    .cost-table tr:last-child td {
+      font-weight:700;
+      background:#eef4ff;
+      border-bottom:none;
+    }
+    .detail-panel.disabled-detail .cost-table tr:last-child td { background:#eee; }
+    .note-box {
+      background:#fff8e6;
+      border-left:3px solid #C9A44A;
+      padding:8px 12px;
+      border-radius:0 4px 4px 0;
+      margin-top:8px;
+      font-size:0.92em;
+      color:#7a5200;
+    }
+
     /* Submit button */
     .btn-submit {
       width:100%;
@@ -306,41 +378,125 @@
         <div class="section-label">Please select one option:</div>
         <div class="options-grid">
 
-          <label class="option-card" id="card-1" onclick="selectOption(1)">
-            <input type="radio" name="survey-choice" value="Option 1 — Park Bench on concrete pad">
-            <div class="option-number">1</div>
-            <div class="option-info">
-              <div class="option-title">Park Bench on concrete pad</div>
-              <div class="option-cost">Estimated cost: $1,200 – $1,900 &nbsp; Within budget</div>
+          <!-- OPTION 1 -->
+          <div class="option-wrapper">
+            <label class="option-card" id="card-1" onclick="selectOption(1)">
+              <input type="radio" name="survey-choice" value="Option 1 — Park Bench on concrete pad">
+              <div class="option-number">1</div>
+              <div class="option-info">
+                <div class="option-title">Park Bench on concrete pad</div>
+                <div class="option-cost">Estimated cost: $1,200 – $1,900 &nbsp;</div>
+                <span class="detail-toggle" onclick="toggleDetail(event,'detail-1')">ℹ️ More details ▼</span>
+              </div>
+            </label>
+            <div class="detail-panel" id="detail-1">
+              <p>This involves three components: the bench itself, a concrete pad, and labour for both. A good quality park bench starts from around $525 for a basic bolt-down model. Ideally it would have a backrest, armrests and be made from low-maintenance materials like aluminium or powder-coated steel with timber or composite slats.</p>
+              <h4>💰 Cost Estimate</h4>
+              <table class="cost-table">
+                <thead><tr><th>Item</th><th>Cost Range</th></tr></thead>
+                <tbody>
+                  <tr><td>Park Bench</td><td>$800 – $1,500</td></tr>
+                  <tr><td>Concrete pad &amp; installation</td><td>$400 – $700</td></tr>
+                  <tr><td><strong>Estimated Total</strong></td><td><strong>$1,200 – $2,200</strong></td></tr>
+                </tbody>
+              </table>
+              <p>A small light-duty slab (approx. 2m × 1.5m) will be needed to secure the bench. Concrete slab costs approximately $90–$150 per m². Site preparation (clearing grass, levelling) is included in the installation estimate.</p>
             </div>
-          </label>
+          </div>
 
-          <label class="option-card" id="card-2" onclick="selectOption(2)">
-            <input type="radio" name="survey-choice" value="Option 2 — Internet Café (Shared Computers)">
-            <div class="option-number">2</div>
-            <div class="option-info">
-              <div class="option-title">Internet Café (Shared Computers)</div>
-              <div class="option-cost">Estimated cost: $2,100 – $2,250 &nbsp; Within budget</div>
+          <!-- OPTION 2 -->
+          <div class="option-wrapper">
+            <label class="option-card" id="card-2" onclick="selectOption(2)">
+              <input type="radio" name="survey-choice" value="Option 2 — Internet Café (Shared Computers)">
+              <div class="option-number">2</div>
+              <div class="option-info">
+                <div class="option-title">Internet Café (Shared Computers)</div>
+                <div class="option-cost">Estimated cost: $2,100 – $2,250 &nbsp;</div>
+                <span class="detail-toggle" onclick="toggleDetail(event,'detail-2')">ℹ️ More details ▼</span>
+              </div>
+            </label>
+            <div class="detail-panel" id="detail-2">
+              <p>A small shared computer facility in a common space, comprising three large-screen Chromebook laptops. Residents could browse the internet, send and receive emails, make video calls, access government services (MyGov, Medicare etc.) and perform general online tasks.</p>
+              <h4>💰 Cost Estimate</h4>
+              <table class="cost-table">
+                <thead><tr><th>Item</th><th>Unit Cost</th><th>Total</th></tr></thead>
+                <tbody>
+                  <tr><td>HP Chromebook Plus 15.6" × 3 (Officeworks)</td><td>$697.00</td><td>$2,091.00</td></tr>
+                  <tr><td>USB wired mice × 3</td><td>$15.00</td><td>$45.00</td></tr>
+                  <tr><td>Laptop stands × 3 (optional)</td><td>$25.00</td><td>$75.00</td></tr>
+                  <tr><td><strong>Estimated Total</strong></td><td></td><td><strong>$2,211.00</strong></td></tr>
+                </tbody>
+              </table>
+              <h4>Why Chromebooks?</h4>
+              <ul>
+                <li>Residents sign in as a guest — nothing personal is stored after sign-out</li>
+                <li>No viruses, no software installation, no IT maintenance required</li>
+                <li>Starts up in seconds; very simple to use</li>
+                <li>Long battery life (10–11 hours); lightweight and durable</li>
+              </ul>
+              <h4>Considerations</h4>
+              <ul>
+                <li><strong>Location &amp; furniture:</strong> A suitable table and chairs are needed</li>
+                <li><strong>Internet access:</strong> Aveo's agreement will be required for reliable WiFi</li>
+                <li><strong>Printing:</strong> Optional shared printer (~$80–$150 additional)</li>
+                <li><strong>Supervision:</strong> Largely self-service; a printed guide for residents can be provided</li>
+              </ul>
+              <div class="note-box">💡 Prices correct as at 15 May 2026. No ongoing consumable costs. WiFi availability at the chosen location must be confirmed with Aveo.</div>
             </div>
-          </label>
+          </div>
 
-          <label class="option-card disabled" id="card-3">
-            <input type="radio" name="survey-choice" value="Option 3 — Carpet Bowls Matting" disabled>
-            <div class="option-number">3</div>
-            <div class="option-info">
-              <div class="option-title">Carpet Bowls Matting × 2 <span class="over-budget">Over budget</span></div>
-              <div class="option-cost">Estimated cost: $4,500 – $5,700 &nbsp;— not available for selection</div>
+          <!-- OPTION 3 (over budget) -->
+          <div class="option-wrapper">
+            <label class="option-card disabled" id="card-3">
+              <input type="radio" name="survey-choice" value="Option 3 — Carpet Bowls Matting" disabled>
+              <div class="option-number">3</div>
+              <div class="option-info">
+                <div class="option-title">Carpet Bowls Matting × 2 <span class="over-budget">Over budget</span></div>
+                <div class="option-cost">Estimated cost: $4,500 – $5,700 &nbsp;— not available for selection</div>
+                <span class="detail-toggle" onclick="toggleDetail(event,'detail-3')">ℹ️ More details ▼</span>
+              </div>
+            </label>
+            <div class="detail-panel disabled-detail" id="detail-3">
+              <p>Replace the 2 existing carpets in the MRC. Current size is 24ft × 6ft. No installation is needed — a straight replacement.</p>
+              <h4>💰 Cost Estimate</h4>
+              <table class="cost-table">
+                <thead><tr><th>Item</th><th>Unit Cost</th><th>Total</th></tr></thead>
+                <tbody>
+                  <tr><td>Indoor Bowls Carpet × 2</td><td>$2,850.00</td><td>$5,700.00</td></tr>
+                  <tr><td><strong>Estimated Total</strong></td><td></td><td><strong>$4,500 – $5,700</strong></td></tr>
+                </tbody>
+              </table>
+              <div class="note-box">⚠️ This option exceeds the available budget of $2,446.73 and is not available for selection in this survey.</div>
             </div>
-          </label>
+          </div>
 
-          <label class="option-card disabled" id="card-4">
-            <input type="radio" name="survey-choice" value="Option 4 — Chilled Water and Ice Dispenser" disabled>
-            <div class="option-number">4</div>
-            <div class="option-info">
-              <div class="option-title">Chilled Water and Ice Dispenser <span class="over-budget">Over budget</span></div>
-              <div class="option-cost">Estimated cost: $5,000 – $6,500 &nbsp;— not available for selection</div>
+          <!-- OPTION 4 (over budget) -->
+          <div class="option-wrapper">
+            <label class="option-card disabled" id="card-4">
+              <input type="radio" name="survey-choice" value="Option 4 — Chilled Water and Ice Dispenser" disabled>
+              <div class="option-number">4</div>
+              <div class="option-info">
+                <div class="option-title">Chilled Water and Ice Dispenser <span class="over-budget">Over budget</span></div>
+                <div class="option-cost">Estimated cost: $5,000 – $6,500 &nbsp;— not available for selection</div>
+                <span class="detail-toggle" onclick="toggleDetail(event,'detail-4')">ℹ️ More details ▼</span>
+              </div>
+            </label>
+            <div class="detail-panel disabled-detail" id="detail-4">
+              <p>A mains-connected, filtered cold water and ice dispenser in a shared common area. The unit would be permanently plumbed into the water supply and could be bench-mounted or freestanding in stainless steel finish.</p>
+              <h4>💰 Cost Estimate</h4>
+              <table class="cost-table">
+                <thead><tr><th>Item</th><th>Cost Range</th></tr></thead>
+                <tbody>
+                  <tr><td>Mains-connected filtered water &amp; ice dispenser</td><td>$2,500 – $6,000</td></tr>
+                  <tr><td>Installation (licensed plumber)</td><td>$250 – $500</td></tr>
+                  <tr><td>Annual servicing &amp; running costs</td><td>$500 – $1,400/yr</td></tr>
+                  <tr><td><strong>Estimated Total (purchase)</strong></td><td><strong>$5,000 – $6,500+</strong></td></tr>
+                </tbody>
+              </table>
+              <div class="note-box">💡 As an alternative to outright purchase, a rental/service arrangement is available from around $12+GST per week (inclusive of all maintenance and filter changes). Providers include Culligan and Value H2O. Two units — one in the Manor, one in the MRC — may be worth exploring.</div>
+              <div class="note-box" style="margin-top:8px;">⚠️ This option exceeds the available budget of $2,446.73 and is not available for selection in this survey.</div>
             </div>
-          </label>
+          </div>
 
         </div>
 
@@ -402,6 +558,16 @@
       showThankyou();
     }
   });
+
+  function toggleDetail(event, id) {
+    event.preventDefault();
+    event.stopPropagation();
+    var panel  = document.getElementById(id);
+    var toggle = event.target;
+    var isOpen = panel.style.display === 'block';
+    panel.style.display  = isOpen ? 'none' : 'block';
+    toggle.textContent   = isOpen ? 'ℹ️ More details ▼' : 'ℹ️ Hide details ▲';
+  }
 
   function selectOption(num) {
     if (SURVEY_CLOSED) return;
