@@ -311,7 +311,7 @@
             <div class="option-number">1</div>
             <div class="option-info">
               <div class="option-title">Park Bench on concrete pad</div>
-              <div class="option-cost">Estimated cost: $1,200 – $1,900 &nbsp;✅ Within budget</div>
+              <div class="option-cost">Estimated cost: $1,200 – $1,900 &nbsp; Within budget</div>
             </div>
           </label>
 
@@ -320,7 +320,7 @@
             <div class="option-number">2</div>
             <div class="option-info">
               <div class="option-title">Internet Café (Shared Computers)</div>
-              <div class="option-cost">Estimated cost: $2,100 – $2,250 &nbsp;✅ Within budget</div>
+              <div class="option-cost">Estimated cost: $2,100 – $2,250 &nbsp; Within budget</div>
             </div>
           </label>
 
@@ -361,7 +361,7 @@
         </div>
 
         <button class="btn-submit" id="submitBtn" onclick="submitSurvey()">
-          ✅ Submit My Response
+          Submit My Response
         </button>
         <div class="status-msg" id="statusMsg"></div>
 
@@ -371,7 +371,7 @@
       <div class="thankyou-panel" id="thankyouPanel">
         <div class="ty-icon">🎉</div>
         <h2>Thank You!</h2>
-        <p>Your response has been recorded. The Residents Committee will announce the outcome after the survey closes on 29 May 2026.</p>
+        <p>Your response has been recorded. The outcome will be announced after the survey closes on 29 May 2026.</p>
       </div>
 
     </div><!-- end surveyContent -->
@@ -451,13 +451,13 @@
       } else {
         showStatus('❌ Error: ' + data.message, 'error');
         btn.disabled    = false;
-        btn.textContent = '✅ Submit My Response';
+        btn.textContent = 'Submit My Response';
       }
     })
     .catch(function() {
       showStatus('❌ Could not connect. Please try again shortly.', 'error');
       btn.disabled    = false;
-      btn.textContent = '✅ Submit My Response';
+      btn.textContent = 'Submit My Response';
     });
   }
 
