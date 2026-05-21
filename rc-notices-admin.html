@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RC Notices Admin | Bridgeman Downs Residents' Hub</title>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f5f5;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #222;
+    }
+    .container {
+      max-width: 860px;
+      margin: auto;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: #1F4E79;
+      color: white;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    header h1 { font-size: 1.5em; }
+    header p  { font-size: 0.88em; opacity: 0.85; margin-top: 6px; }
+
+    /* Page area */
+    .page-area { padding: 28px 32px 50px; }
+
+    /* Page title */
+    .page-title {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #1F4E79;
+      border-bottom: 3px solid #C9A44A;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-block;
+      margin-bottom: 20px;
+      color: #1F4E79;
+      text-decoration: none;
+      font-size: 0.88em;
+      font-weight: 600;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    /* Form card */
+    .form-card {
+      background: #f8fbff;
+      border: 1px solid #c5d8ee;
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin-bottom: 32px;
+    }
+    .form-card h2 {
+      font-size: 1.05em;
+      color: #1F4E79;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    /* Form fields */
+    label {
+      display: block;
+      font-size: 0.88em;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 5px;
+      margin-top: 14px;
+    }
+    label:first-of-type { margin-top: 0; }
+
+    input[type="text"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 15px;
+      border: 2px solid #c5d8ee;
+      border-radius: 6px;
+      font-family: 'Segoe UI', sans-serif;
+      color: #222;
+      background: white;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #1F4E79;
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* Type selector */
+    .type-row {
+      display: flex;
+      gap: 16px;
+      margin-top: 4px;
+    }
+    .type-option {
+      flex: 1;
+      border: 2px solid #c5d8ee;
+      border-radius: 8px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      background: white;
+    }
+    .type-option:hover { background: #E7F1FB; }
+    .type-option.selected {
+      border-color: #1F4E79;
+      background: #E7F1FB;
+    }
+    .type-option input[type="radio"] { display: none; }
+    .type-option .type-icon { font-size: 1.4em; display: block; margin-bottom: 4px; }
+    .type-option .type-label { font-size: 0.88em; font-weight: 700; color: #1F4E79; display: block; }
+    .type-option .type-desc { font-size: 0.78em; color: #666; display: block; margin-top: 2px; }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      padding: 13px;
+      background: #1F4E79;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.2s;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .btn-submit:hover { background: #163a5c; }
+    .btn-submit:disabled { background: #aaa; cursor: not-allowed; }
+
+    /* Status message */
+    .status-msg {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 0.9em;
+      font-weight: 600;
+      margin-top: 14px;
+      text-align: center;
+    }
+    .status-msg.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+    .status-msg.error   { background: #fdecea; color: #b71c1c; border: 1px solid #ef9a9a; }
+
+    /* Existing notices table */
+    .notices-table-wrap {
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85em;
+    }
+    th {
+      background: #1F4E79;
+      color: white;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 700;
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eef0f3;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.8em;
+      font-weight: 700;
+    }
+    .badge-public    { background: #e3f2fd; color: #1565c0; }
+    .badge-residents { background: #fff8e6; color: #8a6000; }
+    .badge-active    { background: #e8f5e9; color: #2e7d32; }
+    .badge-archived  { background: #f5f5f5; color: #888; }
+
+    .btn-archive {
+      padding: 4px 10px;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.8em;
+      cursor: pointer;
+      color: #555;
+      font-family: 'Segoe UI', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-archive:hover { background: #fdecea; border-color: #ef9a9a; color: #b71c1c; }
+
+    .loading-msg {
+      color: #888;
+      font-style: italic;
+      font-size: 0.9em;
+      padding: 12px 0;
+    }
+
+    /* Footer */
+    .hub-footer {
+      background: #f8f9fa;
+      padding: 14px 30px;
+      text-align: center;
+      color: #5f6368;
+      border-top: 1px solid #e0e0e0;
+      font-size: 0.82em;
+    }
+
+    @media (max-width: 600px) {
+      .page-area { padding: 18px 16px 40px; }
+      .type-row { flex-direction: column; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Hub — Committee Administration</p>
+  </header>
+
+  <div class="page-area">
+
+    <a href="community-info.html" class="back-link">← Back to Residents Only</a>
+
+    <h1 class="page-title">📋 RC Notices — Post a Notice</h1>
+
+    <!-- ADD NOTICE FORM -->
+    <div class="form-card">
+      <h2>➕ Post a New Notice</h2>
+
+      <label for="notice-date">Date</label>
+      <input type="date" id="notice-date">
+
+      <label for="notice-title">Title</label>
+      <input type="text" id="notice-title" placeholder="e.g. May 2026 — Post-Meeting Summary">
+
+      <label for="notice-body">Notice Text</label>
+      <textarea id="notice-body" placeholder="Type the full notice text here…"></textarea>
+
+      <label>Audience</label>
+      <div class="type-row">
+        <label class="type-option" id="opt-residents" onclick="selectType('Residents')">
+          <input type="radio" name="notice-type" value="Residents">
+          <span class="type-icon">🔒</span>
+          <span class="type-label">Residents Only</span>
+          <span class="type-desc">Visible after PIN login</span>
+        </label>
+        <label class="type-option" id="opt-public" onclick="selectType('Public')">
+          <input type="radio" name="notice-type" value="Public">
+          <span class="type-icon">🌐</span>
+          <span class="type-label">Public</span>
+          <span class="type-desc">Visible to everyone</span>
+        </label>
+      </div>
+
+      <button class="btn-submit" id="submitBtn" onclick="postNotice()">📋 Post Notice</button>
+      <div class="status-msg" id="statusMsg"></div>
+    </div>
+
+    <!-- EXISTING NOTICES -->
+    <div class="form-card">
+      <h2>📄 Existing Notices</h2>
+      <div class="notices-table-wrap">
+        <div class="loading-msg" id="loadingMsg">Loading notices…</div>
+        <table id="noticesTable" style="display:none;">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Title</th>
+              <th>Audience</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="noticesBody"></tbody>
+        </table>
+        <div id="noNoticesMsg" style="display:none;" class="loading-msg">No notices found.</div>
+      </div>
+    </div>
+
+  </div><!-- end page-area -->
+
+  <footer class="hub-footer">
+    <p>Bridgeman Downs Retirement Village &mdash; Residents' Hub &mdash; <a href="index.html" style="color:#1F4E79;">Home</a></p>
+  </footer>
+
+</div><!-- end container -->
+
+<script>
+
+  // ── Configuration ──────────────────────────────────────────
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvm8OvQ2QX3axgUWpZlWrE3iVVZNRpTYyfK5i2b6MySQQJBajMvv8AwS-vyPQcWvWEgg/exec';
+  var CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
+
+  // ── Selected type ──────────────────────────────────────────
+  var selectedType = 'Residents'; // default
+
+  // Set default selection on load
+  document.addEventListener('DOMContentLoaded', function() {
+    selectType('Residents');
+    // Set today's date as default
+    var today = new Date();
+    var dd    = String(today.getDate()).padStart(2,'0');
+    var mm    = String(today.getMonth()+1).padStart(2,'0');
+    var yyyy  = today.getFullYear();
+    document.getElementById('notice-date').value = yyyy + '-' + mm + '-' + dd;
+    loadNotices();
+  });
+
+  function selectType(type) {
+    selectedType = type;
+    document.getElementById('opt-residents').classList.toggle('selected', type === 'Residents');
+    document.getElementById('opt-public').classList.toggle('selected', type === 'Public');
+  }
+
+  // ── Post a notice ──────────────────────────────────────────
+  function postNotice() {
+    var dateVal  = document.getElementById('notice-date').value;
+    var titleVal = document.getElementById('notice-title').value.trim();
+    var bodyVal  = document.getElementById('notice-body').value.trim();
+
+    if (!dateVal || !titleVal || !bodyVal) {
+      showStatus('Please fill in all fields before posting.', 'error');
+      return;
+    }
+
+    // Format date as DD/MM/YYYY for display
+    var parts       = dateVal.split('-');
+    var displayDate = parts[2] + '/' + parts[1] + '/' + parts[0];
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Posting…';
+
+    var payload = JSON.stringify({
+      action: 'add',
+      date:   displayDate,
+      title:  titleVal,
+      body:   bodyVal,
+      type:   selectedType
+    });
+
+    fetch(SCRIPT_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    payload
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        showStatus('✅ Notice posted successfully!', 'success');
+        document.getElementById('notice-title').value = '';
+        document.getElementById('notice-body').value  = '';
+        selectType('Residents');
+        setTimeout(loadNotices, 2000);
+      } else {
+        showStatus('❌ Error: ' + data.message, 'error');
+      }
+    })
+    .catch(function(err) {
+      showStatus('❌ Could not connect. Please try again.', 'error');
+    })
+    .finally(function() {
+      btn.disabled    = false;
+      btn.textContent = '📋 Post Notice';
+    });
+  }
+
+  // ── Load existing notices ──────────────────────────────────
+  function loadNotices() {
+    document.getElementById('loadingMsg').style.display  = 'block';
+    document.getElementById('noticesTable').style.display = 'none';
+    document.getElementById('noNoticesMsg').style.display = 'none';
+
+    fetch(CSV_URL + '&t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var lines = csv.trim().split('\n');
+        if (lines.length <= 1) {
+          document.getElementById('loadingMsg').style.display  = 'none';
+          document.getElementById('noNoticesMsg').style.display = 'block';
+          return;
+        }
+
+        var tbody = document.getElementById('noticesBody');
+        tbody.innerHTML = '';
+        // Show newest first (skip header row)
+        for (var i = lines.length - 1; i >= 1; i--) {
+          var cols   = parseCSV(lines[i]);
+          var date   = cols[1] || '';
+          var title  = cols[2] || '';
+          var type   = cols[4] || '';
+          var status = cols[5] || '';
+          var rowNum = i + 1; // 1-based, +1 for header
+
+          var typeBadge   = type === 'Public'
+            ? '<span class="badge badge-public">🌐 Public</span>'
+            : '<span class="badge badge-residents">🔒 Residents</span>';
+          var statusBadge = status === 'Active'
+            ? '<span class="badge badge-active">Active</span>'
+            : '<span class="badge badge-archived">Archived</span>';
+          var archiveBtn  = status === 'Active'
+            ? '<button class="btn-archive" onclick="archiveNotice(' + rowNum + ', this)">Archive</button>'
+            : '—';
+
+          tbody.innerHTML +=
+            '<tr>' +
+            '<td>' + date  + '</td>' +
+            '<td>' + title + '</td>' +
+            '<td>' + typeBadge + '</td>' +
+            '<td>' + statusBadge + '</td>' +
+            '<td>' + archiveBtn + '</td>' +
+            '</tr>';
+        }
+        document.getElementById('loadingMsg').style.display   = 'none';
+        document.getElementById('noticesTable').style.display = 'table';
+      })
+      .catch(function() {
+        document.getElementById('loadingMsg').textContent = 'Could not load notices.';
+      });
+  }
+
+  // ── Archive a notice ───────────────────────────────────────
+  function archiveNotice(rowNum, btn) {
+    if (!confirm('Archive this notice? It will no longer appear on the Hub.')) return;
+    btn.disabled    = true;
+    btn.textContent = 'Archiving…';
+
+    fetch(SCRIPT_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ action: 'archive', row: rowNum })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        showStatus('✅ Notice archived.', 'success');
+        setTimeout(loadNotices, 1500);
+      } else {
+        showStatus('❌ Error: ' + data.message, 'error');
+        btn.disabled    = false;
+        btn.textContent = 'Archive';
+      }
+    })
+    .catch(function() {
+      showStatus('❌ Could not connect.', 'error');
+      btn.disabled    = false;
+      btn.textContent = 'Archive';
+    });
+  }
+
+  // ── Helpers ────────────────────────────────────────────────
+  function showStatus(msg, type) {
+    var el = document.getElementById('statusMsg');
+    el.textContent  = msg;
+    el.className    = 'status-msg ' + type;
+    el.style.display = 'block';
+    setTimeout(function() { el.style.display = 'none'; }, 5000);
+  }
+
+  function parseCSV(line) {
+    var cols = [], cur = '', inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var ch = line[i];
+      if (ch === '"')             { inQ = !inQ; }
+      else if (ch === ',' && !inQ){ cols.push(cur); cur = ''; }
+      else                        { cur += ch; }
+    }
+    cols.push(cur);
+    return cols;
+  }
+
+</script>
+</body>
+</html>

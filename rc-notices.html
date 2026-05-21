@@ -15,7 +15,6 @@
   <title>Residents Committee Notices | Bridgeman Downs Residents' Hub</title>
 
   <style>
-    /* ===== Base ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
@@ -32,7 +31,7 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
-    /* ===== Header ===== */
+    /* Header */
     header {
       background: #1F4E79;
       color: white;
@@ -41,12 +40,10 @@
     }
     header h1 { font-size: 2em; }
 
-    /* ===== Page content area ===== */
-    .page-area {
-      padding: 30px 40px 50px;
-    }
+    /* Page content area */
+    .page-area { padding: 30px 40px 50px; }
 
-    /* ===== Page title ===== */
+    /* Page title */
     .page-title {
       font-size: 1.6em;
       font-weight: 700;
@@ -56,7 +53,7 @@
       margin-bottom: 24px;
     }
 
-    /* ===== Intro box ===== */
+    /* Intro box */
     .intro-box {
       background: #E7F1FB;
       border-left: 5px solid #1F4E79;
@@ -68,12 +65,10 @@
     }
     .intro-box p + p { margin-top: 12px; }
 
-    /* ===== Public notices section ===== */
-    .notices-section {
-      margin-bottom: 40px;
-    }
+    /* Notices section */
+    .notices-section { margin-bottom: 40px; }
     .notices-section h2 {
-      font-size: 1.1em;
+      font-size: 1.05em;
       font-weight: 700;
       color: #1F4E79;
       background: #E7F1FB;
@@ -87,42 +82,46 @@
       border-radius: 0 0 6px 6px;
       overflow: hidden;
     }
+
+    /* Individual notice */
     .notice-item {
-      padding: 16px 20px;
+      padding: 18px 22px;
       border-bottom: 1px solid #eef0f3;
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
     }
     .notice-item:last-child { border-bottom: none; }
     .notice-item:hover { background: #f8fafc; }
+    .notice-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
     .notice-date {
       font-size: 0.75em;
       color: #888;
       white-space: nowrap;
-      padding-top: 4px;
-      min-width: 90px;
     }
-    .notice-content { flex: 1; }
-    .notice-content strong {
-      display: block;
-      color: #1F4E79;
+    .notice-title {
       font-size: 0.95em;
-      margin-bottom: 4px;
+      font-weight: 700;
+      color: #1F4E79;
     }
-    .notice-content p {
+    .notice-body {
       font-size: 0.85em;
-      color: #555;
-      line-height: 1.5;
+      color: #444;
+      line-height: 1.6;
+      white-space: pre-wrap;
     }
-    .no-notices {
-      padding: 20px;
+
+    /* Empty / loading states */
+    .notice-empty {
+      padding: 20px 22px;
       color: #888;
-      font-size: 0.9em;
+      font-size: 0.88em;
       font-style: italic;
     }
 
-    /* ===== Residents login button ===== */
+    /* Residents login box */
     .residents-login-box {
       background: #fffdf5;
       border: 2px solid #C9A44A;
@@ -132,12 +131,12 @@
       margin-top: 10px;
     }
     .residents-login-box h2 {
-      font-size: 1.1em;
+      font-size: 1.05em;
       color: #1F4E79;
       margin-bottom: 10px;
     }
     .residents-login-box p {
-      font-size: 0.85em;
+      font-size: 0.82em;
       color: #555;
       margin-bottom: 20px;
     }
@@ -145,16 +144,16 @@
       display: inline-block;
       background: #1F4E79;
       color: white;
-      font-size: 1em;
+      font-size: 0.95em;
       font-weight: 700;
-      padding: 14px 32px;
+      padding: 13px 30px;
       border-radius: 6px;
       text-decoration: none;
       transition: background 0.2s;
     }
     .btn-residents:hover { background: #163a5c; }
 
-    /* ===== Footer ===== */
+    /* Footer */
     .hub-footer {
       background: #f8f9fa;
       padding: 16px 30px;
@@ -164,7 +163,6 @@
       font-size: 0.85em;
     }
 
-    /* ===== Responsive ===== */
     @media (max-width: 768px) {
       .page-area { padding: 20px; }
     }
@@ -192,8 +190,8 @@
     <!-- Public Notices -->
     <div class="notices-section">
       <h2>📢 Public Notices</h2>
-      <div class="notices-list">
-        <div class="no-notices">No public notices at this time. Check back soon.</div>
+      <div class="notices-list" id="publicNoticesList">
+        <div class="notice-empty">Loading notices…</div>
       </div>
     </div>
 
@@ -211,5 +209,71 @@
   </footer>
 
 </div><!-- end container -->
+
+<script>
+  var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
+
+  function parseCSV(line) {
+    var cols = [], cur = '', inQ = false;
+    for (var i = 0; i < line.length; i++) {
+      var ch = line[i];
+      if (ch === '"')              { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+      else                         { cur += ch; }
+    }
+    cols.push(cur);
+    return cols;
+  }
+
+  function loadPublicNotices() {
+    fetch(CSV_URL + '&t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var lines   = csv.trim().split('\n');
+        var list    = document.getElementById('publicNoticesList');
+        var notices = [];
+
+        for (var i = 1; i < lines.length; i++) {
+          var cols   = parseCSV(lines[i].trim());
+          var type   = cols[4] ? cols[4].trim() : '';
+          var status = cols[5] ? cols[5].trim() : '';
+          if (type === 'Public' && status === 'Active') {
+            notices.push({
+              date:  cols[1] ? cols[1].trim() : '',
+              title: cols[2] ? cols[2].trim() : '',
+              body:  cols[3] ? cols[3].trim() : ''
+            });
+          }
+        }
+
+        if (notices.length === 0) {
+          list.innerHTML = '<div class="notice-empty">No public notices at this time. Check back soon.</div>';
+          return;
+        }
+
+        // Show newest first
+        notices.reverse();
+        var html = '';
+        notices.forEach(function(n) {
+          html +=
+            '<div class="notice-item">' +
+            '<div class="notice-meta">' +
+            '<span class="notice-date">📅 ' + n.date + '</span>' +
+            '<span class="notice-title">' + n.title + '</span>' +
+            '</div>' +
+            '<div class="notice-body">' + n.body + '</div>' +
+            '</div>';
+        });
+        list.innerHTML = html;
+      })
+      .catch(function() {
+        document.getElementById('publicNoticesList').innerHTML =
+          '<div class="notice-empty">Notices temporarily unavailable. Please try again later.</div>';
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', loadPublicNotices);
+</script>
+
 </body>
 </html>
