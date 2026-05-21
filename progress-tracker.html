@@ -279,6 +279,13 @@
   <button class="filter-btn" data-filter="In Progress">In progress</button>
   <button class="filter-btn" data-filter="Not Started">Not started</button>
   <button class="filter-btn" data-filter="On Hold">On hold</button>
+  <span style="margin-left:20px;color:#555;">Search:</span>
+  <input type="text" id="issueSearch" placeholder="Type to search issues…"
+    oninput="applySearch()"
+    style="padding:5px 10px;border:1px solid #ccc;border-radius:4px;font-size:0.9em;width:220px;margin-left:6px;">
+  <button onclick="document.getElementById('issueSearch').value='';applySearch();"
+    title="Clear search"
+    style="margin-left:4px;padding:5px 10px;border:1px solid #ccc;border-radius:4px;cursor:pointer;background:#f5f5f5;color:#555;">&#10005;</button>
 </div>
 
 <div class="last-updated" id="last-updated">Loading data…</div>
@@ -413,6 +420,37 @@ function buildAccordion(grouped) {
     block.querySelector(".cat-header").addEventListener("click", () => block.classList.toggle("open"));
     acc.appendChild(block);
   });
+}
+
+function applySearch() {
+  var term = document.getElementById('issueSearch').value.toLowerCase().trim();
+  var hasSearch = term.length > 0;
+
+  document.querySelectorAll('.cat-block').forEach(function(block) {
+    var catHasVisible = false;
+    block.querySelectorAll('.issue-row').forEach(function(row) {
+      if (hasSearch) {
+        var text = row.textContent.toLowerCase();
+        var show = text.includes(term);
+        row.classList.toggle('hidden', !show);
+        if (show) catHasVisible = true;
+      } else {
+        // Restore to current status filter state
+        row.classList.remove('hidden');
+        var activeFilter = document.querySelector('.filter-btn.active');
+        var filter = activeFilter ? activeFilter.dataset.filter : 'all';
+        if (filter !== 'all' && row.dataset.status !== filter) {
+          row.classList.add('hidden');
+        } else {
+          catHasVisible = true;
+        }
+      }
+    });
+    block.style.display = (catHasVisible || !hasSearch) ? '' : 'none';
+  });
+
+  var anyVisible = document.querySelectorAll('.issue-row:not(.hidden)').length > 0;
+  document.getElementById('no-results').style.display = anyVisible ? 'none' : 'block';
 }
 
 function applyFilter(filter) {
