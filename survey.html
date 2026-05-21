@@ -114,6 +114,21 @@
     .option-card.selected {
       border-color:#1F4E79;
       background:#E7F1FB;
+      box-shadow:0 0 0 3px rgba(31,78,121,0.15);
+    }
+    .option-check {
+      display:none;
+      width:28px;
+      height:28px;
+      background:#2e7d32;
+      border-radius:50%;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      font-size:1em;
+      color:white;
+      font-weight:700;
+      margin-top:2px;
     }
     .option-card.disabled {
       background:#f5f5f5;
@@ -351,11 +366,11 @@
 
   <div class="page-area">
 
-    <h1 class="page-title">📋 Community Survey — Referral Money</h1>
+    <h1 class="page-title">Community Survey — Referral Money</h1>
 
     <!-- Survey closed panel (shown if survey is closed) -->
     <div class="closed-panel" id="closedPanel">
-      <h2>⏰ This Survey is Now Closed</h2>
+      <h2>This Survey is Now Closed</h2>
       <p>Thank you to everyone who responded. The Residents Committee will advise of the outcome shortly.</p>
     </div>
 
@@ -369,7 +384,7 @@
       </div>
 
       <div class="deadline-banner">
-        ⏰ Responses required by <strong>4:00pm, Thursday 29 May 2026</strong>
+        The survey will close at <strong>4:00pm on Thursday 29 May 2026</strong>
       </div>
 
       <div class="survey-form">
@@ -385,9 +400,10 @@
               <div class="option-number">1</div>
               <div class="option-info">
                 <div class="option-title">Park Bench on concrete pad</div>
-                <div class="option-cost">Estimated cost: $1,200 – $1,900 &nbsp;</div>
+                <div class="option-cost">Estimated cost: $1,200 – $1,900 &nbsp; Within budget</div>
                 <span class="detail-toggle" onclick="toggleDetail(event,'detail-1')">ℹ️ More details ▼</span>
               </div>
+              <div class="option-check" id="chk-1">✓</div>
             </label>
             <div class="detail-panel" id="detail-1">
               <p>This involves three components: the bench itself, a concrete pad, and labour for both. A good quality park bench starts from around $525 for a basic bolt-down model. Ideally it would have a backrest, armrests and be made from low-maintenance materials like aluminium or powder-coated steel with timber or composite slats.</p>
@@ -411,13 +427,14 @@
               <div class="option-number">2</div>
               <div class="option-info">
                 <div class="option-title">Internet Café (Shared Computers)</div>
-                <div class="option-cost">Estimated cost: $2,100 – $2,250 &nbsp;</div>
+                <div class="option-cost">Estimated cost: $2,100 – $2,250 &nbsp; Within budget</div>
                 <span class="detail-toggle" onclick="toggleDetail(event,'detail-2')">ℹ️ More details ▼</span>
               </div>
+              <div class="option-check" id="chk-2">✓</div>
             </label>
             <div class="detail-panel" id="detail-2">
               <p>A small shared computer facility in a common space, comprising three large-screen Chromebook laptops. Residents could browse the internet, send and receive emails, make video calls, access government services (MyGov, Medicare etc.) and perform general online tasks.</p>
-              <h4>💰 Cost Estimate</h4>
+              <h4>Cost Estimate</h4>
               <table class="cost-table">
                 <thead><tr><th>Item</th><th>Unit Cost</th><th>Total</th></tr></thead>
                 <tbody>
@@ -441,7 +458,7 @@
                 <li><strong>Printing:</strong> Optional shared printer (~$80–$150 additional)</li>
                 <li><strong>Supervision:</strong> Largely self-service; a printed guide for residents can be provided</li>
               </ul>
-              <div class="note-box">💡 Prices correct as at 15 May 2026. No ongoing consumable costs. WiFi availability at the chosen location must be confirmed with Aveo.</div>
+              <div class="note-box">Prices correct as at 15 May 2026. No ongoing consumable costs. WiFi availability at the chosen location must be confirmed with Aveo.</div>
             </div>
           </div>
 
@@ -458,7 +475,7 @@
             </label>
             <div class="detail-panel disabled-detail" id="detail-3">
               <p>Replace the 2 existing carpets in the MRC. Current size is 24ft × 6ft. No installation is needed — a straight replacement.</p>
-              <h4>💰 Cost Estimate</h4>
+              <h4>Cost Estimate</h4>
               <table class="cost-table">
                 <thead><tr><th>Item</th><th>Unit Cost</th><th>Total</th></tr></thead>
                 <tbody>
@@ -483,7 +500,7 @@
             </label>
             <div class="detail-panel disabled-detail" id="detail-4">
               <p>A mains-connected, filtered cold water and ice dispenser in a shared common area. The unit would be permanently plumbed into the water supply and could be bench-mounted or freestanding in stainless steel finish.</p>
-              <h4>💰 Cost Estimate</h4>
+              <h4>Cost Estimate</h4>
               <table class="cost-table">
                 <thead><tr><th>Item</th><th>Cost Range</th></tr></thead>
                 <tbody>
@@ -572,11 +589,16 @@
   function selectOption(num) {
     if (SURVEY_CLOSED) return;
     selectedChoice = num;
-    [1,2,3,4].forEach(function(n) {
+    [1,2].forEach(function(n) {
       var card = document.getElementById('card-' + n);
-      if (card && !card.classList.contains('disabled')) {
-        card.classList.toggle('selected', n === num);
-      }
+      if (!card) return;
+      card.classList.toggle('selected', n === num);
+      // Show/hide checkmark
+      var chk = document.getElementById('chk-' + n);
+      if (chk) chk.style.display = (n === num) ? 'flex' : 'none';
+      // Set the radio input
+      var radio = card.querySelector('input[type="radio"]');
+      if (radio) radio.checked = (n === num);
     });
   }
 
@@ -598,33 +620,28 @@
     btn.disabled    = true;
     btn.textContent = 'Submitting…';
 
-    fetch(SCRIPT_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({
-        action:  'survey',
-        name:    name || 'Anonymous',
-        choice:  choiceInput.value,
-        comment: comment
-      })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.status === 'ok') {
+    // Use FormData + no-cors to avoid CORS preflight (same pattern as financial pages)
+    var payload = JSON.stringify({
+      action:  'survey',
+      name:    name || 'Anonymous',
+      choice:  choiceInput.value,
+      comment: comment
+    });
+
+    var fd = new FormData();
+    fd.append('payload', payload);
+
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd })
+      .then(function() {
+        // no-cors returns opaque response — if we get here it worked
         sessionStorage.setItem('surveySubmitted', '1');
-        document.getElementById('survey-form') && (document.getElementById('survey-form').style.display = 'none');
         showThankyou();
-      } else {
-        showStatus('❌ Error: ' + data.message, 'error');
+      })
+      .catch(function() {
+        showStatus('❌ Could not connect. Please try again shortly.', 'error');
         btn.disabled    = false;
         btn.textContent = 'Submit My Response';
-      }
-    })
-    .catch(function() {
-      showStatus('❌ Could not connect. Please try again shortly.', 'error');
-      btn.disabled    = false;
-      btn.textContent = 'Submit My Response';
-    });
+      });
   }
 
   function showThankyou() {
