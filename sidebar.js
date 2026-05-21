@@ -245,14 +245,14 @@
           <li><a href="index.html"${isActive('index.html') ? ' class="sb-active"' : ''} style="font-weight:600;" style="font-weight:600;">🏠 Home</a></li>
         </ul>
 
-        <!-- News & Events -->
+        <!-- Social Club -->
         <div class="sb-acc-header${openNews}" onclick="sbToggle('sba-news')">
-          📰 News &amp; Events <span class="sb-acc-arrow">▼</span>
+          🎉 Social Club <span class="sb-acc-arrow">▼</span>
         </div>
         <div class="sb-acc-body${openNews}" id="sba-news">
           <ul class="sb-links">
-            <li><a href="index.html" onclick="if(window.showPage){showPage('newsletter');return false;}else{window.location.href='index.html#newsletter';return false;}">📰 Village News</a></li>
-            <li><a href="index.html" onclick="if(window.showPage){showPage('activity-contacts');return false;}else{window.location.href='index.html#activity-contacts';return false;}">🎯 Activities</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('newsletter');return false;}else{window.location.href='index.html#newsletter';return false;}">📰 Social Club News</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('events');return false;}else{window.location.href='index.html#events';return false;}">🎉 Events</a></li>
           </ul>
         </div>
 
@@ -262,6 +262,7 @@
         </div>
         <div class="sb-acc-body${openCommunity}" id="sba-community">
           <ul class="sb-links">
+            <li><a href="index.html" onclick="if(window.showPage){showPage('activity-contacts');return false;}else{window.location.href='index.html#activity-contacts';return false;}">🚶 Activities &amp; Contacts</a></li>
             <li><a href="concerts.html"${isActive('concerts.html') ? ' class="sb-active"' : ''}>🎵 City Hall Concerts</a></li>
             <li><a href="savings.html"${isActive('savings.html') ? ' class="sb-active"' : ''}>🛒 Best Buys</a></li>
             <li><a href="info-sessions.html"${isActive('info-sessions.html') ? ' class="sb-active"' : ''}>🎓 Information Sessions</a></li>
@@ -291,6 +292,11 @@
             <li><a href="index.html" onclick="if(window.showPage){showPage('about');return false;}else{window.location.href='index.html?page=about';return false;}">📖 About This Website</a></li>
           </ul>
         </div>
+
+        <!-- Residents Committee Notices — always visible -->
+        <ul class="sb-links">
+          <li><a href="rc-notices.html"${isActive('rc-notices.html') ? ' class="sb-active"' : ''} style="font-weight:600;">📋 Residents Committee Notices</a></li>
+        </ul>
 
         <!-- Residents Only — always visible -->
         <ul class="sb-links">
