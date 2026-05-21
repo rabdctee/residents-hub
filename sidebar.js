@@ -72,7 +72,7 @@
     .sb-links li a {
       display: block;
       padding: 8px 12px;
-      font-size: 18px;
+      font-size: 16px;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
       transition: background 0.15s;
@@ -95,7 +95,7 @@
       align-items: center;
       padding: 8px 12px;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: 700;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
