@@ -36,7 +36,7 @@
       background: white;
     }
     .hub-sidebar {
-      width: 230px;
+      width: 260px;
       flex-shrink: 0;
       padding: 14px 10px;
       border-right: 2px solid #c5d8ee;
@@ -72,7 +72,8 @@
     .sb-links li a {
       display: block;
       padding: 8px 12px;
-      font-size: 16px;
+      font-size: 17px;
+      font-weight: 700;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
       transition: background 0.15s;
@@ -95,7 +96,7 @@
       align-items: center;
       padding: 8px 12px;
       cursor: pointer;
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 700;
       color: #1F4E79;
       border-bottom: 1px solid #eef0f3;
@@ -125,7 +126,7 @@
     }
     .sb-acc-body .sb-links li a {
       padding-left: 22px;
-      font-size: 13px;
+      font-size: 15px;
       color: #444;
       border-bottom: 1px solid #eef0f3;
     }
@@ -182,7 +183,7 @@
 
     /* Responsive */
     @media (max-width: 900px) {
-      .hub-sidebar { width: 200px; }
+      .hub-sidebar { width: 230px; }
     }
     @media (max-width: 768px) {
       .hub-wrapper   { flex-direction: column; }
@@ -242,7 +243,7 @@
 
         <!-- Home — always visible -->
         <ul class="sb-links">
-          <li><a href="index.html"${isActive('index.html') ? ' class="sb-active"' : ''} style="font-weight:600;" style="font-weight:600;">🏠 Home</a></li>
+          <li><a href="index.html"${isActive('index.html') ? ' class="sb-active"' : ''}>🏠 Home</a></li>
         </ul>
 
         <!-- Social Club -->
@@ -295,12 +296,12 @@
 
         <!-- Residents Committee Notices — always visible -->
         <ul class="sb-links">
-          <li><a href="rc-notices.html"${isActive('rc-notices.html') ? ' class="sb-active"' : ''} style="font-weight:600;">📋 Residents Committee Notices</a></li>
+          <li><a href="rc-notices.html"${isActive('rc-notices.html') ? ' class="sb-active"' : ''}>📋 Residents Committee Notices</a></li>
         </ul>
 
         <!-- Residents Only — always visible -->
         <ul class="sb-links">
-          <li><a href="community-info.html" class="sb-lock${isActive('community-info.html') ? ' sb-active' : ''}" style="font-weight:600;">🔒 Residents Only</a></li>
+          <li><a href="community-info.html" class="sb-lock${isActive('community-info.html') ? ' sb-active' : ''}">🔒 Residents Only</a></li>
         </ul>
 
       </div>
