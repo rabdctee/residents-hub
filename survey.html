@@ -366,11 +366,11 @@
 
   <div class="page-area">
 
-    <h1 class="page-title">Community Survey — Referral Money</h1>
+    <h1 class="page-title">📋 Community Survey — Referral Money</h1>
 
     <!-- Survey closed panel (shown if survey is closed) -->
     <div class="closed-panel" id="closedPanel">
-      <h2>This Survey is Now Closed</h2>
+      <h2>⏰ This Survey is Now Closed</h2>
       <p>Thank you to everyone who responded. The Residents Committee will advise of the outcome shortly.</p>
     </div>
 
@@ -384,7 +384,7 @@
       </div>
 
       <div class="deadline-banner">
-        The survey will close at <strong>4:00pm on Thursday 29 May 2026</strong>
+        ⏰ Responses required by <strong>4:00pm, Thursday 29 May 2026</strong>
       </div>
 
       <div class="survey-form">
@@ -400,7 +400,7 @@
               <div class="option-number">1</div>
               <div class="option-info">
                 <div class="option-title">Park Bench on concrete pad</div>
-                <div class="option-cost">Estimated cost: $1,200 – $1,900 &nbsp; Within budget</div>
+                <div class="option-cost">Estimated cost: $1,200 – $1,900 &nbsp;✅ Within budget</div>
                 <span class="detail-toggle" onclick="toggleDetail(event,'detail-1')">ℹ️ More details ▼</span>
               </div>
               <div class="option-check" id="chk-1">✓</div>
@@ -427,14 +427,14 @@
               <div class="option-number">2</div>
               <div class="option-info">
                 <div class="option-title">Internet Café (Shared Computers)</div>
-                <div class="option-cost">Estimated cost: $2,100 – $2,250 &nbsp; Within budget</div>
+                <div class="option-cost">Estimated cost: $2,100 – $2,250 &nbsp;✅ Within budget</div>
                 <span class="detail-toggle" onclick="toggleDetail(event,'detail-2')">ℹ️ More details ▼</span>
               </div>
               <div class="option-check" id="chk-2">✓</div>
             </label>
             <div class="detail-panel" id="detail-2">
               <p>A small shared computer facility in a common space, comprising three large-screen Chromebook laptops. Residents could browse the internet, send and receive emails, make video calls, access government services (MyGov, Medicare etc.) and perform general online tasks.</p>
-              <h4>Cost Estimate</h4>
+              <h4>💰 Cost Estimate</h4>
               <table class="cost-table">
                 <thead><tr><th>Item</th><th>Unit Cost</th><th>Total</th></tr></thead>
                 <tbody>
@@ -458,7 +458,7 @@
                 <li><strong>Printing:</strong> Optional shared printer (~$80–$150 additional)</li>
                 <li><strong>Supervision:</strong> Largely self-service; a printed guide for residents can be provided</li>
               </ul>
-              <div class="note-box">Prices correct as at 15 May 2026. No ongoing consumable costs. WiFi availability at the chosen location must be confirmed with Aveo.</div>
+              <div class="note-box">💡 Prices correct as at 15 May 2026. No ongoing consumable costs. WiFi availability at the chosen location must be confirmed with Aveo.</div>
             </div>
           </div>
 
@@ -475,7 +475,7 @@
             </label>
             <div class="detail-panel disabled-detail" id="detail-3">
               <p>Replace the 2 existing carpets in the MRC. Current size is 24ft × 6ft. No installation is needed — a straight replacement.</p>
-              <h4>Cost Estimate</h4>
+              <h4>💰 Cost Estimate</h4>
               <table class="cost-table">
                 <thead><tr><th>Item</th><th>Unit Cost</th><th>Total</th></tr></thead>
                 <tbody>
@@ -500,7 +500,7 @@
             </label>
             <div class="detail-panel disabled-detail" id="detail-4">
               <p>A mains-connected, filtered cold water and ice dispenser in a shared common area. The unit would be permanently plumbed into the water supply and could be bench-mounted or freestanding in stainless steel finish.</p>
-              <h4>Cost Estimate</h4>
+              <h4>💰 Cost Estimate</h4>
               <table class="cost-table">
                 <thead><tr><th>Item</th><th>Cost Range</th></tr></thead>
                 <tbody>
@@ -534,7 +534,7 @@
         </div>
 
         <button class="btn-submit" id="submitBtn" onclick="submitSurvey()">
-          Submit My Response
+          ✅ Submit My Response
         </button>
         <div class="status-msg" id="statusMsg"></div>
 
@@ -544,7 +544,7 @@
       <div class="thankyou-panel" id="thankyouPanel">
         <div class="ty-icon">🎉</div>
         <h2>Thank You!</h2>
-        <p>Your response has been recorded. The outcome will be announced after the survey closes on 29 May 2026.</p>
+        <p>Your response has been recorded. The Residents Committee will announce the outcome after the survey closes on 29 May 2026.</p>
       </div>
 
     </div><!-- end surveyContent -->
@@ -617,10 +617,30 @@
     var comment = document.getElementById('resident-comment').value.trim();
 
     var btn = document.getElementById('submitBtn');
-    btn.disabled    = true;
-    btn.textContent = 'Submitting…';
+    btn.disabled = true;
 
-    // Use FormData + no-cors to avoid CORS preflight (same pattern as financial pages)
+    // Cycling messages so resident knows it's still working
+    var messages = [
+      'Sending your response…',
+      'Almost there…',
+      'Just a moment…',
+      'Finishing up…'
+    ];
+    var msgIndex = 0;
+    btn.textContent = messages[0];
+    var msgTimer = setInterval(function() {
+      msgIndex = (msgIndex + 1) % messages.length;
+      btn.textContent = messages[msgIndex];
+    }, 3000);
+
+    // Timeout fallback — assume success after 15 seconds
+    var timeoutTimer = setTimeout(function() {
+      clearInterval(msgTimer);
+      sessionStorage.setItem('surveySubmitted', '1');
+      showThankyou();
+    }, 15000);
+
+    // Use FormData + no-cors to avoid CORS preflight
     var payload = JSON.stringify({
       action:  'survey',
       name:    name || 'Anonymous',
@@ -633,14 +653,17 @@
 
     fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd })
       .then(function() {
-        // no-cors returns opaque response — if we get here it worked
+        clearInterval(msgTimer);
+        clearTimeout(timeoutTimer);
         sessionStorage.setItem('surveySubmitted', '1');
         showThankyou();
       })
       .catch(function() {
+        clearInterval(msgTimer);
+        clearTimeout(timeoutTimer);
         showStatus('❌ Could not connect. Please try again shortly.', 'error');
         btn.disabled    = false;
-        btn.textContent = 'Submit My Response';
+        btn.textContent = '✅ Submit My Response';
       });
   }
 
