@@ -210,6 +210,19 @@
       transition: all 0.2s;
     }
     .btn-archive:hover { background: #fdecea; border-color: #ef9a9a; color: #b71c1c; }
+    .btn-edit {
+      padding: 4px 10px;
+      background: #e3f2fd;
+      border: 1px solid #90caf9;
+      border-radius: 4px;
+      font-size: 0.8em;
+      cursor: pointer;
+      color: #1565c0;
+      font-family: 'Segoe UI', sans-serif;
+      transition: all 0.2s;
+      margin-right: 5px;
+    }
+    .btn-edit:hover { background: #bbdefb; border-color: #1565c0; }
 
     .loading-msg {
       color: #888;
@@ -247,11 +260,19 @@
 
     <a href="community-info.html" class="back-link">← Back to Residents Only</a>
 
-    <h1 class="page-title">📋 RC Notices — Post a Notice</h1>
+    <h1 class="page-title" id="pageTitle">📋 RC Notices — Post a Notice</h1>
 
-    <!-- ADD NOTICE FORM -->
+    <!-- ADD / EDIT NOTICE FORM -->
     <div class="form-card">
-      <h2>➕ Post a New Notice</h2>
+      <h2 id="formHeading">➕ Post a New Notice</h2>
+
+      <!-- Edit mode indicator -->
+      <div id="editBanner" style="display:none;background:#fff8e6;border:2px solid #C9A44A;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:0.85em;color:#7a5200;font-weight:600;">
+        ✏️ Editing existing notice — make your changes below and click Save Changes.
+        <a href="#" onclick="cancelEdit();return false;" style="margin-left:12px;color:#b71c1c;font-weight:700;">✕ Cancel</a>
+      </div>
+
+      <input type="hidden" id="edit-row" value="">
 
       <label for="notice-date">Date</label>
       <input type="date" id="notice-date">
@@ -528,10 +549,11 @@
         // Show newest first (skip header row)
         for (var i = lines.length - 1; i >= 1; i--) {
           var cols   = parseCSV(lines[i]);
-          var date   = cols[1] || '';
-          var title  = cols[2] || '';
-          var type   = cols[4] || '';
-          var status = cols[5] || '';
+          var date   = cols[1] ? cols[1].trim() : '';
+          var title  = cols[2] ? cols[2].trim() : '';
+          var body   = cols[3] ? cols[3].trim() : '';
+          var type   = cols[4] ? cols[4].trim() : '';
+          var status = cols[5] ? cols[5].trim() : '';
           var rowNum = i + 1; // 1-based, +1 for header
 
           var typeBadge   = type === 'Public'
@@ -540,7 +562,17 @@
           var statusBadge = status === 'Active'
             ? '<span class="badge badge-active">Active</span>'
             : '<span class="badge badge-archived">Archived</span>';
-          var archiveBtn  = status === 'Active'
+
+          // Encode data for edit button (escape quotes)
+          var safeDate  = date.replace(/'/g, "\\'");
+          var safeTitle = title.replace(/'/g, "\\'");
+          var safeBody  = body.replace(/'/g, "\\'").replace(/\n/g, '\\n');
+          var safeType  = type.replace(/'/g, "\\'");
+
+          var editBtn = status === 'Active'
+            ? '<button class="btn-edit" onclick="editNotice(' + rowNum + ',\'' + safeDate + '\',\'' + safeTitle + '\',\'' + safeBody + '\',\'' + safeType + '\')">✏️ Edit</button>'
+            : '';
+          var archiveBtn = status === 'Active'
             ? '<button class="btn-archive" onclick="archiveNotice(' + rowNum + ', this)">Archive</button>'
             : '—';
 
@@ -550,7 +582,7 @@
             '<td>' + title + '</td>' +
             '<td>' + typeBadge + '</td>' +
             '<td>' + statusBadge + '</td>' +
-            '<td>' + archiveBtn + '</td>' +
+            '<td>' + editBtn + archiveBtn + '</td>' +
             '</tr>';
         }
         document.getElementById('loadingMsg').style.display   = 'none';
@@ -558,6 +590,99 @@
       })
       .catch(function() {
         document.getElementById('loadingMsg').textContent = 'Could not load notices.';
+      });
+  }
+
+  // ── Edit a notice — pre-fill form ─────────────────────────
+  function editNotice(rowNum, date, title, body, type) {
+    // Convert DD/MM/YYYY to YYYY-MM-DD for date input
+    var dateParts = date.split('/');
+    var inputDate = dateParts.length === 3
+      ? dateParts[2] + '-' + dateParts[1] + '-' + dateParts[0]
+      : date;
+
+    document.getElementById('edit-row').value        = rowNum;
+    document.getElementById('notice-date').value     = inputDate;
+    document.getElementById('notice-title').value    = title;
+    document.getElementById('notice-body').value     = body.replace(/\\n/g, '\n');
+    selectType(type || 'Residents');
+
+    // Switch form to edit mode
+    document.getElementById('formHeading').textContent  = '✏️ Edit Notice';
+    document.getElementById('editBanner').style.display = 'block';
+    document.getElementById('submitBtn').textContent    = '💾 Save Changes';
+    document.getElementById('submitBtn').onclick        = updateNotice;
+
+    // Scroll to form
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Cancel edit — reset form ───────────────────────────────
+  function cancelEdit() {
+    document.getElementById('edit-row').value           = '';
+    document.getElementById('notice-date').value        = '';
+    document.getElementById('notice-title').value       = '';
+    document.getElementById('notice-body').value        = '';
+    document.getElementById('formHeading').textContent  = '➕ Post a New Notice';
+    document.getElementById('editBanner').style.display = 'none';
+    document.getElementById('submitBtn').textContent    = '📋 Post Notice';
+    document.getElementById('submitBtn').onclick        = postNotice;
+    selectType('Residents');
+    // Reset today's date
+    var today = new Date();
+    var dd    = String(today.getDate()).padStart(2,'0');
+    var mm    = String(today.getMonth()+1).padStart(2,'0');
+    var yyyy  = today.getFullYear();
+    document.getElementById('notice-date').value = yyyy + '-' + mm + '-' + dd;
+  }
+
+  // ── Save edited notice ─────────────────────────────────────
+  function updateNotice() {
+    var rowNum   = document.getElementById('edit-row').value;
+    var dateVal  = document.getElementById('notice-date').value;
+    var titleVal = document.getElementById('notice-title').value.trim();
+    var bodyVal  = document.getElementById('notice-body').value.trim();
+
+    if (!rowNum || !dateVal || !titleVal || !bodyVal) {
+      showStatus('Please fill in all fields before saving.', 'error');
+      return;
+    }
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+
+    var messages = ['Saving…', 'Almost there…', 'Just a moment…'];
+    var msgIndex = 0;
+    btn.textContent = messages[0];
+    var msgTimer = setInterval(function() {
+      msgIndex = (msgIndex + 1) % messages.length;
+      btn.textContent = messages[msgIndex];
+    }, 3000);
+
+    var fd = new FormData();
+    fd.append('payload', JSON.stringify({
+      action: 'update',
+      row:    rowNum,
+      date:   dateVal,
+      title:  titleVal,
+      body:   bodyVal,
+      type:   selectedType
+    }));
+
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd })
+      .then(function() {
+        clearInterval(msgTimer);
+        showStatus('✅ Notice updated successfully!', 'success');
+        cancelEdit();
+        setTimeout(loadNotices, 2000);
+      })
+      .catch(function() {
+        clearInterval(msgTimer);
+        showStatus('❌ Could not connect. Please try again.', 'error');
+      })
+      .finally(function() {
+        btn.disabled    = false;
+        btn.textContent = '💾 Save Changes';
       });
   }
 
