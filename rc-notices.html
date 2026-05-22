@@ -199,7 +199,7 @@
     <div class="residents-login-box">
       <h2>🔒 Full Notices — Residents Only</h2>
       <p>Monthly RC summaries, budget discussions, refurbishment updates and surveys are available to residents in the PIN-protected area.</p>
-      <a href="community-info.html" class="btn-residents">🔒 Residents — Log In Here</a>
+      <a href="community-info.html" class="btn-residents">🔒 Residents — Log In Here with the PIN</a>
     </div>
 
   </div><!-- end page-area -->
@@ -212,6 +212,9 @@
 
 <script>
   var CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
+
+  // Record this visit so the sidebar badge clears
+  localStorage.setItem('rcNoticesLastVisit', Date.now().toString());
 
   function parseCSV(line) {
     var cols = [], cur = '', inQ = false;

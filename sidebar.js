@@ -88,6 +88,23 @@
     .sb-links li a.sb-active:hover { background: #c5d8ee; }
     .sb-links li a.sb-lock  { color: #7a5200; background: #fffdf5; }
     .sb-links li a.sb-lock:hover { background: #fff3cc; }
+    .sb-notice-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #cc0000;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      padding: 0 5px;
+      margin-left: 7px;
+      vertical-align: middle;
+      line-height: 1;
+      font-family: Arial, sans-serif;
+    }
 
     /* Accordion headers */
     .sb-acc-header {
@@ -296,7 +313,7 @@
 
         <!-- Residents Committee Notices — always visible -->
         <ul class="sb-links">
-          <li><a href="rc-notices.html"${isActive('rc-notices.html') ? ' class="sb-active"' : ''}>📋 Residents Committee Notices</a></li>
+          <li><a href="rc-notices.html"${isActive('rc-notices.html') ? ' class="sb-active"' : ''}>📋 Residents Committee Notices<span class="sb-notice-badge" id="sb-rc-badge" style="display:none;"></span></a></li>
         </ul>
 
         <!-- Residents Only — always visible -->
@@ -319,7 +336,69 @@
     });
   });
 
-  // ── WRAP PAGE CONTENT IN hub-wrapper ──────────────────────
+  // ── RC NOTICES BADGE ──────────────────────────────────────
+  // Fetches the notices CSV, counts Active notices newer than the
+  // resident's last visit to rc-notices.html, and shows a red
+  // numbered badge on the sidebar link.
+  (function() {
+    var CSV_URL   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
+    var LS_KEY    = 'rcNoticesLastVisit';
+    var lastVisit = localStorage.getItem(LS_KEY) ? parseInt(localStorage.getItem(LS_KEY)) : 0;
+
+    // If currently on rc-notices.html, record visit and don't show badge
+    if (window.location.pathname.indexOf('rc-notices.html') !== -1) {
+      localStorage.setItem(LS_KEY, Date.now().toString());
+      return;
+    }
+
+    // Parse DD/MM/YYYY HH:MM timestamp into JS milliseconds
+    function parseTimestamp(ts) {
+      try {
+        var parts = ts.trim().split(' ');
+        var d = parts[0].split('/');
+        var t = parts[1] ? parts[1].split(':') : ['0','0'];
+        return new Date(parseInt(d[2]), parseInt(d[1])-1, parseInt(d[0]),
+                        parseInt(t[0]), parseInt(t[1])).getTime();
+      } catch(e) { return 0; }
+    }
+
+    function parseCSVLine(line) {
+      var cols = [], cur = '', inQ = false;
+      for (var i = 0; i < line.length; i++) {
+        var ch = line[i];
+        if (ch === '"')              { inQ = !inQ; }
+        else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+        else                         { cur += ch; }
+      }
+      cols.push(cur);
+      return cols;
+    }
+
+    fetch(CSV_URL + '&t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var lines = csv.trim().split('\n');
+        var count = 0;
+        for (var i = 1; i < lines.length; i++) {
+          var cols   = parseCSVLine(lines[i]);
+          var ts     = cols[0] ? cols[0].trim() : '';
+          var status = cols[5] ? cols[5].trim() : '';
+          if (status === 'Active' && parseTimestamp(ts) > lastVisit) {
+            count++;
+          }
+        }
+        if (count > 0) {
+          var badge = document.getElementById('sb-rc-badge');
+          if (badge) {
+            badge.textContent   = count;
+            badge.style.display = 'inline-flex';
+          }
+        }
+      })
+      .catch(function() { /* silently fail — badge just won't show */ });
+  })();
+
+
   // Find the body's first meaningful child after header/breadcrumbs
   // Strategy: wrap everything in body inside hub-wrapper > sidebar + hub-main
   document.addEventListener('DOMContentLoaded', function () {
