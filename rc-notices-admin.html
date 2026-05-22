@@ -467,8 +467,15 @@
     var displayDate = parts[2] + '/' + parts[1] + '/' + parts[0];
 
     var btn = document.getElementById('submitBtn');
-    btn.disabled    = true;
-    btn.textContent = 'Posting…';
+    btn.disabled = true;
+
+    var messages = ['Posting…', 'Almost there…', 'Just a moment…'];
+    var msgIndex = 0;
+    btn.textContent = messages[0];
+    var msgTimer = setInterval(function() {
+      msgIndex = (msgIndex + 1) % messages.length;
+      btn.textContent = messages[msgIndex];
+    }, 3000);
 
     var payload = JSON.stringify({
       action: 'add',
@@ -478,30 +485,26 @@
       type:   selectedType
     });
 
-    fetch(SCRIPT_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    payload
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.status === 'ok') {
+    var fd = new FormData();
+    fd.append('payload', payload);
+
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd })
+      .then(function() {
+        clearInterval(msgTimer);
         showStatus('✅ Notice posted successfully!', 'success');
         document.getElementById('notice-title').value = '';
         document.getElementById('notice-body').value  = '';
         selectType('Residents');
         setTimeout(loadNotices, 2000);
-      } else {
-        showStatus('❌ Error: ' + data.message, 'error');
-      }
-    })
-    .catch(function(err) {
-      showStatus('❌ Could not connect. Please try again.', 'error');
-    })
-    .finally(function() {
-      btn.disabled    = false;
-      btn.textContent = '📋 Post Notice';
-    });
+      })
+      .catch(function(err) {
+        clearInterval(msgTimer);
+        showStatus('❌ Could not connect. Please try again.', 'error');
+      })
+      .finally(function() {
+        btn.disabled    = false;
+        btn.textContent = '📋 Post Notice';
+      });
   }
 
   // ── Load existing notices ──────────────────────────────────
@@ -564,27 +567,19 @@
     btn.disabled    = true;
     btn.textContent = 'Archiving…';
 
-    fetch(SCRIPT_URL, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ action: 'archive', row: rowNum })
-    })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.status === 'ok') {
+    var fd = new FormData();
+    fd.append('payload', JSON.stringify({ action: 'archive', row: rowNum }));
+
+    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd })
+      .then(function() {
         showStatus('✅ Notice archived.', 'success');
         setTimeout(loadNotices, 1500);
-      } else {
-        showStatus('❌ Error: ' + data.message, 'error');
+      })
+      .catch(function() {
+        showStatus('❌ Could not connect.', 'error');
         btn.disabled    = false;
         btn.textContent = 'Archive';
-      }
-    })
-    .catch(function() {
-      showStatus('❌ Could not connect.', 'error');
-      btn.disabled    = false;
-      btn.textContent = 'Archive';
-    });
+      });
   }
 
   // ── Helpers ────────────────────────────────────────────────
