@@ -114,7 +114,7 @@
 
 <div class="top-bar">
   <div>
-    <div class="top-bar-title">🏦; Upload Bank Statement</div>
+    <div class="top-bar-title">🏦 Upload Bank Statement</div>
     <div class="top-bar-sub">Bridgeman Downs &#8212; Committee use only</div>
   </div>
   <a class="back-btn" href="index.html?expand=sc-finance#committee">&#8592; Back to Committee Page</a>
@@ -123,7 +123,7 @@
 <div class="content">
 
   <div class="card" id="uploadCard">
-    <div class="card-header">🏦; Upload Bank Statement to the Hub</div>
+    <div class="card-header">🏦 Upload Bank Statement to the Hub</div>
     <div class="card-body">
 
       <div id="alertMsg" class="alert"></div>
@@ -166,7 +166,7 @@
       <div class="progress-label" id="progressLabel"></div>
 
       <button class="btn-primary" id="uploadBtn" onclick="uploadDocument()">
-        🏦; Upload Bank Statement
+        🏦 Upload Bank Statement
       </button>
 
     </div>
@@ -181,7 +181,7 @@
         The statement is now saved and will appear on the Hub automatically.
       </p>
       <div class="success-detail" id="successDetail"></div>
-      <button class="btn-another" onclick="resetForm()">🏦; Upload Another Statement</button>
+      <button class="btn-another" onclick="resetForm()">🏦 Upload Another Statement</button>
       <a class="back-btn" href="index.html?expand=sc-finance#committee" style="margin-top:10px;justify-content:center;display:flex;">
         &#8592; Back to Committee Page
       </a>
@@ -284,7 +284,7 @@
         setProgress(100,'Complete!');
         clearInterval(_umt);
       btn.disabled = false;
-        btn.innerHTML = '🏦; Upload Bank Statement';
+        btn.innerHTML = '🏦 Upload Bank Statement';
         hideProgress();
         if (data.status === 'ok') { showSuccess(name); }
         else { showAlert('error','Upload failed: ' + (data.message || 'Please try again or contact Rick.')); }
@@ -292,7 +292,7 @@
       .catch(function(){
         clearInterval(_umt);
       btn.disabled = false;
-        btn.innerHTML = '🏦; Upload Bank Statement';
+        btn.innerHTML = '🏦 Upload Bank Statement';
         hideProgress();
         showAlert('error','Upload failed. Please check your connection and try again, or contact Rick.');
       });
