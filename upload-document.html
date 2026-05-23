@@ -358,7 +358,10 @@
       setProgress(30,'Uploading to Google Drive...');
       var btn = document.getElementById('uploadBtn');
       btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Uploading...';
+      btn.innerHTML = '<span class="spinner"></span> Uploading…';
+      var _umsgs = ['Uploading…','Almost there…','Just a moment…'];
+      var _umi = 0;
+      var _umt = setInterval(function(){ _umi = (_umi+1)%_umsgs.length; setProgress(null, _umsgs[_umi]); }, 3000);
       fetch(SCRIPT_URL, {
         method:'POST',
         body: JSON.stringify({
@@ -375,14 +378,16 @@
       .then(function(r){ return r.json(); })
       .then(function(data){
         setProgress(100,'Complete!');
-        btn.disabled = false;
+        clearInterval(_umt);
+      btn.disabled = false;
         btn.innerHTML = '&#128228; Upload Document';
         hideProgress();
         if (data.status === 'ok') { showSuccess(nameClean, folder, subfolder); }
         else { showAlert('error','Upload failed: ' + (data.message || 'Please try again or contact Rick.')); }
       })
       .catch(function(){
-        btn.disabled = false;
+        clearInterval(_umt);
+      btn.disabled = false;
         btn.innerHTML = '&#128228; Upload Document';
         hideProgress();
         showAlert('error','Upload failed. Please check your connection and try again, or contact Rick.');

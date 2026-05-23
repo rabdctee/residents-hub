@@ -760,7 +760,9 @@ function submitTransaction() {
   hideError('submitError');
   const btn = document.getElementById('confirmBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+  var _msgs1 = ['<span class="spinner"></span>Submitting…','<span class="spinner"></span>Almost there…','<span class="spinner"></span>Just a moment…'];
+  var _mi1 = 0; btn.innerHTML = _msgs1[0];
+  var _mt1 = setInterval(function(){ _mi1 = (_mi1+1)%_msgs1.length; btn.innerHTML = _msgs1[_mi1]; }, 3000);
 
   const dateStr  = document.getElementById('txDate').value;
   const parts    = dateStr.split('-');
@@ -801,7 +803,7 @@ function submitTransaction() {
   })
   .catch(function(err) {
     btn.disabled = false;
-    btn.innerHTML = '✓ Confirm &amp; Submit';
+    clearInterval(_mt1); btn.innerHTML = '✓ Confirm &amp; Submit';
     showError('submitError', 'Submission failed: ' + err.message + '. Please try again or contact Rick.');
   });
 }

@@ -433,7 +433,9 @@
 
     var btn = document.getElementById('saveBtn');
     btn.disabled = true;
-    btn.textContent = 'Saving…';
+    var mt_manageupcomingeventshtml_msgs = ['Saving…','Almost there…','Just a moment…'];
+    var mt_manageupcomingeventshtml_i = 0; btn.textContent = mt_manageupcomingeventshtml_msgs[0];
+    var mt_manageupcomingeventshtml = setInterval(function(){ mt_manageupcomingeventshtml_i = (mt_manageupcomingeventshtml_i+1)%mt_manageupcomingeventshtml_msgs.length; btn.textContent = mt_manageupcomingeventshtml_msgs[mt_manageupcomingeventshtml_i]; }, 3000);
 
 var displayFrom = document.getElementById('editDisplayFrom').value;
     var payload = editingRow
@@ -449,7 +451,7 @@ var displayFrom = document.getElementById('editDisplayFrom').value;
     .then(function(data) {
       var wasEditing = editingRow;
       btn.disabled = false;
-      btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Event';
+      clearInterval(mt_manageupcomingeventshtml); btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Event';
       closeModal();
       showToast(wasEditing ? 'Event updated ✓' : 'Event added ✓');
       setTimeout(loadEvents, 800);
@@ -458,7 +460,7 @@ var displayFrom = document.getElementById('editDisplayFrom').value;
       // Assume success on CORS error
       var wasEditing = editingRow;
       btn.disabled = false;
-      btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Event';
+      clearInterval(mt_manageupcomingeventshtml); btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Event';
       closeModal();
       showToast(wasEditing ? 'Event updated ✓' : 'Event added ✓');
       setTimeout(loadEvents, 1500);
@@ -481,7 +483,9 @@ var displayFrom = document.getElementById('editDisplayFrom').value;
     if (!deleteRow) return;
     var btn = document.querySelector('.btn-confirm-delete');
     btn.disabled = true;
-    btn.textContent = 'Removing…';
+    var mt_manageupcomingeventshtml_r_msgs = ['Removing…','Almost there…','Just a moment…'];
+    var mt_manageupcomingeventshtml_r_i = 0; btn.textContent = mt_manageupcomingeventshtml_r_msgs[0];
+    var mt_manageupcomingeventshtml_r = setInterval(function(){ mt_manageupcomingeventshtml_r_i = (mt_manageupcomingeventshtml_r_i+1)%mt_manageupcomingeventshtml_r_msgs.length; btn.textContent = mt_manageupcomingeventshtml_r_msgs[mt_manageupcomingeventshtml_r_i]; }, 3000);
 
     fetch(SCRIPT_URL, {
       method: 'POST',

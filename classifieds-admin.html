@@ -467,7 +467,9 @@ async function setStatus(btnEl, timestamp, headline, newStatus, cardId) {
 
   buttons.forEach(b => b.disabled = true);
   msgEl.className = 'card-status-msg';
-  msgEl.textContent = 'Saving…';
+  var _cmsgs = ['Saving…','Almost there…','Just a moment…'];
+  var _ci = 0; msgEl.textContent = _cmsgs[0];
+  var _cmt = setInterval(function(){ _ci = (_ci+1)%_cmsgs.length; msgEl.textContent = _cmsgs[_ci]; }, 3000);
 
   try {
     await fetch(SCRIPT_URL, {
@@ -496,7 +498,7 @@ async function setStatus(btnEl, timestamp, headline, newStatus, cardId) {
   } catch(err) {
     buttons.forEach(b => b.disabled = false);
     msgEl.className   = 'card-status-msg err';
-    msgEl.textContent = '❌ Error — please try again.';
+    clearInterval(_cmt); msgEl.textContent = '❌ Error — please try again.';
   }
 }
 

@@ -475,7 +475,9 @@ async function submitUpdate() {
 
   const btn = document.getElementById("upd-btn");
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Saving…';
+  var _msgs4 = ['<span class="spinner"></span>Saving…','<span class="spinner"></span>Almost there…','<span class="spinner"></span>Just a moment…'];
+  var _mi4 = 0; btn.innerHTML = _msgs4[0];
+  var _mt4 = setInterval(function(){ _mi4 = (_mi4+1)%_msgs4.length; btn.innerHTML = _msgs4[_mi4]; }, 3000);
 
   const payload = JSON.stringify({ action: "update", category, topic, notes });
 

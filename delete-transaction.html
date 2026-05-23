@@ -648,7 +648,9 @@ function goBackToStep1() {
 function submitDeletion() {
   const btn = document.getElementById('confirmBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+  var _msgs2 = ['<span class="spinner"></span>Submitting…','<span class="spinner"></span>Almost there…','<span class="spinner"></span>Just a moment…'];
+  var _mi2 = 0; btn.innerHTML = _msgs2[0];
+  var _mt2 = setInterval(function(){ _mi2 = (_mi2+1)%_msgs2.length; btn.innerHTML = _msgs2[_mi2]; }, 3000);
 
   const rawDate = sheetSerialToDate(selectedTx['Date of Transaction']);
   const isoDate = rawDate
@@ -688,7 +690,7 @@ function submitDeletion() {
   })
   .catch(function(err) {
     btn.disabled = false;
-    btn.innerHTML = '🗑 Confirm Deletion';
+    clearInterval(_mt2); btn.innerHTML = '🗑 Confirm Deletion';
     const errEl = document.getElementById('reviewError');
     errEl.textContent = 'Submission failed: ' + err.message + '. Please try again or contact Rick.';
     errEl.style.display = 'block';

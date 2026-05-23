@@ -455,7 +455,9 @@ function submitBalance() {
   hideError('submitError');
   var btn = document.getElementById('confirmBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+  var _msgs0 = ['<span class="spinner"></span>Submitting…','<span class="spinner"></span>Almost there…','<span class="spinner"></span>Just a moment…'];
+  var _mi0 = 0; btn.innerHTML = _msgs0[0];
+  var _mt0 = setInterval(function(){ _mi0 = (_mi0+1)%_msgs0.length; btn.innerHTML = _msgs0[_mi0]; }, 3000);
 
   var date    = document.getElementById('stmtDate').value;
   var balance = parseFloat(document.getElementById('bankBalance').value);
@@ -490,7 +492,7 @@ function submitBalance() {
   })
   .catch(function(err) {
     btn.disabled = false;
-    btn.innerHTML = '✓ Confirm &amp; Submit';
+    clearInterval(_mt0); btn.innerHTML = '✓ Confirm &amp; Submit';
     showError('submitError', 'Submission failed: ' + err.message + '. Please try again or contact Rick.');
   });
 }

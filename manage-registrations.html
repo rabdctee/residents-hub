@@ -501,7 +501,9 @@
   function saveRegistration() {
     var btn = document.getElementById('saveBtn');
     btn.disabled = true;
-    btn.textContent = 'Saving…';
+    var mt_manageregistrationshtml_msgs = ['Saving…','Almost there…','Just a moment…'];
+    var mt_manageregistrationshtml_i = 0; btn.textContent = mt_manageregistrationshtml_msgs[0];
+    var mt_manageregistrationshtml = setInterval(function(){ mt_manageregistrationshtml_i = (mt_manageregistrationshtml_i+1)%mt_manageregistrationshtml_msgs.length; btn.textContent = mt_manageregistrationshtml_msgs[mt_manageregistrationshtml_i]; }, 3000);
 
     var payload;
 
@@ -518,7 +520,7 @@
       if (!name) {
         showToast('Please enter a name.', true);
         btn.disabled = false;
-        btn.textContent = '➕ Add Registration';
+      clearInterval(mt_manageregistrationshtml); btn.textContent = '➕ Add Registration';
         return;
       }
       // Check for duplicate name in current event
@@ -528,7 +530,7 @@
       if (duplicate) {
         showToast('⚠️ ' + name + ' is already registered for this event.', true);
         btn.disabled = false;
-        btn.textContent = '➕ Add Registration';
+      clearInterval(mt_manageregistrationshtml); btn.textContent = '➕ Add Registration';
         return;
       }
       payload = {
@@ -553,7 +555,7 @@
       if (data.status === 'ok') {
         var wasEditing = editingRow;
         btn.disabled = false;
-        btn.textContent = wasEditing ? '💾 Save Changes' : '➕ Add Registration';
+      clearInterval(mt_manageregistrationshtml); btn.textContent = wasEditing ? '💾 Save Changes' : '➕ Add Registration';
         closeModal();
         showToast(wasEditing ? 'Registration updated ✓' : 'Registration added ✓');
         setTimeout(loadRegistrations, 800);
@@ -566,7 +568,7 @@
       if (err.message && err.message.toLowerCase().includes('failed to fetch')) {
         var wasEditing = editingRow;
         btn.disabled = false;
-        btn.textContent = wasEditing ? '💾 Save Changes' : '➕ Add Registration';
+      clearInterval(mt_manageregistrationshtml); btn.textContent = wasEditing ? '💾 Save Changes' : '➕ Add Registration';
         closeModal();
         showToast(wasEditing ? 'Registration updated ✓' : 'Registration added ✓');
         setTimeout(loadRegistrations, 1500);

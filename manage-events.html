@@ -328,7 +328,9 @@
 
     var btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.textContent = 'Saving...';
+    var mt_manageeventshtml_msgs = ['Saving…','Almost there…','Just a moment…'];
+    var mt_manageeventshtml_i = 0; btn.textContent = mt_manageeventshtml_msgs[0];
+    var mt_manageeventshtml = setInterval(function(){ mt_manageeventshtml_i = (mt_manageeventshtml_i+1)%mt_manageeventshtml_msgs.length; btn.textContent = mt_manageeventshtml_msgs[mt_manageeventshtml_i]; }, 3000);
 
     var payload = {
       action:   row ? 'editEvent' : 'addEvent',
@@ -347,7 +349,7 @@
     .then(function(r){ return r.json(); })
     .then(function(data){
       btn.disabled = false;
-      btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
+      clearInterval(mt_manageeventshtml); btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
       if (data.status === 'ok') {
         showAlert('alertForm', 'success',
           row ? 'Event updated successfully.' : 'Event added successfully.');
@@ -359,7 +361,7 @@
     })
     .catch(function(){
       btn.disabled = false;
-      btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
+      clearInterval(mt_manageeventshtml); btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
       showAlert('alertForm', 'error', 'Could not save. Please try again or contact Rick.');
     });
   }

@@ -553,7 +553,10 @@
 
   function proceedSave(title, message, link, linkLabel, displayFrom, displayUntil) {
     var btn = document.getElementById('saveBtn');
-    btn.disabled = true; btn.textContent = 'Saving…';
+    btn.disabled = true;
+    var mt_manageannouncementshtml_msgs = ['Saving…','Almost there…','Just a moment…'];
+    var mt_manageannouncementshtml_i = 0; btn.textContent = mt_manageannouncementshtml_msgs[0];
+    var mt_manageannouncementshtml = setInterval(function(){ mt_manageannouncementshtml_i = (mt_manageannouncementshtml_i+1)%mt_manageannouncementshtml_msgs.length; btn.textContent = mt_manageannouncementshtml_msgs[mt_manageannouncementshtml_i]; }, 3000);
 
     var payload = editingRow
       ? { action:'editAnnouncement', row:editingRow, title:title, message:message,
@@ -565,7 +568,7 @@
     .then(function() {
       var wasEditing = editingRow;
       btn.disabled = false;
-      btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Announcement';
+      clearInterval(mt_manageannouncementshtml); btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Announcement';
       closeModal();
       showToast(wasEditing ? 'Announcement updated ✓' : 'Announcement added ✓');
       setTimeout(loadAnnouncements, 800);
@@ -573,7 +576,7 @@
     .catch(function() {
       var wasEditing = editingRow;
       btn.disabled = false;
-      btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Announcement';
+      clearInterval(mt_manageannouncementshtml); btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Announcement';
       closeModal();
       showToast(wasEditing ? 'Announcement updated ✓' : 'Announcement added ✓');
       setTimeout(loadAnnouncements, 1500);
@@ -594,7 +597,10 @@
   function confirmDelete() {
     if (!deleteRow) return;
     var btn = document.querySelector('.btn-confirm-delete');
-    btn.disabled = true; btn.textContent = 'Removing…';
+    btn.disabled = true;
+    var mt_manageannouncementshtml_r_msgs = ['Removing…','Almost there…','Just a moment…'];
+    var mt_manageannouncementshtml_r_i = 0; btn.textContent = mt_manageannouncementshtml_r_msgs[0];
+    var mt_manageannouncementshtml_r = setInterval(function(){ mt_manageannouncementshtml_r_i = (mt_manageannouncementshtml_r_i+1)%mt_manageannouncementshtml_r_msgs.length; btn.textContent = mt_manageannouncementshtml_r_msgs[mt_manageannouncementshtml_r_i]; }, 3000);
     fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
       body:JSON.stringify({ action:'deleteAnnouncement', row:deleteRow }) })
     .then(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 800); })

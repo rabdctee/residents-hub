@@ -686,7 +686,9 @@ function goBackToStep2() {
 function submitCorrection() {
   const btn = document.getElementById('confirmBtn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Submitting…';
+  var _msgs3 = ['<span class="spinner"></span>Submitting…','<span class="spinner"></span>Almost there…','<span class="spinner"></span>Just a moment…'];
+  var _mi3 = 0; btn.innerHTML = _msgs3[0];
+  var _mt3 = setInterval(function(){ _mi3 = (_mi3+1)%_msgs3.length; btn.innerHTML = _msgs3[_mi3]; }, 3000);
 
   const newDate     = document.getElementById('newDate').value;
   const newType     = document.getElementById('newType').value;
@@ -732,7 +734,7 @@ function submitCorrection() {
   })
   .catch(function(err) {
     btn.disabled = false;
-    btn.innerHTML = '✓ Confirm Correction';
+    clearInterval(_mt3); btn.innerHTML = '✓ Confirm Correction';
     const errEl = document.getElementById('reviewError');
     errEl.textContent = 'Submission failed: ' + err.message + '. Please try again or contact Rick.';
     errEl.style.display = 'block';
