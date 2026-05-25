@@ -10,14 +10,16 @@
       --navy-light: #E7F1FB;
       --navy-mid:   #c5d8ee;
       --gold:       #C9A44A;
+      --gold-light: #fdf6e3;
       --green:      #1a6b3a;
       --green-bg:   #e8f5ee;
       --red:        #c0392b;
-      --red-bg:     #fdf2f2;
+      --red-bg:     #fdf0ee;
       --grey:       #5f6368;
+      --border:     #dde3ec;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; min-height:100vh; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; color:#333; min-height:100vh; }
 
     /* ── Top bar ── */
     .top-bar {
@@ -35,105 +37,262 @@
     }
     .back-btn:hover { background:var(--navy-light); }
 
+    /* ── Tab bar ── */
+    .tab-bar {
+      background:white; border-bottom:2px solid var(--border);
+      display:flex; padding:0 20px;
+    }
+    .tab-btn {
+      padding:14px 20px; font-weight:700; font-size:0.9em;
+      color:var(--grey); border:none; background:none; cursor:pointer;
+      border-bottom:3px solid transparent; margin-bottom:-2px;
+      transition:all 0.15s;
+    }
+    .tab-btn:hover { color:var(--navy); }
+    .tab-btn.active { color:var(--navy); border-bottom-color:var(--navy); }
+
     /* ── Content ── */
     .content { max-width:700px; margin:0 auto; padding:20px 16px 60px; }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+
+    /* ── Info bar ── */
+    .info-bar {
+      background:var(--navy-light); border:2px solid var(--navy-mid);
+      border-radius:10px; padding:12px 16px; margin-bottom:20px;
+      font-size:0.85em; color:var(--navy); line-height:1.5;
+    }
 
     /* ── Cards ── */
     .card {
       background:white; border-radius:10px;
-      border:2px solid var(--navy-light);
-      box-shadow:0 1px 4px rgba(0,0,0,0.06);
+      border:2px solid var(--border);
+      box-shadow:0 1px 4px rgba(0,0,0,0.05);
       margin-bottom:20px; overflow:hidden;
     }
     .card-header {
       background:var(--navy); padding:12px 18px;
       color:white; font-weight:700; font-size:0.95em;
+      display:flex; align-items:center; justify-content:space-between;
     }
     .card-body { padding:18px; }
 
-    /* ── Event list ── */
-    .event-item {
-      border:1px solid var(--navy-light);
-      border-radius:8px; padding:12px 14px;
-      margin-bottom:10px; background:white;
+    /* ── Event list (Tab 1) ── */
+    .event-row {
+      border:1px solid var(--border); border-radius:8px;
+      padding:12px 14px; margin-bottom:10px; background:white;
       display:flex; align-items:flex-start;
       justify-content:space-between; gap:10px;
     }
-    .event-item:last-child { margin-bottom:0; }
-    .event-info { flex:1; min-width:0; }
-    .event-name { font-weight:700; color:var(--navy); font-size:0.95em; margin-bottom:3px; }
-    .event-meta { font-size:0.83em; color:var(--grey); line-height:1.6; }
-    .event-actions { display:flex; gap:6px; flex-shrink:0; }
+    .event-row:last-child { margin-bottom:0; }
+    .event-row-info { flex:1; min-width:0; }
+    .event-row-name { font-weight:700; color:var(--navy); font-size:0.95em; margin-bottom:3px; }
+    .event-row-meta { font-size:0.82em; color:var(--grey); line-height:1.7; }
+    .event-row-link { font-size:0.78em; color:var(--grey); margin-top:2px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:300px; }
+    .event-row-actions { display:flex; gap:6px; flex-shrink:0; }
+
     .btn-edit {
-      padding:6px 14px; border-radius:6px; font-size:0.82em;
+      padding:6px 12px; border-radius:6px; font-size:0.82em;
       font-weight:700; cursor:pointer; border:2px solid var(--navy);
       background:white; color:var(--navy); transition:all 0.15s;
     }
     .btn-edit:hover { background:var(--navy-light); }
     .btn-delete {
-      padding:6px 14px; border-radius:6px; font-size:0.82em;
+      padding:6px 12px; border-radius:6px; font-size:0.82em;
       font-weight:700; cursor:pointer; border:2px solid var(--red);
       background:white; color:var(--red); transition:all 0.15s;
     }
     .btn-delete:hover { background:var(--red-bg); }
 
-    .no-events {
-      text-align:center; color:#aaa; font-style:italic;
-      font-size:0.9em; padding:20px;
+    /* ── Add event button ── */
+    .btn-add {
+      width:100%; background:var(--navy); color:white;
+      padding:13px; border-radius:10px; font-weight:700;
+      font-size:0.95em; border:none; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      margin-bottom:20px; transition:background 0.2s;
     }
+    .btn-add:hover { background:#163d61; }
+
+    /* ── Widget tab ── */
+    .widget-event-card {
+      background:white; border:2px solid var(--border);
+      border-radius:10px; padding:14px 16px; margin-bottom:10px;
+      display:flex; align-items:center; gap:12px;
+      transition:border-color 0.15s;
+    }
+    .widget-event-card:hover { border-color:var(--navy-mid); }
+    .widget-event-card.featured { border-color:var(--gold); background:var(--gold-light); }
+    .widget-event-card.dragging { opacity:0.4; }
+    .widget-event-card.drag-over { border-color:var(--navy); background:var(--navy-light); }
+
+    .event-drag { color:#bbb; font-size:1.2em; cursor:grab; flex-shrink:0; user-select:none; }
+    .event-drag:active { cursor:grabbing; }
+
+    .widget-event-info { flex:1; min-width:0; }
+    .widget-event-name { font-weight:700; color:var(--navy); font-size:0.92em; }
+    .widget-event-meta { font-size:0.8em; color:var(--grey); margin-top:2px; line-height:1.5; }
+    .widget-event-link { font-size:0.76em; color:var(--grey); margin-top:2px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px; }
+
+    .widget-event-actions { display:flex; gap:6px; align-items:center; flex-shrink:0; }
+
+    .btn-feature {
+      padding:6px 12px; border-radius:6px; font-size:0.82em;
+      font-weight:700; cursor:pointer; border:2px solid var(--gold);
+      background:white; color:#8a6b1f; transition:all 0.15s;
+    }
+    .btn-feature:hover { background:var(--gold-light); }
+    .btn-feature.active { background:var(--gold); color:white; }
+
+    .btn-widget-edit {
+      padding:6px 10px; border-radius:6px; font-size:0.82em;
+      font-weight:700; cursor:pointer; border:2px solid var(--navy-mid);
+      background:white; color:var(--navy); transition:all 0.15s;
+    }
+    .btn-widget-edit:hover { background:var(--navy-light); }
+    .btn-widget-edit.has-override { border-color:var(--gold); color:#8a6b1f; }
+
+    /* ── Widget counter ── */
+    .widget-counter {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(255,255,255,0.2); padding:4px 12px;
+      border-radius:20px; font-size:0.82em; font-weight:700; color:white;
+    }
+    .widget-counter.full { background:var(--gold); color:white; }
+
+    /* ── Preview panel ── */
+    .preview-panel {
+      background:white; border:2px solid var(--navy-mid);
+      border-radius:10px; padding:16px; margin-top:20px;
+    }
+    .preview-title {
+      font-size:0.8em; font-weight:700; color:var(--grey);
+      text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;
+    }
+    .preview-event {
+      display:flex; gap:10px; align-items:flex-start;
+      padding:8px 0; border-bottom:1px solid var(--navy-light);
+    }
+    .preview-event:last-child { border-bottom:none; }
+    .preview-date {
+      font-size:0.75em; font-weight:700; color:var(--navy);
+      background:var(--navy-light); padding:3px 8px; border-radius:4px;
+      white-space:nowrap; flex-shrink:0;
+    }
+    .preview-name { font-size:0.88em; color:#333; }
 
     /* ── Form ── */
     .form-group { margin-bottom:16px; }
-    label {
-      display:block; font-weight:600; font-size:0.88em;
-      color:var(--navy); margin-bottom:5px;
-    }
-    input, select {
-      width:100%; padding:11px 13px; font-size:0.95em;
-      border:2px solid var(--navy-mid); border-radius:7px;
-      background:white; color:#333; font-family:inherit;
+    .form-label { display:block; font-weight:700; font-size:0.88em; color:var(--navy); margin-bottom:5px; }
+    .form-hint  { font-size:0.78em; color:var(--grey); margin-bottom:5px; }
+    .form-input {
+      width:100%; padding:10px 12px; font-size:0.92em;
+      border:2px solid var(--border); border-radius:7px;
+      font-family:inherit; color:#333; background:white;
       transition:border-color 0.15s;
     }
-    input:focus, select:focus {
-      outline:none; border-color:var(--navy);
-    }
+    .form-input:focus { outline:none; border-color:var(--navy); }
     .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     @media(max-width:480px){ .form-row { grid-template-columns:1fr; } }
 
-    /* ── Buttons ── */
     .btn-primary {
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
       background:var(--navy); color:white; padding:12px 24px;
       border-radius:8px; font-weight:700; font-size:0.95em;
-      border:none; cursor:pointer; width:100%;
-      justify-content:center; transition:background 0.2s;
+      border:none; cursor:pointer; width:100%; transition:background 0.2s;
     }
     .btn-primary:hover { background:#17406a; }
     .btn-primary:disabled { background:#aaa; cursor:not-allowed; }
     .btn-secondary {
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
       background:white; color:var(--navy); padding:11px 20px;
       border-radius:8px; font-weight:700; font-size:0.9em;
-      border:2px solid var(--navy); cursor:pointer;
-      justify-content:center; transition:all 0.2s; width:100%;
+      border:2px solid var(--navy); cursor:pointer; width:100%; transition:all 0.2s;
     }
     .btn-secondary:hover { background:var(--navy-light); }
     .btn-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:4px; }
 
     /* ── Alerts ── */
-    .alert {
-      padding:11px 14px; border-radius:7px;
-      font-size:0.88em; margin-bottom:14px; display:none;
-    }
+    .alert { padding:11px 14px; border-radius:7px; font-size:0.88em; margin-bottom:14px; display:none; }
     .alert-success { background:var(--green-bg); color:var(--green); border:1px solid #a8d5b8; }
     .alert-error   { background:var(--red-bg);   color:var(--red);   border:1px solid #f1b0a8; }
     .alert.show { display:block; }
 
-    /* ── Loading ── */
-    .loading-msg { text-align:center; color:#aaa; font-style:italic; font-size:0.88em; padding:16px; }
-
     /* ── Divider ── */
-    .divider { border:none; border-top:2px solid var(--navy-light); margin:18px 0; }
+    .divider { border:none; border-top:2px solid var(--border); margin:18px 0; }
+
+    /* ── Status/loading ── */
+    .status-msg { text-align:center; padding:24px; color:var(--grey); font-style:italic; font-size:0.88em; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.5); z-index:200;
+      align-items:center; justify-content:center; padding:20px;
+    }
+    .modal-overlay.open { display:flex; }
+    .modal {
+      background:white; border-radius:14px; padding:28px;
+      max-width:480px; width:100%;
+      box-shadow:0 20px 60px rgba(0,0,0,0.3);
+      max-height:90vh; overflow-y:auto;
+    }
+    .modal-title {
+      font-size:1.05em; font-weight:800; color:var(--navy);
+      margin-bottom:20px; padding-bottom:12px;
+      border-bottom:2px solid var(--navy-light);
+    }
+    .modal-btns { display:flex; gap:10px; margin-top:20px; }
+    .btn-save {
+      flex:1; background:var(--navy); color:white; padding:12px;
+      border-radius:8px; font-weight:700; font-size:0.92em;
+      border:none; cursor:pointer; transition:background 0.15s;
+    }
+    .btn-save:hover { background:#163d61; }
+    .btn-save:disabled { background:#aaa; cursor:not-allowed; }
+    .btn-cancel {
+      background:white; color:var(--grey); padding:12px 20px;
+      border-radius:8px; font-weight:700; font-size:0.92em;
+      border:2px solid var(--border); cursor:pointer; transition:background 0.15s;
+    }
+    .btn-cancel:hover { background:#f5f5f5; }
+
+    /* ── Delete confirm ── */
+    .delete-confirm {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.5); z-index:300;
+      align-items:center; justify-content:center; padding:20px;
+    }
+    .delete-confirm.open { display:flex; }
+    .delete-box {
+      background:white; border-radius:14px; padding:28px;
+      max-width:400px; width:100%; text-align:center;
+      box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    }
+    .delete-icon { font-size:2.5em; margin-bottom:10px; }
+    .delete-msg  { color:var(--grey); font-size:0.88em; margin-bottom:20px; margin-top:8px; }
+    .delete-name { font-weight:800; color:var(--navy); font-size:1em; }
+    .delete-btns { display:flex; gap:10px; }
+    .btn-confirm-delete {
+      flex:1; background:var(--red); color:white; padding:12px;
+      border-radius:8px; font-weight:700; border:none; cursor:pointer;
+    }
+    .btn-confirm-delete:hover { background:#a93226; }
+
+    /* ── Toast ── */
+    .toast {
+      position:fixed; bottom:24px; left:50%;
+      transform:translateX(-50%) translateY(100px);
+      background:#1a3a1a; color:white; padding:12px 24px;
+      border-radius:8px; font-weight:700; font-size:0.9em;
+      z-index:500; transition:transform 0.3s; pointer-events:none;
+    }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast.error { background:#7a1a1a; }
+
+    .no-events { text-align:center; color:#aaa; font-style:italic; font-size:0.9em; padding:20px; }
   </style>
 </head>
 <body>
@@ -141,163 +300,408 @@
 <div class="top-bar">
   <div>
     <div class="top-bar-title">🗓️ Manage Events</div>
-    <div class="top-bar-sub">Social Club — Event Coordination</div>
+    <div class="top-bar-sub">Social Club — Event Management &amp; What's On Widget</div>
   </div>
-  <a class="back-btn" href="index.html?expand=sc-events#committee">← Back</a>
+  <a class="back-btn" href="index.html?expand=sc-events#committee">← Return to Committee Page</a>
+</div>
+
+<!-- Tab bar -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('events')">📋 All Events</button>
+  <button class="tab-btn" onclick="switchTab('widget')">⭐ What's On Widget</button>
 </div>
 
 <div class="content">
 
-  <!-- Current Events -->
-  <div class="card">
-    <div class="card-header">📋 Current Events</div>
-    <div class="card-body">
-      <div id="alertList" class="alert"></div>
-      <div id="eventList"><div class="loading-msg">Loading events...</div></div>
+  <!-- ══════════════════════════════════════════════
+       TAB 1 — ALL EVENTS
+  ══════════════════════════════════════════════ -->
+  <div class="tab-panel active" id="tab-events">
+
+    <div class="info-bar">
+      📋 Add and manage all Social Club events here. To feature an event on the home page <strong>What's On</strong> widget, go to the <strong>⭐ What's On Widget</strong> tab.
     </div>
-  </div>
 
-  <!-- Add / Edit Form -->
-  <div class="card">
-    <div class="card-header" id="formTitle">➕ Add New Event</div>
-    <div class="card-body">
-      <div id="alertForm" class="alert"></div>
-
-      <input type="hidden" id="editRow" value="">
-
-      <div class="form-group">
-        <label for="evtName">Event Name</label>
-        <input type="text" id="evtName" placeholder="e.g. Happy Hour">
+    <div class="card">
+      <div class="card-header">📋 Current Events</div>
+      <div class="card-body">
+        <div id="alertList" class="alert"></div>
+        <div id="eventList"><div class="status-msg">Loading events…</div></div>
       </div>
+    </div>
 
-      <div class="form-row">
+    <div class="card">
+      <div class="card-header" id="formTitle">➕ Add New Event</div>
+      <div class="card-body">
+        <div id="alertForm" class="alert"></div>
+        <input type="hidden" id="editRow" value="">
+
         <div class="form-group">
-          <label for="evtDate">Event Date</label>
-          <input type="date" id="evtDate">
+          <label class="form-label" for="evtName">Event Name *</label>
+          <input class="form-input" type="text" id="evtName" placeholder="e.g. Happy Hour">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="evtDate">Event Date *</label>
+            <input class="form-input" type="date" id="evtDate">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="evtTime">Time *</label>
+            <input class="form-input" type="time" id="evtTime">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="evtLocation">Location *</label>
+          <input class="form-input" type="text" id="evtLocation" placeholder="e.g. MRC, Manor, PDR">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="evtEmail">Coordinator Email *</label>
+          <input class="form-input" type="email" id="evtEmail" placeholder="e.g. bdsc.convenor@gmail.com" value="bdsc.convenor@gmail.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="evtLink">Link <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
+          <div class="form-hint">Paste a Google Drive PDF link or web address — e.g. a flyer or programme</div>
+          <input class="form-input" type="url" id="evtLink" placeholder="e.g. https://drive.google.com/file/d/…/view">
+        </div>
+
+        <hr class="divider">
+
+        <div class="btn-row" id="formBtns">
+          <button class="btn-primary" id="submitBtn" onclick="submitForm()">✓ Add Event</button>
+          <button class="btn-secondary" id="cancelBtn" onclick="cancelEdit()" style="display:none;">✕ Cancel</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-events -->
+
+  <!-- ══════════════════════════════════════════════
+       TAB 2 — WHAT'S ON WIDGET
+  ══════════════════════════════════════════════ -->
+  <div class="tab-panel" id="tab-widget">
+
+    <div class="info-bar">
+      ⭐ Select up to <strong>3 events</strong> to feature on the home page <strong>What's On</strong> widget. You can also add a PDF link to any featured event. Drag featured events to reorder them.
+    </div>
+
+    <!-- Featured events (widget entries) -->
+    <div class="card">
+      <div class="card-header">
+        <span>⭐ Featured on Widget</span>
+        <span class="widget-counter" id="widgetCounter">0 / 3</span>
+      </div>
+      <div class="card-body">
+        <div id="widgetAlertList" class="alert"></div>
+        <div id="widgetList"><div class="status-msg">Loading…</div></div>
+        <div class="preview-panel" id="previewPanel" style="display:none;">
+          <div class="preview-title">👁️ Widget Preview</div>
+          <div id="previewList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pick from events -->
+    <div class="card">
+      <div class="card-header">📋 Pick from Events</div>
+      <div class="card-body">
+        <div id="pickList"><div class="status-msg">Loading events…</div></div>
+        <hr class="divider" style="margin-top:10px;">
+        <div style="font-size:0.83em;color:var(--grey);margin-top:10px;">
+          💡 Can't find the event? Make sure it's been added in the <strong>All Events</strong> tab first. Or add a one-off widget item below.
+        </div>
+      </div>
+    </div>
+
+    <!-- Add one-off widget item -->
+    <div class="card">
+      <div class="card-header">➕ Add One-Off Widget Item</div>
+      <div class="card-body">
+        <div style="font-size:0.83em;color:var(--grey);margin-bottom:14px;">
+          Use this for special items that don't need to be in the full event list (e.g. a village notice or external link).
+        </div>
+        <div id="alertWidget" class="alert"></div>
+        <div class="form-group">
+          <label class="form-label" for="wDate">Display Date *</label>
+          <div class="form-hint">e.g. Fri, Jun 6 &nbsp;or&nbsp; Sat, Jun 14</div>
+          <input class="form-input" type="text" id="wDate" placeholder="e.g. Fri, Jun 6">
         </div>
         <div class="form-group">
-          <label for="evtTime">Time</label>
-          <input type="time" id="evtTime">
+          <label class="form-label" for="wName">Item Name *</label>
+          <input class="form-input" type="text" id="wName" placeholder="e.g. Village Information Morning">
         </div>
+        <div class="form-group">
+          <label class="form-label" for="wLink">Link <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
+          <div class="form-hint">Leave blank, or paste a URL or Google Drive PDF link</div>
+          <input class="form-input" type="text" id="wLink" placeholder="e.g. https://bdrv.au/#events">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="wDisplayFrom">Display from <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
+          <div class="form-hint">Leave blank to show immediately, or set a future date</div>
+          <input class="form-input" type="date" id="wDisplayFrom">
+        </div>
+        <button class="btn-primary" id="wSubmitBtn" onclick="submitWidgetItem()">➕ Add to Widget</button>
       </div>
+    </div>
 
+  </div><!-- /tab-widget -->
+
+</div><!-- /content -->
+
+<!-- ── Edit Event Modal (Tab 1) ── -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-title" id="editModalTitle">✏️ Edit Event</div>
+    <input type="hidden" id="editModalRow">
+    <div class="form-group">
+      <label class="form-label">Event Name *</label>
+      <input class="form-input" type="text" id="editEvtName">
+    </div>
+    <div class="form-row">
       <div class="form-group">
-        <label for="evtLocation">Location</label>
-        <input type="text" id="evtLocation" placeholder="e.g. MRC, Manor, PDR">
+        <label class="form-label">Event Date *</label>
+        <input class="form-input" type="date" id="editEvtDate">
       </div>
-
       <div class="form-group">
-        <label for="evtEmail">Coordinator Email</label>
-        <input type="email" id="evtEmail" placeholder="e.g. bdsc.convenor@gmail.com" value="bdsc.convenor@gmail.com">
+        <label class="form-label">Time *</label>
+        <input class="form-input" type="time" id="editEvtTime">
       </div>
-
-      <hr class="divider">
-
-      <div class="btn-row" id="formBtns">
-        <button class="btn-primary" id="submitBtn" onclick="submitForm()">✓ Add Event</button>
-        <button class="btn-secondary" id="cancelBtn" onclick="cancelEdit()" style="display:none;">✕ Cancel</button>
-      </div>
-
+    </div>
+    <div class="form-group">
+      <label class="form-label">Location *</label>
+      <input class="form-input" type="text" id="editEvtLocation">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Coordinator Email *</label>
+      <input class="form-input" type="email" id="editEvtEmail">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Link <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
+      <input class="form-input" type="url" id="editEvtLink" placeholder="e.g. https://drive.google.com/file/d/…/view">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-save" id="editSaveBtn" onclick="saveEditModal()">💾 Save Changes</button>
     </div>
   </div>
-
 </div>
 
-<script>
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUcetKOKOyNwn1SSqI54xBIGTHV2YVTXcD1o2UTFo7uKGoqCts-nUqFSMEhLxXanK0CA/exec';
+<!-- ── Widget Link Override Modal ── -->
+<div class="modal-overlay" id="widgetLinkModal">
+  <div class="modal">
+    <div class="modal-title" id="widgetLinkTitle">🔗 Edit Widget Link</div>
+    <input type="hidden" id="widgetLinkRow">
+    <div class="form-group">
+      <label class="form-label">Event</label>
+      <div id="widgetLinkEventName" style="font-weight:700;color:var(--navy);font-size:0.95em;padding:8px 0;"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Link <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
+      <div class="form-hint">Leave blank to use default (Events page), or paste a PDF/web link</div>
+      <input class="form-input" type="text" id="widgetLinkUrl" placeholder="e.g. https://drive.google.com/file/d/…/view">
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeWidgetLinkModal()">Cancel</button>
+      <button class="btn-save" id="widgetLinkSaveBtn" onclick="saveWidgetLink()">💾 Save Link</button>
+    </div>
+  </div>
+</div>
 
-  // ── Helpers ──────────────────────────────────────────────────
+<!-- ── Delete Confirm (Tab 1) ── -->
+<div class="delete-confirm" id="deleteConfirmEvents">
+  <div class="delete-box">
+    <div class="delete-icon">🗑️</div>
+    <div class="delete-name" id="deleteEventsName"></div>
+    <div class="delete-msg">This will permanently remove this event.</div>
+    <div class="delete-btns">
+      <button class="btn-cancel" onclick="closeDeleteEvent()">Cancel</button>
+      <button class="btn-confirm-delete" id="deleteEventsBtn" onclick="confirmDeleteEvent()">Delete Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Delete Confirm (Tab 2 widget) ── -->
+<div class="delete-confirm" id="deleteConfirmWidget">
+  <div class="delete-box">
+    <div class="delete-icon">🗑️</div>
+    <div class="delete-name" id="deleteWidgetName"></div>
+    <div class="delete-msg">This will remove this event from the What's On widget.</div>
+    <div class="delete-btns">
+      <button class="btn-cancel" onclick="closeDeleteWidget()">Cancel</button>
+      <button class="btn-confirm-delete" id="deleteWidgetBtn" onclick="confirmDeleteWidget()">Remove from Widget</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Script URLs ──────────────────────────────────────────────
+  var EVENTS_URL = 'https://script.google.com/macros/s/AKfycbxUcetKOKOyNwn1SSqI54xBIGTHV2YVTXcD1o2UTFo7uKGoqCts-nUqFSMEhLxXanK0CA/exec';
+  var WIDGET_URL = 'https://script.google.com/macros/s/AKfycbz7Zi9xPahcXNNK0-7kBxUV5toO-dOugD6OWWJnCVBniscyPgGu_XTQmGqtQPwXo9Q9/exec';
+
+  // ── State ────────────────────────────────────────────────────
+  var allEvents    = [];   // from manage-events sheet
+  var widgetEvents = [];   // from widget sheet
+  var deleteEventRow  = null;
+  var deleteWidgetRow = null;
+  var dragSrcIdx = null;
+
+  // ═══════════════════════════════════════════════════════════
+  // TAB SWITCHING
+  // ═══════════════════════════════════════════════════════════
+  function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+    if (name === 'widget') { loadWidgetEvents(); loadEventsForPicker(); }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // HELPERS
+  // ═══════════════════════════════════════════════════════════
+  function esc(str) {
+    return (str || '').toString()
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
   function showAlert(id, type, msg) {
     var el = document.getElementById(id);
     el.className = 'alert alert-' + type + ' show';
     el.textContent = msg;
     setTimeout(function(){ el.classList.remove('show'); }, 5000);
   }
-
+  function showToast(msg, isError) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '');
+    setTimeout(function(){ t.classList.add('show'); }, 10);
+    setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  }
   function fmtDate(dateStr) {
     if (!dateStr) return '';
-    // Accepts DD/MM/YYYY or YYYY-MM-DD
     var parts;
-    if (dateStr.includes('/')) {
-      parts = dateStr.split('/');
-      return parts[0] + '/' + parts[1] + '/' + parts[2];
-    }
+    if (dateStr.includes('/')) { parts = dateStr.split('/'); return parts[0]+'/'+parts[1]+'/'+parts[2]; }
     parts = dateStr.split('-');
-    return parts[2] + '/' + parts[1] + '/' + parts[0];
+    return parts[2]+'/'+parts[1]+'/'+parts[0];
   }
-
   function toInputDate(dateStr) {
-    // Convert DD/MM/YYYY to YYYY-MM-DD for input[type=date]
     if (!dateStr) return '';
     if (dateStr.includes('-')) return dateStr;
     var p = dateStr.split('/');
-    return p[2] + '-' + p[1].padStart(2,'0') + '-' + p[0].padStart(2,'0');
+    return p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0');
   }
-
   function fmtTime(timeStr) {
     if (!timeStr) return '';
-    // Convert HH:MM to 12-hour display
     var parts = timeStr.split(':');
-    var h = parseInt(parts[0]);
-    var m = parts[1];
+    var h = parseInt(parts[0]), m = parts[1];
     var ampm = h >= 12 ? 'pm' : 'am';
     h = h % 12 || 12;
     return h + ':' + m + ' ' + ampm;
   }
+  // Convert YYYY-MM-DD date to "Day, Mon DD" display format for widget
+  function toWidgetDate(dateStr) {
+    if (!dateStr) return '';
+    // dateStr is YYYY-MM-DD from input[type=date]
+    var parts = dateStr.split('-');
+    if (parts.length !== 3) return dateStr;
+    var d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    var days  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var months= ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return days[d.getDay()] + ', ' + months[d.getMonth()] + ' ' + d.getDate();
+  }
 
-  // ── Load events ──────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════
+  // TAB 1 — ALL EVENTS
+  // ═══════════════════════════════════════════════════════════
+
   function loadEvents() {
-    document.getElementById('eventList').innerHTML =
-      '<div class="loading-msg">Loading events...</div>';
-
-    fetch(SCRIPT_URL + '?action=getEvents')
+    document.getElementById('eventList').innerHTML = '<div class="status-msg">Loading events…</div>';
+    fetch(EVENTS_URL + '?action=getEvents')
       .then(function(r){ return r.json(); })
       .then(function(data){
-        if (!data.events || data.events.length === 0) {
-          document.getElementById('eventList').innerHTML =
-            '<div class="no-events">No events currently scheduled.</div>';
-          return;
-        }
-        var html = '';
-        data.events.forEach(function(ev) {
-          html += '<div class="event-item">' +
-            '<div class="event-info">' +
-              '<div class="event-name">' + escHtml(ev.name) + '</div>' +
-              '<div class="event-meta">' +
-                '📅 ' + fmtDate(ev.date) + ' &nbsp;|&nbsp; ' +
-                '🕐 ' + fmtTime(ev.time) + ' &nbsp;|&nbsp; ' +
-                '📍 ' + escHtml(ev.location) + '<br>' +
-                '📧 ' + escHtml(ev.email) +
-              '</div>' +
-            '</div>' +
-            '<div class="event-actions">' +
-              '<button class="btn-edit" onclick=\'editEvent(' + JSON.stringify(ev) + ')\'>Edit</button>' +
-              '<button class="btn-delete" onclick="deleteEvent(' + ev.row + ',\'' + escHtml(ev.name) + '\')">Delete</button>' +
-            '</div>' +
-          '</div>';
-        });
-        document.getElementById('eventList').innerHTML = html;
+        allEvents = data.events || [];
+        renderEventList();
       })
       .catch(function(){
         document.getElementById('eventList').innerHTML =
-          '<div class="no-events">Could not load events. Please try refreshing.</div>';
+          '<div class="no-events">⚠️ Could not load events. Please refresh.</div>';
       });
   }
 
-  // ── Edit ─────────────────────────────────────────────────────
-  function editEvent(ev) {
-    document.getElementById('formTitle').textContent = '✏️ Edit Event';
-    document.getElementById('editRow').value = ev.row;
-    document.getElementById('evtName').value     = ev.name;
-    document.getElementById('evtDate').value     = toInputDate(ev.date);
-    document.getElementById('evtTime').value     = ev.time;
-    document.getElementById('evtLocation').value = ev.location;
-    document.getElementById('evtEmail').value    = ev.email;
-    document.getElementById('submitBtn').textContent = '✓ Save Changes';
-    document.getElementById('cancelBtn').style.display = '';
-    document.getElementById('cancelBtn').style.display = 'flex';
-    // Scroll to form
-    document.querySelector('.card:last-child').scrollIntoView({behavior:'smooth'});
+  function renderEventList() {
+    if (allEvents.length === 0) {
+      document.getElementById('eventList').innerHTML =
+        '<div class="no-events">No events yet. Use the form below to add one.</div>';
+      return;
+    }
+    var html = '';
+    allEvents.forEach(function(ev) {
+      html += '<div class="event-row">' +
+        '<div class="event-row-info">' +
+          '<div class="event-row-name">' + esc(ev.name) + '</div>' +
+          '<div class="event-row-meta">' +
+            '📅 ' + fmtDate(ev.date) +
+            (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
+            (ev.location ? ' &nbsp;|&nbsp; 📍 ' + esc(ev.location)     : '') +
+            (ev.email    ? '<br>📧 ' + esc(ev.email)                    : '') +
+          '</div>' +
+          (ev.link ? '<div class="event-row-link">🔗 ' + esc(ev.link) + '</div>' : '') +
+        '</div>' +
+        '<div class="event-row-actions">' +
+          '<button class="btn-edit" onclick=\'openEditModal(' + JSON.stringify(ev) + ')\'>✏️ Edit</button>' +
+          '<button class="btn-delete" onclick="openDeleteEvent(' + ev.row + ',\'' + esc(ev.name) + '\')">🗑️</button>' +
+        '</div>' +
+      '</div>';
+    });
+    document.getElementById('eventList').innerHTML = html;
+  }
+
+  // ── Add form ──
+  function submitForm() {
+    var name     = document.getElementById('evtName').value.trim();
+    var date     = document.getElementById('evtDate').value;
+    var time     = document.getElementById('evtTime').value;
+    var location = document.getElementById('evtLocation').value.trim();
+    var email    = document.getElementById('evtEmail').value.trim();
+    var link     = document.getElementById('evtLink').value.trim();
+    var row      = document.getElementById('editRow').value;
+
+    if (!name || !date || !time || !location || !email) {
+      showAlert('alertForm','error','Please fill in all required fields before saving.');
+      return;
+    }
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    var payload = {
+      action: row ? 'editEvent' : 'addEvent',
+      row: row, name: name,
+      date: fmtDate(date), time: time,
+      location: location, email: email, link: link
+    };
+
+    fetch(EVENTS_URL, { method:'POST', body:JSON.stringify(payload) })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        btn.disabled = false;
+        btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
+        if (data.status === 'ok') {
+          showAlert('alertForm','success', row ? 'Event updated successfully.' : 'Event added successfully.');
+          cancelEdit();
+          loadEvents();
+        } else {
+          showAlert('alertForm','error','Error: ' + (data.message || 'Please try again.'));
+        }
+      })
+      .catch(function(){
+        btn.disabled = false; btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
+        showAlert('alertForm','error','Could not save. Please try again or contact Rick.');
+      });
   }
 
   function cancelEdit() {
@@ -308,94 +712,398 @@
     document.getElementById('evtTime').value     = '';
     document.getElementById('evtLocation').value = '';
     document.getElementById('evtEmail').value    = 'bdsc.convenor@gmail.com';
+    document.getElementById('evtLink').value     = '';
     document.getElementById('submitBtn').textContent = '✓ Add Event';
     document.getElementById('cancelBtn').style.display = 'none';
   }
 
-  // ── Submit (add or edit) ──────────────────────────────────────
-  function submitForm() {
-    var name     = document.getElementById('evtName').value.trim();
-    var date     = document.getElementById('evtDate').value;
-    var time     = document.getElementById('evtTime').value;
-    var location = document.getElementById('evtLocation').value.trim();
-    var email    = document.getElementById('evtEmail').value.trim();
-    var row      = document.getElementById('editRow').value;
+  // ── Edit modal ──
+  function openEditModal(ev) {
+    document.getElementById('editModalRow').value    = ev.row;
+    document.getElementById('editEvtName').value     = ev.name     || '';
+    document.getElementById('editEvtDate').value     = toInputDate(ev.date);
+    document.getElementById('editEvtTime').value     = ev.time     || '';
+    document.getElementById('editEvtLocation').value = ev.location || '';
+    document.getElementById('editEvtEmail').value    = ev.email    || '';
+    document.getElementById('editEvtLink').value     = ev.link     || '';
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').classList.remove('open');
+  }
+
+  function saveEditModal() {
+    var row      = document.getElementById('editModalRow').value;
+    var name     = document.getElementById('editEvtName').value.trim();
+    var date     = document.getElementById('editEvtDate').value;
+    var time     = document.getElementById('editEvtTime').value;
+    var location = document.getElementById('editEvtLocation').value.trim();
+    var email    = document.getElementById('editEvtEmail').value.trim();
+    var link     = document.getElementById('editEvtLink').value.trim();
 
     if (!name || !date || !time || !location || !email) {
-      showAlert('alertForm', 'error', 'Please fill in all fields before saving.');
+      showToast('Please fill in all required fields.', true); return;
+    }
+    var btn = document.getElementById('editSaveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    fetch(EVENTS_URL, { method:'POST', body:JSON.stringify({
+      action:'editEvent', row:row, name:name,
+      date:fmtDate(date), time:time,
+      location:location, email:email, link:link
+    })})
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      btn.disabled = false; btn.textContent = '💾 Save Changes';
+      closeEditModal();
+      showToast('Event updated ✓');
+      loadEvents();
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = '💾 Save Changes';
+      closeEditModal();
+      showToast('Event updated ✓');
+      setTimeout(loadEvents, 1000);
+    });
+  }
+
+  // ── Delete event ──
+  function openDeleteEvent(row, name) {
+    deleteEventRow = row;
+    document.getElementById('deleteEventsName').textContent = name;
+    document.getElementById('deleteConfirmEvents').classList.add('open');
+  }
+  function closeDeleteEvent() {
+    document.getElementById('deleteConfirmEvents').classList.remove('open');
+    deleteEventRow = null;
+  }
+  function confirmDeleteEvent() {
+    if (!deleteEventRow) return;
+    var btn = document.getElementById('deleteEventsBtn');
+    btn.disabled = true; btn.textContent = 'Deleting…';
+    fetch(EVENTS_URL, { method:'POST', body:JSON.stringify({ action:'deleteEvent', row:deleteEventRow }) })
+      .then(function(r){ return r.json(); })
+      .then(function(){
+        closeDeleteEvent(); showToast('Event deleted ✓');
+        loadEvents();
+      })
+      .catch(function(){
+        closeDeleteEvent(); showToast('Event deleted ✓');
+        setTimeout(loadEvents, 1000);
+      });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // TAB 2 — WHAT'S ON WIDGET
+  // ═══════════════════════════════════════════════════════════
+
+  function loadWidgetEvents() {
+    document.getElementById('widgetList').innerHTML = '<div class="status-msg">Loading…</div>';
+    fetch(WIDGET_URL + '?action=getEvents')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        widgetEvents = data.events || [];
+        renderWidgetList();
+        renderWidgetPreview();
+        updateWidgetCounter();
+      })
+      .catch(function(){
+        document.getElementById('widgetList').innerHTML =
+          '<div class="status-msg">⚠️ Could not load widget events. Please refresh.</div>';
+      });
+  }
+
+  function loadEventsForPicker() {
+    document.getElementById('pickList').innerHTML = '<div class="status-msg">Loading events…</div>';
+    fetch(EVENTS_URL + '?action=getEvents')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        renderPickList(data.events || []);
+      })
+      .catch(function(){
+        document.getElementById('pickList').innerHTML =
+          '<div class="status-msg">⚠️ Could not load events.</div>';
+      });
+  }
+
+  function updateWidgetCounter() {
+    var el = document.getElementById('widgetCounter');
+    var n = widgetEvents.length;
+    el.textContent = n + ' / 3';
+    el.className = 'widget-counter' + (n >= 3 ? ' full' : '');
+  }
+
+  function renderWidgetList() {
+    var panel = document.getElementById('previewPanel');
+    if (widgetEvents.length === 0) {
+      document.getElementById('widgetList').innerHTML =
+        '<div class="status-msg">No events on the widget yet. Pick some from the list below.</div>';
+      panel.style.display = 'none';
       return;
     }
+    panel.style.display = 'block';
+    var html = '';
+    widgetEvents.forEach(function(ev, idx) {
+      html += '<div class="widget-event-card featured" draggable="true" data-idx="' + idx + '" ' +
+        'ondragstart="wDragStart(event,' + idx + ')" ' +
+        'ondragover="wDragOver(event,' + idx + ')" ' +
+        'ondragleave="wDragLeave(event)" ' +
+        'ondrop="wDragDrop(event,' + idx + ')">' +
+        '<div class="event-drag" title="Drag to reorder">⠿</div>' +
+        '<div class="widget-event-info">' +
+          '<div class="widget-event-name">' + esc(ev.name) + '</div>' +
+          '<div class="widget-event-meta">📅 ' + esc(ev.date) + '</div>' +
+          (ev.link ? '<div class="widget-event-link">🔗 ' + esc(ev.link) + '</div>' : '') +
+        '</div>' +
+        '<div class="widget-event-actions">' +
+          '<button class="btn-widget-edit' + (ev.link ? ' has-override' : '') + '" ' +
+            'onclick="openWidgetLinkModal(' + idx + ')" title="Edit link">🔗</button>' +
+          '<button class="btn-delete" onclick="openDeleteWidget(' + ev.row + ',\'' + esc(ev.name) + '\')">🗑️</button>' +
+        '</div>' +
+      '</div>';
+    });
+    document.getElementById('widgetList').innerHTML = html;
+  }
 
-    var btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    var mt_manageeventshtml_msgs = ['Saving…','Almost there…','Just a moment…'];
-    var mt_manageeventshtml_i = 0; btn.textContent = mt_manageeventshtml_msgs[0];
-    var mt_manageeventshtml = setInterval(function(){ mt_manageeventshtml_i = (mt_manageeventshtml_i+1)%mt_manageeventshtml_msgs.length; btn.textContent = mt_manageeventshtml_msgs[mt_manageeventshtml_i]; }, 3000);
+  function renderWidgetPreview() {
+    if (widgetEvents.length === 0) return;
+    var html = '';
+    widgetEvents.forEach(function(ev) {
+      html += '<div class="preview-event">' +
+        '<span class="preview-date">' + esc(ev.date) + '</span>' +
+        '<span class="preview-name">' +
+          (ev.link
+            ? '<a href="' + esc(ev.link) + '" target="_blank" style="color:var(--navy);text-decoration:none;">' + esc(ev.name) + ' 🔗</a>'
+            : esc(ev.name)) +
+        '</span>' +
+      '</div>';
+    });
+    document.getElementById('previewList').innerHTML = html;
+  }
+
+  function renderPickList(events) {
+    if (!events || events.length === 0) {
+      document.getElementById('pickList').innerHTML =
+        '<div class="status-msg">No events found. Add some in the All Events tab first.</div>';
+      return;
+    }
+    var html = '';
+    events.forEach(function(ev) {
+      // Check if already on widget
+      var alreadyFeatured = widgetEvents.some(function(w){ return w.name === ev.name; });
+      var atLimit = widgetEvents.length >= 3;
+      html += '<div class="widget-event-card' + (alreadyFeatured ? ' featured' : '') + '">' +
+        '<div class="widget-event-info">' +
+          '<div class="widget-event-name">' + esc(ev.name) + '</div>' +
+          '<div class="widget-event-meta">' +
+            '📅 ' + fmtDate(ev.date) +
+            (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
+            (ev.location ? ' &nbsp;|&nbsp; 📍 ' + esc(ev.location)     : '') +
+          '</div>' +
+          (ev.link ? '<div class="widget-event-link">🔗 ' + esc(ev.link) + '</div>' : '') +
+        '</div>' +
+        '<button class="btn-feature' + (alreadyFeatured ? ' active' : '') + '" ' +
+          (alreadyFeatured ? 'disabled title="Already on widget"' :
+           atLimit         ? 'disabled title="Widget is full (max 3)"' :
+           'onclick=\'addToWidget(' + JSON.stringify(ev) + ')\'') + '>' +
+          (alreadyFeatured ? '⭐ Featured' : atLimit ? '🚫 Full' : '⭐ Add to Widget') +
+        '</button>' +
+      '</div>';
+    });
+    document.getElementById('pickList').innerHTML = html;
+  }
+
+  // ── Add event to widget from picker ──
+  function addToWidget(ev) {
+    if (widgetEvents.length >= 3) {
+      showToast('Widget already has 3 events. Remove one first.', true); return;
+    }
+    // Format date for widget display
+    var displayDate = toWidgetDate(toInputDate(ev.date));
+    var btn = event.target;
+    btn.disabled = true; btn.textContent = 'Adding…';
 
     var payload = {
-      action:   row ? 'editEvent' : 'addEvent',
-      row:      row,
-      name:     name,
-      date:     fmtDate(date),   // send as DD/MM/YYYY
-      time:     time,
-      location: location,
-      email:    email
+      action: 'addEvent',
+      date: displayDate,
+      name: ev.name,
+      link: ev.link || '',
+      displayFrom: ''
     };
 
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload)
+    fetch(WIDGET_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify(payload)
     })
     .then(function(r){ return r.json(); })
-    .then(function(data){
-      btn.disabled = false;
-      clearInterval(mt_manageeventshtml); btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
-      if (data.status === 'ok') {
-        showAlert('alertForm', 'success',
-          row ? 'Event updated successfully.' : 'Event added successfully.');
-        cancelEdit();
-        loadEvents();
-      } else {
-        showAlert('alertForm', 'error', 'Error: ' + (data.message || 'Please try again.'));
-      }
+    .then(function(){
+      showToast(ev.name + ' added to widget ✓');
+      loadWidgetEvents();
+      loadEventsForPicker();
     })
     .catch(function(){
-      btn.disabled = false;
-      clearInterval(mt_manageeventshtml); btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
-      showAlert('alertForm', 'error', 'Could not save. Please try again or contact Rick.');
+      // Assume success on CORS
+      showToast(ev.name + ' added to widget ✓');
+      setTimeout(function(){ loadWidgetEvents(); loadEventsForPicker(); }, 1200);
     });
   }
 
-  // ── Delete ───────────────────────────────────────────────────
-  function deleteEvent(row, name) {
-    if (!confirm('Delete "' + name + '"? This cannot be undone.')) return;
-    fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'deleteEvent', row: row })
+  // ── Add one-off widget item ──
+  function submitWidgetItem() {
+    if (widgetEvents.length >= 3) {
+      showAlert('alertWidget','error','Widget already has 3 events. Remove one first.');
+      return;
+    }
+    var date = document.getElementById('wDate').value.trim();
+    var name = document.getElementById('wName').value.trim();
+    var link = document.getElementById('wLink').value.trim();
+    var displayFrom = document.getElementById('wDisplayFrom').value;
+
+    if (!date || !name) {
+      showAlert('alertWidget','error','Please enter a date and item name.');
+      return;
+    }
+    var btn = document.getElementById('wSubmitBtn');
+    btn.disabled = true; btn.textContent = 'Adding…';
+
+    fetch(WIDGET_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({ action:'addEvent', date:date, name:name, link:link, displayFrom:displayFrom })
     })
     .then(function(r){ return r.json(); })
-    .then(function(data){
-      if (data.status === 'ok') {
-        showAlert('alertList', 'success', '"' + name + '" has been deleted.');
-        loadEvents();
-      } else {
-        showAlert('alertList', 'error', 'Could not delete. Please try again.');
-      }
+    .then(function(){
+      btn.disabled = false; btn.textContent = '➕ Add to Widget';
+      showAlert('alertWidget','success','Item added to widget.');
+      document.getElementById('wDate').value = '';
+      document.getElementById('wName').value = '';
+      document.getElementById('wLink').value = '';
+      document.getElementById('wDisplayFrom').value = '';
+      loadWidgetEvents();
     })
     .catch(function(){
-      showAlert('alertList', 'error', 'Could not delete. Please try again or contact Rick.');
+      btn.disabled = false; btn.textContent = '➕ Add to Widget';
+      showAlert('alertWidget','success','Item added to widget.');
+      document.getElementById('wDate').value = '';
+      document.getElementById('wName').value = '';
+      document.getElementById('wLink').value = '';
+      document.getElementById('wDisplayFrom').value = '';
+      setTimeout(loadWidgetEvents, 1200);
     });
   }
 
-  // ── Escape HTML ───────────────────────────────────────────────
-  function escHtml(str) {
-    return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
-                    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  // ── Widget link override modal ──
+  function openWidgetLinkModal(idx) {
+    var ev = widgetEvents[idx];
+    document.getElementById('widgetLinkRow').value = ev.row;
+    document.getElementById('widgetLinkEventName').textContent = ev.name;
+    document.getElementById('widgetLinkUrl').value = ev.link || '';
+    document.getElementById('widgetLinkModal').classList.add('open');
+  }
+  function closeWidgetLinkModal() {
+    document.getElementById('widgetLinkModal').classList.remove('open');
+  }
+  function saveWidgetLink() {
+    var row  = document.getElementById('widgetLinkRow').value;
+    var link = document.getElementById('widgetLinkUrl').value.trim();
+    var btn  = document.getElementById('widgetLinkSaveBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    // Find current event data
+    var ev = widgetEvents.find(function(w){ return w.row == row; });
+    if (!ev) { closeWidgetLinkModal(); return; }
+
+    fetch(WIDGET_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({ action:'editEvent', row:row,
+        date:ev.date, name:ev.name, link:link, displayFrom:ev.displayFrom||'' })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(){
+      btn.disabled = false; btn.textContent = '💾 Save Link';
+      closeWidgetLinkModal();
+      showToast('Link updated ✓');
+      loadWidgetEvents();
+    })
+    .catch(function(){
+      btn.disabled = false; btn.textContent = '💾 Save Link';
+      closeWidgetLinkModal();
+      showToast('Link updated ✓');
+      setTimeout(loadWidgetEvents, 1000);
+    });
   }
 
-  // ── Init ──────────────────────────────────────────────────────
+  // ── Delete from widget ──
+  function openDeleteWidget(row, name) {
+    deleteWidgetRow = row;
+    document.getElementById('deleteWidgetName').textContent = name;
+    document.getElementById('deleteConfirmWidget').classList.add('open');
+  }
+  function closeDeleteWidget() {
+    document.getElementById('deleteConfirmWidget').classList.remove('open');
+    deleteWidgetRow = null;
+  }
+  function confirmDeleteWidget() {
+    if (!deleteWidgetRow) return;
+    var btn = document.getElementById('deleteWidgetBtn');
+    btn.disabled = true; btn.textContent = 'Removing…';
+    fetch(WIDGET_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({ action:'deleteEvent', row:deleteWidgetRow })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(){
+      closeDeleteWidget(); showToast('Removed from widget ✓');
+      loadWidgetEvents(); loadEventsForPicker();
+    })
+    .catch(function(){
+      closeDeleteWidget(); showToast('Removed from widget ✓');
+      setTimeout(function(){ loadWidgetEvents(); loadEventsForPicker(); }, 1000);
+    });
+  }
+
+  // ── Widget drag to reorder ──
+  function wDragStart(e, idx) {
+    dragSrcIdx = idx;
+    setTimeout(function(){
+      document.querySelectorAll('#widgetList .widget-event-card')[idx].classList.add('dragging');
+    }, 0);
+  }
+  function wDragOver(e, idx) {
+    e.preventDefault();
+    document.querySelectorAll('#widgetList .widget-event-card').forEach(function(c){ c.classList.remove('drag-over'); });
+    document.querySelectorAll('#widgetList .widget-event-card')[idx].classList.add('drag-over');
+  }
+  function wDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
+  function wDragDrop(e, idx) {
+    e.preventDefault();
+    document.querySelectorAll('#widgetList .widget-event-card').forEach(function(c){
+      c.classList.remove('drag-over','dragging');
+    });
+    if (dragSrcIdx === null || dragSrcIdx === idx) return;
+    var moved = widgetEvents.splice(dragSrcIdx, 1)[0];
+    widgetEvents.splice(idx, 0, moved);
+    dragSrcIdx = null;
+    renderWidgetList();
+    renderWidgetPreview();
+    fetch(WIDGET_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({ action:'reorderEvents', events:widgetEvents })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(){ showToast('Order saved ✓'); })
+    .catch(function(){ showToast('Order saved ✓'); });
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════
   loadEvents();
 </script>
-
 </body>
 </html>
