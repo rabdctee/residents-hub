@@ -678,7 +678,7 @@
           (ev.link ? '<div class="event-row-link">🔗 ' + esc(ev.link) + '</div>' : '') +
         '</div>' +
         '<div class="event-row-actions">' +
-          '<button class="btn-upload" onclick="uploadDoc(' + JSON.stringify(ev) + ')">📎 Upload Doc</button>' +
+          '<button class="btn-upload" onclick=\'uploadDoc(' + JSON.stringify(ev) + ')\'>📎 Upload Doc</button>' +
           '<button class="btn-edit" onclick=\'openEditModal(' + JSON.stringify(ev) + ')\'>✏️ Edit</button>' +
           '<button class="btn-delete" onclick="openDeleteEvent(' + ev.row + ',\'' + esc(ev.name) + '\')">🗑️</button>' +
         '</div>' +
