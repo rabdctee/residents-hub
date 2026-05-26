@@ -380,7 +380,7 @@
       <div class="intro-box">
         <p>Your views will help <strong>decide how the Referral Money is invested</strong>.</p>
         <p>At the AGM on 12 May 2026, Residents were informed about the <strong>$2,446.73 of Referral Money</strong> that must be spent by 30 June 2026 to prevent the funds being forfeited. This is considered Community money to be spent for the benefit of all residents.</p>
-        <p>Please choose <strong>one option</strong> from the list below. Options 3 and 4 are outside the available budget and are not available for selection.</p>
+        <p>Please choose <strong>one option</strong> from the list below, or leave the options unselected and write your own suggestion in the comments box. Options 3 and 4 are outside the available budget and are not available for selection.</p>
       </div>
 
       <div class="deadline-banner">
@@ -390,7 +390,7 @@
       <div class="survey-form">
 
         <!-- Options -->
-        <div class="section-label">Please select one option:</div>
+        <div class="section-label">Please select one option (or skip and write your suggestion below):</div>
         <div class="options-grid">
 
           <!-- OPTION 1 -->
@@ -603,18 +603,18 @@
   }
 
   function submitSurvey() {
-    if (!selectedChoice) {
-      showStatus('Please select an option before submitting.', 'error');
-      return;
-    }
+    var name    = document.getElementById('resident-name').value.trim();
+    var comment = document.getElementById('resident-comment').value.trim();
+
     var choiceInput = document.querySelector('input[name="survey-choice"]:checked');
-    if (!choiceInput) {
-      showStatus('Please select an option before submitting.', 'error');
+
+    // Allow submission if an option is selected OR a comment/suggestion has been provided
+    if (!choiceInput && !comment) {
+      showStatus('Please select an option, or write an alternative suggestion in the comments box below.', 'error');
       return;
     }
 
-    var name    = document.getElementById('resident-name').value.trim();
-    var comment = document.getElementById('resident-comment').value.trim();
+    var choiceValue = choiceInput ? choiceInput.value : 'No option selected — see comments';
 
     var btn = document.getElementById('submitBtn');
     btn.disabled = true;
@@ -644,7 +644,7 @@
     var payload = JSON.stringify({
       action:  'survey',
       name:    name || 'Anonymous',
-      choice:  choiceInput.value,
+      choice:  choiceValue,
       comment: comment
     });
 
