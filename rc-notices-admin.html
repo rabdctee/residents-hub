@@ -401,7 +401,7 @@
     fetch(SURVEY_CSV + '&t=' + Date.now())
       .then(function(r) { return r.text(); })
       .then(function(csv) {
-        var lines = csv.trim().split('\n');
+        var lines = splitCSVRows(csv.trim());
         if (lines.length <= 1) {
           document.getElementById('surveyLoadingMsg').style.display = 'none';
           document.getElementById('noSurveyMsg').style.display      = 'block';
@@ -455,7 +455,7 @@
             '<td style="padding:7px 10px;border-bottom:1px solid #eef0f3;">' + r.ts + '</td>' +
             '<td style="padding:7px 10px;border-bottom:1px solid #eef0f3;">' + (r.name||'—') + '</td>' +
             '<td style="padding:7px 10px;border-bottom:1px solid #eef0f3;font-weight:600;color:#1F4E79;">' + r.choice + '</td>' +
-            '<td style="padding:7px 10px;border-bottom:1px solid #eef0f3;color:#555;">' + (r.comment||'—') + '</td>' +
+            '<td style="padding:7px 10px;border-bottom:1px solid #eef0f3;color:#555;white-space:pre-wrap;">' + (r.comment||'—') + '</td>' +
             '</tr>';
         });
         document.getElementById('surveyLoadingMsg').style.display   = 'none';
@@ -537,7 +537,7 @@
     fetch(CSV_URL + '&t=' + Date.now())
       .then(function(r) { return r.text(); })
       .then(function(csv) {
-        var lines = csv.trim().split('\n');
+        var lines = splitCSVRows(csv.trim());
         if (lines.length <= 1) {
           document.getElementById('loadingMsg').style.display  = 'none';
           document.getElementById('noNoticesMsg').style.display = 'block';
@@ -716,13 +716,38 @@
     setTimeout(function() { el.style.display = 'none'; }, 5000);
   }
 
+  // Split raw CSV text into rows, correctly handling quoted fields that
+  // contain newlines (Google Sheets wraps multi-line cells in double-quotes).
+  function splitCSVRows(text) {
+    var rows = [], cur = '', inQ = false;
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (ch === '"') {
+        // Handle escaped quote: "" inside a quoted field = literal "
+        if (inQ && text[i+1] === '"') { cur += '"'; i++; }
+        else                          { inQ = !inQ; }
+      } else if ((ch === '\n') && !inQ) {
+        // Strip trailing \r if present (Windows line endings)
+        rows.push(cur.replace(/\r$/, ''));
+        cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    if (cur.replace(/\r$/, '')) rows.push(cur.replace(/\r$/, ''));
+    return rows;
+  }
+
   function parseCSV(line) {
     var cols = [], cur = '', inQ = false;
     for (var i = 0; i < line.length; i++) {
       var ch = line[i];
-      if (ch === '"')             { inQ = !inQ; }
-      else if (ch === ',' && !inQ){ cols.push(cur); cur = ''; }
-      else                        { cur += ch; }
+      if (ch === '"') {
+        // Handle escaped quote: "" inside a quoted field = literal "
+        if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+        else                          { inQ = !inQ; }
+      } else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+      else                           { cur += ch; }
     }
     cols.push(cur);
     return cols;
