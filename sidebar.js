@@ -285,6 +285,7 @@
             <li><a href="savings.html"${isActive('savings.html') ? ' class="sb-active"' : ''}>🛒 Best Buys</a></li>
             <li><a href="info-sessions.html"${isActive('info-sessions.html') ? ' class="sb-active"' : ''}>🎓 Information Sessions</a></li>
             <li><a href="memories.html"${isActive('memories.html') ? ' class="sb-active"' : ''}>🕰️ Down Memory Lane</a></li>
+            <li><a href="our-story.html"${isActive('our-story.html') ? ' class="sb-active"' : ''}>🏡 Our Story</a></li>
             <li><a href="community-life.html"${isActive('community-life.html') ? ' class="sb-active"' : ''}>🌺 Community Life</a></li>
             <li><a href="village-map.html"${isActive('village-map.html') ? ' class="sb-active"' : ''}>🗺️ Village Map</a></li>
           </ul>
