@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help & How-To — Admin Page</title>
+<style>
+  :root {
+    --navy:   #1F4E79;
+    --gold:   #C9A84C;
+    --light:  #EAF2FB;
+    --green:  #1E6B3C;
+    --red:    #B91C1C;
+    --border: #cdd8e3;
+    --bg:     #f4f7fb;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; background: var(--bg); color: #1a1a2e; min-height: 100vh; }
+
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 4px solid var(--gold);
+  }
+  header h1 { font-size: 1.35em; font-weight: 700; }
+  header p  { font-size: 0.88em; opacity: 0.8; margin-top: 3px; }
+
+  .main { max-width: 1000px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  .step-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 22px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .step-card-header {
+    background: var(--navy);
+    color: white;
+    padding: 13px 20px;
+    font-size: 1em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .step-card-header .step-num {
+    background: var(--gold);
+    color: var(--navy);
+    border-radius: 50%;
+    width: 26px; height: 26px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85em; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .step-card-body { padding: 20px 22px; }
+
+  .drop-zone {
+    border: 3px dashed var(--navy);
+    border-radius: 10px;
+    padding: 36px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    background: var(--light);
+  }
+  .drop-zone:hover { background: #d7e9f7; }
+  .drop-zone p { color: var(--navy); font-size: 1.05em; margin-bottom: 10px; }
+  .drop-zone .hint { font-size: 0.85em; color: #555; }
+  #fileInput { display: none; }
+
+  .notice {
+    padding: 12px 16px;
+    border-radius: 7px;
+    font-size: 0.93em;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .notice-info  { background: #e0f0ff; border-left: 4px solid var(--navy); }
+  .notice-ok    { background: #d4f4e0; border-left: 4px solid var(--green); }
+  .notice-warn  { background: #fff3cd; border-left: 4px solid #b8860b; }
+
+  .tab-bar { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  .tab-btn {
+    padding: 9px 18px;
+    border: 2px solid var(--navy);
+    border-radius: 6px;
+    background: white;
+    color: var(--navy);
+    font-family: Georgia, serif;
+    font-size: 0.9em;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover  { background: var(--light); }
+  .tab-btn.active { background: var(--navy); color: white; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .cat-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: white;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .cat-row:hover { background: var(--light); }
+  .cat-row .cat-icon { font-size: 1.4em; flex-shrink: 0; }
+  .cat-row .cat-name { flex: 1; font-size: 0.97em; font-weight: 600; color: var(--navy); }
+  .cat-row .cat-count { font-size: 0.83em; color: #666; white-space: nowrap; }
+  .cat-row .cat-arrow { color: #888; font-size: 0.85em; }
+
+  .qa-item {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: white;
+  }
+  .qa-item-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 14px;
+    background: #f8f9fa;
+    border-bottom: 1px solid var(--border);
+  }
+  .qa-item-q { flex: 1; font-weight: 600; font-size: 0.93em; color: var(--navy); }
+  .qa-item-body { padding: 12px 14px; font-size: 0.88em; color: #333; }
+  .qa-answer-preview { max-height: 55px; overflow: hidden; position: relative; }
+  .qa-answer-preview::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 22px; background: linear-gradient(transparent, white);
+  }
+  .qa-btn-row { display: flex; gap: 7px; margin-top: 10px; }
+
+  .btn {
+    padding: 9px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: Georgia, serif;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: opacity 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-navy   { background: var(--navy);  color: white; }
+  .btn-green  { background: var(--green); color: white; }
+  .btn-red    { background: var(--red);   color: white; }
+  .btn-gold   { background: var(--gold);  color: var(--navy); }
+  .btn-outline { background: white; border: 2px solid var(--navy); color: var(--navy); }
+  .btn-lg { padding: 12px 26px; font-size: 1em; }
+  .btn-sm { padding: 6px 12px; font-size: 0.82em; }
+
+  label { display: block; font-size: 0.9em; font-weight: 600; margin-bottom: 5px; color: var(--navy); }
+  input[type=text], textarea, select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    font-family: Georgia, serif;
+    font-size: 0.93em;
+    color: #1a1a2e;
+    background: white;
+    margin-bottom: 14px;
+    transition: border-color 0.15s;
+  }
+  input[type=text]:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(31,78,121,0.12);
+  }
+  textarea { resize: vertical; min-height: 120px; }
+
+  .format-helper {
+    background: #f0f4ff;
+    border: 1px solid #b8cce4;
+    border-radius: 7px;
+    padding: 12px 14px;
+    font-size: 0.83em;
+    color: #333;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+  .format-helper code { background: #dde7f5; padding: 1px 5px; border-radius: 3px; font-size: 0.92em; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 660px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  }
+  .modal-header {
+    background: var(--navy);
+    color: white;
+    padding: 16px 22px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-header h3 { font-size: 1em; }
+  .modal-close {
+    background: none; border: none; color: white;
+    font-size: 1.4em; cursor: pointer; line-height: 1;
+    padding: 2px 6px; border-radius: 4px;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.2); }
+  .modal-body { padding: 22px; }
+  .modal-footer { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+
+  .status-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--green);
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-size: 0.95em;
+    font-weight: 600;
+    transform: translateY(100%);
+    transition: transform 0.3s;
+    z-index: 300;
+  }
+  .status-bar.show { transform: translateY(0); }
+
+  .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 0.9em; }
+  .breadcrumb a { color: var(--navy); cursor: pointer; text-decoration: underline; }
+  .breadcrumb span { color: #888; }
+
+  .hidden { display: none !important; }
+  .empty-state { text-align: center; padding: 32px; color: #888; font-size: 0.95em; }
+
+  @media(max-width:600px){
+    .tab-btn { font-size: 0.82em; padding: 8px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>🏡 Help &amp; How-To — Admin Page</h1>
+    <p>Bridgeman Downs Retirement Village · Residents' Hub</p>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- STEP 1 -->
+  <div class="step-card" id="card-load">
+    <div class="step-card-header">
+      <span class="step-num">1</span>
+      Load your current how-to.html file
+    </div>
+    <div class="step-card-body">
+      <div class="notice notice-info">
+        📂 <strong>How this works:</strong> Click the area below and select your <strong>how-to.html</strong> file from your computer.
+        This Admin page will read it and show you all the categories and questions so you can make changes
+        without touching any code. When you are done, click the Download button and it gives you an updated file
+        ready to upload to GitHub.
+      </div>
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+        <p>📄 Click here to select your <strong>how-to.html</strong> file</p>
+        <span class="hint">Or drag and drop the file onto this area</span>
+      </div>
+      <input type="file" id="fileInput" accept=".html">
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-card hidden" id="card-manage">
+    <div class="step-card-header">
+      <span class="step-num">2</span>
+      Manage your Help &amp; How-To content
+    </div>
+    <div class="step-card-body">
+      <div class="notice notice-ok" id="loadedNotice"></div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="showTab('tab-browse')">📋 Browse &amp; Edit</button>
+        <button class="tab-btn" onclick="showTab('tab-addq')">➕ Add a Question</button>
+        <button class="tab-btn" onclick="showTab('tab-addcat')">📁 Add a New Category</button>
+      </div>
+
+      <!-- BROWSE TAB -->
+      <div class="tab-panel active" id="tab-browse">
+        <div id="browse-cat-list"></div>
+      </div>
+
+      <!-- ADD QUESTION TAB -->
+      <div class="tab-panel" id="tab-addq">
+        <div class="notice notice-info">
+          ✍️ Fill in the details below to add a new question and answer to an existing category.
+        </div>
+        <label for="addq-cat">Which category should this question go into?</label>
+        <select id="addq-cat"></select>
+
+        <label for="addq-keywords">Keywords — optional (helps the search feature find this question)</label>
+        <input type="text" id="addq-keywords" placeholder="e.g. volume remote control sound mute">
+
+        <label for="addq-question">The Question</label>
+        <input type="text" id="addq-question" placeholder="e.g. How do I turn up the volume on my TV?">
+
+        <label for="addq-answer">The Answer</label>
+        <div class="format-helper">
+          💡 <strong>Simple formatting tips:</strong> You can type a plain-English answer and it will work perfectly.
+          If you want to add some structure, you can use these simple codes:<br>
+          • New paragraph: wrap in <code>&lt;p&gt;your text&lt;/p&gt;</code><br>
+          • <strong>Bold text</strong>: wrap in <code>&lt;strong&gt;word&lt;/strong&gt;</code><br>
+          • Bullet point list: <code>&lt;ul&gt;&lt;li&gt;first item&lt;/li&gt;&lt;li&gt;second item&lt;/li&gt;&lt;/ul&gt;</code><br>
+          • Yellow tip box: <code>&lt;div class="tip-box"&gt;💡 &lt;strong&gt;Tip:&lt;/strong&gt; your tip here&lt;/div&gt;</code>
+        </div>
+        <textarea id="addq-answer" placeholder="Type your plain-English answer here..."></textarea>
+        <button class="btn btn-green btn-lg" onclick="addQuestion()">✅ Add this Question</button>
+      </div>
+
+      <!-- ADD CATEGORY TAB -->
+      <div class="tab-panel" id="tab-addcat">
+        <div class="notice notice-info">
+          📁 Use this to create a brand new topic section — for example, "How to Use Your Printer".
+        </div>
+        <label for="addcat-icon">Choose an Emoji Icon for the category</label>
+        <input type="text" id="addcat-icon" placeholder="e.g. 🖨️" maxlength="6" style="width:100px;font-size:1.4em;text-align:center;margin-bottom:14px;">
+
+        <label for="addcat-title">Category Title</label>
+        <input type="text" id="addcat-title" placeholder="e.g. How to Use Your Printer">
+
+        <label for="addcat-subtitle">Short description (shown underneath the title)</label>
+        <input type="text" id="addcat-subtitle" placeholder="e.g. Setting it up, printing a document, and fixing common problems.">
+
+        <button class="btn btn-green btn-lg" onclick="addCategory()">✅ Add this New Category</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-card" id="card-download" style="display:none;">
+    <div class="step-card-header">
+      <span class="step-num">3</span>
+      Download your updated file
+    </div>
+    <div class="step-card-body">
+      <div class="notice notice-ok" id="changeCount"></div>
+      <div class="notice notice-info">
+        ⬇️ Click the button below to download your updated <strong>how-to.html</strong> file.
+        Then go to your GitHub repository, find <code>how-to.html</code>, and replace it with this new version
+        to publish your changes to the website.
+      </div>
+      <button class="btn btn-gold btn-lg" onclick="downloadFile()">⬇️ Download Updated how-to.html</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✏️ Edit Question &amp; Answer</h3>
+      <button class="modal-close" onclick="closeModal('editModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-item-id">
+      <label for="edit-question">Question text</label>
+      <input type="text" id="edit-question">
+      <label for="edit-keywords">Keywords (used by the search feature)</label>
+      <input type="text" id="edit-keywords">
+      <label for="edit-answer">Answer</label>
+      <div class="format-helper">
+        💡 You can type plain text, or use HTML tags for formatting.
+        <code>&lt;p&gt;...&lt;/p&gt;</code> for paragraphs,
+        <code>&lt;strong&gt;...&lt;/strong&gt;</code> for <strong>bold</strong>,
+        <code>&lt;ul&gt;&lt;li&gt;...&lt;/li&gt;&lt;/ul&gt;</code> for bullet lists,
+        <code>&lt;div class="tip-box"&gt;💡 &lt;strong&gt;Tip:&lt;/strong&gt; ...&lt;/div&gt;</code> for a tip box.
+      </div>
+      <textarea id="edit-answer" style="min-height:200px;"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('editModal')">Cancel</button>
+      <button class="btn btn-green" onclick="saveEdit()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <div class="modal-header" style="background:var(--red);">
+      <h3>🗑️ Delete Question</h3>
+      <button class="modal-close" onclick="closeModal('deleteModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:1em;margin-bottom:14px;">Are you sure you want to permanently delete this question?</p>
+      <div class="notice notice-warn" id="delete-preview" style="font-weight:600;"></div>
+      <input type="hidden" id="delete-item-id">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('deleteModal')">Cancel — keep it</button>
+      <button class="btn btn-red" onclick="confirmDelete()">🗑️ Yes, delete it</button>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW MODAL -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="viewModal-title"></h3>
+      <button class="modal-close" onclick="closeModal('viewModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="viewModal-answer" style="font-size:0.93em;line-height:1.7;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('viewModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar" id="statusBar"></div>
+
+<script>
+var originalHTML = '';
+var workingDoc   = null;
+var changesMade  = 0;
+
+// FILE LOADING
+var dropZone  = document.getElementById('dropZone');
+var fileInput = document.getElementById('fileInput');
+
+dropZone.addEventListener('dragover',  function(e){ e.preventDefault(); dropZone.style.background='#c5dcf0'; });
+dropZone.addEventListener('dragleave', function(){   dropZone.style.background=''; });
+dropZone.addEventListener('drop', function(e){
+  e.preventDefault(); dropZone.style.background='';
+  if(e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', function(){
+  if(fileInput.files[0]) readFile(fileInput.files[0]);
+});
+
+function readFile(file){
+  if(!file.name.endsWith('.html')){ toast('Please choose a .html file','warn'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e){
+    originalHTML = e.target.result;
+    parseAndRender(originalHTML, file.name);
+  };
+  reader.readAsText(file);
+}
+
+function parseAndRender(html, filename){
+  var parser = new DOMParser();
+  workingDoc = parser.parseFromString(html, 'text/html');
+  var cats = getCategoryData();
+  if(!cats.length){ toast('Could not find any categories. Is this the right file?','warn'); return; }
+
+  var totalQ = cats.reduce(function(a,c){ return a+c.items.length; },0);
+  document.getElementById('loadedNotice').innerHTML =
+    '&#x2705; <strong>File loaded:</strong> "'+filename+'" — found <strong>'+cats.length+' categories</strong> and <strong>'+totalQ+' questions</strong>. Make your changes below, then download the updated file.';
+
+  document.getElementById('card-load').classList.add('hidden');
+  document.getElementById('card-manage').classList.remove('hidden');
+  document.getElementById('card-download').style.display = 'block';
+  document.getElementById('changeCount').innerHTML = 'File loaded. Download when you are ready to publish your changes.';
+  populateCatDropdown(cats);
+  renderBrowse(cats);
+}
+
+// DATA
+function getCategoryData(){
+  var cats = [];
+  var blocks = workingDoc.querySelectorAll('.category-block');
+  blocks.forEach(function(block){
+    var catId  = block.id || '';
+    var icon   = (block.querySelector('.category-icon') || {}).textContent || '📂';
+    icon = icon.trim();
+    var titleEl = block.querySelector('.category-title-text');
+    var title   = titleEl ? titleEl.textContent.trim() : '';
+    var subEl   = block.querySelector('.category-subtitle');
+    var sub     = subEl ? subEl.innerHTML.trim() : '';
+    var slug    = catId.replace('cat-','');
+    var bodyId  = slug + '-body';
+    var body    = workingDoc.getElementById(bodyId) || block.querySelector('.category-body');
+    var items   = [];
+    if(body){
+      var faqItems = body.querySelectorAll('.faq-item');
+      faqItems.forEach(function(item, idx){
+        var qBtn  = item.querySelector('.faq-question');
+        var aDiv  = item.querySelector('.faq-answer');
+        var qText = '';
+        if(qBtn){
+          // Get text from first text node only (skip the arrow span)
+          for(var i=0;i<qBtn.childNodes.length;i++){
+            if(qBtn.childNodes[i].nodeType===3){
+              var t = qBtn.childNodes[i].textContent.trim();
+              if(t){ qText=t; break; }
+            }
+          }
+        }
+        var aHTML = aDiv ? aDiv.innerHTML.trim() : '';
+        var kw    = item.getAttribute('data-keywords') || '';
+        items.push({ idx:idx, qText:qText, aHTML:aHTML, kw:kw, element:item });
+      });
+    }
+    cats.push({ catId:catId, bodyId:bodyId, icon:icon, title:title, sub:sub, body:body, items:items });
+  });
+  return cats;
+}
+
+function populateCatDropdown(cats){
+  var sel = document.getElementById('addq-cat');
+  sel.innerHTML = '';
+  cats.forEach(function(c){
+    var opt = document.createElement('option');
+    opt.value = c.catId;
+    opt.textContent = c.icon + ' ' + c.title;
+    sel.appendChild(opt);
+  });
+}
+
+// RENDER BROWSE
+function renderBrowse(cats){
+  var container = document.getElementById('browse-cat-list');
+  container.innerHTML = '';
+  if(!cats.length){
+    container.innerHTML = '<div class="empty-state">No categories found.</div>';
+    return;
+  }
+  cats.forEach(function(cat){
+    var row = document.createElement('div');
+    row.className = 'cat-row';
+    row.innerHTML =
+      '<span class="cat-icon">'+cat.icon+'</span>'+
+      '<span class="cat-name">'+cat.title+'</span>'+
+      '<span class="cat-count">'+cat.items.length+' question'+(cat.items.length!==1?'s':'')+'</span>'+
+      '<span class="cat-arrow">&#9654; click to manage</span>';
+    row.onclick = (function(c){ return function(){ showCategoryDetail(c); }; })(cat);
+    container.appendChild(row);
+  });
+}
+
+function showCategoryDetail(cat){
+  var container = document.getElementById('browse-cat-list');
+  container.innerHTML =
+    '<div class="breadcrumb"><a onclick="refreshBrowse()">&#8592; All Categories</a><span>&#8250;</span><span>'+cat.icon+' '+cat.title+'</span></div>'+
+    '<div class="notice notice-info" style="margin-bottom:14px;">'+
+      cat.items.length+' question'+(cat.items.length!==1?'s':'')+' in this category. '+
+      'Click <strong>Edit</strong> to change a question or answer, or <strong>Delete</strong> to remove it.'+
+    '</div>'+
+    '<div id="qa-list-inner"></div>';
+
+  var list = document.getElementById('qa-list-inner');
+  if(!cat.items.length){
+    list.innerHTML = '<div class="empty-state">No questions yet in this category. Use the "Add a Question" tab to add the first one.</div>';
+  } else {
+    cat.items.forEach(function(item){ renderQaItem(list, item, cat.catId); });
+  }
+}
+
+function renderQaItem(container, item, catId){
+  var div = document.createElement('div');
+  div.className = 'qa-item';
+  div.innerHTML =
+    '<div class="qa-item-header"><span class="qa-item-q">'+(item.qText||'(no question text)')+'</span></div>'+
+    '<div class="qa-item-body">'+
+      '<div class="qa-answer-preview">'+item.aHTML+'</div>'+
+      '<div class="qa-btn-row">'+
+        '<button class="btn btn-navy btn-sm" onclick="openViewModal(\''+catId+'\','+item.idx+')">&#128065; View full answer</button> '+
+        '<button class="btn btn-outline btn-sm" onclick="openEditModal(\''+catId+'\','+item.idx+')">&#9999; Edit</button> '+
+        '<button class="btn btn-red btn-sm" onclick="openDeleteModal(\''+catId+'\','+item.idx+')">&#128465; Delete</button>'+
+      '</div>'+
+    '</div>';
+  container.appendChild(div);
+}
+
+function refreshBrowse(){
+  renderBrowse(getCategoryData());
+}
+
+// VIEW
+function openViewModal(catId, idx){
+  var item = findItem(catId, idx);
+  if(!item) return;
+  document.getElementById('viewModal-title').textContent = item.qText;
+  document.getElementById('viewModal-answer').innerHTML  = item.aHTML;
+  openModal('viewModal');
+}
+
+// EDIT
+function openEditModal(catId, idx){
+  var item = findItem(catId, idx);
+  if(!item) return;
+  document.getElementById('edit-item-id').value = catId+'||'+idx;
+  document.getElementById('edit-question').value = item.qText;
+  document.getElementById('edit-keywords').value = item.kw;
+  document.getElementById('edit-answer').value   = item.aHTML;
+  openModal('editModal');
+}
+
+function saveEdit(){
+  var parts = document.getElementById('edit-item-id').value.split('||');
+  var catId = parts[0]; var idx = parseInt(parts[1]);
+  var item = findItem(catId, idx);
+  if(!item) return;
+  var newQ  = document.getElementById('edit-question').value.trim();
+  var newKW = document.getElementById('edit-keywords').value.trim();
+  var newA  = document.getElementById('edit-answer').value.trim();
+  if(!newQ){ alert('Please enter a question.'); return; }
+  if(!newA){ alert('Please enter an answer.');  return; }
+  var ansHTML = (newA.indexOf('<') > -1) ? newA : '<p>'+newA+'</p>';
+
+  // Find and update the first text node of the question button
+  var qBtn = item.element.querySelector('.faq-question');
+  if(qBtn){
+    for(var i=0;i<qBtn.childNodes.length;i++){
+      if(qBtn.childNodes[i].nodeType===3){
+        qBtn.childNodes[i].textContent = '\n            '+newQ+'\n            ';
+        break;
+      }
+    }
+  }
+  var aDiv = item.element.querySelector('.faq-answer');
+  if(aDiv) aDiv.innerHTML = ansHTML;
+  item.element.setAttribute('data-keywords', newKW);
+  item.qText = newQ;
+  item.aHTML = ansHTML;
+  item.kw    = newKW;
+
+  changesMade++;
+  closeModal('editModal');
+  showDownloadCard();
+  toast('Question updated successfully!');
+
+  var cats = getCategoryData();
+  var cat  = cats.filter(function(c){ return c.catId===catId; })[0];
+  if(cat) showCategoryDetail(cat);
+}
+
+// DELETE
+function openDeleteModal(catId, idx){
+  var item = findItem(catId, idx);
+  if(!item) return;
+  document.getElementById('delete-item-id').value = catId+'||'+idx;
+  document.getElementById('delete-preview').textContent = item.qText;
+  openModal('deleteModal');
+}
+
+function confirmDelete(){
+  var parts = document.getElementById('delete-item-id').value.split('||');
+  var catId = parts[0]; var idx = parseInt(parts[1]);
+  var item  = findItem(catId, idx);
+  if(!item) return;
+  item.element.remove();
+  changesMade++;
+  closeModal('deleteModal');
+  showDownloadCard();
+  toast('Question deleted.');
+  var cats = getCategoryData();
+  var cat  = cats.filter(function(c){ return c.catId===catId; })[0];
+  if(cat) showCategoryDetail(cat);
+  else refreshBrowse();
+}
+
+// ADD QUESTION
+function addQuestion(){
+  var catId  = document.getElementById('addq-cat').value;
+  var kw     = document.getElementById('addq-keywords').value.trim();
+  var q      = document.getElementById('addq-question').value.trim();
+  var a      = document.getElementById('addq-answer').value.trim();
+  if(!q){ alert('Please type a question.'); return; }
+  if(!a){ alert('Please type an answer.');  return; }
+  var ansHTML = (a.indexOf('<') > -1) ? a : '<p>'+a+'</p>';
+
+  var slug   = catId.replace('cat-','');
+  var bodyId = slug+'-body';
+  var body   = workingDoc.getElementById(bodyId);
+  if(!body){
+    var catBlock = workingDoc.getElementById(catId);
+    if(catBlock) body = catBlock.querySelector('.category-body');
+  }
+  if(!body){ alert('Could not find the category section. Please try again.'); return; }
+
+  var newItem = workingDoc.createElement('div');
+  newItem.className = 'faq-item';
+  newItem.setAttribute('data-keywords', kw);
+  newItem.innerHTML =
+    '\n          <button class="faq-question" onclick="toggleFaq(this)">\n            '+
+    q+'\n            <span class="faq-arrow">&#9660;</span>\n          </button>\n          '+
+    '<div class="faq-answer">\n            '+ansHTML+'\n          </div>\n        ';
+  body.appendChild(newItem);
+
+  changesMade++;
+  showDownloadCard();
+  toast('Question added!');
+  document.getElementById('addq-question').value = '';
+  document.getElementById('addq-answer').value   = '';
+  document.getElementById('addq-keywords').value = '';
+}
+
+// ADD CATEGORY
+function addCategory(){
+  var icon  = document.getElementById('addcat-icon').value.trim()  || '📂';
+  var title = document.getElementById('addcat-title').value.trim();
+  var sub   = document.getElementById('addcat-subtitle').value.trim();
+  if(!title){ alert('Please enter a category title.'); return; }
+
+  var slug  = title.toLowerCase().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,'-').substring(0,24);
+  var catId = 'cat-'+slug;
+  var bodyId= slug+'-body';
+
+  if(workingDoc.getElementById(catId)){
+    alert('A category with a similar name already exists. Please use a different title.'); return;
+  }
+
+  var newBlock = workingDoc.createElement('div');
+  newBlock.className = 'category-block';
+  newBlock.id = catId;
+  newBlock.innerHTML =
+    '\n\n    <div class="category-header" onclick="toggleCategory(\''+bodyId+'\', this)">\n      <div class="category-header-left">\n        <span class="category-icon">'+icon+'</span>\n        <div>\n          <div class="category-title-text">'+title+'</div>\n          <div class="category-subtitle">'+sub+'</div>\n        </div>\n      </div>\n      <span class="category-arrow">&#9660;</span>\n    </div>\n\n    <div id="'+bodyId+'" class="category-body">\n    </div><!-- end '+bodyId+' -->\n\n  ';
+
+  var pageContent = workingDoc.querySelector('.page-content');
+  var askSection  = workingDoc.querySelector('.ask-section') || workingDoc.querySelector('#ask') || workingDoc.querySelector('[class*="ask"]');
+  if(askSection && askSection.closest('.page-content')===pageContent){
+    pageContent.insertBefore(newBlock, askSection);
+  } else if(pageContent){
+    pageContent.appendChild(newBlock);
+  } else {
+    alert('Could not find the right place to insert the category. Make sure this is the correct how-to.html file.'); return;
+  }
+
+  changesMade++;
+  showDownloadCard();
+  populateCatDropdown(getCategoryData());
+  refreshBrowse();
+  toast('New category "'+title+'" added!');
+  document.getElementById('addcat-icon').value    = '';
+  document.getElementById('addcat-title').value   = '';
+  document.getElementById('addcat-subtitle').value= '';
+  showTab('tab-browse');
+}
+
+// DOWNLOAD
+function downloadFile(){
+  var serializer = new XMLSerializer();
+  var updated = '<!DOCTYPE html>\n' + workingDoc.documentElement.outerHTML;
+  var blob = new Blob([updated], {type:'text/html'});
+  var url  = URL.createObjectURL(blob);
+  var a    = document.createElement('a');
+  a.href = url; a.download = 'how-to.html'; a.click();
+  URL.revokeObjectURL(url);
+  toast('File downloaded! Upload it to GitHub to publish your changes.');
+}
+
+function showDownloadCard(){
+  var card = document.getElementById('card-download');
+  card.classList.remove('hidden');
+  document.getElementById('changeCount').innerHTML =
+    '&#x270E; You have made <strong>'+changesMade+'</strong> change'+(changesMade!==1?'s':'')+
+    ' since loading the file. Click Download when you are ready to publish.';
+}
+
+// HELPERS
+function findItem(catId, idx){
+  var cats = getCategoryData();
+  var cat  = null;
+  for(var i=0;i<cats.length;i++){ if(cats[i].catId===catId){ cat=cats[i]; break; } }
+  if(!cat) return null;
+  for(var j=0;j<cat.items.length;j++){ if(cat.items[j].idx===idx) return cat.items[j]; }
+  return null;
+}
+
+function showTab(id){
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  var tabs = ['tab-browse','tab-addq','tab-addcat'];
+  var i = tabs.indexOf(id);
+  var btns = document.querySelectorAll('.tab-btn');
+  if(btns[i]) btns[i].classList.add('active');
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+var toastTimer;
+function toast(msg, type){
+  var bar = document.getElementById('statusBar');
+  bar.textContent = msg;
+  bar.style.background = (type==='warn') ? '#b8860b' : 'var(--green)';
+  bar.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ bar.classList.remove('show'); }, 3500);
+}
+
+document.querySelectorAll('.modal-overlay').forEach(function(overlay){
+  overlay.addEventListener('click', function(e){
+    if(e.target===overlay) overlay.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
