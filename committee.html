@@ -539,6 +539,35 @@
   document.addEventListener('DOMContentLoaded', function() {
     var inp = document.getElementById('pin-input');
     if (inp) inp.focus();
+
+    // Auto-expand accordion section if ?expand= parameter is present
+    var expandParam = new URLSearchParams(window.location.search).get('expand');
+    if (expandParam) {
+      setTimeout(function() {
+        // Parent map: sub-section → parent committee accordion
+        var parentMap = {
+          'sc-finance': 'sc', 'sc-events': 'sc', 'sc-docs': 'sc',
+          'sc-homecontent': 'sc', 'sc-classifieds': 'sc',
+          'rc-docs': 'rc', 'rc-info': 'rc', 'rc-notices': 'rc', 'rc-howto': 'rc'
+        };
+        var parentId = parentMap[expandParam];
+        if (parentId) {
+          var pBody  = document.getElementById(parentId + '-body');
+          var pArrow = document.getElementById(parentId + '-arrow');
+          if (pBody)  pBody.classList.add('open');
+          if (pArrow) pArrow.classList.add('open');
+        }
+        var body  = document.getElementById(expandParam + '-body');
+        var arrow = document.getElementById(expandParam + '-arrow');
+        var hdr   = document.querySelector('[onclick*="' + expandParam + '"]');
+        if (body)  body.classList.add('open');
+        if (arrow) arrow.classList.add('open');
+        if (hdr)   hdr.classList.add('open');
+        setTimeout(function() {
+          if (body) body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }, 200);
+    }
   });
 
   // ── ACCORDION TOGGLES ─────────────────────────────────────
