@@ -41,7 +41,11 @@
       padding: 14px 10px;
       border-right: 2px solid #c5d8ee;
       background: white;
-      align-self: stretch;
+      align-self: flex-start;
+      position: sticky;
+      top: 0;
+      max-height: 100vh;
+      overflow-y: auto;
     }
     .hub-main {
       flex: 1;
