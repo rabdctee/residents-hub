@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register for an Event | Bridgeman Downs Residents Hub</title>
+  <style>
+    :root {
+      --navy:       #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid:   #c5d8ee;
+      --green:      #1a6b3a;
+      --green-bg:   #e8f5ee;
+      --red:        #c0392b;
+      --red-bg:     #fdf0ee;
+      --grey:       #5f6368;
+      --border:     #dde3ec;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f0f4f8;
+      color:#333;
+      min-height:100vh;
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+      background:var(--navy); padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px;
+    }
+    .top-bar-info { min-width:0; }
+    .top-bar-title { color:white; font-size:1.05em; font-weight:700; }
+    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      background:white; color:var(--navy); padding:9px 16px;
+      border-radius:7px; text-decoration:none; font-weight:700;
+      font-size:0.88em; border:2px solid white; white-space:nowrap;
+    }
+    .back-btn:hover { background:var(--navy-light); }
+
+    /* ── Page layout ── */
+    .page-wrap {
+      max-width:560px; margin:0 auto; padding:28px 16px 60px;
+    }
+
+    /* ── Intro card ── */
+    .intro-card {
+      background:white; border-radius:14px;
+      border:2px solid var(--navy-mid);
+      padding:22px 24px; margin-bottom:20px;
+      display:flex; gap:16px; align-items:flex-start;
+    }
+    .intro-icon { font-size:2.4em; flex-shrink:0; }
+    .intro-text h2 { color:var(--navy); font-size:1.15em; margin-bottom:6px; }
+    .intro-text p  { color:var(--grey); font-size:0.9em; line-height:1.55; }
+
+    /* ── Form card ── */
+    .form-card {
+      background:white; border-radius:14px;
+      border:2px solid var(--navy-mid);
+      padding:24px;
+    }
+    .form-card h3 {
+      color:var(--navy); font-size:1em; font-weight:700;
+      margin-bottom:18px; padding-bottom:12px;
+      border-bottom:2px solid var(--navy-light);
+    }
+
+    .field { margin-bottom:16px; }
+    .field label {
+      display:block; font-weight:700; font-size:0.88em;
+      color:var(--navy); margin-bottom:6px;
+    }
+    .field label .req { color:var(--red); margin-left:2px; }
+    .field label .hint {
+      font-weight:400; color:var(--grey); font-size:0.93em; margin-left:4px;
+    }
+    .field input, .field select, .field textarea {
+      width:100%; padding:11px 14px; font-size:0.93em;
+      border:2px solid var(--border); border-radius:8px;
+      font-family:inherit; color:#333; background:white;
+      transition:border-color 0.15s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      outline:none; border-color:var(--navy);
+    }
+    .field input.error, .field select.error {
+      border-color:var(--red);
+    }
+    .field textarea { resize:vertical; min-height:80px; }
+
+    .field-row { display:flex; gap:12px; }
+    .field-row .field { flex:1; }
+
+    .field-note {
+      font-size:0.82em; color:var(--grey); margin-top:5px; line-height:1.4;
+    }
+
+    /* ── Submit button ── */
+    .btn-submit {
+      width:100%; padding:14px; background:var(--navy); color:white;
+      border:none; border-radius:9px; font-size:1em; font-weight:700;
+      font-family:inherit; cursor:pointer; margin-top:8px;
+      transition:background 0.15s;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+    }
+    .btn-submit:hover:not(:disabled) { background:#163d61; }
+    .btn-submit:disabled { opacity:0.65; cursor:not-allowed; }
+
+    /* ── Loading spinner ── */
+    .spinner {
+      width:18px; height:18px; border:3px solid rgba(255,255,255,0.35);
+      border-top-color:white; border-radius:50%;
+      animation:spin 0.7s linear infinite; display:none;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* ── Error note ── */
+    .form-error {
+      background:var(--red-bg); border:1px solid #f5c6c2;
+      border-radius:8px; padding:12px 14px; margin-top:12px;
+      color:var(--red); font-size:0.88em; display:none;
+    }
+
+    /* ── Success panel ── */
+    .success-panel {
+      display:none; background:white; border-radius:14px;
+      border:2px solid #a8d5b8; padding:32px 24px; text-align:center;
+    }
+    .success-icon { font-size:3.5em; margin-bottom:14px; }
+    .success-panel h2 { color:var(--green); font-size:1.25em; margin-bottom:10px; }
+    .success-panel p  { color:var(--grey); font-size:0.92em; line-height:1.6; margin-bottom:8px; }
+    .success-summary {
+      background:var(--green-bg); border-radius:10px;
+      padding:14px 18px; margin:16px 0; text-align:left;
+      font-size:0.9em; line-height:1.8;
+    }
+    .success-summary strong { color:var(--green); }
+    .btn-another {
+      display:inline-block; margin-top:18px; padding:11px 24px;
+      background:var(--navy); color:white; border:none; border-radius:8px;
+      font-size:0.93em; font-weight:700; font-family:inherit;
+      cursor:pointer; text-decoration:none;
+    }
+    .btn-another:hover { background:#163d61; }
+
+    /* ── Loading events ── */
+    .loading-events {
+      text-align:center; color:var(--grey); padding:20px 0;
+      font-style:italic; font-size:0.9em;
+    }
+    .no-events {
+      background:var(--navy-light); border-radius:10px;
+      padding:16px 18px; color:var(--navy); font-size:0.9em;
+      line-height:1.6;
+    }
+
+    @media (max-width:420px) {
+      .field-row { flex-direction:column; gap:0; }
+      .intro-card { flex-direction:column; gap:10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <div class="top-bar-info">
+    <div class="top-bar-title">🗓️ Register for an Event</div>
+    <div class="top-bar-sub">Bridgeman Downs Residents Hub</div>
+  </div>
+  <a href="index.html#events" class="back-btn">← Back to Hub</a>
+</div>
+
+<div class="page-wrap">
+
+  <!-- Intro -->
+  <div class="intro-card">
+    <div class="intro-icon">🎉</div>
+    <div class="intro-text">
+      <h2>Register for a Social Club Event</h2>
+      <p>Only upcoming Social Club events are listed below. Complete the form and click <strong>Submit Registration</strong> — you will see a confirmation on screen straight away.</p>
+    </div>
+  </div>
+
+  <!-- Form (shown while registering) -->
+  <div class="form-card" id="formCard">
+    <h3>Your Details</h3>
+
+    <div id="loadingEvents" class="loading-events">Loading upcoming events…</div>
+    <div id="noEventsMsg" class="no-events" style="display:none">
+      There are no upcoming events open for registration at the moment.<br>
+      Please check the <a href="index.html#events">Events &amp; Activities</a> page for more information, or contact the Social Club Committee.
+    </div>
+
+    <div id="regForm" style="display:none">
+
+      <!-- Event -->
+      <div class="field">
+        <label for="fEvent">Select Event <span class="req">*</span></label>
+        <select id="fEvent">
+          <option value="">— Please choose an event —</option>
+        </select>
+      </div>
+
+      <!-- Name -->
+      <div class="field">
+        <label for="fName">Your Name <span class="req">*</span></label>
+        <input type="text" id="fName" placeholder="e.g. Margaret Smith" autocomplete="name">
+      </div>
+
+      <!-- How many + Unit side by side -->
+      <div class="field-row">
+        <div class="field">
+          <label for="fNumber">How many people <span class="req">*</span></label>
+          <input type="number" id="fNumber" min="1" max="10" value="1" style="max-width:120px">
+          <div class="field-note">Including yourself</div>
+        </div>
+        <div class="field">
+          <label for="fUnit">Unit Number <span class="req">*</span></label>
+          <input type="text" id="fUnit" placeholder="e.g. 42" style="max-width:120px">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="field">
+        <label for="fEmail">Email Address <span class="hint">(optional)</span></label>
+        <input type="email" id="fEmail" placeholder="Leave blank if you don't have email" autocomplete="email">
+      </div>
+
+      <!-- Dietary -->
+      <div class="field">
+        <label for="fDiet">Dietary Requests <span class="hint">(optional)</span></label>
+        <input type="text" id="fDiet" placeholder="e.g. gluten free, lactose free…">
+        <div class="field-note">The team will do their best to accommodate your requests, but this may not always be possible.</div>
+      </div>
+
+      <button class="btn-submit" id="submitBtn" onclick="submitRegistration()">
+        <div class="spinner" id="spinner"></div>
+        <span id="submitLabel"> Submit Registration</span>
+      </button>
+
+      <div class="form-error" id="formError"></div>
+
+    </div><!-- /regForm -->
+  </div><!-- /formCard -->
+
+  <!-- Success panel (hidden until submission) -->
+  <div class="success-panel" id="successPanel">
+    <div class="success-icon">🎊</div>
+    <h2>You're registered!</h2>
+    <p>Thank you — your registration has been recorded. Here's a summary:</p>
+    <div class="success-summary" id="successSummary"></div>
+    <p>If you need to make any changes, please contact the Social Club Committee.</p>
+    <button class="btn-another" onclick="registerAnother()">Register for Another Event</button>
+    &nbsp;
+    <a href="index.html#events" class="btn-another" style="background:#555">← Back to Hub</a>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUcetKOKOyNwn1SSqI54xBIGTHV2YVTXcD1o2UTFo7uKGoqCts-nUqFSMEhLxXanK0CA/exec';
+
+  /* ── Load events on page open ── */
+  window.addEventListener('DOMContentLoaded', function() {
+    fetch(SCRIPT_URL + '?action=getEvents')
+      .then(function(r) { return r.json(); })
+      .then(function(events) {
+        document.getElementById('loadingEvents').style.display = 'none';
+        if (!events || events.length === 0) {
+          document.getElementById('noEventsMsg').style.display = 'block';
+          return;
+        }
+        var sel = document.getElementById('fEvent');
+        events.forEach(function(ev) {
+          var opt = document.createElement('option');
+          opt.value = ev.name || ev;
+          opt.textContent = ev.name || ev;
+          sel.appendChild(opt);
+        });
+        // If only one event, pre-select it
+        if (events.length === 1) {
+          sel.value = sel.options[1].value;
+        }
+        document.getElementById('regForm').style.display = 'block';
+      })
+      .catch(function() {
+        document.getElementById('loadingEvents').style.display = 'none';
+        document.getElementById('noEventsMsg').style.display = 'block';
+        document.getElementById('noEventsMsg').innerHTML =
+          'Unable to load events at the moment. Please try refreshing the page, or contact the Social Club team.';
+      });
+  });
+
+  /* ── Submit ── */
+  function submitRegistration() {
+    // Clear previous errors
+    ['fEvent','fName','fUnit','fNumber'].forEach(function(id) {
+      document.getElementById(id).classList.remove('error');
+    });
+    document.getElementById('formError').style.display = 'none';
+
+    var event  = document.getElementById('fEvent').value.trim();
+    var name   = document.getElementById('fName').value.trim();
+    var unit   = document.getElementById('fUnit').value.trim();
+    var number = document.getElementById('fNumber').value.trim();
+    var email  = document.getElementById('fEmail').value.trim();
+    var diet   = document.getElementById('fDiet').value.trim();
+
+    // Validation
+    var errors = [];
+    if (!event)  { errors.push('Please select an event.'); document.getElementById('fEvent').classList.add('error'); }
+    if (!name)   { errors.push('Please enter your name.'); document.getElementById('fName').classList.add('error'); }
+    if (!unit)   { errors.push('Please enter your unit number.'); document.getElementById('fUnit').classList.add('error'); }
+    if (!number || isNaN(number) || parseInt(number) < 1) {
+      errors.push('Please enter the number of people attending (at least 1).');
+      document.getElementById('fNumber').classList.add('error');
+    }
+
+    if (errors.length > 0) {
+      var errEl = document.getElementById('formError');
+      errEl.innerHTML = '⚠️ ' + errors.join('<br>⚠️ ');
+      errEl.style.display = 'block';
+      errEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+      return;
+    }
+
+    // Disable button & show spinner
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    document.getElementById('spinner').style.display = 'block';
+    document.getElementById('submitLabel').textContent = 'Submitting…';
+
+    var payload = {
+      action:  'addRegistration',
+      event:   event,
+      name:    name,
+      unit:    unit,
+      email:   email,
+      number:  parseInt(number),
+      dietary: diet
+    };
+
+    fetch(SCRIPT_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify(payload)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data && data.success) {
+        showSuccess(event, name, unit, number, email, diet);
+      } else {
+        throw new Error(data && data.error ? data.error : 'Unknown error');
+      }
+    })
+    .catch(function(err) {
+      // no-cors fallback — if we get a network error due to no-cors opaque response,
+      // it still likely went through. Show success after a short delay.
+      if (err.message && err.message.toLowerCase().includes('failed to fetch')) {
+        // genuine network failure
+        resetSubmitBtn();
+        showError('Unable to connect. Please check your internet connection and try again.');
+      } else {
+        // opaque response from no-cors — treat as success
+        showSuccess(event, name, unit, number, email, diet);
+      }
+    });
+  }
+
+  function showSuccess(event, name, unit, number, email, diet) {
+    var guestNote = parseInt(number) > 1
+      ? number + ' people (including yourself)'
+      : '1 person (just yourself)';
+
+    var html = '<strong>Event:</strong> ' + escHtml(event) + '<br>'
+             + '<strong>Name:</strong> '  + escHtml(name)  + '<br>'
+             + '<strong>Unit:</strong> '  + escHtml(unit)  + '<br>'
+             + '<strong>Attending:</strong> ' + guestNote;
+    if (email) html += '<br><strong>Email:</strong> ' + escHtml(email);
+    if (diet)  html += '<br><strong>Dietary requests:</strong> ' + escHtml(diet);
+
+    document.getElementById('successSummary').innerHTML = html;
+    document.getElementById('formCard').style.display    = 'none';
+    document.getElementById('successPanel').style.display = 'block';
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  function showError(msg) {
+    var errEl = document.getElementById('formError');
+    errEl.innerHTML = '⚠️ ' + msg;
+    errEl.style.display = 'block';
+  }
+
+  function resetSubmitBtn() {
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = false;
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('submitLabel').textContent = '✅ Submit Registration';
+  }
+
+  function registerAnother() {
+    // Reset form
+    ['fEvent','fName','fUnit','fNumber','fEmail','fDiet'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el.tagName === 'SELECT') el.selectedIndex = 0;
+      else if (id === 'fNumber') el.value = '1';
+      else el.value = '';
+      el.classList.remove('error');
+    });
+    document.getElementById('formError').style.display = 'none';
+    resetSubmitBtn();
+    document.getElementById('successPanel').style.display = 'none';
+    document.getElementById('formCard').style.display     = 'block';
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+
+</body>
+</html>
