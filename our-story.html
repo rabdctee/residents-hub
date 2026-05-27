@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The History of our  Village | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+
+    /* ===== Base ===== */
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:20px;
+      line-height:1.7;
+      color:#222;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      background:white;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background:#1F4E79;
+      color:white;
+      padding:36px 20px 30px;
+      text-align:center;
+    }
+    header h1{ font-size:2em; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.15em;
+      font-weight:600;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(255,255,255,0.18);
+      border-radius:6px;
+      padding:6px 20px;
+    }
+
+    /* ===== Page content ===== */
+    .page-content{ padding:40px 25px; }
+
+    .info-box{
+      background:#e8f4f8;
+      border-left:4px solid #1F4E79;
+      padding:20px;
+      margin:0 0 30px;
+      border-radius:4px;
+    }
+
+    .tip-box{
+      background:#fff9e6;
+      border-left:4px solid #fbbc04;
+      padding:14px 18px;
+      margin:14px 0 4px;
+      border-radius:4px;
+      font-size:0.92em;
+    }
+
+    /* ===== Section divider ===== */
+    .section-divider{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:35px 0 18px;
+    }
+    .section-divider-line{
+      flex:1;
+      height:1px;
+      background:#dde3ea;
+    }
+    .section-divider-text{
+      font-size:0.78em;
+      font-weight:700;
+      letter-spacing:0.09em;
+      text-transform:uppercase;
+      color:#8a96a3;
+      white-space:nowrap;
+    }
+
+    /* ===== Did You Know box ===== */
+    .history-box{
+      background:#eaf4ee;
+      border-left:4px solid #2a7a4b;
+      border-radius:4px;
+      padding:20px 22px;
+      margin-bottom:30px;
+    }
+    .history-box h3{
+      color:#1F4E79;
+      font-size:0.95em;
+      font-weight:700;
+      margin-bottom:12px;
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+    }
+    .history-box ul{
+      list-style:none;
+      padding:0;
+    }
+    .history-box ul li{
+      padding:6px 0 6px 26px;
+      position:relative;
+      color:#333;
+      font-size:0.92em;
+      border-bottom:1px dashed #c0d8c8;
+    }
+    .history-box ul li:last-child{ border-bottom:none; }
+    .history-box ul li::before{
+      content:"📌";
+      position:absolute;
+      left:0;
+      font-size:0.8em;
+      top:8px;
+    }
+
+    /* ===== How to help ===== */
+    .how-to-help{
+      background:#1F4E79;
+      color:white;
+      border-radius:10px;
+      padding:28px 28px 24px;
+      margin-bottom:30px;
+    }
+    .how-to-help h3{
+      font-size:1em;
+      margin-bottom:16px;
+    }
+    .help-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:12px;
+    }
+    .help-item{
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.2);
+      border-radius:8px;
+      padding:14px 16px;
+      font-size:0.85em;
+      line-height:1.5;
+    }
+    .help-item .help-icon{
+      display:block;
+      font-size:1.4em;
+      margin-bottom:6px;
+    }
+
+    /* ===== Accordion sections ===== */
+    .accordion-block{
+      border:1px solid #dde3ea;
+      border-radius:8px;
+      margin-bottom:12px;
+      overflow:hidden;
+    }
+
+    .accordion-header{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      padding:16px 20px;
+      cursor:pointer;
+      background:white;
+      border:none;
+      width:100%;
+      text-align:left;
+      transition:background 0.15s;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .accordion-header:hover{ background:#f0f6fb; }
+    .accordion-header.open{ background:#e8f4f8; }
+
+    .acc-icon{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      background:#1F4E79;
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1.1em;
+      flex-shrink:0;
+    }
+    .accordion-header.open .acc-icon{ background:#2a9d8f; }
+
+    .acc-title{ flex:1; }
+    .acc-title h3{
+      font-size:0.95em;
+      font-weight:700;
+      color:#1F4E79;
+      margin-bottom:2px;
+    }
+    .acc-title p{
+      font-size:0.78em;
+      color:#7a8a9a;
+    }
+
+    .acc-chevron{
+      font-size:0.9em;
+      color:#1F4E79;
+      transition:transform 0.25s;
+      flex-shrink:0;
+    }
+    .accordion-header.open .acc-chevron{ transform:rotate(180deg); }
+
+    .accordion-body{
+      display:none;
+      border-top:1px solid #dde3ea;
+    }
+    .accordion-body.open{ display:block; }
+
+    /* ===== Question rows inside accordion ===== */
+    .question-list{ padding:4px 0; }
+
+    .question-row{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      padding:13px 22px;
+      border-bottom:1px solid #f0f4f8;
+      font-size:0.92em;
+    }
+    .question-row:last-child{ border-bottom:none; }
+    .question-row:hover{ background:#fafcff; }
+
+    .q-num{
+      width:26px;
+      height:26px;
+      border-radius:50%;
+      background:#2e6da4;
+      color:white;
+      font-size:0.72em;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      margin-top:2px;
+    }
+
+    .acc-tip{
+      background:#f0f8f4;
+      border-top:1px solid #c8e0d0;
+      padding:10px 22px;
+      font-size:0.8em;
+      color:#2a7a4b;
+    }
+
+    /* ===== CTA strip ===== */
+    .cta-strip{
+      background:#1F4E79;
+      border-radius:10px;
+      padding:28px 28px 24px;
+      margin-bottom:30px;
+      color:white;
+      text-align:center;
+    }
+    .cta-strip h3{ font-size:1.1em; margin-bottom:8px; }
+    .cta-strip p{ font-size:0.88em; opacity:0.9; margin-bottom:16px; }
+    .cta-strip .note{ font-size:0.8em; opacity:0.7; font-style:italic; margin-top:10px; }
+
+    .cta-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:white;
+      color:#1F4E79;
+      border:none;
+      padding:12px 28px;
+      border-radius:6px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:0.95em;
+      font-weight:700;
+      cursor:pointer;
+      text-decoration:none;
+      transition:background 0.15s;
+    }
+    .cta-btn:hover{ background:#e8f4f8; }
+    .cta-btn + .cta-btn{ margin-left:10px; }
+
+    /* ===== Section bar ===== */
+    .section-bar{
+      background:#E7F1FB;
+      border-bottom:2px solid #c5d8ee;
+      padding:8px 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .section-bar a{
+      color:#1F4E79;
+      font-weight:700;
+      font-size:0.8em;
+      background:white;
+      border:1px solid #c5d8ee;
+      border-radius:6px;
+      padding:5px 12px;
+      text-decoration:none;
+      cursor:pointer;
+      transition:all 0.15s;
+      white-space:nowrap;
+    }
+    .section-bar a:hover{ background:#1F4E79; color:white; border-color:#1F4E79; }
+
+    /* ===== Responsive ===== */
+    @media(max-width:600px){
+      .help-grid{ grid-template-columns:1fr 1fr; }
+      .accordion-header{ padding:13px 14px; gap:10px; }
+      .question-row{ padding:11px 14px; }
+    }
+    @media(max-width:400px){
+      .help-grid{ grid-template-columns:1fr; }
+    }
+
+    /* ===== Print ===== */
+    @media print{
+      .section-bar,.how-to-help,.cta-strip,.acc-chevron{ display:none !important; }
+      .accordion-body{ display:block !important; }
+      .accordion-block{ border:1px solid #ccc; }
+      body{ background:white; font-size:14px; }
+    }
+
+  </style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>🏡 Our Story — Village History Project</span></p>
+  </header>
+
+  <!-- ===== SECTION BAR ===== -->
+  <div class="section-bar">
+    <a href="#about">About</a>
+    <a href="#history">Did You Know?</a>
+    <a href="#questions">The Questions</a>
+    <a href="#share">Share Your Story</a>
+  </div>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <!-- Intro -->
+    <div class="info-box" id="about">
+      <strong>Welcome to Our Story</strong> — a community history project for Bridgeman Downs Retirement Village.<br><br>
+      Every community has a story and ours is a rich one. We are putting together an official history of our village — not just dates and buildings, but the real story of community life, told by the people who live here.<br><br>
+      Browse the questions below and think about what you remember. You don't need to answer everything — just share what comes to mind. Every detail, big or small, is valuable. <strong>Families and friends are welcome to contribute too.</strong>
+    </div>
+
+    <!-- Did You Know -->
+    <div class="section-divider" id="history">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">🏡 Did You Know? — A little background to help jog your memory</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="history-box">
+      <h3>About Bridgeman Downs &amp; Our Village</h3>
+      <ul>
+        <li>The suburb takes its name from <strong>Henry St John Bridgeman</strong>, an Irish bank manager who arrived in Queensland in 1863 and held land here — though he and his family never actually lived on it.</li>
+        <li>After Bridgeman's death, his land was acquired by the <strong>Queensland Immigration Society</strong> and used for <strong>pig farming and field crops</strong>.</li>
+        <li>Bridgeman Downs was only officially gazetted as a suburb in <strong>1977</strong> — within living memory for many of our residents.</li>
+        <li>The first residential estates were developed in the <strong>late 1980s and early 1990s</strong> — the area was still quite rural before then.</li>
+        <li>The <strong>Anglican Church of the Resurrection</strong> on Ridley Road — right next door to us — was established in 1981, one of the very first community buildings in the suburb.</li>
+        <li>A 1996 aerial photograph held by Moreton Bay Regional Council shows just how open and rural the area still looked at that time.</li>
+        <li>A detailed history of the area was written by D.R. Teague — <em>The History of Albany Creek, Bridgeman Downs and Eaton's Hill</em> (Colonial Press, 1980) — available at the State Library of Queensland.</li>
+      </ul>
+    </div>
+
+    <!-- How to help -->
+    <div class="how-to-help">
+      <h3>🤝 How You Can Contribute</h3>
+      <div class="help-grid">
+        <div class="help-item">
+          <span class="help-icon">💬</span>
+          Browse the questions and note down anything you remember — on paper or by using the submission form on the next page.
+        </div>
+        <div class="help-item">
+          <span class="help-icon">🤝</span>
+          Sit with a friend and talk through the questions together — memories often surface in conversation.
+        </div>
+        <div class="help-item">
+          <span class="help-icon">📷</span>
+          If you have old photos, newsletters or documents from village life, please let us know.
+        </div>
+        <div class="help-item">
+          <span class="help-icon">👋</span>
+          Point us to other current or former residents who may have early memories of the village.
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ACCORDION QUESTIONS ===== -->
+    <div class="section-divider" id="questions">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">❓ The Questions — click any section to open it</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="tip-box">
+      💡 <strong>Tip:</strong> Click any section heading below to open it. You can have several open at once. Use the <strong>Share Your Story</strong> button at the bottom when you're ready to submit your memories.
+    </div>
+
+    <!-- Section 1 -->
+    <div class="accordion-block">
+      <button class="accordion-header" onclick="toggleAcc(this)" aria-expanded="false">
+        <div class="acc-icon">👤</div>
+        <div class="acc-title">
+          <h3>Section 1 — About You</h3>
+          <p>A little background so we can understand everyone's story</p>
+        </div>
+        <div class="acc-chevron">▼</div>
+      </button>
+      <div class="accordion-body">
+        <div class="question-list">
+          <div class="question-row"><div class="q-num">1</div><div>What is your name? (You may remain anonymous if you prefer.)</div></div>
+          <div class="question-row"><div class="q-num">2</div><div>When did you first move into the village?</div></div>
+          <div class="question-row"><div class="q-num">3</div><div>Where did you live before moving here? (suburb, town or state — no need to be specific)</div></div>
+          <div class="question-row"><div class="q-num">4</div><div>What brought you to Bridgeman Downs Retirement Village?</div></div>
+          <div class="question-row"><div class="q-num">5</div><div>What did you do for work during your career?</div></div>
+        </div>
+        <div class="acc-tip">💡 Your background helps put your memories in context for future readers.</div>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="accordion-block">
+      <button class="accordion-header" onclick="toggleAcc(this)" aria-expanded="false">
+        <div class="acc-icon">🌅</div>
+        <div class="acc-title">
+          <h3>Section 2 — First Impressions</h3>
+          <p>What do you remember about the early days?</p>
+        </div>
+        <div class="acc-chevron">▼</div>
+      </button>
+      <div class="accordion-body">
+        <div class="question-list">
+          <div class="question-row"><div class="q-num">1</div><div>What did the village look like when you first moved in? How is it different from today?</div></div>
+          <div class="question-row"><div class="q-num">2</div><div>What was your first impression — the buildings, the gardens, the atmosphere?</div></div>
+          <div class="question-row"><div class="q-num">3</div><div>Who were some of the first people you met? Do you remember any particular welcome or introduction?</div></div>
+          <div class="question-row"><div class="q-num">4</div><div>What facilities or activities were available when you arrived? What did not exist yet?</div></div>
+          <div class="question-row"><div class="q-num">5</div><div>Was there anything that surprised you — good or bad — in those early days?</div></div>
+        </div>
+        <div class="acc-tip">💡 Even small details — what the gardens looked like, who said hello first — help paint the picture.</div>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="accordion-block">
+      <button class="accordion-header" onclick="toggleAcc(this)" aria-expanded="false">
+        <div class="acc-icon">🎉</div>
+        <div class="acc-title">
+          <h3>Section 3 — Community &amp; Social Life</h3>
+          <p>The activities, events and people that made village life special</p>
+        </div>
+        <div class="acc-chevron">▼</div>
+      </button>
+      <div class="accordion-body">
+        <div class="question-list">
+          <div class="question-row"><div class="q-num">1</div><div>What social activities, clubs or groups have you been involved in over the years?</div></div>
+          <div class="question-row"><div class="q-num">2</div><div>Are there any annual events, celebrations or traditions that have become part of village life?</div></div>
+          <div class="question-row"><div class="q-num">3</div><div>Can you recall any particularly memorable occasions — a party, a performance, a celebration?</div></div>
+          <div class="question-row"><div class="q-num">4</div><div>Who are some of the residents or staff who have had a big impact on the community?</div></div>
+          <div class="question-row"><div class="q-num">5</div><div>How would you describe the spirit or character of this village — what makes it different from anywhere else?</div></div>
+          <div class="question-row"><div class="q-num">6</div><div>Has the social life of the village changed much over the years? How so?</div></div>
+        </div>
+        <div class="acc-tip">💡 The Social Club has always been at the heart of village life — any memories of early events are especially welcome.</div>
+      </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="accordion-block">
+      <button class="accordion-header" onclick="toggleAcc(this)" aria-expanded="false">
+        <div class="acc-icon">🏗️</div>
+        <div class="acc-title">
+          <h3>Section 4 — How the Village Has Changed</h3>
+          <p>Buildings, facilities and the passing of years</p>
+        </div>
+        <div class="acc-chevron">▼</div>
+      </button>
+      <div class="accordion-body">
+        <div class="question-list">
+          <div class="question-row"><div class="q-num">1</div><div>Can you recall any major building work, renovations or new facilities being added?</div></div>
+          <div class="question-row"><div class="q-num">2</div><div>Have there been changes to how the village is managed or run that you remember?</div></div>
+          <div class="question-row"><div class="q-num">3</div><div>Are there any facilities, spaces or features that used to exist but no longer do?</div></div>
+          <div class="question-row"><div class="q-num">4</div><div>How has the surrounding area of Bridgeman Downs changed since you have lived here?</div></div>
+          <div class="question-row"><div class="q-num">5</div><div>Are there any difficult times or challenges the community has faced together — storms, illness, loss?</div></div>
+          <div class="question-row"><div class="q-num">6</div><div>What do you think has remained constant — what has always defined this village, no matter what changed?</div></div>
+        </div>
+        <div class="acc-tip">💡 If you remember approximate years for any changes, please include them — it helps us build a timeline.</div>
+      </div>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="accordion-block">
+      <button class="accordion-header" onclick="toggleAcc(this)" aria-expanded="false">
+        <div class="acc-icon">👷</div>
+        <div class="acc-title">
+          <h3>Section 5 — Staff &amp; Management</h3>
+          <p>The people who have served our village over the years</p>
+        </div>
+        <div class="acc-chevron">▼</div>
+      </button>
+      <div class="accordion-body">
+        <div class="question-list">
+          <div class="question-row"><div class="q-num">1</div><div>Are there any staff members — past or present — who have made a special difference to your life here?</div></div>
+          <div class="question-row"><div class="q-num">2</div><div>Do you remember any former Community Managers or key staff who stood out?</div></div>
+          <div class="question-row"><div class="q-num">3</div><div>Have there been changes in how the village is managed that you noticed over time?</div></div>
+          <div class="question-row"><div class="q-num">4</div><div>Are there any staff member you would like to see recognised in the village history?</div></div>
+        </div>
+        <div class="acc-tip">💡 Staff and management are often the unsung heroes of village life — their stories matter too.</div>
+      </div>
+    </div>
+
+    <!-- Section 6 -->
+    <div class="accordion-block">
+      <button class="accordion-header" onclick="toggleAcc(this)" aria-expanded="false">
+        <div class="acc-icon">🗺️</div>
+        <div class="acc-title">
+          <h3>Section 6 — Bridgeman Downs Itself</h3>
+          <p>The suburb around us, then and now</p>
+        </div>
+        <div class="acc-chevron">▼</div>
+      </button>
+      <div class="accordion-body">
+        <div class="question-list">
+          <div class="question-row"><div class="q-num">1</div><div>Did you live in the Bridgeman Downs area before moving into the village? What was it like then?</div></div>
+          <div class="question-row"><div class="q-num">2</div><div>Do you remember when the land around the village was still rural or undeveloped?</div></div>
+          <div class="question-row"><div class="q-num">3</div><div>What local shops, services or landmarks do you remember from when you first arrived in the area?</div></div>
+          <div class="question-row"><div class="q-num">4</div><div>Have you noticed big changes in the suburb over the years — new roads, new buildings, more traffic?</div></div>
+          <div class="question-row"><div class="q-num">5</div><div>What do you most appreciate about the location of our village?</div></div>
+        </div>
+        <div class="acc-tip">💡 The "Did You Know?" panel above has some background facts that may help jog your memory.</div>
+      </div>
+    </div>
+
+    <!-- Section 7 -->
+    <div class="accordion-block">
+      <button class="accordion-header" onclick="toggleAcc(this)" aria-expanded="false">
+        <div class="acc-icon">📷</div>
+        <div class="acc-title">
+          <h3>Section 7 — Photographs &amp; Documents</h3>
+          <p>Old photos, newsletters and memorabilia</p>
+        </div>
+        <div class="acc-chevron">▼</div>
+      </button>
+      <div class="accordion-body">
+        <div class="question-list">
+          <div class="question-row"><div class="q-num">1</div><div>Do you have any photographs of the village in its early days, or from special events?</div></div>
+          <div class="question-row"><div class="q-num">2</div><div>Do you have old village newsletters, calendars or activity programmes?</div></div>
+          <div class="question-row"><div class="q-num">3</div><div>Do you have letters, newspaper clippings or any other documents connected to village life?</div></div>
+          <div class="question-row"><div class="q-num">4</div><div>Do you have any certificates, programmes or memorabilia from village events?</div></div>
+        </div>
+        <div class="acc-tip">💡 We only need to borrow or copy items — everything will be returned safely. Please contact the Residents Committee.</div>
+      </div>
+    </div>
+
+    <!-- Section 8 -->
+    <div class="accordion-block">
+      <button class="accordion-header" onclick="toggleAcc(this)" aria-expanded="false">
+        <div class="acc-icon">💬</div>
+        <div class="acc-title">
+          <h3>Section 8 — Final Thoughts</h3>
+          <p>Anything else you would like the history to capture</p>
+        </div>
+        <div class="acc-chevron">▼</div>
+      </button>
+      <div class="accordion-body">
+        <div class="question-list">
+          <div class="question-row"><div class="q-num">1</div><div>Is there a story, a moment, or a person that you feel absolutely must be included in the village history?</div></div>
+          <div class="question-row"><div class="q-num">2</div><div>What do you hope future residents will understand about this village and its community?</div></div>
+          <div class="question-row"><div class="q-num">3</div><div>Is there anything about the village's history that has never been properly recorded or recognised?</div></div>
+          <div class="question-row"><div class="q-num">4</div><div>Do you know of any other residents with particularly long memories of the village who we should speak with?</div></div>
+        </div>
+        <div class="acc-tip">💡 Your final thoughts are often the most important — please don't hold back.</div>
+      </div>
+    </div>
+
+    <!-- ===== CTA ===== -->
+    <div class="section-divider" id="share">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">✍️ Share Your Story</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="cta-strip">
+      <h3>📬 Ready to Share Your Memories?</h3>
+      <p>When you're ready, use our simple online form to record your memories and send them to the Residents Committee. You can share as much or as little as you like, choose to remain anonymous, and even request a printed copy for your family.</p>
+      <a class="cta-btn" href="our-story-submit.html">✍️ Submit Your Memories →</a>
+      <a class="cta-btn" onclick="window.print()">🖨️ Print This Page</a>
+      <p class="note">Prefer to do it on paper? Print this page and drop your written responses in the Residents Committee mailbox.</p>
+    </div>
+
+  </div><!-- end page-content -->
+</div><!-- end container -->
+
+<script>
+  function toggleAcc(btn) {
+    var body = btn.nextElementSibling;
+    var isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Story — Share Your Memories | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+
+    /* ===== Base ===== */
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:20px;
+      line-height:1.7;
+      color:#222;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      background:white;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background:#1F4E79;
+      color:white;
+      padding:36px 20px 30px;
+      text-align:center;
+    }
+    header h1{ font-size:2em; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.15em;
+      font-weight:600;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(255,255,255,0.18);
+      border-radius:6px;
+      padding:6px 20px;
+    }
+
+    /* ===== Page content ===== */
+    .page-content{ padding:40px 25px; }
+
+    .info-box{
+      background:#e8f4f8;
+      border-left:4px solid #1F4E79;
+      padding:20px;
+      margin:0 0 30px;
+      border-radius:4px;
+    }
+
+    /* ===== Section divider ===== */
+    .section-divider{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:35px 0 18px;
+    }
+    .section-divider-line{
+      flex:1;
+      height:1px;
+      background:#dde3ea;
+    }
+    .section-divider-text{
+      font-size:0.78em;
+      font-weight:700;
+      letter-spacing:0.09em;
+      text-transform:uppercase;
+      color:#8a96a3;
+      white-space:nowrap;
+    }
+
+    /* ===== Submitted stories ===== */
+    .stories-intro{
+      font-size:1em;
+      color:#444;
+      margin-bottom:24px;
+    }
+
+    .story-card{
+      background:#f8f9fa;
+      border:1px solid #e0e0e0;
+      border-radius:10px;
+      padding:28px 30px;
+      margin-bottom:24px;
+      position:relative;
+    }
+
+    .story-card::before{
+      content:'\201C';
+      font-size:5em;
+      color:#1F4E79;
+      opacity:0.15;
+      position:absolute;
+      top:10px;
+      left:18px;
+      line-height:1;
+      font-family:Georgia,serif;
+    }
+
+    .story-author{
+      font-weight:700;
+      color:#1F4E79;
+      font-size:1em;
+      margin-bottom:6px;
+    }
+
+    .story-era{
+      font-size:0.82em;
+      color:#888;
+      margin-bottom:14px;
+    }
+
+    .story-text{
+      color:#333;
+      line-height:1.8;
+      font-size:0.96em;
+    }
+
+    .story-text p{ margin-bottom:10px; }
+    .story-text p:last-child{ margin-bottom:0; }
+
+    .story-prompt-label{
+      font-size:0.78em;
+      font-weight:700;
+      color:#1F4E79;
+      text-transform:uppercase;
+      letter-spacing:0.06em;
+      margin:14px 0 4px;
+    }
+
+    /* ===== Contribute form ===== */
+    .contribute-section{
+      background:#1F4E79;
+      border-radius:10px;
+      padding:36px 30px;
+      margin-bottom:30px;
+      color:white;
+    }
+
+    .contribute-section h2{
+      font-size:1.4em;
+      margin-bottom:10px;
+    }
+
+    .contribute-section > p{
+      font-size:0.95em;
+      opacity:0.88;
+      margin-bottom:24px;
+    }
+
+    /* ===== Form fields ===== */
+    .form-group{
+      margin-bottom:20px;
+    }
+
+    .form-label{
+      display:block;
+      font-size:0.9em;
+      font-weight:600;
+      opacity:0.9;
+      margin-bottom:6px;
+    }
+
+    .form-label .optional{
+      font-weight:400;
+      opacity:0.65;
+      font-size:0.88em;
+    }
+
+    .form-input,
+    .form-textarea{
+      width:100%;
+      padding:12px 16px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:17px;
+      border:2px solid #1e4178;
+      border-radius:6px;
+      background:white;
+      color:#222;
+      transition:border-color 0.2s;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus{
+      outline:none;
+      border-color:#63a4d8;
+      background:white;
+    }
+
+    .form-textarea{
+      resize:vertical;
+      min-height:90px;
+    }
+
+    /* ===== Prompt group ===== */
+    .prompt-group{
+      background:rgba(255,255,255,0.1);
+      border-radius:8px;
+      padding:20px 22px;
+      margin-bottom:20px;
+    }
+
+    .prompt-group-title{
+      font-size:0.88em;
+      font-weight:700;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      opacity:0.75;
+      margin-bottom:14px;
+      padding-bottom:8px;
+      border-bottom:1px solid rgba(255,255,255,0.2);
+    }
+
+    /* ===== Checkbox ===== */
+    .checkbox-row{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      background:rgba(255,255,255,0.12);
+      border-radius:8px;
+      padding:16px 18px;
+      margin-bottom:20px;
+      cursor:pointer;
+    }
+
+    .checkbox-row input[type="checkbox"]{
+      width:22px;
+      height:22px;
+      flex-shrink:0;
+      margin-top:3px;
+      cursor:pointer;
+      accent-color:#fff;
+    }
+
+    .checkbox-row label{
+      font-size:0.95em;
+      cursor:pointer;
+      line-height:1.5;
+    }
+
+    .checkbox-row label strong{
+      display:block;
+      margin-bottom:3px;
+    }
+
+    /* ===== Submit button ===== */
+    .submit-btn{
+      background:white;
+      color:#1F4E79;
+      border:none;
+      padding:14px 32px;
+      border-radius:6px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+      transition:background 0.2s;
+    }
+    .submit-btn:hover{ background:#e8f4f8; }
+
+    /* ===== Back link ===== */
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:#1F4E79;
+      font-size:0.85em;
+      font-weight:700;
+      text-decoration:none;
+      margin-bottom:24px;
+      padding:8px 14px;
+      background:#e8f4f8;
+      border-radius:6px;
+      transition:background 0.15s;
+    }
+    .back-link:hover{ background:#d0e8f5; }
+
+    /* ===== Success message ===== */
+    .form-success{
+      display:none;
+      background:rgba(255,255,255,0.15);
+      border:1px solid rgba(255,255,255,0.35);
+      border-radius:8px;
+      padding:20px 24px;
+      font-size:1em;
+      text-align:center;
+      line-height:1.7;
+    }
+
+    /* ===== Photo note ===== */
+    .photo-note{
+      background:rgba(255,255,255,0.12);
+      border-radius:8px;
+      padding:16px 20px;
+      font-size:0.88em;
+      opacity:0.9;
+      line-height:1.6;
+      margin-bottom:20px;
+    }
+    .photo-note strong{ display:block; margin-bottom:4px; font-size:1em; }
+
+    /* ===== Section bar ===== */
+    .section-bar{
+      background:#E7F1FB;
+      border-bottom:2px solid #c5d8ee;
+      padding:8px 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+    .section-bar a{
+      color:#1F4E79;
+      font-weight:700;
+      font-size:0.8em;
+      background:white;
+      border:1px solid #c5d8ee;
+      border-radius:6px;
+      padding:5px 12px;
+      text-decoration:none;
+      cursor:pointer;
+      transition:all 0.15s;
+      white-space:nowrap;
+    }
+    .section-bar a:hover{ background:#1F4E79; color:white; border-color:#1F4E79; }
+
+    /* ===== Responsive ===== */
+    @media(max-width:768px){
+      .contribute-section{ padding:24px 18px; }
+      .story-card{ padding:22px 20px; }
+    }
+
+  </style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>✍️ Our Story — Share Your Memories</span></p>
+  </header>
+
+  <!-- ===== SECTION BAR ===== -->
+  <div class="section-bar">
+    <a href="our-story.html">← Back to the Questions</a>
+    <a href="#stories">Stories So Far</a>
+    <a href="#form">Submit Your Story</a>
+  </div>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <a class="back-link" href="our-story.html">← Back to the Research Questions</a>
+
+    <div class="info-box">
+      <strong>Share your village memories</strong> — and help write our history.<br><br>
+      Answer as many or as few questions as you like. There are no right or wrong answers, no minimum length, and no obligation to answer everything. Your memories — however small they may seem — help build the picture of what life in our village has been like over the years.<br><br>
+      Although there is a space for your name, you do not have to provide it. You can choose to remain anonymous. You can also choose to keep your submission private as a personal or family keepsake, or consent to have it shared with the community. <strong>The choice is entirely yours.</strong>
+    </div>
+
+
+    <!-- ══════════════════════════════════
+         SHARED STORIES
+    ══════════════════════════════════ -->
+    <div class="section-divider" id="stories">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">📖 Residents' Stories So Far</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <p class="stories-intro">Stories shared by your fellow residents — with their permission. Yours could be next!</p>
+
+    <!-- Placeholder story — replace with real submissions as they come in -->
+    <div class="story-card">
+      <div class="story-author">Margaret T. — Village resident since 1999</div>
+      <div class="story-era">Early memories of the village</div>
+      <div class="story-text">
+        <div class="story-prompt-label">What did the village look like when you first moved in?</div>
+        <p>It was much smaller and quieter than it is today. There were far fewer villas and the gardens were still being established — you could see the open paddocks beyond the fence. It felt like a little outpost on the edge of the suburb.</p>
+        <div class="story-prompt-label">What brought you here?</div>
+        <p>My husband and I had driven past the entrance on Ridley Road many times and always thought it looked lovely and well-kept. When the time came, we didn't have to think twice. We've never regretted it for a moment.</p>
+      </div>
+    </div>
+    <!-- End placeholder — remove once real stories are submitted -->
+
+
+    <!-- ══════════════════════════════════
+         SUBMISSION FORM
+    ══════════════════════════════════ -->
+    <div class="section-divider" id="form">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">✍️ Your Memories</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="contribute-section">
+      <h2>✍️ Share Your Story</h2>
+      <p>Answer as many or as few questions as you like — in as much or as little detail as feels right. The questions are prompts to get you started; feel free to write freely in any field. Nothing is made public without your express consent.</p>
+
+      <div id="storyForm">
+
+        <!-- YOUR NAME -->
+        <div class="form-group">
+          <label class="form-label" for="s-name">
+            Your name <span class="optional">(optional — see sharing options below)</span>
+          </label>
+          <input class="form-input" type="text" id="s-name"
+                 placeholder="e.g. John & Mary Smith, Unit 7 — or leave blank to remain anonymous">
+        </div>
+
+        <!-- ── ABOUT YOU ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">👤 About You</div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-movein">
+              When did you move in, and what brought you here?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-movein"
+                      placeholder="The year, what you were looking for, and what drew you to this village..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-career">
+              What did you do for work during your career?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-career"
+                      placeholder="Your working life — profession, industry, highlights..."></textarea>
+          </div>
+        </div>
+
+        <!-- ── FIRST IMPRESSIONS ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">🌅 First Impressions</div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-firstlook">
+              What did the village look like when you first arrived?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-firstlook"
+                      placeholder="The buildings, the gardens, the atmosphere — and how it differs from today..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-firstpeople">
+              Who were some of the first people you met?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-firstpeople"
+                      placeholder="Early neighbours, staff, anyone who made you feel welcome..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-surprise">
+              Was there anything that surprised you — good or bad — in those early days?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-surprise"
+                      placeholder="Anything that wasn't what you expected..."></textarea>
+          </div>
+        </div>
+
+        <!-- ── COMMUNITY LIFE ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">🎉 Community &amp; Social Life</div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-activities">
+              What activities, clubs or social events stand out for you?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-activities"
+                      placeholder="Groups you've joined, events you've enjoyed, traditions you remember..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-spirit">
+              How would you describe the spirit of this village — what makes it special?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-spirit"
+                      placeholder="What makes Bridgeman Downs different from anywhere else?"></textarea>
+          </div>
+        </div>
+
+        <!-- ── CHANGES OVER TIME ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">🏗️ How the Village Has Changed</div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-changes">
+              What changes to the village do you remember over the years?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-changes"
+                      placeholder="Building works, new facilities, management changes, things that no longer exist..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-constant">
+              What do you think has always stayed the same — the heart of the village?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-constant"
+                      placeholder="The things that have never changed, no matter what else did..."></textarea>
+          </div>
+        </div>
+
+        <!-- ── STAFF ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">👷 Staff &amp; Management</div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-staff">
+              Are there any staff or managers — past or present — who made a difference?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-staff"
+                      placeholder="Names, roles, and what they meant to you or the community..."></textarea>
+          </div>
+        </div>
+
+        <!-- ── THE SUBURB ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">🗺️ Bridgeman Downs Itself</div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-suburb">
+              What do you remember about the suburb — then and now?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-suburb"
+                      placeholder="What the area looked like when you arrived, how it has changed, what you value about the location..."></textarea>
+          </div>
+        </div>
+
+        <!-- ── PHOTOS & DOCS ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">📷 Photographs &amp; Documents</div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-items">
+              Do you have any old photos, newsletters or memorabilia you could share?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-items"
+                      placeholder="Describe what you have and the best way for us to arrange to copy or borrow it..."></textarea>
+          </div>
+        </div>
+
+        <!-- ── FINAL THOUGHTS ── -->
+        <div class="prompt-group">
+          <div class="prompt-group-title">💬 Final Thoughts</div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-mustinclude">
+              Is there a story, moment or person that must be in the village history?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-mustinclude"
+                      placeholder="Something that should never be forgotten..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-future">
+              What do you hope future residents will understand about this community?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-future"
+                      placeholder="Your message to the people who will call this village home in years to come..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="s-others">
+              Do you know of other residents with long memories of the village we should speak with?
+              <span class="optional">(optional)</span>
+            </label>
+            <textarea class="form-textarea" id="s-others"
+                      placeholder="Names or unit numbers of people with particularly long memories..."></textarea>
+          </div>
+        </div>
+
+        <!-- SHARING OPTIONS -->
+        <div class="checkbox-row">
+          <input type="checkbox" id="s-share">
+          <label for="s-share">
+            <strong>Yes — I am happy to share my memories with other residents</strong>
+            I understand my submission will be published on the Our Story page.
+            If I leave my name blank, it will appear anonymously.
+          </label>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="s-keepsake">
+          <label for="s-keepsake">
+            <strong>I would like a copy sent to me or my family</strong>
+            If you tick this box, please include your name and a contact email address or unit number above so we can get it to you.
+          </label>
+        </div>
+
+        <!-- PHOTO NOTE -->
+        <div class="photo-note">
+          📷 <strong>Would you like to include a photo?</strong>
+          We would love to display an old photo alongside your memories — of the village, of you, or anything that carries a memory. Simply email your photo to:
+          <strong><a href="mailto:rabd.chair@gmail.com" style="color:#FFFFFF;text-decoration:none;word-break:break-all;">rabd.chair@gmail.com</a></strong> with your name and "Our Story" in the subject line. We will match it to your submission.
+        </div>
+
+        <button class="submit-btn" onclick="submitStory()">Send My Memories →</button>
+
+      </div><!-- end storyForm -->
+
+      <div class="form-success" id="storySuccess">
+        🏡 <strong>Thank you for sharing your memories!</strong><br><br>
+        Your contribution to the village history has been received.<br><br>
+        If you chose to share publicly, your story will appear on this page soon.
+        If you asked for a copy to be sent to you or your family, we will be in touch.
+      </div>
+
+    </div><!-- end contribute-section -->
+
+  </div><!-- end page-content -->
+</div><!-- end container -->
+
+<script>
+
+  /* ══════════════════════════════════════════════════════
+     OUR STORY FORM SUBMISSION
+     You will need to set up a new Google Apps Script
+     deployment (or add a sheet to the existing one) to
+     receive these submissions.
+     Replace YOUR_APPS_SCRIPT_URL_HERE below with the URL.
+  ══════════════════════════════════════════════════════ */
+  function submitStory() {
+
+    var name        = document.getElementById('s-name').value.trim();
+    var movein      = document.getElementById('s-movein').value.trim();
+    var career      = document.getElementById('s-career').value.trim();
+    var firstlook   = document.getElementById('s-firstlook').value.trim();
+    var firstpeople = document.getElementById('s-firstpeople').value.trim();
+    var surprise    = document.getElementById('s-surprise').value.trim();
+    var activities  = document.getElementById('s-activities').value.trim();
+    var spirit      = document.getElementById('s-spirit').value.trim();
+    var changes     = document.getElementById('s-changes').value.trim();
+    var constant    = document.getElementById('s-constant').value.trim();
+    var staff       = document.getElementById('s-staff').value.trim();
+    var suburb      = document.getElementById('s-suburb').value.trim();
+    var items       = document.getElementById('s-items').value.trim();
+    var mustinclude = document.getElementById('s-mustinclude').value.trim();
+    var future      = document.getElementById('s-future').value.trim();
+    var others      = document.getElementById('s-others').value.trim();
+    var share       = document.getElementById('s-share').checked;
+    var keepsake    = document.getElementById('s-keepsake').checked;
+
+    /* Check at least one field has been filled in */
+    var hasContent = movein || career || firstlook || firstpeople || surprise ||
+                     activities || spirit || changes || constant || staff ||
+                     suburb || items || mustinclude || future || others;
+
+    if (!hasContent) {
+      alert('Please share at least one memory before sending — even just a sentence or two is wonderful!');
+      return;
+    }
+
+    var SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+    fetch(SCRIPT_URL, {
+      method : 'POST',
+      mode   : 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body   : JSON.stringify({
+        timestamp   : new Date().toISOString(),
+        name        : name || 'Anonymous',
+        share       : share ? 'Yes' : 'No',
+        keepsake    : keepsake ? 'Yes' : 'No',
+        movein      : movein,
+        career      : career,
+        firstlook   : firstlook,
+        firstpeople : firstpeople,
+        surprise    : surprise,
+        activities  : activities,
+        spirit      : spirit,
+        changes     : changes,
+        constant    : constant,
+        staff       : staff,
+        suburb      : suburb,
+        items       : items,
+        mustinclude : mustinclude,
+        future      : future,
+        others      : others
+      })
+    })
+    .then(function(){
+      document.getElementById('storyForm').style.display    = 'none';
+      document.getElementById('storySuccess').style.display = 'block';
+    })
+    .catch(function(){
+      alert('Sorry, there was a problem sending your story. Please try again, or email it directly to rabd.chair@gmail.com');
+    });
+  }
+
+</script>
+
+</body>
+</html>
