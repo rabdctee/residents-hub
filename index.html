@@ -2380,6 +2380,27 @@ Advocacy, advice and support for retirement village residents in Queensland
 </div>
 </div>
 
+    <div class="sub-section">
+      <div class="sub-header" onclick="toggleSub('rc-howto', this)">
+        <div class="sub-header-left">
+          <div class="sub-title">💡 Help &amp; How-To</div>
+          <div class="sub-hint">Add, edit or delete questions and categories — no coding needed</div>
+        </div>
+        <span class="sub-arrow" id="rc-howto-arrow">▼</span>
+      </div>
+      <div class="sub-body" id="rc-howto-body">
+        <a href="admin-how-to.html" class="doc-link">
+          💡 Manage Help &amp; How-To Content
+          <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">
+            Add new questions and categories, edit existing answers, or remove outdated content
+          </span>
+        </a>
+      </div>
+    </div>
+
+</div>
+</div>
+
 <!-- ── SOCIAL CLUB COMMITTEE ── -->
 <div class="ctee-section">
   <div class="ctee-header" onclick="toggleCtee('sc')">
@@ -2734,7 +2755,7 @@ window.addEventListener('DOMContentLoaded', function() {
         setTimeout(function() {
             var parentMap = {
                 'sc-finance': 'sc', 'sc-events': 'sc', 'sc-docs': 'sc', 'sc-homecontent': 'sc', 'sc-classifieds': 'sc',
-                'rc-docs': 'rc', 'rc-info': 'rc'
+                'rc-docs': 'rc', 'rc-info': 'rc', 'rc-notices': 'rc', 'rc-howto': 'rc'
             };
             var parentId = parentMap[expandParam];
             if (parentId) {
