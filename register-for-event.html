@@ -240,7 +240,7 @@
 
       <button class="btn-submit" id="submitBtn" onclick="submitRegistration()">
         <div class="spinner" id="spinner"></div>
-        <span id="submitLabel"> Submit Registration</span>
+        <span id="submitLabel">Submit Registration</span>
       </button>
 
       <div class="form-error" id="formError"></div>
@@ -269,17 +269,18 @@
   window.addEventListener('DOMContentLoaded', function() {
     fetch(SCRIPT_URL + '?action=getEvents')
       .then(function(r) { return r.json(); })
-      .then(function(events) {
+      .then(function(data) {
         document.getElementById('loadingEvents').style.display = 'none';
-        if (!events || events.length === 0) {
+        var events = data.events || [];
+        if (events.length === 0) {
           document.getElementById('noEventsMsg').style.display = 'block';
           return;
         }
         var sel = document.getElementById('fEvent');
         events.forEach(function(ev) {
           var opt = document.createElement('option');
-          opt.value = ev.name || ev;
-          opt.textContent = ev.name || ev;
+          opt.value = ev.name;
+          opt.textContent = ev.name + (ev.date ? ' (' + ev.date + ')' : '');
           sel.appendChild(opt);
         });
         // If only one event, pre-select it
@@ -292,7 +293,7 @@
         document.getElementById('loadingEvents').style.display = 'none';
         document.getElementById('noEventsMsg').style.display = 'block';
         document.getElementById('noEventsMsg').innerHTML =
-          'Unable to load events at the moment. Please try refreshing the page, or contact the Social Club team.';
+          'Unable to load events at the moment. Please try refreshing the page, or contact the Social Club Committee.';
       });
   });
 
