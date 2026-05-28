@@ -377,20 +377,8 @@
       <div class="section-divider-line"></div>
     </div>
 
-    <p class="stories-intro">Stories shared by your fellow residents — with their permission.</p>
-
-    <!-- ─── PLACEHOLDER STORY (replace with real submissions) ─── -->
-    <div class="story-card">
-      <div class="story-author">Maggie & Max May. — Unit 42</div>
-      <div class="story-era">This is Maggie's story growing up in country Queensland, 1950s</div>
-      <div class="story-text">
-        <div class="story-prompt-label">Where did you grow up?</div>
-        <p>I grew up on a wheat farm outside Dalby, the youngest of five children. We did not have television until I was eleven, so we made our own entertainment — cubby houses in the paddock, swimming in the dam, and listening to the wireless on Saturday nights for the hit parade.</p>
-        <div class="story-prompt-label">What did you want to be when you grew up?</div>
-        <p>A nurse. I eventually became one — forty years at the Royal Brisbane and never a dull moment. Though I suspect the nursing uniform was part of the appeal when I was seven!</p>
-      </div>
-    </div>
-    <!-- ─── END PLACEHOLDER — remove this card once real stories are submitted ─── -->
+<p class="stories-intro">Stories shared by your fellow residents — with their permission.</p>
+    <div id="stories-container"><div class="tip-box">⏳ Loading stories…</div></div>
 
 
     <!-- ══════════════════════════════════
@@ -593,6 +581,72 @@
      with a new Apps Script URL for this form.
      (Set up a second Sheet: "Memories")
   ══════════════════════════════════════════ */
+  /* ── Load published stories from Sheet ── */
+  const MEMORIES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHwHHy1obnTMIezPfJS1JVmDAOUIgrploP8RgEhCJAWQ-1wfAoNzk3U-5wns3zXaTnhXx62-Gji0cm/pub?gid=0&single=true&output=csv';
+
+  const STORY_FIELDS = [
+    { key: 4,  label: 'As a baby…' },
+    { key: 5,  label: 'Books read to me…' },
+    { key: 6,  label: 'Favourite thing as a child…' },
+    { key: 7,  label: 'Childhood ambition…' },
+    { key: 8,  label: 'Teenage years in three words…' },
+    { key: 9,  label: 'Songs, TV & films of my era…' },
+    { key: 10, label: 'My music…' },
+    { key: 11, label: 'What my teenage self could teach me…' },
+    { key: 12, label: 'Most memorable life events…' },
+    { key: 13, label: 'What has changed most in my lifetime…' },
+    { key: 14, label: 'Advice to my younger self…' },
+    { key: 15, label: 'Most important people in my life…' },
+  ];
+
+  function splitCSVMemories(text) {
+    var rows=[],row=[],cur='',inQ=false;
+    for(var i=0;i<text.length;i++){
+      var ch=text[i],nx=text[i+1];
+      if(inQ){if(ch==='"'&&nx==='"'){cur+='"';i++;}else if(ch==='"'){inQ=false;}else{cur+=ch;}}
+      else{if(ch==='"'){inQ=true;}else if(ch===','){row.push(cur);cur='';}
+      else if(ch==='\r'&&nx==='\n'){row.push(cur);cur='';rows.push(row);row=[];i++;}
+      else if(ch==='\n'||ch==='\r'){row.push(cur);cur='';rows.push(row);row=[];}else{cur+=ch;}}
+    }
+    if(cur||row.length){row.push(cur);rows.push(row);}
+    return rows;
+  }
+
+  function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  async function loadStories() {
+    var container = document.getElementById('stories-container');
+    try {
+      var resp = await fetch(MEMORIES_CSV + '&t=' + Date.now());
+      var text = await resp.text();
+      var rows = splitCSVMemories(text);
+      var published = [];
+      for (var i = 1; i < rows.length; i++) {
+        var r = rows[i];
+        if ((r[16]||'').trim().toLowerCase() === 'published') published.push(r);
+      }
+      if (published.length === 0) {
+        container.innerHTML = '<div class="tip-box">No stories have been shared yet — be the first! Use the form below.</div>';
+        return;
+      }
+      container.innerHTML = published.map(function(r) {
+        var name = (r[1]||'').trim() || 'Anonymous';
+        var fields = STORY_FIELDS.filter(function(f){ return (r[f.key]||'').trim(); });
+        var fieldHtml = fields.map(function(f){
+          return '<div class="story-prompt-label">'+escHtml(f.label)+'</div><p>'+escHtml((r[f.key]||'').trim())+'</p>';
+        }).join('');
+        return '<div class="story-card">'
+          + '<div class="story-author">'+escHtml(name)+'</div>'
+          + '<div class="story-text">'+fieldHtml+'</div>'
+          + '</div>';
+      }).join('');
+    } catch(e) {
+      container.innerHTML = '<div class="tip-box">Unable to load stories right now. Please try again later.</div>';
+    }
+  }
+
+  loadStories();
+
   function submitMemory() {
 
     var name       = document.getElementById('m-name').value.trim();
