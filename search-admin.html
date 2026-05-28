@@ -274,10 +274,12 @@
             <option value="events">🗓️ Events</option>
             <option value="activity-contacts">🎉 Activities & Groups</option>
             <option value="newsletter">📰 Newsletter</option>
+            <option value="how-to">📖 Help & How To</option>
             <option value="useful-links">🔗 Useful Links</option>
+            <option value="issues-tracker">📋 Issues Progress Tracker</option>
             <option value="village-info">🔒 Residents Only</option>
             <option value="contact">📞 Contacts</option>
-            <option value="how-to">📖 Help & How To</option>
+            
           </select>
         </div>
         <div class="form-group">
@@ -420,7 +422,7 @@ function editMapping(row) {
   if (!targetTr) return;
 
   // Build the page options
-  var pages = ['home','newsletter','events','activity-contacts','contact','village-info','useful-links','noticeboard','about'];
+  var pages = ['home','newsletter','events','activity-contacts','contact','village-info','useful-links','how-to','progress-tracker','noticeboard','about'];
   var pageOpts = pages.map(function(p) {
     return '<option value="' + p + '"' + (p === item.page ? ' selected' : '') + '>' + p + '</option>';
   }).join('');
