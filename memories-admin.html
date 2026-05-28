@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memories Administration – Residents Hub</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+    color: #222;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    min-height: 100vh;
+  }
+
+  header {
+    background: #1F4E79;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
+  }
+  header h1 { font-size: 1.8em; }
+  header p  { font-size: 0.82em; opacity: 0.85; margin-top: 6px; }
+
+  .back-bar {
+    background: #E7F1FB;
+    padding: 10px 20px;
+    border-bottom: 2px solid #c5d8ee;
+  }
+  .back-bar a {
+    color: #1F4E79;
+    background: white;
+    border: 2px solid #c5d8ee;
+    border-radius: 10px;
+    padding: 7px 16px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .back-bar a:hover { background: #E7F1FB; border-color: #1F4E79; }
+
+  .content-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 30px 25px 60px;
+  }
+
+  .section-title {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: #1F4E79;
+    border-bottom: 3px solid #C9A44A;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+  }
+
+  .info-box {
+    background: #e8f4f8;
+    border-left: 4px solid #1F4E79;
+    border-radius: 4px;
+    padding: 15px 20px;
+    font-size: 0.88em;
+    color: #222;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* ── Tabs ── */
+  .tab-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid #c5d8ee;
+  }
+  .tab-btn {
+    background: white;
+    border: 2px solid #c5d8ee;
+    border-bottom: none;
+    color: #1F4E79;
+    padding: 9px 22px;
+    border-radius: 6px 6px 0 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    bottom: -2px;
+    transition: all 0.15s;
+  }
+  .tab-btn.active { background: #1F4E79; color: white; border-color: #1F4E79; }
+  .tab-btn:hover:not(.active) { background: #E7F1FB; }
+  .tab-badge {
+    display: inline-block;
+    background: #C9A44A;
+    color: white;
+    border-radius: 10px;
+    font-size: 0.75em;
+    font-weight: 700;
+    padding: 1px 7px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .reload-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+  .btn-reload {
+    background: white;
+    border: 2px solid #c5d8ee;
+    border-radius: 6px;
+    color: #1F4E79;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.82em;
+    font-weight: 700;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-reload:hover { background: #E7F1FB; border-color: #1F4E79; }
+
+  /* ── Story cards ── */
+  .cards-list { display: grid; gap: 20px; }
+
+  .story-card {
+    background: white;
+    border: 1px solid #c5d8ee;
+    border-radius: 8px;
+    border-left: 5px solid #1F4E79;
+    padding: 20px 22px;
+    transition: box-shadow 0.2s;
+  }
+  .story-card:hover { box-shadow: 0 3px 12px rgba(31,78,121,0.10); }
+  .story-card.status-published { border-left-color: #2e7d32; }
+  .story-card.status-rejected  { border-left-color: #c0392b; }
+  .story-card.status-keepsake  { border-left-color: #C9A44A; }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .card-name {
+    font-size: 1em;
+    font-weight: 700;
+    color: #1F4E79;
+  }
+  .card-meta {
+    font-size: 0.78em;
+    color: #5f6368;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.72em;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    padding: 2px 10px;
+    color: white;
+  }
+  .badge-share    { background: #2e7d32; }
+  .badge-keepsake { background: #C9A44A; }
+  .badge-anon     { background: #888; }
+
+  /* ── Story fields ── */
+  .story-fields { display: grid; gap: 10px; margin-bottom: 16px; }
+
+  .story-field {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 10px 14px;
+  }
+  .field-label {
+    font-size: 0.72em;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #1F4E79;
+    margin-bottom: 4px;
+  }
+  .field-value {
+    font-size: 0.88em;
+    color: #333;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  /* ── Actions ── */
+  .card-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .btn-action {
+    border: none;
+    border-radius: 5px;
+    padding: 8px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.82em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn-action:hover:not(:disabled) { opacity: 0.82; }
+  .btn-action:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-publish   { background: #2e7d32; color: white; }
+  .btn-reject    { background: #c0392b; color: white; }
+  .btn-pending   { background: white; color: #1F4E79; border: 2px solid #c5d8ee; }
+
+  .card-status-msg {
+    font-size: 0.82em;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+  .card-status-msg.ok  { color: #2e7d32; }
+  .card-status-msg.err { color: #c0392b; }
+
+  .state-msg {
+    text-align: center;
+    padding: 40px 20px;
+    color: #5f6368;
+    font-style: italic;
+    font-size: 0.92em;
+  }
+
+  .hub-footer {
+    background: #f8f9fa;
+    padding: 16px 30px;
+    text-align: center;
+    color: #5f6368;
+    border-top: 1px solid #e0e0e0;
+    font-size: 0.75em;
+  }
+
+  @media (max-width: 768px) {
+    body { font-size: 20px; }
+    .content-wrap { padding: 20px 16px 50px; }
+  }
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="container">
+
+<header>
+  <h1>Bridgeman Downs Retirement Village<br>Residents' Information Hub</h1>
+  <p>Committee Area — Down Memory Lane Administration</p>
+</header>
+
+<div class="back-bar">
+  <a href="index.html#committee">🏠 Back to Hub</a>
+</div>
+
+<div class="content-wrap">
+
+  <h2 class="section-title">🕰️ Down Memory Lane — Administration</h2>
+
+  <div class="info-box">
+    <strong>How this works:</strong> Stories submitted by residents appear here.
+    Stories where the resident ticked <em>"happy to share"</em> can be <strong>Published</strong> to appear on the public page.
+    Stories marked <em>Keepsake only</em> should be handled privately — contact the resident directly.
+    Use <strong>Reject</strong> for any submission that is not suitable for any reason.
+  </div>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-pending"   onclick="showTab('pending')">
+      Pending <span class="tab-badge" id="badge-pending">…</span>
+    </button>
+    <button class="tab-btn" id="tab-published" onclick="showTab('published')">
+      Published <span class="tab-badge" id="badge-published">…</span>
+    </button>
+    <button class="tab-btn" id="tab-keepsake" onclick="showTab('keepsake')">
+      Keepsake Only <span class="tab-badge" id="badge-keepsake">…</span>
+    </button>
+    <button class="tab-btn" id="tab-rejected"  onclick="showTab('rejected')">
+      Rejected <span class="tab-badge" id="badge-rejected">…</span>
+    </button>
+  </div>
+
+  <div class="reload-row">
+    <button class="btn-reload" onclick="loadAll()">🔄 Refresh</button>
+  </div>
+
+  <div class="cards-list" id="cards-container">
+    <div class="state-msg">⏳ Loading submissions…</div>
+  </div>
+
+</div>
+
+<div class="hub-footer">
+  Bridgeman Downs Retirement Village Residents' Information Hub &nbsp;|&nbsp;
+  © 2026 | Contact: rabd.ctee@gmail.com | Emergency: 000
+</div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfA7kQVfNgjhkY-Nb9ONvnt5CaVlzfTx18J9MIAsmyLEZ8YFYQPrvhvh03rEFHcvh-/exec';
+const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHwHHy1obnTMIezPfJS1JVmDAOUIgrploP8RgEhCJAWQ-1wfAoNzk3U-5wns3zXaTnhXx62-Gji0cm/pub?gid=0&single=true&output=csv';
+
+// Column indices (0-based)
+// A=Timestamp B=Name C=Share D=Keepsake E=Baby F=Books G=Childhood H=Dream
+// I=TeenWords J=TeenCulture K=Music L=TeenWisdom M=Events N=Changes O=Advice P=People Q=Status
+
+const FIELDS = [
+  { key: 'baby',        label: '👶 Early Life — As a baby' },
+  { key: 'books',       label: '📚 Books read to you' },
+  { key: 'childhood',   label: '🌳 Favourite thing as a child' },
+  { key: 'dream',       label: '💭 Childhood ambition' },
+  { key: 'teenWords',   label: '🎸 Teenage years — three words' },
+  { key: 'teenCulture', label: '🎬 Songs / TV / films of your era' },
+  { key: 'music',       label: '🎵 Favourite music & artists' },
+  { key: 'teenWisdom',  label: '💡 What your teenage self could teach you' },
+  { key: 'events',      label: '🌟 Most memorable life events' },
+  { key: 'changes',     label: '🔄 What has changed most in your lifetime' },
+  { key: 'advice',      label: '🧭 Advice to your younger self' },
+  { key: 'people',      label: '❤️ Most important people in your life' },
+];
+
+let allRows   = [];
+let activeTab = 'pending';
+
+// ── LOAD ─────────────────────────────────────────────────────────────────────
+async function loadAll() {
+  document.getElementById('cards-container').innerHTML =
+    '<div class="state-msg">⏳ Loading submissions…</div>';
+  try {
+    const resp = await fetch(CSV_URL + '&t=' + Date.now());
+    const text = await resp.text();
+    allRows = parseCSV(text);
+    updateBadges();
+    renderTab();
+  } catch(err) {
+    document.getElementById('cards-container').innerHTML =
+      '<div class="state-msg">❌ Could not load submissions. Please try refreshing.</div>';
+  }
+}
+
+// ── PARSE CSV ────────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const rows = [];
+  const cols = splitCSV(text);
+  for (let i = 1; i < cols.length; i++) {
+    const r = cols[i];
+    if (r.length < 3) continue;
+    const share    = (r[2] || '').trim().toLowerCase();
+    const keepsake = (r[3] || '').trim().toLowerCase();
+    const rawStatus = (r[16] || '').trim().toLowerCase();
+
+    // Determine effective tab
+    let status = rawStatus;
+    if (!status) {
+      // No status set yet — pending
+      status = 'pending';
+    }
+
+    rows.push({
+      timestamp  : (r[0]  || '').trim(),
+      name       : (r[1]  || '').trim() || 'Anonymous',
+      share      : share,
+      keepsake   : keepsake,
+      baby       : (r[4]  || '').trim(),
+      books      : (r[5]  || '').trim(),
+      childhood  : (r[6]  || '').trim(),
+      dream      : (r[7]  || '').trim(),
+      teenWords  : (r[8]  || '').trim(),
+      teenCulture: (r[9]  || '').trim(),
+      music      : (r[10] || '').trim(),
+      teenWisdom : (r[11] || '').trim(),
+      events     : (r[12] || '').trim(),
+      changes    : (r[13] || '').trim(),
+      advice     : (r[14] || '').trim(),
+      people     : (r[15] || '').trim(),
+      status     : status,
+    });
+  }
+  return rows.reverse();
+}
+
+function splitCSV(text) {
+  const rows = [];
+  let row = [], cur = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i], nx = text[i+1];
+    if (inQ) {
+      if (ch==='"' && nx==='"') { cur+='"'; i++; }
+      else if (ch==='"')        { inQ=false; }
+      else                      { cur+=ch; }
+    } else {
+      if      (ch==='"')               { inQ=true; }
+      else if (ch===',')               { row.push(cur); cur=''; }
+      else if (ch==='\r'&&nx==='\n')   { row.push(cur); cur=''; rows.push(row); row=[]; i++; }
+      else if (ch==='\n'||ch==='\r')   { row.push(cur); cur=''; rows.push(row); row=[]; }
+      else                             { cur+=ch; }
+    }
+  }
+  if (cur||row.length) { row.push(cur); rows.push(row); }
+  return rows;
+}
+
+// ── BADGES ───────────────────────────────────────────────────────────────────
+function updateBadges() {
+  document.getElementById('badge-pending').textContent   = allRows.filter(r=>r.status==='pending').length;
+  document.getElementById('badge-published').textContent = allRows.filter(r=>r.status==='published').length;
+  document.getElementById('badge-keepsake').textContent  = allRows.filter(r=>r.status==='keepsake').length;
+  document.getElementById('badge-rejected').textContent  = allRows.filter(r=>r.status==='rejected').length;
+}
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+function showTab(tab) {
+  activeTab = tab;
+  ['pending','published','keepsake','rejected'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  renderTab();
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function renderTab() {
+  const container = document.getElementById('cards-container');
+  const rows = allRows.filter(r => r.status === activeTab);
+
+  if (rows.length === 0) {
+    const msgs = {
+      pending  : 'No pending submissions — all caught up! ✅',
+      published: 'No published stories yet.',
+      keepsake : 'No keepsake-only submissions.',
+      rejected : 'No rejected submissions.',
+    };
+    container.innerHTML = '<div class="state-msg">'+msgs[activeTab]+'</div>';
+    return;
+  }
+
+  container.innerHTML = rows.map((r, idx) => {
+    const cardId  = 'card-'+activeTab+'-'+idx;
+    const dateStr = formatDate(r.timestamp);
+
+    const badges = [
+      r.share==='yes'     ? '<span class="badge badge-share">Will Share</span>'    : '',
+      r.keepsake==='yes'  ? '<span class="badge badge-keepsake">Keepsake</span>'   : '',
+      r.name==='Anonymous'? '<span class="badge badge-anon">Anonymous</span>'      : '',
+    ].filter(Boolean).join(' ');
+
+    const fieldHtml = FIELDS
+      .filter(f => r[f.key])
+      .map(f => `<div class="story-field">
+        <div class="field-label">${f.label}</div>
+        <div class="field-value">${esc(r[f.key])}</div>
+      </div>`)
+      .join('');
+
+    let actions = '';
+    if (activeTab === 'pending') {
+      const canPublish = r.share === 'yes';
+      actions = `
+        <button class="btn-action btn-publish" ${canPublish?'':'disabled title="Resident did not consent to share"'}
+          onclick="setStatus(this,'${esc(r.timestamp)}','published','${cardId}')">✅ Publish</button>
+        <button class="btn-action btn-action btn-pending" style="background:#C9A44A;color:white;border:none;"
+          onclick="setStatus(this,'${esc(r.timestamp)}','keepsake','${cardId}')">📦 Keepsake Only</button>
+        <button class="btn-action btn-reject"
+          onclick="setStatus(this,'${esc(r.timestamp)}','rejected','${cardId}')">❌ Reject</button>
+        <span class="card-status-msg" id="msg-${cardId}"></span>`;
+    } else if (activeTab === 'published') {
+      actions = `
+        <button class="btn-action btn-pending"
+          onclick="setStatus(this,'${esc(r.timestamp)}','pending','${cardId}')">↩️ Unpublish</button>
+        <span class="card-status-msg" id="msg-${cardId}"></span>`;
+    } else if (activeTab === 'keepsake') {
+      actions = `
+        <button class="btn-action btn-pending"
+          onclick="setStatus(this,'${esc(r.timestamp)}','pending','${cardId}')">↩️ Return to Pending</button>
+        <button class="btn-action btn-reject"
+          onclick="setStatus(this,'${esc(r.timestamp)}','rejected','${cardId}')">❌ Reject</button>
+        <span class="card-status-msg" id="msg-${cardId}"></span>`;
+    } else {
+      actions = `
+        <button class="btn-action btn-pending"
+          onclick="setStatus(this,'${esc(r.timestamp)}','pending','${cardId}')">↩️ Return to Pending</button>
+        <span class="card-status-msg" id="msg-${cardId}"></span>`;
+    }
+
+    return `<div class="story-card status-${r.status}" id="${cardId}">
+  <div class="card-header">
+    <div>
+      <div class="card-name">🕰️ ${esc(r.name)}</div>
+      <div class="card-meta">
+        ${dateStr ? `<span>📅 ${dateStr}</span>` : ''}
+        <span>${badges}</span>
+      </div>
+    </div>
+  </div>
+  <div class="story-fields">${fieldHtml || '<div class="state-msg" style="padding:10px;font-size:0.85em;">No story content recorded.</div>'}</div>
+  <div class="card-actions">${actions}</div>
+</div>`;
+  }).join('');
+}
+
+// ── SET STATUS ────────────────────────────────────────────────────────────────
+async function setStatus(btnEl, timestamp, newStatus, cardId) {
+  const msgEl   = document.getElementById('msg-'+cardId);
+  const cardEl  = document.getElementById(cardId);
+  const buttons = cardEl.querySelectorAll('button');
+
+  buttons.forEach(b => b.disabled = true);
+  msgEl.className = 'card-status-msg';
+  msgEl.textContent = 'Saving…';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method : 'POST',
+      mode   : 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body   : JSON.stringify({ action: 'setMemoryStatus', timestamp, status: newStatus })
+    });
+
+    const row = allRows.find(r => r.timestamp === timestamp);
+    if (row) row.status = newStatus;
+    updateBadges();
+
+    msgEl.className = 'card-status-msg ok';
+    const labels = { published:'Published ✅', rejected:'Rejected ❌', pending:'Returned to Pending ↩️', keepsake:'Marked as Keepsake 📦' };
+    msgEl.textContent = labels[newStatus] || 'Updated';
+
+    setTimeout(() => {
+      cardEl.style.transition = 'opacity 0.4s';
+      cardEl.style.opacity = '0';
+      setTimeout(() => renderTab(), 420);
+    }, 800);
+
+  } catch(err) {
+    buttons.forEach(b => b.disabled = false);
+    msgEl.className = 'card-status-msg err';
+    msgEl.textContent = '❌ Error — please try again.';
+  }
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str)
+    .replace(/\\/g,'\\\\').replace(/'/g,"\\'")
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function formatDate(raw) {
+  if (!raw) return '';
+  const d = new Date(raw);
+  if (isNaN(d)) return raw;
+  return d.toLocaleDateString('en-AU', { day:'numeric', month:'long', year:'numeric' });
+}
+
+loadAll();
+</script>
+</body>
+</html>

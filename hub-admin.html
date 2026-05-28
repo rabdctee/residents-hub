@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub Admin Dashboard – BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef3f8;
+    color: #222;
+    font-size: 17px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── PIN OVERLAY ── */
+  #pin-overlay {
+    position: fixed;
+    inset: 0;
+    background: #1F4E79;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px;
+  }
+  #pin-overlay h2 {
+    color: white;
+    font-size: 1.4em;
+    text-align: center;
+  }
+  #pin-overlay p {
+    color: rgba(255,255,255,0.75);
+    font-size: 0.9em;
+    text-align: center;
+  }
+  #pin-input {
+    font-size: 1.6em;
+    letter-spacing: 0.4em;
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    width: 180px;
+    outline: none;
+  }
+  #pin-error {
+    color: #ffcccc;
+    font-size: 0.85em;
+    min-height: 1.2em;
+    text-align: center;
+  }
+  #pin-overlay.hidden { display: none; }
+
+  /* ── LAYOUT ── */
+  .page-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+  }
+
+  /* ── HEADER ── */
+  .dash-header {
+    background: #1F4E79;
+    color: white;
+    border-radius: 12px;
+    padding: 28px 30px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .dash-header-left h1 {
+    font-size: 1.5em;
+    font-weight: 700;
+  }
+  .dash-header-left p {
+    font-size: 0.82em;
+    opacity: 0.8;
+    margin-top: 4px;
+  }
+  .dash-date {
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 0.85em;
+    text-align: right;
+    line-height: 1.5;
+  }
+  .dash-date strong { display: block; font-size: 1.1em; }
+
+  /* ── SECTION HEADINGS ── */
+  .section-label {
+    font-size: 0.72em;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1F4E79;
+    margin: 28px 0 12px;
+    padding-left: 4px;
+    border-left: 3px solid #C9A44A;
+    padding-left: 10px;
+  }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  /* ── ADMIN CARD ── */
+  .admin-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #d0e2f2;
+    border-left: 5px solid #1F4E79;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: box-shadow 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .admin-card:hover {
+    box-shadow: 0 4px 16px rgba(31,78,121,0.13);
+    transform: translateY(-2px);
+  }
+
+  /* accent colours by category */
+  .admin-card.cat-resident  { border-left-color: #1F4E79; }
+  .admin-card.cat-content   { border-left-color: #2e7d32; }
+  .admin-card.cat-finance   { border-left-color: #C9A44A; }
+  .admin-card.cat-docs      { border-left-color: #00838f; }
+  .admin-card.cat-system    { border-left-color: #6a1b9a; }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .card-icon {
+    font-size: 1.6em;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .card-title {
+    font-size: 0.95em;
+    font-weight: 700;
+    color: #1F4E79;
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-size: 0.78em;
+    color: #5f6368;
+    line-height: 1.5;
+  }
+
+  .card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 4px;
+  }
+
+  .btn-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.78em;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .btn-action:hover { opacity: 0.82; }
+
+  .btn-primary   { background: #1F4E79; color: white; }
+  .btn-secondary { background: white; color: #1F4E79; border: 2px solid #c5d8ee; }
+  .btn-green     { background: #2e7d32; color: white; }
+  .btn-gold      { background: #C9A44A; color: white; }
+  .btn-teal      { background: #00838f; color: white; }
+  .btn-purple    { background: #6a1b9a; color: white; }
+
+  /* ── CHECKLIST STRIP ── */
+  .checklist-strip {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #d0e2f2;
+    padding: 20px 24px;
+    margin-top: 28px;
+  }
+  .checklist-strip h3 {
+    font-size: 0.9em;
+    font-weight: 700;
+    color: #1F4E79;
+    margin-bottom: 14px;
+  }
+  .checklist-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.82em;
+    color: #333;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .check-item:hover { background: #f0f6fc; }
+  .check-item input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    accent-color: #1F4E79;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .check-item.done span { text-decoration: line-through; color: #aaa; }
+
+  .checklist-footer {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .btn-reset-checks {
+    background: white;
+    border: 2px solid #c5d8ee;
+    color: #1F4E79;
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.78em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-reset-checks:hover { background: #E7F1FB; }
+  #check-progress {
+    font-size: 0.78em;
+    color: #5f6368;
+  }
+
+  /* ── FOOTER ── */
+  .dash-footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.72em;
+    color: #999;
+  }
+
+  @media (max-width: 600px) {
+    .dash-header { flex-direction: column; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── PIN OVERLAY ── -->
+<div id="pin-overlay">
+  <h2>🔒 Hub Admin Dashboard</h2>
+  <p>Enter the committee PIN to continue.</p>
+  <input type="password" id="pin-input" maxlength="6" placeholder="••••"
+         inputmode="numeric" autocomplete="off">
+  <div id="pin-error"></div>
+</div>
+
+<div class="page-wrap" id="main-content" style="display:none;">
+
+  <!-- ── HEADER ── -->
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <h1>🛠️ Hub Admin Dashboard</h1>
+      <p>Bridgeman Downs Retirement Village — Committee Use Only</p>
+    </div>
+    <div class="dash-date">
+      <strong id="today-date">—</strong>
+      <span id="today-day">—</span>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       SECTION 1 — RESIDENT-FACING CONTENT
+  ═════════════════════════════════════════ -->
+  <div class="section-label">Resident-Facing Content</div>
+  <div class="card-grid">
+
+    <div class="admin-card cat-resident">
+      <div class="card-top">
+        <div class="card-icon">📌</div>
+        <div>
+          <div class="card-title">Classifieds</div>
+          <div class="card-desc">Review pending listings. Publish or reject submissions from residents.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="classifieds-admin.html" class="btn-action btn-primary">⚙️ Manage Listings</a>
+        <a href="classifieds.html" class="btn-action btn-secondary">👁 View Live Page</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-resident">
+      <div class="card-top">
+        <div class="card-icon">🔍</div>
+        <div>
+          <div class="card-title">Search</div>
+          <div class="card-desc">Manage the site search index and custom keyword mappings.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="search-admin.html" class="btn-action btn-primary">⚙️ Search Admin</a>
+        <a href="index.html" class="btn-action btn-secondary">👁 Test Search</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-resident">
+      <div class="card-top">
+        <div class="card-icon">❓</div>
+        <div>
+          <div class="card-title">Help &amp; How-To</div>
+          <div class="card-desc">Edit resident guides and plain-English help articles.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="admin-how-to.html" class="btn-action btn-primary">⚙️ Edit How-To</a>
+        <a href="how-to.html" class="btn-action btn-secondary">👁 View Live Page</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-resident">
+      <div class="card-top">
+        <div class="card-icon">🧠</div>
+        <div>
+          <div class="card-title">Down Memory Lane</div>
+          <div class="card-desc">Add or review resident memory and photo submissions.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="memories-admin.html" class="btn-action btn-primary">⚙️ Manage Memories</a>
+        <a href="memories.html" class="btn-action btn-secondary">👁 View Live Page</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       SECTION 2 — EVENTS & NOTICES
+  ═════════════════════════════════════════ -->
+  <div class="section-label">Events &amp; Notices</div>
+  <div class="card-grid">
+
+    <div class="admin-card cat-content">
+      <div class="card-top">
+        <div class="card-icon">📅</div>
+        <div>
+          <div class="card-title">What's On (Upcoming Events)</div>
+          <div class="card-desc">Add, edit or remove items from the home page What's On widget.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="manage-upcoming-events.html" class="btn-action btn-green">⚙️ Manage Events</a>
+        <a href="index.html" class="btn-action btn-secondary">👁 View Home Page</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-content">
+      <div class="card-top">
+        <div class="card-icon">📋</div>
+        <div>
+          <div class="card-title">RC Notices &amp; Surveys</div>
+          <div class="card-desc">Review and publish RC notices, surveys and announcements.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="community-info.html#committee" class="btn-action btn-green">⚙️ Committee Area</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-content">
+      <div class="card-top">
+        <div class="card-icon">📊</div>
+        <div>
+          <div class="card-title">Progress Tracker &amp; CM Update</div>
+          <div class="card-desc">Update the village issues tracker and Community Manager notes.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="view-issues.html" class="btn-action btn-green">📊 View Tracker</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-content">
+      <div class="card-top">
+        <div class="card-icon">🎟️</div>
+        <div>
+          <div class="card-title">Event Registrations</div>
+          <div class="card-desc">View, add, edit or remove registrations for upcoming events.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="manage-registrations.html" class="btn-action btn-green">⚙️ Manage</a>
+        <a href="view-registrations.html" class="btn-action btn-secondary">👁 View</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-content">
+      <div class="card-top">
+        <div class="card-icon">ℹ️</div>
+        <div>
+          <div class="card-title">Info Sessions</div>
+          <div class="card-desc">Manage information session listings and details for residents.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="info-sessions.html" class="btn-action btn-green">📋 View Sessions</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       SECTION 3 — DOCUMENTS
+  ═════════════════════════════════════════ -->
+  <div class="section-label">Documents</div>
+  <div class="card-grid">
+
+    <div class="admin-card cat-docs">
+      <div class="card-top">
+        <div class="card-icon">📤</div>
+        <div>
+          <div class="card-title">Upload a Document</div>
+          <div class="card-desc">Upload meeting minutes, reports or notices to the Hub.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="upload-document.html" class="btn-action btn-teal">📤 Upload</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-docs">
+      <div class="card-top">
+        <div class="card-icon">🗂️</div>
+        <div>
+          <div class="card-title">Document Registry</div>
+          <div class="card-desc">View all uploaded documents and their status in the registry sheet.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="https://docs.google.com/spreadsheets/d/1rSQJ5aRcGMrmbfSIzHAsxq97oBMwfh4EjMYrEHAXUXg"
+           target="_blank" class="btn-action btn-teal">📋 Open Registry</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       SECTION 4 — FINANCE
+  ═════════════════════════════════════════ -->
+  <div class="section-label">Finance</div>
+  <div class="card-grid">
+
+    <div class="admin-card cat-finance">
+      <div class="card-top">
+        <div class="card-icon">💰</div>
+        <div>
+          <div class="card-title">Record a Transaction</div>
+          <div class="card-desc">Add a new income or expense transaction for the Social Club.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="record-transaction.html" class="btn-action btn-gold">💰 Record</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-finance">
+      <div class="card-top">
+        <div class="card-icon">🏦</div>
+        <div>
+          <div class="card-title">Update Bank Balance</div>
+          <div class="card-desc">Record the latest bank statement balance for reconciliation.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="update-bank-balance.html" class="btn-action btn-gold">🏦 Update</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-finance">
+      <div class="card-top">
+        <div class="card-icon">✏️</div>
+        <div>
+          <div class="card-title">Correct a Transaction</div>
+          <div class="card-desc">Amend an existing transaction that was entered incorrectly.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="correct-transaction.html" class="btn-action btn-gold">✏️ Correct</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-finance">
+      <div class="card-top">
+        <div class="card-icon">🗑️</div>
+        <div>
+          <div class="card-title">Delete a Transaction</div>
+          <div class="card-desc">Flag a transaction for removal from the financial records.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="delete-transaction.html" class="btn-action btn-gold">🗑️ Delete</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-finance">
+      <div class="card-top">
+        <div class="card-icon">📈</div>
+        <div>
+          <div class="card-title">View Transactions</div>
+          <div class="card-desc">Search and review the full Social Club transaction history.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="view-transactions.html" class="btn-action btn-gold">📈 View</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       SECTION 5 — SYSTEM
+  ═════════════════════════════════════════ -->
+  <div class="section-label">System &amp; External Tools</div>
+  <div class="card-grid">
+
+    <div class="admin-card cat-system">
+      <div class="card-top">
+        <div class="card-icon">🐙</div>
+        <div>
+          <div class="card-title">GitHub Repository</div>
+          <div class="card-desc">Edit and deploy website files. All Hub pages live here.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="https://github.com/rabdctee/residents-hub" target="_blank"
+           class="btn-action btn-purple">🐙 Open GitHub</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-system">
+      <div class="card-top">
+        <div class="card-icon">📧</div>
+        <div>
+          <div class="card-title">Committee Email</div>
+          <div class="card-desc">Check rabd.ctee@gmail.com for new submissions and notifications.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank"
+           class="btn-action btn-purple">📧 Open Gmail</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-system">
+      <div class="card-top">
+        <div class="card-icon">📊</div>
+        <div>
+          <div class="card-title">Classifieds Sheet</div>
+          <div class="card-desc">Directly view or edit the Classifieds submissions spreadsheet.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9iLsP7-_JlI3QhKso9O0kMdLpwPzr4Y87YbHDeeVOW4Pg1U0_QZvTr1O2PRP4kevvh0PmnCCmfE7W/pub"
+           target="_blank" class="btn-action btn-purple">📊 Open Sheet</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-system">
+      <div class="card-top">
+        <div class="card-icon">⚙️</div>
+        <div>
+          <div class="card-title">Apps Script — Classifieds</div>
+          <div class="card-desc">View or edit the backend script that handles submissions and emails.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="https://script.google.com/home" target="_blank"
+           class="btn-action btn-purple">⚙️ Open Apps Script</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       DAILY CHECKLIST
+  ═════════════════════════════════════════ -->
+  <div class="checklist-strip">
+    <h3>✅ Daily Checklist — tick off as you go (resets each day)</h3>
+    <div class="checklist-items" id="checklist-items"></div>
+    <div class="checklist-footer">
+      <button class="btn-reset-checks" onclick="resetChecks()">↺ Reset All</button>
+      <span id="check-progress"></span>
+    </div>
+  </div>
+
+  <div class="dash-footer">
+    Hub Admin Dashboard &nbsp;|&nbsp; Bridgeman Downs Retirement Village &nbsp;|&nbsp; Committee Use Only
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+// ── PIN ──────────────────────────────────────────────────────────────────────
+const CORRECT_PIN = '1952';   // ← change this to your actual PIN
+
+const pinInput  = document.getElementById('pin-input');
+const pinError  = document.getElementById('pin-error');
+const pinOverlay = document.getElementById('pin-overlay');
+const mainContent = document.getElementById('main-content');
+
+// Check if already authenticated this session
+if (sessionStorage.getItem('hub_admin_auth') === 'yes') {
+  pinOverlay.classList.add('hidden');
+  mainContent.style.display = '';
+  init();
+}
+
+pinInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkPin();
+});
+pinInput.addEventListener('input', function() {
+  if (this.value.length >= 4) checkPin();
+});
+
+function checkPin() {
+  if (pinInput.value === CORRECT_PIN) {
+    sessionStorage.setItem('hub_admin_auth', 'yes');
+    pinOverlay.classList.add('hidden');
+    mainContent.style.display = '';
+    init();
+  } else if (pinInput.value.length >= CORRECT_PIN.length) {
+    pinError.textContent = '⚠️ Incorrect PIN — please try again.';
+    pinInput.value = '';
+    setTimeout(() => { pinError.textContent = ''; }, 2500);
+  }
+}
+
+// ── DATE ─────────────────────────────────────────────────────────────────────
+function init() {
+  const now = new Date();
+  document.getElementById('today-date').textContent =
+    now.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('today-day').textContent =
+    now.toLocaleDateString('en-AU', { weekday: 'long' });
+  buildChecklist();
+}
+
+// ── CHECKLIST ────────────────────────────────────────────────────────────────
+const CHECKS = [
+  'Classifieds — any pending listings?',
+  'Committee email (rabd.ctee) checked',
+  'What\'s On widget — events still current?',
+  'RC Notices & Surveys — anything new?',
+  'Progress Tracker — any updates needed?',
+  'Search — working correctly?',
+  'Help & How-To — content still accurate?',
+  'Down Memory Lane — new submissions?',
+  'Info Sessions — listings up to date?',
+  'Event Registrations — any changes?',
+  'Document Registry — uploads processed?',
+  'Home page — looks correct?',
+];
+
+const STORAGE_KEY = 'hub_admin_checks';
+const DATE_KEY    = 'hub_admin_checks_date';
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function loadChecks() {
+  if (localStorage.getItem(DATE_KEY) !== todayStr()) {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.setItem(DATE_KEY, todayStr());
+  }
+  const saved = localStorage.getItem(STORAGE_KEY);
+  return saved ? JSON.parse(saved) : {};
+}
+
+function saveChecks(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  localStorage.setItem(DATE_KEY, todayStr());
+}
+
+function buildChecklist() {
+  const container = document.getElementById('checklist-items');
+  const state = loadChecks();
+  container.innerHTML = '';
+  CHECKS.forEach((label, i) => {
+    const key = 'check_' + i;
+    const checked = !!state[key];
+    const item = document.createElement('label');
+    item.className = 'check-item' + (checked ? ' done' : '');
+    item.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''}><span>${label}</span>`;
+    item.querySelector('input').addEventListener('change', function() {
+      const s = loadChecks();
+      s[key] = this.checked;
+      saveChecks(s);
+      item.classList.toggle('done', this.checked);
+      updateProgress();
+    });
+    container.appendChild(item);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const state = loadChecks();
+  const done  = Object.values(state).filter(Boolean).length;
+  const total = CHECKS.length;
+  const el = document.getElementById('check-progress');
+  if (done === total) {
+    el.textContent = '🎉 All done for today!';
+    el.style.color = '#2e7d32';
+  } else {
+    el.textContent = done + ' of ' + total + ' completed';
+    el.style.color = '#5f6368';
+  }
+}
+
+function resetChecks() {
+  localStorage.removeItem(STORAGE_KEY);
+  buildChecklist();
+}
+</script>
+</body>
+</html>
