@@ -6,60 +6,82 @@
   <title>Event Registrations | Bridgeman Downs Residents Hub</title>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; display:flex; flex-direction:column; height:100vh; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; display:flex; flex-direction:column; min-height:100vh; }
 
+    /* ── Top bar ── */
     .top-bar {
-      background:#1F4E79;
-      padding:12px 20px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
-      gap:10px;
-      flex-shrink:0;
+      background:#1F4E79; padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px; flex-shrink:0;
     }
-    .top-bar-info { min-width:0; }
     .top-bar-title { color:white; font-size:1em; font-weight:700; }
-    .top-bar-sub { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
-
+    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
     .btn-group { display:flex; gap:8px; flex-shrink:0; }
-
     .back-btn {
       display:inline-flex; align-items:center; gap:6px;
-      background:white; color:#1F4E79;
-      padding:9px 16px; border-radius:7px;
+      background:white; color:#1F4E79; padding:9px 16px; border-radius:7px;
       text-decoration:none; font-weight:700; font-size:0.88em;
       border:2px solid white; white-space:nowrap; transition:background 0.2s;
     }
     .back-btn:hover { background:#E7F1FB; }
-
     .print-btn {
       display:inline-flex; align-items:center; gap:6px;
-      background:rgba(255,255,255,0.15); color:white;
-      padding:9px 16px; border-radius:7px;
+      background:rgba(255,255,255,0.15); color:white; padding:9px 16px; border-radius:7px;
       font-weight:700; font-size:0.88em; cursor:pointer;
-      border:2px solid rgba(255,255,255,0.4); white-space:nowrap;
-      transition:background 0.2s;
+      border:2px solid rgba(255,255,255,0.4); white-space:nowrap; transition:background 0.2s;
     }
     .print-btn:hover { background:rgba(255,255,255,0.25); }
 
+    /* ── Info bar ── */
     .info-bar {
-      background:#E7F1FB;
-      border-bottom:2px solid #c5d8ee;
-      padding:8px 20px;
-      font-size:0.83em;
-      color:#1F4E79;
-      flex-shrink:0;
+      background:#E7F1FB; border-bottom:2px solid #c5d8ee;
+      padding:8px 20px; font-size:0.83em; color:#1F4E79; flex-shrink:0;
     }
 
-    .sheet-frame {
-      flex:1; width:100%; border:none; display:block;
-      background:white; min-height:0;
+    /* ── Filter bar ── */
+    .filter-bar {
+      background:#fff; border-bottom:1px solid #ddd;
+      padding:10px 20px; display:flex; align-items:center;
+      gap:12px; flex-wrap:wrap; flex-shrink:0;
+    }
+    .filter-bar label { font-size:0.88em; font-weight:600; color:#1F4E79; white-space:nowrap; }
+    .filter-bar select {
+      padding:7px 12px; border:1.5px solid #b0c8e8; border-radius:6px;
+      font-size:0.88em; color:#1F4E79; background:white;
+      min-width:220px; cursor:pointer;
+    }
+    .filter-bar select:focus { outline:none; border-color:#1F4E79; }
+    #row-count { font-size:0.82em; color:#555; margin-left:auto; }
+
+    /* ── Table wrapper ── */
+    .table-wrap { flex:1; overflow:auto; padding:16px 20px 24px; }
+
+    table { border-collapse:collapse; width:100%; background:white; font-size:0.84em; }
+    thead th {
+      background:#1F4E79; color:white; padding:9px 12px;
+      text-align:left; white-space:nowrap; position:sticky; top:0; z-index:1;
+    }
+    tbody tr:nth-child(even) { background:#f0f6fd; }
+    tbody tr:hover { background:#dbeafe; }
+    tbody td { padding:7px 12px; border-bottom:1px solid #e5e5e5; vertical-align:top; }
+    .paid-yes { color:#15803d; font-weight:700; }
+    .paid-no  { color:#b91c1c; }
+
+    /* ── Status messages ── */
+    .status { padding:40px 20px; text-align:center; color:#555; font-size:0.92em; }
+    .status.error { color:#b91c1c; }
+
+    /* ── Print styles ── */
+    @media print {
+      .top-bar, .info-bar, .filter-bar { display:none !important; }
+      .table-wrap { padding:0; overflow:visible; }
+      body { min-height:auto; }
     }
 
     @media(max-width:600px){
       .top-bar { padding:10px 14px; }
       .back-btn, .print-btn { font-size:0.8em; padding:8px 12px; }
+      .table-wrap { padding:10px; }
     }
   </style>
 </head>
@@ -80,11 +102,201 @@
     💡 This is a read-only view of event registrations. Use the <strong>Print</strong> button to print a list for an event, or <strong>Back</strong> to return to the Committee page.
   </div>
 
-  <iframe
-    class="sheet-frame"
-    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRUhPoqJON4Uj1yF9VTORD4RSrLJzMjoNOT9ObAAqMze2TfwKTHwRHKSp_q8wN7tNo26o49d3TbgjnB/pubhtml?gid=41043603&single=true"
-    title="Event Registrations">
-  </iframe>
+  <div class="filter-bar">
+    <label for="event-select">🗓️ Show event:</label>
+    <select id="event-select" onchange="applyFilter()">
+      <option value="">Loading…</option>
+    </select>
+    <span id="row-count"></span>
+  </div>
 
+  <div class="table-wrap" id="table-wrap">
+    <div class="status" id="status-msg">Loading registrations…</div>
+  </div>
+
+  <script>
+    // ── Published CSV URL (same sheet, gid unchanged) ──────────────────────
+    const CSV_URL =
+      'https://docs.google.com/spreadsheets/d/e/' +
+      '2PACX-1vRUhPoqJON4Uj1yF9VTORD4RSrLJzMjoNOT9ObAAqMze2TfwKTHwRHKSp_q8wN7tNo26o49d3TbgjnB' +
+      '/pub?gid=41043603&single=true&output=csv';
+
+    let allRows    = [];   // array of objects, one per data row
+    let headers    = [];   // column names from row 1
+
+    // ── Fetch & parse CSV ─────────────────────────────────────────────────
+    async function loadData() {
+      try {
+        const res = await fetch(CSV_URL);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const text = await res.text();
+        parseCSV(text);
+        populateDropdown();
+        applyFilter();
+      } catch (err) {
+        document.getElementById('status-msg').textContent =
+          '⚠️ Could not load registrations: ' + err.message;
+        document.getElementById('status-msg').classList.add('error');
+        document.getElementById('status-msg').style.display = 'block';
+      }
+    }
+
+    // ── Simple but robust CSV parser (handles quoted commas & newlines) ───
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], cell = '', inQuote = false;
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i], next = text[i + 1];
+        if (inQuote) {
+          if (ch === '"' && next === '"') { cell += '"'; i++; }
+          else if (ch === '"')           { inQuote = false; }
+          else                           { cell += ch; }
+        } else {
+          if      (ch === '"')  { inQuote = true; }
+          else if (ch === ',')  { row.push(cell.trim()); cell = ''; }
+          else if (ch === '\n') { row.push(cell.trim()); rows.push(row); row = []; cell = ''; }
+          else if (ch === '\r') { /* skip */ }
+          else                  { cell += ch; }
+        }
+      }
+      if (cell || row.length) { row.push(cell.trim()); rows.push(row); }
+
+      if (rows.length < 2) return;
+
+      // Row 0 = header row from the Google Sheet publish
+      // The sheet may prepend a blank row; find the real header row
+      // (the one that contains "Name" or "Select Event")
+      let headerIdx = 0;
+      for (let i = 0; i < Math.min(rows.length, 5); i++) {
+        const joined = rows[i].join('|').toLowerCase();
+        if (joined.includes('name') || joined.includes('select event') || joined.includes('event')) {
+          headerIdx = i; break;
+        }
+      }
+      headers = rows[headerIdx];
+      allRows = rows.slice(headerIdx + 1).filter(r => r.some(c => c));
+    }
+
+    // ── Find column index by partial name match ───────────────────────────
+    function col(name) {
+      const n = name.toLowerCase();
+      return headers.findIndex(h => h.toLowerCase().includes(n));
+    }
+
+    // ── Build event dropdown ──────────────────────────────────────────────
+    function populateDropdown() {
+      const eventCol = col('event');
+      if (eventCol < 0) return;
+
+      // Collect unique event names preserving first-seen order
+      const seen = new Map();
+      allRows.forEach(r => {
+        const ev = (r[eventCol] || '').trim();
+        if (ev) seen.set(ev, (seen.get(ev) || 0) + 1);
+      });
+
+      // Sort: most recent first — use the last-seen position as a proxy
+      // (rows are in submission order so later events appear later)
+      const events = [...seen.keys()];
+      // Reverse so the most recent event is first in the list
+      events.reverse();
+
+      const sel = document.getElementById('event-select');
+      sel.innerHTML = '';
+
+      events.forEach((ev, i) => {
+        const opt = document.createElement('option');
+        opt.value = ev;
+        opt.textContent = ev;
+        sel.appendChild(opt);
+      });
+
+      // Add "Show all" at the bottom
+      const all = document.createElement('option');
+      all.value = '__ALL__';
+      all.textContent = '— Show all events —';
+      sel.appendChild(all);
+
+      // Default to first option (most recent event)
+      sel.value = events[0] || '__ALL__';
+    }
+
+    // ── Render table for the selected event ──────────────────────────────
+    function applyFilter() {
+      const sel     = document.getElementById('event-select');
+      const chosen  = sel.value;
+      const eventCol = col('event');
+
+      const filtered = chosen === '__ALL__'
+        ? allRows
+        : allRows.filter(r => (r[eventCol] || '').trim() === chosen);
+
+      const wrap = document.getElementById('table-wrap');
+      const statusEl = document.getElementById('status-msg');
+
+      if (filtered.length === 0) {
+        wrap.innerHTML = '<div class="status">No registrations found for this event.</div>';
+        document.getElementById('row-count').textContent = '';
+        return;
+      }
+
+      // Columns to display (hide Timestamp to reduce clutter; show if present)
+      // We'll show all columns but put Timestamp last and make it smaller
+      const paidCol  = col('paid');
+      const nameCol  = col('name');
+      const numCol   = col('how many') >= 0 ? col('how many') : col('number');
+      const unitCol  = col('unit');
+      const emailCol = col('email');
+      const dietCol  = col('diet');
+      const tsCol    = col('timestamp');
+
+      // Build a sensible column order
+      const displayCols = [];
+      [nameCol, numCol, unitCol, emailCol, dietCol, paidCol, tsCol].forEach(i => {
+        if (i >= 0 && !displayCols.includes(i)) displayCols.push(i);
+      });
+      // Add any remaining columns not yet included
+      headers.forEach((_, i) => { if (!displayCols.includes(i) && i !== eventCol) displayCols.push(i); });
+
+      let html = '<table><thead><tr>';
+      displayCols.forEach(i => {
+        html += `<th>${escHtml(headers[i] || '')}</th>`;
+      });
+      html += '</tr></thead><tbody>';
+
+      filtered.forEach(row => {
+        html += '<tr>';
+        displayCols.forEach(i => {
+          const val = (row[i] || '').trim();
+          if (i === paidCol) {
+            const lower = val.toLowerCase();
+            const cls   = lower === 'true' || lower === 'yes' || val === '✓' || val === 'TRUE'
+                          ? 'paid-yes' : (val ? 'paid-no' : '');
+            const label = lower === 'true' || val === 'TRUE' ? '✓ Yes'
+                        : lower === 'false' || val === 'FALSE' ? '✗ No' : val;
+            html += `<td class="${cls}">${escHtml(label)}</td>`;
+          } else {
+            html += `<td>${escHtml(val)}</td>`;
+          }
+        });
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+
+      const n = filtered.length;
+      document.getElementById('row-count').textContent =
+        n + ' registration' + (n === 1 ? '' : 's');
+    }
+
+    function escHtml(s) {
+      return String(s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    loadData();
+  </script>
 </body>
 </html>
