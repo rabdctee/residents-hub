@@ -255,6 +255,26 @@
   .breadcrumb a { color: var(--navy); cursor: pointer; text-decoration: underline; }
   .breadcrumb span { color: #888; }
 
+  .back-bar {
+    background: #E7F1FB;
+    padding: 10px 20px;
+    border-bottom: 2px solid #c5d8ee;
+  }
+  .back-bar a {
+    color: #1F4E79;
+    background: white;
+    border: 2px solid #c5d8ee;
+    border-radius: 10px;
+    padding: 7px 16px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .back-bar a:hover { background: #E7F1FB; border-color: #1F4E79; }
   .hidden { display: none !important; }
   .empty-state { text-align: center; padding: 32px; color: #888; font-size: 0.95em; }
 
@@ -271,6 +291,10 @@
     <p>Bridgeman Downs Retirement Village · Residents' Hub</p>
   </div>
 </header>
+
+<div class="back-bar">
+  <a href="hub-admin.html">🛠️ Back to Admin Dashboard</a>
+</div>
 
 <div class="main">
 
