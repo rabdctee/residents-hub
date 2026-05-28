@@ -275,10 +275,9 @@
             <option value="activity-contacts">🎉 Activities & Groups</option>
             <option value="newsletter">📰 Newsletter</option>
             <option value="useful-links">🔗 Useful Links</option>
-            <option value="how-to">📖 Help & How To</option>
             <option value="village-info">🔒 Residents Only</option>
             <option value="contact">📞 Contacts</option>
-            
+            <option value="how-to">📖 Help & How To</option>
           </select>
         </div>
         <div class="form-group">
@@ -393,6 +392,7 @@ function renderIndex() {
       '<td><span class="' + (item.active ? 'badge-active' : 'badge-inactive') + '">' +
         (item.active ? 'Active' : 'Off') + '</span></td>' +
       '<td style="white-space:nowrap;">' +
+        '<button class="btn btn-outline btn-sm" onclick="editMapping(' + item.row + ')" style="margin-right:4px;">✏️ Edit</button>' +
         '<button class="btn btn-outline btn-sm" onclick="toggleMapping(' + item.row + ')" style="margin-right:4px;">' +
           (item.active ? '⏸ Pause' : '▶ Enable') + '</button>' +
         '<button class="btn btn-danger btn-sm" onclick="deleteMapping(' + item.row + ',\'' + esc(item.keyword) + '\')">🗑</button>' +
@@ -400,6 +400,73 @@ function renderIndex() {
   });
   html += '</tbody></table>';
   document.getElementById('indexTableWrap').innerHTML = html;
+}
+
+function editMapping(row) {
+  // Find the item in indexData
+  var item = indexData.find(function(i) { return i.row === row; });
+  if (!item) return;
+
+  // Find the table row and replace its cells with editable fields
+  var trs = document.querySelectorAll('.index-table tbody tr');
+  var targetTr = null;
+  trs.forEach(function(tr) {
+    // Match by checking if the row's first cell text matches the keyword
+    if (tr.querySelector('.keyword-cell') &&
+        tr.querySelector('.keyword-cell').textContent.trim() === item.keyword) {
+      targetTr = tr;
+    }
+  });
+  if (!targetTr) return;
+
+  // Build the page options
+  var pages = ['home','newsletter','events','activity-contacts','contact','village-info','useful-links','noticeboard','about'];
+  var pageOpts = pages.map(function(p) {
+    return '<option value="' + p + '"' + (p === item.page ? ' selected' : '') + '>' + p + '</option>';
+  }).join('');
+
+  targetTr.innerHTML =
+    '<td><input type="text" id="edit-kw-' + row + '" value="' + esc(item.keyword) + '" style="width:130px;padding:3px 6px;border:1px solid #ccc;border-radius:3px;font-size:0.88em;"></td>' +
+    '<td><select id="edit-page-' + row + '" style="padding:3px;border:1px solid #ccc;border-radius:3px;font-size:0.88em;">' + pageOpts + '</select></td>' +
+    '<td><input type="text" id="edit-sec-' + row + '" value="' + esc(item.section || '') + '" placeholder="optional" style="width:90px;padding:3px 6px;border:1px solid #ccc;border-radius:3px;font-size:0.88em;"></td>' +
+    '<td><input type="text" id="edit-title-' + row + '" value="' + esc(item.title) + '" style="width:160px;padding:3px 6px;border:1px solid #ccc;border-radius:3px;font-size:0.88em;"></td>' +
+    '<td></td>' +
+    '<td style="white-space:nowrap;">' +
+      '<button class="btn btn-sm" onclick="saveEdit(' + row + ',\'' + esc(item.keyword) + '\')" style="margin-right:4px;background:#1F4E79;color:white;">💾 Save</button>' +
+      '<button class="btn btn-outline btn-sm" onclick="renderIndex()">✕ Cancel</button>' +
+    '</td>';
+}
+
+function saveEdit(row, originalKeyword) {
+  var kw    = document.getElementById('edit-kw-'    + row).value.trim();
+  var page  = document.getElementById('edit-page-'  + row).value;
+  var sec   = document.getElementById('edit-sec-'   + row).value.trim();
+  var title = document.getElementById('edit-title-' + row).value.trim();
+
+  if (!kw || !page || !title) {
+    toast('⚠️ Keyword, page and title are required', true); return;
+  }
+
+  // Delete the old row then add the new one
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'deleteMapping', row: row })
+  })
+  .then(r => r.json())
+  .then(function() {
+    return fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'addMapping', keyword: kw, page: page, section: sec, title: title })
+    });
+  })
+  .then(r => r.json())
+  .then(function() {
+    toast('✅ Mapping updated: "' + kw + '"');
+    loadIndex();
+  })
+  .catch(function() { toast('⚠️ Failed to save edit', true); });
 }
 
 function addMapping() {
