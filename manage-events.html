@@ -308,7 +308,7 @@
     <div class="top-bar-title">🗓️ Manage Events</div>
     <div class="top-bar-sub">Social Club — Event Management &amp; What's On Widget</div>
   </div>
-  <a class="back-btn" href="committee.html?expand=sc-events">← Return to Committee Page</a>
+  <a class="back-btn" href="index.html?expand=sc-events#committee">← Return to Committee Page</a>
 </div>
 
 <!-- Tab bar -->
@@ -670,7 +670,7 @@
         '<div class="event-row-info">' +
           '<div class="event-row-name">' + esc(ev.name) + '</div>' +
           '<div class="event-row-meta">' +
-            '🗓️ ' + fmtDate(ev.date) +
+            '📅 ' + fmtDate(ev.date) +
             (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
             (ev.location ? ' &nbsp;|&nbsp; 📍 ' + esc(ev.location)     : '') +
             (ev.email    ? '<br>📧 ' + esc(ev.email)                    : '') +
@@ -879,7 +879,7 @@
         '<div class="event-drag" title="Drag to reorder">⠿</div>' +
         '<div class="widget-event-info">' +
           '<div class="widget-event-name">' + esc(ev.name) + '</div>' +
-          '<div class="widget-event-meta">🗓️ ' + esc(ev.date) + '</div>' +
+          '<div class="widget-event-meta">📅 ' + esc(ev.date) + '</div>' +
           (ev.link ? '<div class="widget-event-link">🔗 ' + esc(ev.link) + '</div>' : '') +
         '</div>' +
         '<div class="widget-event-actions">' +
@@ -924,7 +924,7 @@
         '<div class="widget-event-info">' +
           '<div class="widget-event-name">' + esc(ev.name) + '</div>' +
           '<div class="widget-event-meta">' +
-            '🗓️ ' + fmtDate(ev.date) +
+            '📅 ' + fmtDate(ev.date) +
             (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
             (ev.location ? ' &nbsp;|&nbsp; 📍 ' + esc(ev.location)     : '') +
           '</div>' +
@@ -1035,7 +1035,6 @@
   }
 
   function saveWidgetEdit(ev) {
-    var row  = document.getElementById('widgetLinkRow').value;
     var nameEl = document.getElementById('widgetEditName');
     var dateEl = document.getElementById('widgetEditDate');
     var name = nameEl ? nameEl.value.trim() : ev.name;
@@ -1044,9 +1043,16 @@
     if (!name || !date) { showToast('Please fill in name and date.', true); return; }
     var btn = document.getElementById('widgetLinkSaveBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
+    // Rebuild the full widget list replacing the edited entry by matching name+date
+    var updated = widgetEvents.map(function(w) {
+      if (w.name === ev.name && w.date === ev.date) {
+        return { name:name, date:date, link:toViewerUrl(link), displayFrom:w.displayFrom||'' };
+      }
+      return { name:w.name, date:w.date, link:w.link||'', displayFrom:w.displayFrom||'' };
+    });
     fetch(WIDGET_URL, {
       method:'POST', headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'editEvent', row:row, date:date, name:name, link:toViewerUrl(link), displayFrom:ev.displayFrom||'' })
+      body:JSON.stringify({ action:'reorderEvents', events:updated })
     })
     .then(function(r){ return r.json(); })
     .then(function(){ btn.disabled=false; btn.textContent='💾 Save Changes'; closeWidgetLinkModal(); showToast('Updated ✓'); loadWidgetEvents(); })
@@ -1072,15 +1078,21 @@
     var btn  = document.getElementById('widgetLinkSaveBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
 
-    // Find current event data
+    // Find current event data by row
     var ev = widgetEvents.find(function(w){ return w.row == row; });
     if (!ev) { closeWidgetLinkModal(); return; }
 
+    // Rebuild the full widget list replacing just the link for this entry
+    var updated = widgetEvents.map(function(w) {
+      if (w.row == row) {
+        return { name:w.name, date:w.date, link:toViewerUrl(link), displayFrom:w.displayFrom||'' };
+      }
+      return { name:w.name, date:w.date, link:w.link||'', displayFrom:w.displayFrom||'' };
+    });
     fetch(WIDGET_URL, {
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'editEvent', row:row,
-        date:ev.date, name:ev.name, link:toViewerUrl(link), displayFrom:ev.displayFrom||'' })
+      body:JSON.stringify({ action:'reorderEvents', events:updated })
     })
     .then(function(r){ return r.json(); })
     .then(function(){
@@ -1111,10 +1123,14 @@
     if (!deleteWidgetRow) return;
     var btn = document.getElementById('deleteWidgetBtn');
     btn.disabled = true; btn.textContent = 'Removing…';
+    // Remove the entry by row number, rebuild the rest
+    var updated = widgetEvents
+      .filter(function(w){ return w.row != deleteWidgetRow; })
+      .map(function(w){ return { name:w.name, date:w.date, link:w.link||'', displayFrom:w.displayFrom||'' }; });
     fetch(WIDGET_URL, {
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'deleteEvent', row:deleteWidgetRow })
+      body:JSON.stringify({ action:'reorderEvents', events:updated })
     })
     .then(function(r){ return r.json(); })
     .then(function(){
