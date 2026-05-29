@@ -303,10 +303,8 @@
       <div class="status-msg" id="statusMsg"></div>
     </div>
 
-    <!-- SURVEY RESULTS -->
-    <div class="form-card">
-      <h2>📊 Survey Results — Referral Money</h2>
-
+    <!-- SURVEY RESULTS MOVED TO survey-admin.html -->
+    <!--<div class="form-card">
       <div id="surveyStats" style="margin-bottom:18px;">
         <div class="loading-msg" id="surveyLoadingMsg">Loading results…</div>
         <div id="surveyStatsContent" style="display:none;">
@@ -339,7 +337,7 @@
         </div>
         <div id="noSurveyMsg" style="display:none;" class="loading-msg">No survey responses yet.</div>
       </div>
-    </div>
+    </div>-->
 
     <!-- EXISTING NOTICES -->
     <div class="form-card">
@@ -389,7 +387,6 @@
     var yyyy  = today.getFullYear();
     document.getElementById('notice-date').value = yyyy + '-' + mm + '-' + dd;
     loadNotices();
-    loadSurveyResults();
   });
 
   // ── Load Survey Results ──────────────────────────────────────
