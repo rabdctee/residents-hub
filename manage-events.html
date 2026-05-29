@@ -1047,9 +1047,9 @@
     if (!name || !date) { showToast('Please fill in name and date.', true); return; }
     var btn = document.getElementById('widgetLinkSaveBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
-    // Rebuild the full widget list replacing the edited entry by matching name+date
+    // Rebuild the full widget list replacing the edited entry by matching name
     var updated = widgetEvents.map(function(w) {
-      if (w.name === ev.name && w.date === ev.date) {
+      if (w.name === ev.name) {
         return { name:name, date:date, link:toViewerUrl(link), displayFrom:w.displayFrom||'' };
       }
       return { name:w.name, date:w.date, link:w.link||'', displayFrom:w.displayFrom||'' };
