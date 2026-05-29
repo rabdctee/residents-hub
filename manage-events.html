@@ -620,15 +620,19 @@
   }
 
   // Convert YYYY-MM-DD date to "Day, Mon DD" display format for widget
+  // Uses explicit part parsing to avoid UTC timezone shifting (Brisbane is UTC+10)
   function toWidgetDate(dateStr) {
     if (!dateStr) return '';
-    // dateStr is YYYY-MM-DD from input[type=date]
     var parts = dateStr.split('-');
     if (parts.length !== 3) return dateStr;
-    var d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
-    var days  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    var months= ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return days[d.getDay()] + ', ' + months[d.getMonth()] + ' ' + d.getDate();
+    // Construct date using local time by passing parts individually — avoids UTC shift
+    var y = parseInt(parts[0]);
+    var m = parseInt(parts[1]) - 1;
+    var d = parseInt(parts[2]);
+    var date = new Date(y, m, d);  // local time, no UTC conversion
+    var days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return days[date.getDay()] + ', ' + months[date.getMonth()] + ' ' + date.getDate();
   }
 
   // ═══════════════════════════════════════════════════════════
