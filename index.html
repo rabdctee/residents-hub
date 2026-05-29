@@ -2749,70 +2749,107 @@ function viewSocialMeeting() {
     }
 }
     
-// Quote of the Day - Loads from external file
-var quotesData = [];
+// Quote of the Day — themed rotation with no short-term repeats
+// Quotes are loaded from quotes.txt (pipe-separated: text|author|theme)
+// Each day cycles through themes in order; within each theme quotes are
+// shuffled so every quote appears before any repeat.
 
-// Load quotes from external file
-fetch('quotes.txt')
-    .then(response => response.text())
-    .then(data => {
-        // Parse the quotes file
-        var lines = data.split('\n');
-        quotesData = lines
-            .filter(line => line.trim() && line.includes('|'))
-            .map(line => {
-                var parts = line.split('|');
-                return {
-                    text: parts[0].trim(),
-                    author: parts[1].trim()
-                };
-            });
-        
-        // Display quote after loading
-        displayQuoteOfDay();
-    })
-    .catch(error => {
-        console.error('Error loading quotes:', error);
-        // Fallback quote if file can't be loaded
-        document.getElementById('quote-display').innerHTML = '"Life is about friends, laughter, and looking forward to things."';
-        document.getElementById('quote-author').innerHTML = '— Anonymous';
-    });
+(function () {
+    var THEME_ORDER = [
+        'friendship','ageing','kindness','happiness','communication',
+        'gratitude','wisdom','forgiveness','service','life'
+    ];
+    var STORAGE_KEY = 'bdrv_quote_state';
 
-function displayQuoteOfDay() {
-    if (quotesData.length === 0) {
-        // Show St. Patrick's Day quote even if quotes haven't loaded yet
-        var today = new Date();
-        var month = today.getMonth(); // 0-11 (March = 2)
-        var day = today.getDate();
-        
-        if (month === 2 && day === 17) {
-            document.getElementById('quote-display').innerHTML = '"May the Irish hills caress you. May her lakes and rivers bless you. May the luck of the Irish enfold you. May the blessings of Saint Patrick behold you."';
-            document.getElementById('quote-author').innerHTML = '— Irish Blessing';
-            return;
+    function todayKey() {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
         }
-        return;
+        return a;
     }
-    
-    // Check if today is March 17 (St. Patrick's Day)
-    var today = new Date();
-    var month = today.getMonth(); // 0-11 (March = 2)
-    var day = today.getDate();
-    
-    // If March 17, show St. Patrick's Day quote
-    if (month === 2 && day === 17) {
-        document.getElementById('quote-display').innerHTML = '"May the Irish hills caress you. May her lakes and rivers bless you. May the luck of the Irish enfold you. May the blessings of Saint Patrick behold you."';
-        document.getElementById('quote-author').innerHTML = '— Irish Blessing';
-        return;
+
+    function loadState() {
+        try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return { lastDate: null, themeIndex: 0, queues: {}, todayTheme: null, todayQuoteIndex: null };
     }
-    
-    // Otherwise, show regular rotating quote
-    var dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-    var quoteIndex = dayOfYear % quotesData.length;
-    
-    var quote = quotesData[quoteIndex];
-    document.getElementById('quote-display').innerHTML = '"' + quote.text + '"';
-    document.getElementById('quote-author').innerHTML = '— ' + quote.author;
-}
+
+    function saveState(state) {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    }
+
+    function isStPatricks() {
+        var d = new Date();
+        return d.getMonth() === 2 && d.getDate() === 17;
+    }
+
+    function showQuote(text, author) {
+        document.getElementById('quote-display').innerHTML = '"' + text + '"';
+        document.getElementById('quote-author').innerHTML  = '— ' + author;
+    }
+
+    fetch('quotes.txt')
+        .then(function (r) { return r.text(); })
+        .then(function (data) {
+            // Build theme buckets from the file (format: text|author|theme)
+            var byTheme = {};
+            data.split('\n').forEach(function (line) {
+                line = line.trim();
+                if (!line || line.startsWith('#') || !line.includes('|')) return;
+                var parts = line.split('|');
+                if (parts.length < 3) return;
+                var theme = parts[2].trim();
+                if (!byTheme[theme]) byTheme[theme] = [];
+                byTheme[theme].push({ text: parts[0].trim(), author: parts[1].trim() });
+            });
+
+            // St. Patrick's Day override
+            if (isStPatricks()) {
+                showQuote(
+                    'May the Irish hills caress you. May her lakes and rivers bless you. May the luck of the Irish enfold you. May the blessings of Saint Patrick behold you.',
+                    'Irish Blessing'
+                );
+                return;
+            }
+
+            var today   = todayKey();
+            var state   = loadState();
+
+            // Same day — show the same quote again
+            if (state.lastDate === today && state.todayQuoteIndex !== null) {
+                var q = byTheme[state.todayTheme][state.todayQuoteIndex];
+                if (q) { showQuote(q.text, q.author); return; }
+            }
+
+            // New day — advance to next theme
+            var theme = THEME_ORDER[state.themeIndex % THEME_ORDER.length];
+            var pool  = byTheme[theme] || [];
+
+            if (!state.queues[theme] || state.queues[theme].length === 0) {
+                state.queues[theme] = shuffle(pool.map(function (_, i) { return i; }));
+            }
+
+            var idx = state.queues[theme].shift();
+            state.lastDate        = today;
+            state.todayTheme      = theme;
+            state.todayQuoteIndex = idx;
+            state.themeIndex      = (state.themeIndex + 1) % THEME_ORDER.length;
+            saveState(state);
+
+            showQuote(pool[idx].text, pool[idx].author);
+        })
+        .catch(function () {
+            showQuote('Life is about friends, laughter, and looking forward to things.', 'Anonymous');
+        });
+}());
 
 // ── SEARCH LOGGER ────────────────────────────────────────────────────
 // Paste your SearchLogger Apps Script URL here after deployment
