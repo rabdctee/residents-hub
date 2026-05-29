@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Info Sessions – Residents Hub</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #222; font-size: 18px; line-height: 1.6; }
+  .container { max-width: 1100px; margin: auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); min-height: 100vh; }
+  header { background: #1F4E79; color: white; padding: 30px 20px; text-align: center; }
+  header h1 { font-size: 1.8em; }
+  header p  { font-size: 0.82em; opacity: 0.85; margin-top: 6px; }
+  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee; }
+  .back-bar a { color: #1F4E79; background: white; border: 2px solid #c5d8ee; border-radius: 10px; padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+  .back-bar a:hover { background: #E7F1FB; border-color: #1F4E79; }
+  .content-wrap { max-width: 960px; margin: 0 auto; padding: 30px 25px 60px; }
+  .section-title { font-size: 1.2em; font-weight: 700; color: #1F4E79; border-bottom: 3px solid #C9A44A; padding-bottom: 8px; margin-bottom: 20px; }
+  .info-box { background: #e8f4f8; border-left: 4px solid #1F4E79; border-radius: 4px; padding: 15px 20px; font-size: 0.88em; color: #222; margin-bottom: 24px; line-height: 1.6; }
+
+  /* ── Add form ── */
+  .add-form { background: #f8f9fa; border: 1px solid #c5d8ee; border-radius: 8px; padding: 24px; margin-bottom: 30px; }
+  .add-form h3 { font-size: 1em; font-weight: 700; color: #1F4E79; margin-bottom: 16px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field label { font-size: 0.78em; font-weight: 700; color: #1F4E79; text-transform: uppercase; letter-spacing: 0.06em; }
+  .form-field input, .form-field select, .form-field textarea {
+    padding: 9px 12px; border: 1.5px solid #c5d8ee; border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.88em;
+    color: #222; background: white; transition: border-color 0.15s;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: #1F4E79; }
+  .form-field textarea { resize: vertical; min-height: 90px; }
+  .form-actions { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { border: none; border-radius: 6px; padding: 9px 22px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.85em; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+  .btn:hover { opacity: 0.82; }
+  .btn-primary  { background: #1F4E79; color: white; }
+  .btn-outline  { background: white; color: #1F4E79; border: 2px solid #c5d8ee; }
+
+  /* ── Tabs ── */
+  .tab-bar { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 2px solid #c5d8ee; }
+  .tab-btn { background: white; border: 2px solid #c5d8ee; border-bottom: none; color: #1F4E79; padding: 9px 22px; border-radius: 6px 6px 0 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; position: relative; bottom: -2px; transition: all 0.15s; }
+  .tab-btn.active { background: #1F4E79; color: white; border-color: #1F4E79; }
+  .tab-btn:hover:not(.active) { background: #E7F1FB; }
+  .tab-badge { display: inline-block; background: #C9A44A; color: white; border-radius: 10px; font-size: 0.75em; font-weight: 700; padding: 1px 7px; margin-left: 6px; vertical-align: middle; }
+
+  .reload-row { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+  .btn-reload { background: white; border: 2px solid #c5d8ee; border-radius: 6px; color: #1F4E79; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.82em; font-weight: 700; padding: 6px 16px; cursor: pointer; transition: all 0.2s; }
+  .btn-reload:hover { background: #E7F1FB; border-color: #1F4E79; }
+
+  /* ── Session cards ── */
+  .cards-list { display: grid; gap: 16px; }
+  .session-card { background: white; border: 1px solid #c5d8ee; border-radius: 8px; border-left: 5px solid #1F4E79; padding: 18px 20px; }
+  .session-card.type-upcoming { border-left-color: #2e7d32; }
+  .session-card.type-planned  { border-left-color: #C9A44A; }
+  .session-card.type-past     { border-left-color: #aaa; }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
+  .card-title { font-size: 0.95em; font-weight: 700; color: #1F4E79; }
+  .card-meta { font-size: 0.78em; color: #5f6368; display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+  .badge { display: inline-block; font-size: 0.72em; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 4px; padding: 2px 10px; color: white; }
+  .badge-upcoming { background: #2e7d32; }
+  .badge-planned  { background: #C9A44A; color: #333; }
+  .badge-past     { background: #888; }
+  .card-desc { font-size: 0.82em; color: #444; line-height: 1.5; margin-bottom: 12px; }
+  .card-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .btn-remove { background: white; color: #c0392b; border: 2px solid #f5c6c6; border-radius: 5px; padding: 6px 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.78em; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .btn-remove:hover { background: #fdf0f0; border-color: #c0392b; }
+  .btn-publish { background: #2e7d32; color: white; border: none; border-radius: 5px; padding: 6px 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.78em; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+  .btn-publish:hover { opacity: 0.82; }
+  .card-msg { font-size: 0.78em; font-weight: 700; margin-left: 4px; }
+  .card-msg.ok  { color: #2e7d32; }
+  .card-msg.err { color: #c0392b; }
+  .state-msg { text-align: center; padding: 40px 20px; color: #5f6368; font-style: italic; font-size: 0.92em; }
+
+  .hub-footer { background: #f8f9fa; padding: 16px 30px; text-align: center; color: #5f6368; border-top: 1px solid #e0e0e0; font-size: 0.75em; }
+
+  @media (max-width: 768px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-field.full { grid-column: 1; }
+  }
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+<div class="container">
+
+<header>
+  <h1>Bridgeman Downs Retirement Village<br>Residents' Information Hub</h1>
+  <p>Committee Area — Info Sessions Administration</p>
+</header>
+
+<div class="back-bar">
+  <a href="hub-admin.html">🛠️ Back to Admin Dashboard</a>
+</div>
+
+<div class="content-wrap">
+
+  <h2 class="section-title">🎓 Info Sessions — Administration</h2>
+
+  <div class="info-box">
+    <strong>How this works:</strong> Add new sessions using the form below. Sessions you add here will appear
+    immediately on the public Info Sessions page for all residents to see.
+    Use the tabs to manage upcoming, planned and past sessions.
+  </div>
+
+  <!-- ── ADD FORM ── -->
+  <div class="add-form">
+    <h3>➕ Add a New Session</h3>
+    <div class="form-grid">
+      <div class="form-field full">
+        <label>Session Title *</label>
+        <input type="text" id="f-title" placeholder="e.g. Understanding Your Insurance Policy">
+      </div>
+      <div class="form-field">
+        <label>Type *</label>
+        <select id="f-type">
+          <option value="upcoming">🗓️ Upcoming</option>
+          <option value="planned">💡 Planned Topic</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Date (leave blank for Planned Topics)</label>
+        <input type="date" id="f-date">
+      </div>
+      <div class="form-field">
+        <label>Time</label>
+        <input type="text" id="f-time" placeholder="e.g. 10:00am – 11:30am">
+      </div>
+      <div class="form-field">
+        <label>Host / Presenter</label>
+        <input type="text" id="f-host" placeholder="e.g. ARQRV, Guest Speaker">
+      </div>
+      <div class="form-field">
+        <label>Format</label>
+        <select id="f-format">
+          <option value="">Not specified</option>
+          <option value="In person">In person</option>
+          <option value="Online via Zoom">Online via Zoom</option>
+          <option value="Webinar">Webinar</option>
+          <option value="Self-paced guide">Self-paced guide</option>
+        </select>
+      </div>
+      <div class="form-field full">
+        <label>Description *</label>
+        <textarea id="f-desc" placeholder="Brief description for residents…"></textarea>
+      </div>
+      <div class="form-field full">
+        <label>Registration or Info Link (optional)</label>
+        <input type="url" id="f-link" placeholder="https://…">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" onclick="addSession()">✅ Add Session</button>
+      <button class="btn btn-outline" onclick="clearForm()">✕ Clear</button>
+      <span id="add-msg" class="card-msg"></span>
+    </div>
+  </div>
+
+  <!-- ── TABS ── -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-upcoming" onclick="showTab('upcoming')">Upcoming <span class="tab-badge" id="badge-upcoming">…</span></button>
+    <button class="tab-btn" id="tab-planned"  onclick="showTab('planned')">Planned <span class="tab-badge" id="badge-planned">…</span></button>
+    <button class="tab-btn" id="tab-past"     onclick="showTab('past')">Past <span class="tab-badge" id="badge-past">…</span></button>
+    <button class="tab-btn" id="tab-removed"  onclick="showTab('removed')">Removed <span class="tab-badge" id="badge-removed">…</span></button>
+  </div>
+
+  <div class="reload-row">
+    <button class="btn-reload" onclick="loadSessions()">🔄 Refresh</button>
+  </div>
+
+  <div class="cards-list" id="cards-container">
+    <div class="state-msg">⏳ Loading sessions…</div>
+  </div>
+
+</div>
+
+<div class="hub-footer">
+  Bridgeman Downs Retirement Village Residents' Information Hub &nbsp;|&nbsp; © 2026 | Contact: rabd.ctee@gmail.com | Emergency: 000
+</div>
+</div>
+
+<script>
+const SCRIPT_URL = 'YOUR_INFO_SESSIONS_SCRIPT_URL_HERE';
+const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vST7ZHOah2zdcqkuRRMMTXS7B9Gi7_s3l_jpzlegofLJVt_tAxnzAMvnhhjdGhHc7-rPP0vxntB-3ym/pub?gid=0&single=true&output=csv';
+
+// Col indices: A=Timestamp B=Title C=Type D=Date E=Time F=Host G=Format H=Description I=Link J=Status
+let allRows  = [];
+let activeTab = 'upcoming';
+
+async function loadSessions() {
+  document.getElementById('cards-container').innerHTML = '<div class="state-msg">⏳ Loading sessions…</div>';
+  try {
+    const resp = await fetch(CSV_URL + '&t=' + Date.now());
+    const text = await resp.text();
+    allRows = parseCSV(text);
+    updateBadges();
+    renderTab();
+  } catch(e) {
+    document.getElementById('cards-container').innerHTML = '<div class="state-msg">❌ Could not load sessions. Please try refreshing.</div>';
+  }
+}
+
+function parseCSV(text) {
+  const rows = [], cols = splitCSV(text);
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = 1; i < cols.length; i++) {
+    const r = cols[i];
+    if (r.length < 2 || !r[1].trim()) continue;
+    const rawDate  = (r[3] || '').trim();
+    const rawType  = (r[2] || '').trim().toLowerCase();
+    const rawStatus = (r[9] || '').trim().toLowerCase();
+    // Determine effective tab
+    let tab = rawStatus || 'upcoming';
+    if (!rawStatus) {
+      if (rawType === 'planned') tab = 'planned';
+      else if (rawDate) {
+        const d = new Date(rawDate); d.setHours(0,0,0,0);
+        tab = d < today ? 'past' : 'upcoming';
+      }
+    }
+    rows.push({
+      timestamp : (r[0]||'').trim(),
+      title     : (r[1]||'').trim(),
+      type      : rawType,
+      date      : rawDate,
+      time      : (r[4]||'').trim(),
+      host      : (r[5]||'').trim(),
+      format    : (r[6]||'').trim(),
+      desc      : (r[7]||'').trim(),
+      link      : (r[8]||'').trim(),
+      status    : rawStatus,
+      tab       : tab,
+    });
+  }
+  return rows.reverse();
+}
+
+function splitCSV(text) {
+  const rows=[]; let row=[],cur='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i],nx=text[i+1];
+    if(inQ){if(ch==='"'&&nx==='"'){cur+='"';i++;}else if(ch==='"'){inQ=false;}else{cur+=ch;}}
+    else{if(ch==='"'){inQ=true;}else if(ch===','){row.push(cur);cur='';}
+    else if(ch==='\r'&&nx==='\n'){row.push(cur);cur='';rows.push(row);row=[];i++;}
+    else if(ch==='\n'||ch==='\r'){row.push(cur);cur='';rows.push(row);row=[];}else{cur+=ch;}}
+  }
+  if(cur||row.length){row.push(cur);rows.push(row);}
+  return rows;
+}
+
+function updateBadges() {
+  ['upcoming','planned','past','removed'].forEach(t => {
+    document.getElementById('badge-'+t).textContent = allRows.filter(r=>r.tab===t).length;
+  });
+}
+
+function showTab(tab) {
+  activeTab = tab;
+  ['upcoming','planned','past','removed'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+  });
+  renderTab();
+}
+
+function renderTab() {
+  const container = document.getElementById('cards-container');
+  const rows = allRows.filter(r => r.tab === activeTab);
+  if (rows.length === 0) {
+    const msgs = { upcoming:'No upcoming sessions.', planned:'No planned topics.', past:'No past sessions.', removed:'No removed sessions.' };
+    container.innerHTML = '<div class="state-msg">'+msgs[activeTab]+'</div>';
+    return;
+  }
+  container.innerHTML = rows.map((r, idx) => {
+    const cardId  = 'sc-'+activeTab+'-'+idx;
+    const badgeClass = { upcoming:'badge-upcoming', planned:'badge-planned', past:'badge-past', removed:'badge-past' };
+    const badgeLabel = { upcoming:'Upcoming', planned:'Planned Topic', past:'Past', removed:'Removed' };
+    const dateStr = formatDate(r.date);
+    let actions = '';
+    if (activeTab !== 'removed') {
+      actions += `<button class="btn-remove" onclick="setStatus(this,'${esc(r.timestamp)}','removed','${cardId}')">🗑 Remove</button>`;
+    } else {
+      actions += `<button class="btn-publish" onclick="setStatus(this,'${esc(r.timestamp)}','upcoming','${cardId}')">↩️ Restore</button>`;
+    }
+    actions += `<span class="card-msg" id="msg-${cardId}"></span>`;
+    return `<div class="session-card type-${r.tab}" id="${cardId}">
+  <div class="card-header">
+    <div>
+      <div class="card-title">${esc(r.title)}</div>
+      <div class="card-meta">
+        ${dateStr ? `<span>📅 ${dateStr}${r.time ? ' · '+esc(r.time) : ''}</span>` : ''}
+        ${r.host ? `<span>🏛️ ${esc(r.host)}</span>` : ''}
+        ${r.format ? `<span>📍 ${esc(r.format)}</span>` : ''}
+      </div>
+    </div>
+    <span class="badge ${badgeClass[activeTab]}">${badgeLabel[activeTab]}</span>
+  </div>
+  ${r.desc ? `<div class="card-desc">${esc(r.desc)}</div>` : ''}
+  ${r.link ? `<div style="margin-bottom:10px;"><a href="${esc(r.link)}" target="_blank" style="font-size:0.78em;color:#1F4E79;">🔗 ${esc(r.link)}</a></div>` : ''}
+  <div class="card-actions">${actions}</div>
+</div>`;
+  }).join('');
+}
+
+async function setStatus(btnEl, timestamp, newStatus, cardId) {
+  const msgEl  = document.getElementById('msg-'+cardId);
+  const cardEl = document.getElementById(cardId);
+  cardEl.querySelectorAll('button').forEach(b=>b.disabled=true);
+  msgEl.className = 'card-msg'; msgEl.textContent = 'Saving…';
+  try {
+    await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({action:'setSessionStatus', timestamp, status:newStatus}) });
+    const row = allRows.find(r=>r.timestamp===timestamp);
+    if (row) { row.status = newStatus; row.tab = newStatus; }
+    updateBadges();
+    msgEl.className='card-msg ok'; msgEl.textContent='Updated ✅';
+    setTimeout(()=>{ cardEl.style.transition='opacity 0.4s'; cardEl.style.opacity='0'; setTimeout(()=>renderTab(),420); },800);
+  } catch(e) {
+    cardEl.querySelectorAll('button').forEach(b=>b.disabled=false);
+    msgEl.className='card-msg err'; msgEl.textContent='❌ Error — try again.';
+  }
+}
+
+async function addSession() {
+  const title  = document.getElementById('f-title').value.trim();
+  const type   = document.getElementById('f-type').value;
+  const date   = document.getElementById('f-date').value;
+  const time   = document.getElementById('f-time').value.trim();
+  const host   = document.getElementById('f-host').value.trim();
+  const format = document.getElementById('f-format').value;
+  const desc   = document.getElementById('f-desc').value.trim();
+  const link   = document.getElementById('f-link').value.trim();
+  const msgEl  = document.getElementById('add-msg');
+
+  if (!title) { msgEl.className='card-msg err'; msgEl.textContent='⚠️ Title is required.'; return; }
+  if (!desc)  { msgEl.className='card-msg err'; msgEl.textContent='⚠️ Description is required.'; return; }
+  if (type==='upcoming' && !date) { msgEl.className='card-msg err'; msgEl.textContent='⚠️ Date is required for upcoming sessions.'; return; }
+
+  msgEl.className='card-msg'; msgEl.textContent='Saving…';
+  try {
+    await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({action:'addSession', title, type, date, time, host, format, desc, link}) });
+    msgEl.className='card-msg ok'; msgEl.textContent='✅ Session added — refresh to see it.';
+    clearForm();
+    setTimeout(loadSessions, 2000);
+  } catch(e) {
+    msgEl.className='card-msg err'; msgEl.textContent='❌ Error — try again.';
+  }
+}
+
+function clearForm() {
+  ['f-title','f-date','f-time','f-host','f-link','f-desc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-type').value='upcoming';
+  document.getElementById('f-format').value='';
+}
+
+function esc(s) { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function formatDate(raw) {
+  if (!raw) return '';
+  const d = new Date(raw+'T00:00:00');
+  if (isNaN(d)) return raw;
+  return d.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+}
+
+loadSessions();
+</script>
+</body>
+</html>

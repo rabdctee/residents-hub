@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Survey Administration – Residents Hub</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #222; font-size: 18px; line-height: 1.6; }
+  .container { max-width: 1100px; margin: auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); min-height: 100vh; }
+  header { background: #1F4E79; color: white; padding: 30px 20px; text-align: center; }
+  header h1 { font-size: 1.8em; }
+  header p  { font-size: 0.82em; opacity: 0.85; margin-top: 6px; }
+  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee; }
+  .back-bar a { color: #1F4E79; background: white; border: 2px solid #c5d8ee; border-radius: 10px; padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+  .back-bar a:hover { background: #E7F1FB; border-color: #1F4E79; }
+  .content-wrap { max-width: 960px; margin: 0 auto; padding: 30px 25px 60px; }
+  .section-title { font-size: 1.2em; font-weight: 700; color: #1F4E79; border-bottom: 3px solid #C9A44A; padding-bottom: 8px; margin-bottom: 20px; margin-top: 36px; }
+  .section-title:first-of-type { margin-top: 0; }
+  .info-box { background: #e8f4f8; border-left: 4px solid #1F4E79; border-radius: 4px; padding: 15px 20px; font-size: 0.88em; color: #222; margin-bottom: 24px; line-height: 1.6; }
+
+  /* ── Results summary ── */
+  .results-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+  .results-title { font-size: 1em; font-weight: 700; color: #1F4E79; }
+  .btn-reload { background: white; border: 2px solid #c5d8ee; border-radius: 6px; color: #1F4E79; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.82em; font-weight: 700; padding: 6px 16px; cursor: pointer; transition: all 0.2s; }
+  .btn-reload:hover { background: #E7F1FB; border-color: #1F4E79; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .summary-card { background: white; border: 1px solid #c5d8ee; border-radius: 8px; padding: 16px 18px; text-align: center; }
+  .summary-number { font-size: 2.2em; font-weight: 700; color: #1F4E79; line-height: 1; }
+  .summary-label  { font-size: 0.78em; color: #5f6368; margin-top: 6px; }
+
+  /* ── Vote bars ── */
+  .vote-bars { display: grid; gap: 12px; margin-bottom: 28px; }
+  .vote-row { background: white; border: 1px solid #c5d8ee; border-radius: 8px; padding: 14px 18px; }
+  .vote-label { font-size: 0.88em; font-weight: 700; color: #1F4E79; margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .vote-bar-wrap { background: #e8f0f8; border-radius: 6px; height: 22px; overflow: hidden; }
+  .vote-bar-fill { height: 100%; background: #1F4E79; border-radius: 6px; transition: width 0.6s ease; display: flex; align-items: center; padding-left: 8px; }
+  .vote-bar-fill.winner { background: #2e7d32; }
+  .vote-count { font-size: 0.72em; font-weight: 700; color: white; white-space: nowrap; }
+
+  /* ── Comments table ── */
+  .comments-wrap { overflow-x: auto; }
+  .comments-table { width: 100%; border-collapse: collapse; font-size: 0.82em; }
+  .comments-table th { background: #1F4E79; color: white; padding: 10px 14px; text-align: left; font-weight: 700; white-space: nowrap; }
+  .comments-table td { padding: 10px 14px; border-bottom: 1px solid #e8e8e8; vertical-align: top; }
+  .comments-table tr:nth-child(even) td { background: #f8f9fa; }
+  .comments-table tr:hover td { background: #e8f4fb; }
+  .no-comment { color: #aaa; font-style: italic; }
+
+  /* ── New Survey builder ── */
+  .builder-wrap { background: #f8f9fa; border: 1px solid #c5d8ee; border-radius: 8px; padding: 24px; }
+  .builder-wrap p { font-size: 0.88em; color: #444; margin-bottom: 16px; line-height: 1.6; }
+  .form-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+  .form-field label { font-size: 0.78em; font-weight: 700; color: #1F4E79; text-transform: uppercase; letter-spacing: 0.06em; }
+  .form-field input, .form-field textarea, .form-field select {
+    padding: 9px 12px; border: 1.5px solid #c5d8ee; border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.88em; color: #222; background: white;
+  }
+  .form-field textarea { resize: vertical; min-height: 80px; }
+  .options-list { display: grid; gap: 8px; margin-bottom: 10px; }
+  .option-row { display: flex; gap: 8px; align-items: center; }
+  .option-row input { flex: 1; }
+  .btn-icon { background: none; border: none; font-size: 1.1em; cursor: pointer; padding: 4px; color: #c0392b; }
+  .btn { border: none; border-radius: 6px; padding: 9px 22px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.85em; font-weight: 700; cursor: pointer; transition: opacity 0.2s; }
+  .btn:hover { opacity: 0.82; }
+  .btn-primary { background: #1F4E79; color: white; }
+  .btn-outline { background: white; color: #1F4E79; border: 2px solid #c5d8ee; }
+  .btn-gold    { background: #C9A44A; color: white; }
+  .generated-code { background: #1a1a2e; color: #a8d8a8; border-radius: 8px; padding: 16px; font-family: monospace; font-size: 0.72em; line-height: 1.6; overflow-x: auto; white-space: pre-wrap; margin-top: 16px; max-height: 400px; overflow-y: auto; }
+  .copy-msg { font-size: 0.78em; font-weight: 700; color: #2e7d32; margin-left: 10px; }
+
+  .state-msg { text-align: center; padding: 40px 20px; color: #5f6368; font-style: italic; font-size: 0.92em; }
+  .hub-footer { background: #f8f9fa; padding: 16px 30px; text-align: center; color: #5f6368; border-top: 1px solid #e0e0e0; font-size: 0.75em; }
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+<div class="container">
+
+<header>
+  <h1>Bridgeman Downs Retirement Village<br>Residents' Information Hub</h1>
+  <p>Committee Area — Survey Administration</p>
+</header>
+
+<div class="back-bar">
+  <a href="hub-admin.html">🛠️ Back to Admin Dashboard</a>
+</div>
+
+<div class="content-wrap">
+
+  <!-- ══════════════════════════════════
+       SECTION 1 — RESULTS
+  ══════════════════════════════════ -->
+  <h2 class="section-title">📊 Current Survey Results</h2>
+
+  <div class="info-box">
+    Results are loaded live from the Google Sheet. Click <strong>Refresh</strong> to get the latest responses.
+    The survey closes at <strong>4:00pm today (29 May 2026)</strong>.
+  </div>
+
+  <div class="results-header">
+    <div class="results-title" id="results-title">Loading…</div>
+    <button class="btn-reload" onclick="loadResults()">🔄 Refresh</button>
+  </div>
+
+  <div class="summary-grid" id="summary-grid">
+    <div class="state-msg">⏳ Loading results…</div>
+  </div>
+
+  <div class="vote-bars" id="vote-bars"></div>
+
+  <h3 style="font-size:0.95em;font-weight:700;color:#1F4E79;margin-bottom:12px;">All Responses &amp; Comments</h3>
+  <div class="comments-wrap">
+    <table class="comments-table" id="comments-table">
+      <thead><tr><th>#</th><th>Date &amp; Time</th><th>Name / Unit</th><th>Choice</th><th>Comment</th></tr></thead>
+      <tbody id="comments-body"><tr><td colspan="5" class="state-msg">⏳ Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- ══════════════════════════════════
+       SECTION 2 — NEW SURVEY BUILDER
+  ══════════════════════════════════ -->
+  <h2 class="section-title">🛠️ Create a New Survey</h2>
+
+  <div class="builder-wrap">
+    <p>Fill in the details below and click <strong>Generate HTML</strong>. You'll get a ready-to-upload
+    HTML file — just save it as <code>survey.html</code> and upload it to GitHub to replace the current survey.</p>
+
+    <div class="form-field">
+      <label>Survey Title *</label>
+      <input type="text" id="b-title" placeholder="e.g. Referral Money — How Should We Spend It?">
+    </div>
+    <div class="form-field">
+      <label>Introduction / Context *</label>
+      <textarea id="b-intro" placeholder="Explain the background and purpose of this survey to residents…"></textarea>
+    </div>
+    <div class="form-field">
+      <label>Question / Prompt *</label>
+      <input type="text" id="b-question" placeholder="e.g. Please select your preferred option:">
+    </div>
+    <div class="form-field">
+      <label>Survey Options * (add up to 6)</label>
+      <div class="options-list" id="options-list">
+        <div class="option-row"><input type="text" placeholder="Option 1 title" class="opt-title"><input type="text" placeholder="Optional description or cost" class="opt-desc"><button class="btn-icon" onclick="removeOption(this)">✕</button></div>
+        <div class="option-row"><input type="text" placeholder="Option 2 title" class="opt-title"><input type="text" placeholder="Optional description or cost" class="opt-desc"><button class="btn-icon" onclick="removeOption(this)">✕</button></div>
+      </div>
+      <button class="btn btn-outline" style="margin-top:8px;font-size:0.78em;padding:6px 14px;" onclick="addOption()">+ Add Option</button>
+    </div>
+    <div class="form-field">
+      <label>Allow free-text comment?</label>
+      <select id="b-comment">
+        <option value="yes">Yes — include a comment box</option>
+        <option value="no">No — choice only</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label>Close Date</label>
+      <input type="date" id="b-close">
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="generateHTML()">⚙️ Generate HTML</button>
+      <span id="gen-msg" class="copy-msg"></span>
+    </div>
+    <div id="generated-wrap" style="display:none;">
+      <div class="generated-code" id="generated-code"></div>
+      <div style="margin-top:12px;display:flex;gap:10px;align-items:center;">
+        <button class="btn btn-gold" onclick="copyCode()">📋 Copy to Clipboard</button>
+        <span id="copy-msg" class="copy-msg"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="hub-footer">
+  Bridgeman Downs Retirement Village Residents' Information Hub &nbsp;|&nbsp; © 2026 | Contact: rabd.ctee@gmail.com | Emergency: 000
+</div>
+</div>
+
+<script>
+// ── RESULTS ─────────────────────────────────────────────────────────────────
+const SURVEY_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=1981195128&single=true&output=csv';
+
+async function loadResults() {
+  document.getElementById('summary-grid').innerHTML = '<div class="state-msg">⏳ Loading…</div>';
+  document.getElementById('vote-bars').innerHTML = '';
+  document.getElementById('comments-body').innerHTML = '<tr><td colspan="5" class="state-msg">⏳ Loading…</td></tr>';
+  try {
+    const resp = await fetch(SURVEY_CSV + '&t=' + Date.now());
+    const text = await resp.text();
+    const rows = parseCSV(text).slice(1).filter(r => r.length >= 3 && r[0].trim());
+    renderResults(rows);
+  } catch(e) {
+    document.getElementById('summary-grid').innerHTML = '<div class="state-msg">❌ Could not load results.</div>';
+  }
+}
+
+function renderResults(rows) {
+  const total = rows.length;
+  document.getElementById('results-title').textContent = 'Referral Money Survey — ' + total + ' response' + (total===1?'':'s') + ' received';
+
+  // Tally votes
+  const votes = {};
+  rows.forEach(r => {
+    const choice = (r[2]||'').trim();
+    if (!choice) return;
+    // Shorten for display — extract key part
+    const key = choice.length > 60 ? choice.substring(0,60)+'…' : choice;
+    votes[key] = (votes[key]||0) + 1;
+  });
+
+  const sorted = Object.entries(votes).sort((a,b)=>b[1]-a[1]);
+  const maxVotes = sorted.length ? sorted[0][1] : 1;
+  const withComments = rows.filter(r=>(r[3]||'').trim()).length;
+
+  // Summary cards
+  document.getElementById('summary-grid').innerHTML = [
+    `<div class="summary-card"><div class="summary-number">${total}</div><div class="summary-label">Total Responses</div></div>`,
+    `<div class="summary-card"><div class="summary-number">${sorted.length}</div><div class="summary-label">Options Chosen</div></div>`,
+    `<div class="summary-card"><div class="summary-number">${withComments}</div><div class="summary-label">Left a Comment</div></div>`,
+    sorted.length ? `<div class="summary-card"><div class="summary-number" style="font-size:1.4em;color:#2e7d32;">🏆</div><div class="summary-label" style="font-weight:700;color:#2e7d32;">${sorted[0][0].substring(0,40)}…<br>${sorted[0][1]} vote${sorted[0][1]===1?'':'s'}</div></div>` : '',
+  ].join('');
+
+  // Vote bars
+  document.getElementById('vote-bars').innerHTML = sorted.map(([ label, count ], i) => {
+    const pct = Math.round((count/total)*100);
+    const isWinner = i === 0;
+    return `<div class="vote-row">
+      <div class="vote-label"><span>${label}</span><span>${count} vote${count===1?'':'s'} (${pct}%)</span></div>
+      <div class="vote-bar-wrap">
+        <div class="vote-bar-fill ${isWinner?'winner':''}" style="width:${Math.max(pct,3)}%">
+          <span class="vote-count">${pct}%</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Comments table
+  const tbody = document.getElementById('comments-body');
+  if (rows.length === 0) { tbody.innerHTML='<tr><td colspan="5" class="state-msg">No responses yet.</td></tr>'; return; }
+  tbody.innerHTML = rows.map((r,i) => {
+    const ts      = formatDateTime(r[0]||'');
+    const name    = escHtml((r[1]||'').trim() || '—');
+    const choice  = escHtml((r[2]||'').trim());
+    const comment = (r[3]||'').trim();
+    return `<tr>
+      <td>${i+1}</td>
+      <td style="white-space:nowrap;">${ts}</td>
+      <td>${name}</td>
+      <td>${choice}</td>
+      <td>${comment ? escHtml(comment) : '<span class="no-comment">—</span>'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── SURVEY BUILDER ───────────────────────────────────────────────────────────
+function addOption() {
+  const list = document.getElementById('options-list');
+  if (list.children.length >= 6) { alert('Maximum 6 options allowed.'); return; }
+  const n = list.children.length + 1;
+  const row = document.createElement('div');
+  row.className = 'option-row';
+  row.innerHTML = `<input type="text" placeholder="Option ${n} title" class="opt-title"><input type="text" placeholder="Optional description or cost" class="opt-desc"><button class="btn-icon" onclick="removeOption(this)">✕</button>`;
+  list.appendChild(row);
+}
+
+function removeOption(btn) {
+  const list = document.getElementById('options-list');
+  if (list.children.length <= 2) { alert('Please keep at least 2 options.'); return; }
+  btn.parentElement.remove();
+}
+
+function generateHTML() {
+  const title    = document.getElementById('b-title').value.trim();
+  const intro    = document.getElementById('b-intro').value.trim();
+  const question = document.getElementById('b-question').value.trim();
+  const comment  = document.getElementById('b-comment').value;
+  const closeDate = document.getElementById('b-close').value;
+  const genMsg   = document.getElementById('gen-msg');
+
+  if (!title)    { genMsg.textContent='⚠️ Title required.'; return; }
+  if (!intro)    { genMsg.textContent='⚠️ Introduction required.'; return; }
+  if (!question) { genMsg.textContent='⚠️ Question required.'; return; }
+
+  const optRows = Array.from(document.querySelectorAll('#options-list .option-row'));
+  const options = optRows.map(row => ({
+    title: row.querySelector('.opt-title').value.trim(),
+    desc:  row.querySelector('.opt-desc').value.trim(),
+  })).filter(o => o.title);
+
+  if (options.length < 2) { genMsg.textContent='⚠️ At least 2 options required.'; return; }
+
+  const closeDateStr = closeDate ? new Date(closeDate+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'}) : '';
+
+  const optionsHTML = options.map((o,i) => `
+          <div class="option-card" onclick="selectOption(this, ${i+1})">
+            <input type="radio" name="choice" value="Option ${i+1} — ${o.title}">
+            <div class="option-number">${i+1}</div>
+            <div class="option-info">
+              <div class="option-title">${escHtml(o.title)}</div>
+              ${o.desc ? `<div class="option-cost">${escHtml(o.desc)}</div>` : ''}
+            </div>
+          </div>`).join('');
+
+  const commentHTML = comment === 'yes' ? `
+        <div class="optional-section">
+          <label style="font-weight:600;font-size:0.9em;display:block;margin-bottom:6px;">Any comments? (optional)</label>
+          <textarea id="extraComment" rows="3" style="width:100%;padding:10px;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;font-size:0.9em;" placeholder="Your thoughts…"></textarea>
+        </div>` : '';
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escHtml(title)} | BDRV Residents Hub</title>
+</head>
+<body>
+<!-- Generated by Hub Survey Admin — ${new Date().toLocaleDateString('en-AU')} -->
+<!-- SURVEY TITLE: ${escHtml(title)} -->
+<!-- Replace YOUR_SCRIPT_URL with your Apps Script URL -->
+<script>
+  var SCRIPT_URL = 'YOUR_SCRIPT_URL';
+  function selectOption(card, n) {
+    document.querySelectorAll('.option-card').forEach(c=>c.classList.remove('selected'));
+    card.classList.add('selected');
+    card.querySelector('input').checked = true;
+  }
+  function submitSurvey() {
+    var choice = document.querySelector('input[name="choice"]:checked');
+    if (!choice) { alert('Please select an option.'); return; }
+    ${comment==='yes' ? "var comment = document.getElementById('extraComment').value.trim();" : "var comment = '';"}
+    fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', body: new URLSearchParams({action:'survey', choice:choice.value, comment:comment}) });
+    document.querySelector('.survey-form').style.display='none';
+    document.getElementById('thankyou').style.display='block';
+  }
+<\/script>
+<div class="survey-form">
+  <h2>${escHtml(title)}</h2>
+  <p>${escHtml(intro)}</p>
+  ${closeDateStr ? `<p><strong>Survey closes:</strong> ${closeDateStr}</p>` : ''}
+  <p>${escHtml(question)}</p>
+  <div id="options-grid">${optionsHTML}
+  </div>
+  ${commentHTML}
+  <button onclick="submitSurvey()">Submit →</button>
+</div>
+<div id="thankyou" style="display:none;">
+  <h2>Thank You!</h2>
+  <p>Your response has been recorded.</p>
+</div>
+</body>
+</html>`;
+
+  document.getElementById('generated-wrap').style.display='block';
+  document.getElementById('generated-code').textContent = html;
+  genMsg.textContent = '✅ HTML generated — copy and save as survey.html';
+}
+
+function copyCode() {
+  const code = document.getElementById('generated-code').textContent;
+  navigator.clipboard.writeText(code).then(()=>{
+    document.getElementById('copy-msg').textContent = '✅ Copied to clipboard!';
+    setTimeout(()=>document.getElementById('copy-msg').textContent='', 3000);
+  });
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const rows=[]; let row=[],cur='',inQ=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i],nx=text[i+1];
+    if(inQ){if(ch==='"'&&nx==='"'){cur+='"';i++;}else if(ch==='"'){inQ=false;}else{cur+=ch;}}
+    else{if(ch==='"'){inQ=true;}else if(ch===','){row.push(cur);cur='';}
+    else if(ch==='\r'&&nx==='\n'){row.push(cur);cur='';rows.push(row);row=[];i++;}
+    else if(ch==='\n'||ch==='\r'){row.push(cur);cur='';rows.push(row);row=[];}else{cur+=ch;}}
+  }
+  if(cur||row.length){row.push(cur);rows.push(row);}
+  return rows;
+}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function formatDateTime(raw) {
+  if (!raw) return '—';
+  const d = new Date(raw);
+  if (isNaN(d)) return raw;
+  return d.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) + ' ' +
+         d.toLocaleTimeString('en-AU',{hour:'2-digit',minute:'2-digit'});
+}
+
+loadResults();
+</script>
+</body>
+</html>
