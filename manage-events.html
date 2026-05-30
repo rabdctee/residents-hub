@@ -308,7 +308,7 @@
     <div class="top-bar-title">🗓️ Manage Events</div>
     <div class="top-bar-sub">Social Club — Event Management &amp; What's On Widget</div>
   </div>
-  <a class="back-btn" href="index.html?expand=sc-events#committee">← Return to Committee Page</a>
+  <a class="back-btn" href="committee.html">← Return to Committee Page</a>
 </div>
 
 <!-- Tab bar -->
@@ -674,7 +674,7 @@
         '<div class="event-row-info">' +
           '<div class="event-row-name">' + esc(ev.name) + '</div>' +
           '<div class="event-row-meta">' +
-            '🗓️ ' + fmtDate(ev.date) +
+            '📅 ' + fmtDate(ev.date) +
             (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
             (ev.location ? ' &nbsp;|&nbsp; 📍 ' + esc(ev.location)     : '') +
             (ev.email    ? '<br>📧 ' + esc(ev.email)                    : '') +
@@ -883,7 +883,7 @@
         '<div class="event-drag" title="Drag to reorder">⠿</div>' +
         '<div class="widget-event-info">' +
           '<div class="widget-event-name">' + esc(ev.name) + '</div>' +
-          '<div class="widget-event-meta">🗓️ ' + esc(ev.date) + '</div>' +
+          '<div class="widget-event-meta">📅 ' + esc(ev.date) + '</div>' +
           (ev.link ? '<div class="widget-event-link">🔗 ' + esc(ev.link) + '</div>' : '') +
         '</div>' +
         '<div class="widget-event-actions">' +
@@ -928,7 +928,7 @@
         '<div class="widget-event-info">' +
           '<div class="widget-event-name">' + esc(ev.name) + '</div>' +
           '<div class="widget-event-meta">' +
-            '🗓️ ' + fmtDate(ev.date) +
+            '📅 ' + fmtDate(ev.date) +
             (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
             (ev.location ? ' &nbsp;|&nbsp; 📍 ' + esc(ev.location)     : '') +
           '</div>' +
