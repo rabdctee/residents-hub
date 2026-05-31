@@ -285,7 +285,14 @@
             '<span class="notice-title">' + n.title + '</span>' +
             '</div>' +
             '<div class="notice-body">' + n.body + '</div>' +
-            (n.link ? '<div style="margin-top:10px;"><a href="' + n.link + '" target="_blank" style="display:inline-block;background:#1F4E79;color:white;font-size:0.82em;font-weight:700;padding:7px 16px;border-radius:6px;text-decoration:none;">📄 View Document</a></div>' : '') +
+            (n.link ? (function(rawLink, title) {
+            // Extract Drive file ID if it's a Drive URL, otherwise use as-is
+            var match = rawLink.match(/\/d\/([a-zA-Z0-9_-]+)/);
+            var href = match
+              ? 'view-document.html?id=' + match[1] + '&title=' + encodeURIComponent(title) + '&back=rc-notices'
+              : rawLink;
+            return '<div style="margin-top:10px;"><a href="' + href + '" target="_blank" style="display:inline-block;background:#1F4E79;color:white;font-size:0.82em;font-weight:700;padding:7px 16px;border-radius:6px;text-decoration:none;">📄 View Document</a></div>';
+          })(n.link, n.title) : '') +
             '</div>';
         });
         list.innerHTML = html;
