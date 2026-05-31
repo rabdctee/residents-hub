@@ -691,6 +691,7 @@ const ROLES = {
 
 // ── PIN ───────────────────────────────────────────────────────────────────────
 const CORRECT_PIN = '5304';
+const SESSION_KEY = 'bdrv_committee_auth';
 
 const pinInput   = document.getElementById('pin-input');
 const pinError   = document.getElementById('pin-error');
@@ -698,12 +699,12 @@ const pinOverlay = document.getElementById('pin-overlay');
 const roleOverlay = document.getElementById('role-overlay');
 
 // Restore session if already authenticated AND role already chosen
-const savedAuth = sessionStorage.getItem('role_admin_auth');
+const savedAuth = sessionStorage.getItem(SESSION_KEY);
 const savedRole = sessionStorage.getItem('role_admin_role');
-if (savedAuth === 'yes' && savedRole && ROLES[savedRole]) {
+if (savedAuth === 'true' && savedRole && ROLES[savedRole]) {
   pinOverlay.classList.add('hidden');
   showDashboard(savedRole);
-} else if (savedAuth === 'yes') {
+} else if (savedAuth === 'true') {
   pinOverlay.classList.add('hidden');
   roleOverlay.classList.add('visible');
 }
@@ -713,7 +714,7 @@ pinInput.addEventListener('input',   function() { if (this.value.length >= 4) ch
 
 function checkPin() {
   if (pinInput.value === CORRECT_PIN) {
-    sessionStorage.setItem('role_admin_auth', 'yes');
+    sessionStorage.setItem(SESSION_KEY, 'true');
     pinOverlay.classList.add('hidden');
     roleOverlay.classList.add('visible');
   } else if (pinInput.value.length >= CORRECT_PIN.length) {
