@@ -215,6 +215,26 @@
   // Record this visit so the sidebar badge clears
   localStorage.setItem('rcNoticesLastVisit', Date.now().toString());
 
+  // Splits full CSV text into rows, correctly handling quoted fields
+  // that contain embedded newlines
+  function splitCSVRows(text) {
+    var rows = [], cur = '', inQ = false;
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (ch === '"') {
+        inQ = !inQ;
+        cur += ch;
+      } else if (ch === '\n' && !inQ) {
+        rows.push(cur);
+        cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    if (cur) rows.push(cur);
+    return rows;
+  }
+
   function parseCSV(line) {
     var cols = [], cur = '', inQ = false;
     for (var i = 0; i < line.length; i++) {
@@ -231,7 +251,7 @@
     fetch(CSV_URL + '&t=' + Date.now())
       .then(function(r) { return r.text(); })
       .then(function(csv) {
-        var lines   = csv.trim().split('\n');
+        var lines   = splitCSVRows(csv.trim());
         var list    = document.getElementById('publicNoticesList');
         var notices = [];
 
