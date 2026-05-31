@@ -1803,7 +1803,7 @@ function buildFileList(key) {
       var lines = csvText.split('\n');
       // Skip header row (index 0)
       var existingIds = (MEETING_FILES[key] || []).map(function(f) { return f.id; });
-      var newHtml = '';
+      var newFiles = [];
 
       for (var i = 1; i < lines.length; i++) {
         var line = lines[i].trim();
@@ -1817,13 +1817,21 @@ function buildFileList(key) {
 
         // Only show files for this folder, not already hardcoded
         if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
-          newHtml += '<li><a href="view-document.html?id=' + encodeURIComponent(fileId) +
-            '&title=' + encodeURIComponent(fileName) +
-            '&back=community-info" target="_blank">📄 ' + fileName + '</a></li>';
+          newFiles.push({ name: fileName, id: fileId });
         }
       }
 
-      // Rebuild the list with hardcoded + new files
+      // Reverse so most recent (last added) appears at top
+      newFiles.reverse();
+
+      var newHtml = '';
+      newFiles.forEach(function(f) {
+        newHtml += '<li><a href="view-document.html?id=' + encodeURIComponent(f.id) +
+          '&title=' + encodeURIComponent(f.name) +
+          '&back=community-info" target="_blank">📄 ' + f.name + '</a></li>';
+      });
+
+      // Rebuild the list with registry files (newest first) + hardcoded files at bottom
       var baseHtml = '';
       files.forEach(function(f) {
         if (f.id) {
@@ -1834,7 +1842,7 @@ function buildFileList(key) {
         }
       });
 
-      ul.innerHTML = baseHtml + newHtml ||
+      ul.innerHTML = newHtml + baseHtml ||
         '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
     })
     .catch(function() {
