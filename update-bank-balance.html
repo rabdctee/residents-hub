@@ -291,7 +291,7 @@
     <div class="top-bar-title">🏦 Update Bank Balance</div>
     <div class="top-bar-sub">Record actual bank balance from statement</div>
   </div>
-  <a class="back-btn" href="index.html?expand=sc-finance#committee">← Back to Committee Page</a>
+  <button class="back-btn" onclick="smartBack('role-admin.html')" style="cursor:pointer;border:none;">← Back</button>
 </div>
 
 <div class="container">
@@ -321,7 +321,7 @@
       <div class="error-msg" id="formError"></div>
 
       <div class="btn-row">
-        <a href="index.html?expand=sc-finance#committee" class="btn btn-secondary">✕ Cancel</a>
+        <button class="btn btn-secondary" onclick="smartBack('role-admin.html')">✕ Cancel</button>
         <button class="btn btn-primary" onclick="showReview()">Review →</button>
       </div>
 
