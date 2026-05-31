@@ -72,6 +72,98 @@
 
   .state-msg { text-align: center; padding: 40px 20px; color: #5f6368; font-style: italic; font-size: 0.92em; }
   .hub-footer { background: #f8f9fa; padding: 16px 30px; text-align: center; color: #5f6368; border-top: 1px solid #e0e0e0; font-size: 0.75em; }
+
+  /* ── Top action banner ── */
+  .top-action-bar {
+    background: #E7F1FB;
+    border: 2px solid #c5d8ee;
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .top-action-bar p {
+    font-size: 0.88em;
+    color: #444;
+    margin: 0;
+  }
+  .btn-create-survey {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #C9A44A;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 11px 22px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.95em;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+  .btn-create-survey:hover { opacity: 0.85; }
+
+  /* ── Survey selector ── */
+  .survey-selector-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .survey-selector-bar label {
+    font-size: 0.85em;
+    font-weight: 700;
+    color: #1F4E79;
+    white-space: nowrap;
+  }
+  .survey-selector-bar select {
+    padding: 8px 12px;
+    border: 1.5px solid #c5d8ee;
+    border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+    color: #222;
+    background: white;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  /* ── View toggle ── */
+  .view-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .btn-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border-radius: 7px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid #c5d8ee;
+    background: white;
+    color: #1F4E79;
+    transition: all 0.2s;
+  }
+  .btn-view:hover { background: #E7F1FB; border-color: #1F4E79; }
+  .btn-view.active { background: #1F4E79; color: white; border-color: #1F4E79; }
+
+  /* ── Expandable view panels ── */
+  .view-panel { display: none; }
+  .view-panel.visible { display: block; }
 </style>
 </head>
 <body>
@@ -90,38 +182,71 @@
 <div class="content-wrap">
 
   <!-- ══════════════════════════════════
-       SECTION 1 — RESULTS
+       TOP ACTION BAR
   ══════════════════════════════════ -->
-  <h2 class="section-title">📊 Current Survey Results</h2>
-
-  <div class="info-box">
-    Results are loaded live from the Google Sheet. Click <strong>Refresh</strong> to get the latest responses.
-    The survey closes at <strong>4:00pm today (29 May 2026)</strong>.
+  <div class="top-action-bar">
+    <p>Ready to run a new survey? Click the button to jump straight to the survey builder below.</p>
+    <a href="#create-survey" class="btn-create-survey">✏️ Create New Survey</a>
   </div>
 
-  <div class="results-header">
-    <div class="results-title" id="results-title">Loading…</div>
+  <!-- ══════════════════════════════════
+       SECTION 1 — RESULTS
+  ══════════════════════════════════ -->
+  <h2 class="section-title">📊 Survey Results</h2>
+
+  <div class="info-box">
+    Select a survey below, then choose <strong>Summary View</strong> to see totals and vote counts, or
+    <strong>Expanded View</strong> to see every individual response and comment.
+    Click <strong>Refresh</strong> to reload the latest data from the Google Sheet.
+  </div>
+
+  <!-- Survey selector -->
+  <div class="survey-selector-bar">
+    <label for="survey-select">📋 Survey:</label>
+    <select id="survey-select" onchange="onSurveyChange()">
+      <option value="referral">Referral Money Survey (Current — closes 29 May 2026)</option>
+      <!-- Add more past surveys here as needed -->
+    </select>
     <button class="btn-reload" onclick="loadResults()">🔄 Refresh</button>
   </div>
 
-  <div class="summary-grid" id="summary-grid">
-    <div class="state-msg">⏳ Loading results…</div>
+  <!-- View toggle buttons -->
+  <div class="view-toggle">
+    <button class="btn-view active" id="btn-summary" onclick="showView('summary')">📊 Summary View</button>
+    <button class="btn-view" id="btn-expanded" onclick="showView('expanded')">📋 Expanded View (All Responses)</button>
   </div>
 
-  <div class="vote-bars" id="vote-bars"></div>
+  <!-- SUMMARY VIEW PANEL -->
+  <div class="view-panel visible" id="panel-summary">
+    <div class="results-header">
+      <div class="results-title" id="results-title">Loading…</div>
+    </div>
+    <div class="summary-grid" id="summary-grid">
+      <div class="state-msg">⏳ Loading results…</div>
+    </div>
+    <div class="vote-bars" id="vote-bars"></div>
+  </div>
 
-  <h3 style="font-size:0.95em;font-weight:700;color:#1F4E79;margin-bottom:12px;">All Responses &amp; Comments</h3>
-  <div class="comments-wrap">
-    <table class="comments-table" id="comments-table">
-      <thead><tr><th>#</th><th>Date &amp; Time</th><th>Name / Unit</th><th>Choice</th><th>Comment</th></tr></thead>
-      <tbody id="comments-body"><tr><td colspan="5" class="state-msg">⏳ Loading…</td></tr></tbody>
-    </table>
+  <!-- EXPANDED VIEW PANEL -->
+  <div class="view-panel" id="panel-expanded">
+    <div class="results-header">
+      <div class="results-title" id="results-title-expanded">Loading…</div>
+    </div>
+    <div class="summary-grid" id="summary-grid-expanded"></div>
+    <div class="vote-bars" id="vote-bars-expanded"></div>
+    <h3 style="font-size:0.95em;font-weight:700;color:#1F4E79;margin-bottom:12px;margin-top:20px;">All Responses &amp; Comments</h3>
+    <div class="comments-wrap">
+      <table class="comments-table" id="comments-table">
+        <thead><tr><th>#</th><th>Date &amp; Time</th><th>Name / Unit</th><th>Choice</th><th>Comment</th></tr></thead>
+        <tbody id="comments-body"><tr><td colspan="5" class="state-msg">⏳ Loading…</td></tr></tbody>
+      </table>
+    </div>
   </div>
 
   <!-- ══════════════════════════════════
        SECTION 2 — NEW SURVEY BUILDER
   ══════════════════════════════════ -->
-  <h2 class="section-title">🛠️ Create a New Survey</h2>
+  <h2 class="section-title" id="create-survey">✏️ Create a New Survey</h2>
 
   <div class="builder-wrap">
     <p>Fill in the details below and click <strong>Generate HTML</strong>. You'll get a ready-to-upload
@@ -180,65 +305,107 @@
 
 <script>
 // ── RESULTS ─────────────────────────────────────────────────────────────────
-const SURVEY_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=1981195128&single=true&output=csv';
+
+// Survey registry — add past surveys here as needed
+const SURVEYS = {
+  referral: {
+    label: 'Referral Money Survey',
+    csv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=1981195128&single=true&output=csv'
+  }
+  // Example of how to add another survey later:
+  // bbq2025: { label: 'BBQ Preferences 2025', csv: 'https://...' }
+};
+
+let currentView = 'summary';
+
+function onSurveyChange() { loadResults(); }
+
+function showView(view) {
+  currentView = view;
+  document.getElementById('panel-summary').classList.toggle('visible', view === 'summary');
+  document.getElementById('panel-expanded').classList.toggle('visible', view === 'expanded');
+  document.getElementById('btn-summary').classList.toggle('active', view === 'summary');
+  document.getElementById('btn-expanded').classList.toggle('active', view === 'expanded');
+}
 
 async function loadResults() {
+  // Reset both panels to loading state
   document.getElementById('summary-grid').innerHTML = '<div class="state-msg">⏳ Loading…</div>';
   document.getElementById('vote-bars').innerHTML = '';
+  document.getElementById('summary-grid-expanded').innerHTML = '';
+  document.getElementById('vote-bars-expanded').innerHTML = '';
   document.getElementById('comments-body').innerHTML = '<tr><td colspan="5" class="state-msg">⏳ Loading…</td></tr>';
+
+  const key = document.getElementById('survey-select').value;
+  const survey = SURVEYS[key];
+  if (!survey) {
+    document.getElementById('summary-grid').innerHTML = '<div class="state-msg">❌ Survey not found.</div>';
+    return;
+  }
+
   try {
-    const resp = await fetch(SURVEY_CSV + '&t=' + Date.now());
+    const resp = await fetch(survey.csv + '&t=' + Date.now());
     const text = await resp.text();
     const rows = parseCSV(text).slice(1).filter(r => r.length >= 3 && r[0].trim());
-    renderResults(rows);
+    renderResults(rows, survey.label);
   } catch(e) {
-    document.getElementById('summary-grid').innerHTML = '<div class="state-msg">❌ Could not load results.</div>';
+    document.getElementById('summary-grid').innerHTML = '<div class="state-msg">❌ Could not load results. Check your internet connection and try again.</div>';
   }
 }
 
-function renderResults(rows) {
+function renderResults(rows, surveyLabel) {
   const total = rows.length;
-  document.getElementById('results-title').textContent = 'Referral Money Survey — ' + total + ' response' + (total===1?'':'s') + ' received';
+  const titleText = surveyLabel + ' — ' + total + ' response' + (total===1?'':'s') + ' received';
+  document.getElementById('results-title').textContent = titleText;
+  document.getElementById('results-title-expanded').textContent = titleText;
 
   // Tally votes
   const votes = {};
   rows.forEach(r => {
     const choice = (r[2]||'').trim();
     if (!choice) return;
-    // Shorten for display — extract key part
     const key = choice.length > 60 ? choice.substring(0,60)+'…' : choice;
     votes[key] = (votes[key]||0) + 1;
   });
 
   const sorted = Object.entries(votes).sort((a,b)=>b[1]-a[1]);
-  const maxVotes = sorted.length ? sorted[0][1] : 1;
   const withComments = rows.filter(r=>(r[3]||'').trim()).length;
 
-  // Summary cards
-  document.getElementById('summary-grid').innerHTML = [
+  // Summary cards HTML (shared between both views)
+  const cardsHTML = [
     `<div class="summary-card"><div class="summary-number">${total}</div><div class="summary-label">Total Responses</div></div>`,
     `<div class="summary-card"><div class="summary-number">${sorted.length}</div><div class="summary-label">Options Chosen</div></div>`,
     `<div class="summary-card"><div class="summary-number">${withComments}</div><div class="summary-label">Left a Comment</div></div>`,
     sorted.length ? `<div class="summary-card"><div class="summary-number" style="font-size:1.4em;color:#2e7d32;">🏆</div><div class="summary-label" style="font-weight:700;color:#2e7d32;">${sorted[0][0].substring(0,40)}…<br>${sorted[0][1]} vote${sorted[0][1]===1?'':'s'}</div></div>` : '',
   ].join('');
 
-  // Vote bars
-  document.getElementById('vote-bars').innerHTML = sorted.map(([ label, count ], i) => {
+  // Vote bars HTML (shared)
+  const barsHTML = sorted.map(([ label, count ], i) => {
     const pct = Math.round((count/total)*100);
-    const isWinner = i === 0;
     return `<div class="vote-row">
       <div class="vote-label"><span>${label}</span><span>${count} vote${count===1?'':'s'} (${pct}%)</span></div>
       <div class="vote-bar-wrap">
-        <div class="vote-bar-fill ${isWinner?'winner':''}" style="width:${Math.max(pct,3)}%">
+        <div class="vote-bar-fill ${i===0?'winner':''}" style="width:${Math.max(pct,3)}%">
           <span class="vote-count">${pct}%</span>
         </div>
       </div>
     </div>`;
   }).join('');
 
-  // Comments table
+  // Populate Summary panel
+  document.getElementById('summary-grid').innerHTML = cardsHTML;
+  document.getElementById('vote-bars').innerHTML = barsHTML;
+
+  // Populate Expanded panel
+  document.getElementById('summary-grid-expanded').innerHTML = cardsHTML;
+  document.getElementById('vote-bars-expanded').innerHTML = barsHTML;
+
+  // Comments table (Expanded panel only)
   const tbody = document.getElementById('comments-body');
-  if (rows.length === 0) { tbody.innerHTML='<tr><td colspan="5" class="state-msg">No responses yet.</td></tr>'; return; }
+  if (rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" class="state-msg">No responses yet.</td></tr>';
+    return;
+  }
   tbody.innerHTML = rows.map((r,i) => {
     const ts      = formatDateTime(r[0]||'');
     const name    = escHtml((r[1]||'').trim() || '—');
