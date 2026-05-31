@@ -125,7 +125,7 @@
     </div>
     <div class="btn-group">
       <button class="print-btn" onclick="window.print()">&#128424;&#65039; Print</button>
-      <a class="back-btn" href="index.html?expand=sc-finance#committee">&#8592; Return to Committee Page</a>
+      <button class="back-btn" onclick="smartBack('role-admin.html')" style="cursor:pointer;border:none;">&#8592; Back</button>
     </div>
   </div>
 
@@ -326,6 +326,16 @@
   }
 
   loadTransactions();
+
+  // ── Smart back navigation ─────────────────────────────────────────────────
+  function smartBack(fallback) {
+    var ref = document.referrer;
+    if (ref && ref.includes("role-admin.html")) {
+      window.location.href = "role-admin.html";
+    } else {
+      window.location.href = fallback || "committee.html";
+    }
+  }
 </script>
 
 </body>

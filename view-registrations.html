@@ -94,7 +94,7 @@
     </div>
     <div class="btn-group">
       <button class="print-btn" onclick="window.print()">🖨️ Print</button>
-      <a class="back-btn" href="index.html?expand=sc-events#committee">← Back</a>
+      <button class="back-btn" onclick="smartBack('role-admin.html')" style="cursor:pointer;border:none;">← Back</button>
     </div>
   </div>
 
@@ -297,6 +297,16 @@
     }
 
     loadData();
-  </script>
+  
+  // ── Smart back navigation ─────────────────────────────────────────────────
+  function smartBack(fallback) {
+    var ref = document.referrer;
+    if (ref && ref.includes("role-admin.html")) {
+      window.location.href = "role-admin.html";
+    } else {
+      window.location.href = fallback || "committee.html";
+    }
+  }
+</script>
 </body>
 </html>

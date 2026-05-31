@@ -400,7 +400,7 @@
     <div class="top-bar-title">📝 Record a New Transaction</div>
     <div class="top-bar-sub">Financial Data Entry</div>
   </div>
-  <a class="back-btn" href="index.html?expand=sc-finance#committee">← Back to Committee Page</a>
+  <button class="back-btn" onclick="smartBack('role-admin.html')" style="cursor:pointer;border:none;">← Back</button>
 </div>
 
 <div class="container">
@@ -446,7 +446,7 @@
       <div class="error-msg" id="formError"></div>
 
       <div class="btn-row">
-        <a href="https://rabdctee.github.io/residents-hub/#committee" class="btn btn-secondary" style="text-align:center;text-decoration:none;">✕ Cancel</a>
+        <button class="btn btn-secondary" onclick="smartBack('role-admin.html')" style="text-align:center;">✕ Cancel</button>
         <button class="btn btn-primary" onclick="showReview()">Review →</button>
       </div>
 
@@ -826,6 +826,16 @@ function resetForm() {
   document.getElementById('formCard').style.display    = 'block';
   window.scrollTo(0, 0);
 }
+
+  // ── Smart back navigation ─────────────────────────────────────────────────
+  function smartBack(fallback) {
+    var ref = document.referrer;
+    if (ref && ref.includes("role-admin.html")) {
+      window.location.href = "role-admin.html";
+    } else {
+      window.location.href = fallback || "committee.html";
+    }
+  }
 </script>
 </body>
 </html>
