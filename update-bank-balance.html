@@ -376,9 +376,12 @@
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytxHID43hrAGzXOxI98UPmROQVNILMVwmH-JfWV7lUIEA-vejQUv899dNRpFTejNrm/exec';
 
 // ── PIN ────────────────────────────────────────────────────────
+var COMMITTEE_SESSION_KEY = 'bdrv_committee_auth';
+
 function checkPin() {
   var val = document.getElementById('pinInput').value;
   if (val === '5304') {
+    sessionStorage.setItem(COMMITTEE_SESSION_KEY, 'true');
     document.getElementById('pinOverlay').style.display = 'none';
     document.getElementById('pinInput').value = '';
   } else {
@@ -388,6 +391,11 @@ function checkPin() {
     document.getElementById('pinInput').focus();
     setTimeout(function() { err.style.display = 'none'; }, 3000);
   }
+}
+
+// Skip PIN if already authenticated this session
+if (sessionStorage.getItem(COMMITTEE_SESSION_KEY) === 'true') {
+  document.getElementById('pinOverlay').style.display = 'none';
 }
 
 // ── Initialise — default date to today ────────────────────────

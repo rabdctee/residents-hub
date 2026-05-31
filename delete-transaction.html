@@ -455,9 +455,12 @@ const TX_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQZAQFZv-MKC
 let allTransactions = [];
 let selectedTx = null;
 
+var COMMITTEE_SESSION_KEY = 'bdrv_committee_auth';
+
 function checkPin() {
   var val = document.getElementById('pinInput').value;
   if (val === '5304') {
+    sessionStorage.setItem(COMMITTEE_SESSION_KEY, 'true');
     document.getElementById('pinOverlay').style.display = 'none';
     document.getElementById('pinInput').value = '';
   } else {
@@ -467,6 +470,11 @@ function checkPin() {
     document.getElementById('pinInput').focus();
     setTimeout(function() { err.style.display = 'none'; }, 3000);
   }
+}
+
+// Skip PIN if already authenticated this session
+if (sessionStorage.getItem(COMMITTEE_SESSION_KEY) === 'true') {
+  document.getElementById('pinOverlay').style.display = 'none';
 }
 
 window.addEventListener('DOMContentLoaded', loadTransactions);
