@@ -487,7 +487,7 @@
     document.getElementById('modalTitle').textContent    = '➕ Add Announcement';
     document.getElementById('editTitle').value           = '';
     document.getElementById('editMessage').value         = '';
-    document.getElementById('editLink').value            = '';
+    document.getElementById('editLink').value            = 'https://bdrv.au/view-document.html?id=';
     document.getElementById('editLinkLabel').value       = '';
     document.getElementById('editDisplayFrom').value     = '';
     var d = new Date(); d.setDate(d.getDate() + 14);
@@ -504,7 +504,7 @@
     document.getElementById('modalTitle').textContent    = '✏️ Edit Announcement';
     document.getElementById('editTitle').value           = ann.title;
     document.getElementById('editMessage').value         = ann.message;
-    document.getElementById('editLink').value            = ann.link        || '';
+    document.getElementById('editLink').value            = ann.link        || 'https://bdrv.au/view-document.html?id=';
     document.getElementById('editLinkLabel').value       = ann.linkLabel   || '';
     document.getElementById('editDisplayFrom').value     = ann.displayFrom  || '';
     document.getElementById('editDisplayUntil').value    = ann.displayUntil || '';
