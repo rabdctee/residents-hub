@@ -380,10 +380,44 @@
           </div>
         </div>
 
+        <div class="sub-section">
+          <div class="sub-header" onclick="toggleSub('rc-admin', this)">
+            <div class="sub-header-left">
+              <div class="sub-title">⚙️ Admin Dashboards</div>
+              <div class="sub-hint">Full admin access and role-based task dashboards</div>
+            </div>
+            <span class="sub-arrow" id="rc-admin-arrow">▼</span>
+          </div>
+          <div class="sub-body" id="rc-admin-body">
+            <a href="hub-admin.html" class="doc-link">
+              🛠️ Hub Admin Dashboard <span style="background:#C9A44A;color:white;font-size:0.75em;padding:2px 8px;border-radius:4px;margin-left:6px;font-weight:700;">RC Chair</span>
+              <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Full Hub administration — all tools, settings and content management</span>
+            </a>
+            <a href="role-admin.html" class="doc-link">
+              👥 Role Dashboard
+              <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Role-based task dashboard for RC Secretary and RC Treasurer</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="sub-section">
+          <div class="sub-header" onclick="toggleSub('rc-classifieds', this)">
+            <div class="sub-header-left">
+              <div class="sub-title">📌 Classifieds Administration</div>
+              <div class="sub-hint">Review, publish or reject resident classified submissions</div>
+            </div>
+            <span class="sub-arrow" id="rc-classifieds-arrow">▼</span>
+          </div>
+          <div class="sub-body" id="rc-classifieds-body">
+            <a href="classifieds-admin.html" class="doc-link">
+              📌 Manage Classifieds
+              <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Review pending submissions — publish or reject with one click</span>
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <!-- ── SOCIAL CLUB COMMITTEE ── -->
     <div class="ctee-section">
       <div class="ctee-header" onclick="toggleCtee('sc')">
         <div class="ctee-header-title">🎉 Social Club Committee</div>
@@ -485,17 +519,17 @@
         </div>
 
         <div class="sub-section">
-          <div class="sub-header" onclick="toggleSub('sc-classifieds', this)">
+          <div class="sub-header" onclick="toggleSub('sc-admin', this)">
             <div class="sub-header-left">
-              <div class="sub-title">📌 Classifieds Administration</div>
-              <div class="sub-hint">Review, publish or reject resident classified submissions</div>
+              <div class="sub-title">⚙️ Role Dashboard</div>
+              <div class="sub-hint">Role-based task dashboard for SC committee members</div>
             </div>
-            <span class="sub-arrow" id="sc-classifieds-arrow">▼</span>
+            <span class="sub-arrow" id="sc-admin-arrow">▼</span>
           </div>
-          <div class="sub-body" id="sc-classifieds-body">
-            <a href="classifieds-admin.html" class="doc-link">
-              📌 Manage Classifieds
-              <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Review pending submissions — publish or reject with one click</span>
+          <div class="sub-body" id="sc-admin-body">
+            <a href="role-admin.html" class="doc-link">
+              👥 SC Role Dashboard
+              <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">Role-based task dashboard for SC Convenor, Secretary, Treasurer and Events Coordinator</span>
             </a>
           </div>
         </div>
@@ -547,8 +581,9 @@
         // Parent map: sub-section → parent committee accordion
         var parentMap = {
           'sc-finance': 'sc', 'sc-events': 'sc', 'sc-docs': 'sc',
-          'sc-homecontent': 'sc', 'sc-classifieds': 'sc',
-          'rc-docs': 'rc', 'rc-info': 'rc', 'rc-notices': 'rc', 'rc-howto': 'rc'
+          'sc-homecontent': 'sc', 'sc-admin': 'sc',
+          'rc-docs': 'rc', 'rc-info': 'rc', 'rc-notices': 'rc',
+          'rc-howto': 'rc', 'rc-admin': 'rc', 'rc-classifieds': 'rc'
         };
         var parentId = parentMap[expandParam];
         if (parentId) {
