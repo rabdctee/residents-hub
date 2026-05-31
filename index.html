@@ -1799,7 +1799,7 @@ function buildFileList(key) {
   if (!folderName) return;
 
   // Use the published CSV URL — works without any login or CORS issues
-  var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtAar-VwmAowIRfzJumkbIfSW82SM4xnwDk12RlVAfuLZZ-xeOJHAA3lb_UeK4as78WRp3u_GmpHLI/pub?gid=0&single=true&output=csv';
+  var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
 
   fetch(csvUrl)
     .then(function(response) { return response.text(); })
@@ -2591,7 +2591,7 @@ function viewAveoDocument() {
 //   'Monthly Financial Reports'  →  financial-period dropdown
 //   'Bank Statements'            →  bank-statement-period dropdown
 
-var REGISTRY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtAar-VwmAowIRfzJumkbIfSW82SM4xnwDk12RlVAfuLZZ-xeOJHAA3lb_UeK4as78WRp3u_GmpHLI/pub?gid=0&single=true&output=csv';
+var REGISTRY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
 
 // Store loaded URLs keyed by dropdown value (filename used as key)
 var financialReportUrls  = {};
