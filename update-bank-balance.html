@@ -511,6 +511,16 @@ function resetForm() {
   document.getElementById('formCard').style.display    = 'block';
   window.scrollTo(0, 0);
 }
+
+  // ── Smart back navigation ─────────────────────────────────────────────────
+  function smartBack(fallback) {
+    var ref = document.referrer;
+    if (ref && ref.includes("role-admin.html")) {
+      window.location.href = "role-admin.html";
+    } else {
+      window.location.href = fallback || "committee.html";
+    }
+  }
 </script>
 </body>
 </html>
