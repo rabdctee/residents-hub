@@ -283,6 +283,9 @@
       <label for="notice-body">Notice Text</label>
       <textarea id="notice-body" placeholder="Type the full notice text here…"></textarea>
 
+      <label for="notice-link">Link <span style="font-weight:400;color:#888;font-size:0.9em;">(optional) — paste a Google Drive or web URL</span></label>
+      <input type="text" id="notice-link" placeholder="e.g. https://drive.google.com/file/d/…/view">
+
       <label>Audience</label>
       <div class="type-row">
         <label class="type-option" id="opt-residents" onclick="selectType('Residents')">
@@ -362,6 +365,7 @@
     var dateVal  = document.getElementById('notice-date').value;
     var titleVal = document.getElementById('notice-title').value.trim();
     var bodyVal  = document.getElementById('notice-body').value.trim();
+    var linkVal  = document.getElementById('notice-link').value.trim();
 
     if (!dateVal || !titleVal || !bodyVal) {
       showStatus('Please fill in all fields before posting.', 'error');
@@ -388,7 +392,8 @@
       date:   displayDate,
       title:  titleVal,
       body:   bodyVal,
-      type:   selectedType
+      type:   selectedType,
+      link:   linkVal
     });
 
     var fd = new FormData();
@@ -400,6 +405,7 @@
         showStatus('✅ Notice posted successfully!', 'success');
         document.getElementById('notice-title').value = '';
         document.getElementById('notice-body').value  = '';
+        document.getElementById('notice-link').value  = '';
         selectType('Residents');
         setTimeout(loadNotices, 2000);
       })
@@ -439,6 +445,7 @@
           var body   = cols[3] ? cols[3].trim() : '';
           var type   = cols[4] ? cols[4].trim() : '';
           var status = cols[5] ? cols[5].trim() : '';
+          var link   = cols[6] ? cols[6].trim() : '';
           var rowNum = i + 1; // 1-based, +1 for header
 
           var typeBadge   = type === 'Public'
@@ -453,9 +460,10 @@
           var safeTitle = title.replace(/'/g, "\\'");
           var safeBody  = body.replace(/'/g, "\\'").replace(/\n/g, '\\n');
           var safeType  = type.replace(/'/g, "\\'");
+          var safeLink  = link.replace(/'/g, "\\'");
 
           var editBtn = status === 'Active'
-            ? '<button class="btn-edit" onclick="editNotice(' + rowNum + ',\'' + safeDate + '\',\'' + safeTitle + '\',\'' + safeBody + '\',\'' + safeType + '\')">✏️ Edit</button>'
+            ? '<button class="btn-edit" onclick="editNotice(' + rowNum + ',\'' + safeDate + '\',\'' + safeTitle + '\',\'' + safeBody + '\',\'' + safeType + '\',\'' + safeLink + '\')">✏️ Edit</button>'
             : '';
           var archiveBtn = status === 'Active'
             ? '<button class="btn-archive" onclick="archiveNotice(' + rowNum + ', this)">Archive</button>'
@@ -479,7 +487,7 @@
   }
 
   // ── Edit a notice — pre-fill form ─────────────────────────
-  function editNotice(rowNum, date, title, body, type) {
+  function editNotice(rowNum, date, title, body, type, link) {
     // Convert DD/MM/YYYY to YYYY-MM-DD for date input
     var dateParts = date.split('/');
     var inputDate = dateParts.length === 3
@@ -490,6 +498,7 @@
     document.getElementById('notice-date').value     = inputDate;
     document.getElementById('notice-title').value    = title;
     document.getElementById('notice-body').value     = body.replace(/\\n/g, '\n');
+    document.getElementById('notice-link').value     = link || '';
     selectType(type || 'Residents');
 
     // Switch form to edit mode
@@ -508,6 +517,7 @@
     document.getElementById('notice-date').value        = '';
     document.getElementById('notice-title').value       = '';
     document.getElementById('notice-body').value        = '';
+    document.getElementById('notice-link').value         = '';
     document.getElementById('formHeading').textContent  = '➕ Post a New Notice';
     document.getElementById('editBanner').style.display = 'none';
     document.getElementById('submitBtn').textContent    = '📋 Post Notice';
@@ -527,6 +537,7 @@
     var dateVal  = document.getElementById('notice-date').value;
     var titleVal = document.getElementById('notice-title').value.trim();
     var bodyVal  = document.getElementById('notice-body').value.trim();
+    var linkVal  = document.getElementById('notice-link').value.trim();
 
     if (!rowNum || !dateVal || !titleVal || !bodyVal) {
       showStatus('Please fill in all fields before saving.', 'error');
@@ -551,7 +562,8 @@
       date:   dateVal,
       title:  titleVal,
       body:   bodyVal,
-      type:   selectedType
+      type:   selectedType,
+      link:   linkVal
     }));
 
     fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd })

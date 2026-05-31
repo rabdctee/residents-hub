@@ -243,7 +243,8 @@
             notices.push({
               date:  cols[1] ? cols[1].trim() : '',
               title: cols[2] ? cols[2].trim() : '',
-              body:  cols[3] ? cols[3].trim() : ''
+              body:  cols[3] ? cols[3].trim() : '',
+              link:  cols[6] ? cols[6].trim() : ''
             });
           }
         }
@@ -264,6 +265,7 @@
             '<span class="notice-title">' + n.title + '</span>' +
             '</div>' +
             '<div class="notice-body">' + n.body + '</div>' +
+            (n.link ? '<div style="margin-top:10px;"><a href="' + n.link + '" target="_blank" style="display:inline-block;background:#1F4E79;color:white;font-size:0.82em;font-weight:700;padding:7px 16px;border-radius:6px;text-decoration:none;">📄 View Document</a></div>' : '') +
             '</div>';
         });
         list.innerHTML = html;
