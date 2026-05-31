@@ -117,7 +117,7 @@
     <div class="top-bar-title">🏦 Upload Bank Statement</div>
     <div class="top-bar-sub">Bridgeman Downs &#8212; Committee use only</div>
   </div>
-  <a class="back-btn" href="index.html?expand=sc-finance#committee">&#8592; Back to Committee Page</a>
+  <button class="back-btn" onclick="smartBack('role-admin.html')" style="cursor:pointer;border:none;">&#8592; Back</button>
 </div>
 
 <div class="content">
@@ -182,9 +182,9 @@
       </p>
       <div class="success-detail" id="successDetail"></div>
       <button class="btn-another" onclick="resetForm()">🏦 Upload Another Statement</button>
-      <a class="back-btn" href="index.html?expand=sc-finance#committee" style="margin-top:10px;justify-content:center;display:flex;">
-        &#8592; Back to Committee Page
-      </a>
+      <button class="back-btn" onclick="smartBack('role-admin.html')" style="margin-top:10px;justify-content:center;display:flex;cursor:pointer;border:none;">
+        &#8592; Back
+      </button>
     </div>
   </div>
 
@@ -335,6 +335,16 @@
     document.getElementById('statementMonth').value = '';
     document.getElementById('docUploader').value = '';
     clearFile(); hideAlert(); window.scrollTo(0,0);
+  }
+
+  // ── Smart back navigation ─────────────────────────────────────────────────
+  function smartBack(fallback) {
+    var ref = document.referrer;
+    if (ref && ref.includes('role-admin.html')) {
+      window.location.href = 'role-admin.html';
+    } else {
+      window.location.href = fallback || 'committee.html';
+    }
   }
 </script>
 
