@@ -57,6 +57,11 @@
   }
   #pin-overlay.hidden { display: none; }
 
+  /* ── BACK BAR ── */
+  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee; }
+  .back-bar a { color: #1F4E79; background: white; border: 2px solid #c5d8ee; border-radius: 10px; padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+  .back-bar a:hover { background: #E7F1FB; border-color: #1F4E79; }
+
   /* ── LAYOUT ── */
   .page-wrap {
     max-width: 1100px;
@@ -286,6 +291,10 @@
   <div id="pin-error"></div>
 </div>
 
+<div class="back-bar" id="back-bar" style="display:none;">
+  <a href="committee.html">⬅️ Back to Committee Area</a>
+</div>
+
 <div class="page-wrap" id="main-content" style="display:none;">
 
   <!-- ── HEADER ── -->
@@ -407,7 +416,7 @@
         </div>
       </div>
       <div class="card-actions">
-        <a href="announcements-admin.html" class="btn-action btn-green">⚙️ Manage Announcements</a>
+        <a href="manage-announcements.html" class="btn-action btn-green">⚙️ Manage Announcements</a>
         <a href="index.html" class="btn-action btn-secondary">👁 View Home Page</a>
       </div>
     </div>
@@ -672,6 +681,7 @@ const mainContent = document.getElementById('main-content');
 // Check if already authenticated this session
 if (sessionStorage.getItem('hub_admin_auth') === 'yes') {
   pinOverlay.classList.add('hidden');
+  document.getElementById('back-bar').style.display = '';
   mainContent.style.display = '';
   init();
 }
@@ -687,6 +697,7 @@ function checkPin() {
   if (pinInput.value === CORRECT_PIN) {
     sessionStorage.setItem('hub_admin_auth', 'yes');
     pinOverlay.classList.add('hidden');
+    document.getElementById('back-bar').style.display = '';
     mainContent.style.display = '';
     init();
   } else if (pinInput.value.length >= CORRECT_PIN.length) {
