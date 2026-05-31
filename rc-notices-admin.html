@@ -284,7 +284,7 @@
       <textarea id="notice-body" placeholder="Type the full notice text here…"></textarea>
 
       <label for="notice-link">Link <span style="font-weight:400;color:#888;font-size:0.9em;">(optional) — paste a Google Drive or web URL</span></label>
-      <input type="text" id="notice-link" placeholder="e.g. https://drive.google.com/file/d/…/view">
+      <input type="text" id="notice-link" placeholder="Paste a Google Drive link or web URL">
 
       <label>Audience</label>
       <div class="type-row">
@@ -354,6 +354,15 @@
     loadNotices();
   });
 
+  function toViewerUrl(link) {
+    if (!link) return '';
+    var match = link.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (match) {
+      return 'https://bdrv.au/view-document.html?id=' + match[1];
+    }
+    return link;
+  }
+
   function selectType(type) {
     selectedType = type;
     document.getElementById('opt-residents').classList.toggle('selected', type === 'Residents');
@@ -365,7 +374,7 @@
     var dateVal  = document.getElementById('notice-date').value;
     var titleVal = document.getElementById('notice-title').value.trim();
     var bodyVal  = document.getElementById('notice-body').value.trim();
-    var linkVal  = document.getElementById('notice-link').value.trim();
+    var linkVal  = toViewerUrl(document.getElementById('notice-link').value.trim());
 
     if (!dateVal || !titleVal || !bodyVal) {
       showStatus('Please fill in all fields before posting.', 'error');
@@ -537,7 +546,7 @@
     var dateVal  = document.getElementById('notice-date').value;
     var titleVal = document.getElementById('notice-title').value.trim();
     var bodyVal  = document.getElementById('notice-body').value.trim();
-    var linkVal  = document.getElementById('notice-link').value.trim();
+    var linkVal  = toViewerUrl(document.getElementById('notice-link').value.trim());
 
     if (!rowNum || !dateVal || !titleVal || !bodyVal) {
       showStatus('Please fill in all fields before saving.', 'error');
