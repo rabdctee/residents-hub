@@ -223,6 +223,14 @@
       }
       .hub-main {
         width: 100%;
+        min-width: 0;
+      }
+      .hub-main .container,
+      .hub-main .page-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        box-shadow: none !important;
       }
     }
 
