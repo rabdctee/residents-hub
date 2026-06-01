@@ -213,6 +213,9 @@
         border-right: none;
         border-bottom: 2px solid #c5d8ee;
         align-self: auto;
+        position: static;
+        max-height: none;
+        overflow-y: visible;
       }
     }
 
