@@ -328,9 +328,9 @@
 <div class="main">
 
   <div class="welcome">
-    <strong>Hey Ken.</strong>
-    Use this page to log new Manor issues, check on existing ones, and update their status.
-    All Manor issues also appear on the main Issues Progress Tracker so all residents can see progress.
+    <strong>Hey, Ken.</strong>
+    Use this page to log new Manor issues, check on existing ones, or update their status.
+    All Manor issues also show on the main Issues Progress Tracker so all residents can see progress.
   </div>
 
   <div class="tabs">
@@ -382,7 +382,7 @@
 
     <button class="submit-btn" id="add-btn" onclick="submitAdd()">Add Issue to Tracker</button>
     <div class="msg msg-success" id="add-success">✅ Issue added successfully. It will appear on the tracker within a few minutes.</div>
-    <div class="msg msg-error"   id="add-error">⚠️ Something went wrong. Please try again or contact Rick.</div>
+    <div class="msg msg-error"   id="add-error">⚠️ Something went wrong. Please try again or contact the Residents Committee.</div>
   </div>
 
   <!-- ── UPDATE EXISTING ISSUE ── -->
@@ -420,16 +420,16 @@
 
     <button class="submit-btn" id="upd-btn" onclick="submitUpdate()" style="display:none">Save Changes</button>
     <div class="msg msg-success" id="upd-success">✅ Issue updated successfully. The tracker will refresh within a few minutes.</div>
-    <div class="msg msg-error"   id="upd-error">⚠️ Something went wrong. Please try again or contact Rick.</div>
+    <div class="msg msg-error"   id="upd-error">⚠️ Something went wrong. Please try again or contact the Residents Committee.</div>
   </div>
 
 </div>
 
 <script>
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
-const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTB9ycPfMGB70frGHsduYXmDyTG4ajvoyePSN9ACK_0NgXBH-8qiJFges9RoEGEir8pKRskQD5RIlLw/pub?gid=257098805&single=true&output=csv";
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzLxgp_7yqtX2pnCeCjU5M5gifZJoFB5dNZJL6_TpE9ppzXfnh2hi-GDkC2oJzRHrkTw/exec";
-const KEN_PIN = "xxxx"; // ← Change this to Ken's actual PIN
+const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziqELvRy1-GKRoXvy-zS1N2xTGaz6xdX5AAusPwwuiUXi5cOpkQ1v6LWWyh-x2ee5APg/exec";
+const KEN_PIN = "MANOR"; // ← Change this to Ken's actual PIN
 // ─────────────────────────────────────────────────────────────────────────────
 
 let allIssues    = [];
