@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manor Issues – Ken Richards</title>
+<style>
+  :root {
+    --navy:        #1F4E79;
+    --navy-light:  #17406a;
+    --surface:     #E7F1FB;
+    --border:      #c5d8ee;
+    --text:        #1a1a1a;
+    --muted:       #5f6368;
+    --red:         #c0392b;
+    --green:       #155724;
+    --green-bg:    #d4edda;
+    --green-border:#28a745;
+    --amber-bg:    #fff3cd;
+    --amber-text:  #7a5200;
+    --amber-border:#e0a800;
+    --manor:       #5b2d8e;
+    --manor-bg:    #f0e8ff;
+    --manor-border:#9b59b6;
+    --radius:      8px;
+    --font:        'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    font-size: 18px;
+    background: #f0f4f8;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── PIN overlay ── */
+  #pinOverlay {
+    position: fixed; inset: 0;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  .pin-box {
+    background: white;
+    border-radius: 12px;
+    padding: 40px 36px;
+    max-width: 380px; width: 90%;
+    text-align: center;
+  }
+  .pin-logo { font-size: 40px; margin-bottom: 12px; }
+  .pin-box h2 { font-size: 20px; color: var(--navy); margin-bottom: 6px; }
+  .pin-box p  { font-size: 15px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+  .pin-input {
+    width: 100%; padding: 16px;
+    font-size: 28px; letter-spacing: 12px; text-align: center;
+    border: 2px solid var(--border); border-radius: var(--radius);
+    font-family: var(--font); margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .pin-input:focus { outline: none; border-color: var(--navy); }
+  .pin-btn {
+    width: 100%; padding: 16px;
+    background: var(--navy); color: white;
+    border: none; border-radius: var(--radius);
+    font-family: var(--font); font-size: 18px; font-weight: 700;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .pin-btn:hover { background: var(--navy-light); }
+  .pin-error { color: var(--red); font-size: 14px; margin-top: 12px; display: none; }
+
+  /* ── Header ── */
+  .page-header {
+    background: var(--navy);
+    color: white;
+    padding: 1.25rem 1.5rem;
+  }
+  .page-header h1 { font-size: 1.6em; font-weight: 700; margin-bottom: 0.1rem; }
+  .page-header p  { font-size: 0.88em; opacity: 0.85; }
+
+  /* ── Main ── */
+  .main {
+    max-width: 700px;
+    margin: 1.5rem auto;
+    padding: 0 1rem 3rem;
+  }
+
+  /* ── Welcome banner ── */
+  .welcome {
+    background: var(--manor-bg);
+    border: 1px solid var(--manor-border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.92em;
+    color: var(--manor);
+  }
+  .welcome strong { display: block; font-size: 1em; margin-bottom: 3px; }
+
+  /* ── Tab switcher ── */
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px 10px;
+    font-family: var(--font);
+    font-size: 1em;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    background: white;
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+    transition: background 0.15s, color 0.15s;
+  }
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn.active { background: var(--navy); color: white; }
+  .tab-btn:hover:not(.active) { background: var(--surface); color: var(--navy); }
+
+  /* ── Cards ── */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: none;
+  }
+  .card.active { display: block; }
+  .card h2 {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--surface);
+  }
+
+  /* ── Form elements ── */
+  .field { margin-bottom: 1.2rem; }
+  label {
+    display: block;
+    font-size: 0.95em;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  select, input[type="text"], textarea {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1em;
+    font-family: var(--font);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    background: white;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+  select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231F4E79' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+  select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--navy);
+  }
+  textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+  .field-hint { font-size: 0.82em; color: var(--muted); margin-top: 5px; }
+
+  /* ── Current notes preview ── */
+  .current-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 0.88em;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+    display: none;
+    line-height: 1.5;
+  }
+  .current-box strong { color: var(--navy); display: block; margin-bottom: 3px; }
+
+  /* ── Similarity warning ── */
+  .similar-box {
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 1.2rem;
+    display: none;
+  }
+  .similar-box strong { color: var(--amber-text); display: block; margin-bottom: 8px; font-size: 0.95em; }
+  .similar-list { list-style: none; padding: 0; }
+  .similar-list li {
+    font-size: 0.88em;
+    color: var(--amber-text);
+    padding: 4px 0 4px 16px;
+    border-bottom: 1px solid #f5dfa0;
+    position: relative;
+  }
+  .similar-list li:last-child { border-bottom: none; }
+  .similar-list li::before { content: "→"; position: absolute; left: 0; }
+  .similar-note { font-size: 0.82em; color: var(--amber-text); margin-top: 10px; opacity: 0.85; }
+
+  /* ── Manor issue list (view tab) ── */
+  .issue-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    background: white;
+  }
+  .issue-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .issue-card-topic { font-weight: 700; color: var(--navy); font-size: 1em; }
+  .issue-card-notes { font-size: 0.88em; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+  .status-badge {
+    font-size: 0.78em;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+  }
+  .s-completed  { background: var(--green-bg);  color: var(--green);       border-color: var(--green-border); }
+  .s-inprogress { background: var(--surface);    color: var(--navy);        border-color: var(--navy); }
+  .s-onhold     { background: var(--amber-bg);   color: var(--amber-text);  border-color: var(--amber-border); }
+  .s-notstarted { background: #f0f0f0;            color: #3a3a3a;            border-color: #888; }
+
+  .no-issues {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted);
+    font-size: 0.92em;
+  }
+
+  /* ── Submit button ── */
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 1.05em;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.15s;
+  }
+  .submit-btn:hover { background: var(--navy-light); }
+  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+
+  /* ── Status messages ── */
+  .msg {
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-size: 0.92em;
+    font-weight: 600;
+    margin-top: 1rem;
+    display: none;
+  }
+  .msg-success { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .msg-error   { background: #fdecea; color: var(--red); border: 1px solid #f5c6cb; }
+
+  /* ── Spinner ── */
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media(max-width:600px){
+    .page-header h1 { font-size: 1.3em; }
+    .card { padding: 1.1rem; }
+    .tab-btn { font-size: 0.9em; padding: 12px 6px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── PIN OVERLAY ── -->
+<div id="pinOverlay">
+  <div class="pin-box">
+    <div class="pin-logo">🏡</div>
+    <h2>Manor Issues — Ken Richards</h2>
+    <p>This page is for the Manor Advisor.<br>Please enter your PIN to continue.</p>
+    <input type="password" class="pin-input" id="pinInput" maxlength="6"
+           placeholder="••••••" inputmode="numeric"
+           onkeydown="if(event.key==='Enter')checkPin()">
+    <button class="pin-btn" onclick="checkPin()">Enter</button>
+    <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
+  </div>
+</div>
+
+<!-- ── HEADER ── -->
+<div class="page-header">
+  <h1>🏡 Manor Issues</h1>
+  <p>Manor Advisor / Advocate — Bridgeman Downs Retirement Village</p>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <div class="welcome">
+    <strong>Welcome, Ken.</strong>
+    Use this page to log new Manor issues, check on existing ones, and update their status.
+    All Manor issues also appear on the main Issues Progress Tracker so all residents can see progress.
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('view')">📋 View Manor Issues</button>
+    <button class="tab-btn" onclick="switchTab('add')">➕ Add a New Issue</button>
+    <button class="tab-btn" onclick="switchTab('update')">✏️ Update an Issue</button>
+  </div>
+
+  <!-- ── VIEW MANOR ISSUES ── -->
+  <div class="card active" id="card-view">
+    <h2>Current Manor Issues</h2>
+    <div id="manor-list"><div class="no-issues">⏳ Loading…</div></div>
+  </div>
+
+  <!-- ── ADD NEW ISSUE ── -->
+  <div class="card" id="card-add">
+    <h2>Add a New Manor Issue</h2>
+
+    <div class="field">
+      <label for="add-topic">What is the issue?</label>
+      <input type="text" id="add-topic" placeholder="Brief description, e.g. Hallway lighting too dim"
+             oninput="checkSimilar()">
+      <div class="field-hint">Type a short, clear description of the issue.</div>
+    </div>
+
+    <!-- Similarity warning — shown if similar issues found -->
+    <div class="similar-box" id="similar-box">
+      <strong>⚠️ Similar issues may already exist on the tracker:</strong>
+      <ul class="similar-list" id="similar-list"></ul>
+      <div class="similar-note">You can still add your issue if it is different — or go to "Update an Issue" to add notes to an existing one.</div>
+    </div>
+
+    <div class="field">
+      <label for="add-notes">Details / background</label>
+      <textarea id="add-notes" placeholder="Describe the issue in more detail — what has happened, what residents have said, what you think should be done…"></textarea>
+      <div class="field-hint">The more detail you provide, the easier it is for the Residents Committee to act on it.</div>
+    </div>
+
+    <div class="field">
+      <label for="add-status">Status</label>
+      <select id="add-status">
+        <option value="">— Select a status —</option>
+        <option value="Not Started">Not Started — I have noted this issue but nothing has happened yet</option>
+        <option value="In Progress">In Progress — This is being looked into or acted on</option>
+        <option value="On Hold">On Hold — Waiting on something before we can proceed</option>
+        <option value="Completed">Completed — This issue has been resolved</option>
+      </select>
+    </div>
+
+    <button class="submit-btn" id="add-btn" onclick="submitAdd()">Add Issue to Tracker</button>
+    <div class="msg msg-success" id="add-success">✅ Issue added successfully. It will appear on the tracker within a few minutes.</div>
+    <div class="msg msg-error"   id="add-error">⚠️ Something went wrong. Please try again or contact the Residents Committee.</div>
+  </div>
+
+  <!-- ── UPDATE EXISTING ISSUE ── -->
+  <div class="card" id="card-update">
+    <h2>Update a Manor Issue</h2>
+
+    <div class="field">
+      <label for="upd-issue">Which issue would you like to update?</label>
+      <select id="upd-issue" onchange="showCurrentIssue()">
+        <option value="">— Select an issue —</option>
+      </select>
+    </div>
+
+    <div class="current-box" id="current-box">
+      <strong>Current details:</strong>
+      <span id="current-notes-text"></span>
+    </div>
+
+    <div class="field" id="upd-notes-field" style="display:none">
+      <label for="upd-notes">Updated details / notes</label>
+      <textarea id="upd-notes" placeholder="Type any updates here — what has changed, new information, actions taken…"></textarea>
+      <div class="field-hint">This will replace the existing notes for this issue.</div>
+    </div>
+
+    <div class="field" id="upd-status-field" style="display:none">
+      <label for="upd-status">Update the status</label>
+      <select id="upd-status">
+        <option value="">— Select a status —</option>
+        <option value="Not Started">Not Started</option>
+        <option value="In Progress">In Progress</option>
+        <option value="On Hold">On Hold</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </div>
+
+    <button class="submit-btn" id="upd-btn" onclick="submitUpdate()" style="display:none">Save Changes</button>
+    <div class="msg msg-success" id="upd-success">✅ Issue updated successfully. The tracker will refresh within a few minutes.</div>
+    <div class="msg msg-error"   id="upd-error">⚠️ Something went wrong. Please try again or contact the Residents Committee.</div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIGURATION ─────────────────────────────────────────────────────────────
+const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTB9ycPfMGB70frGHsduYXmDyTG4ajvoyePSN9ACK_0NgXBH-8qiJFges9RoEGEir8pKRskQD5RIlLw/pub?gid=257098805&single=true&output=csv";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziqELvRy1-GKRoXvy-zS1N2xTGaz6xdX5AAusPwwuiUXi5cOpkQ1v6LWWyh-x2ee5APg/exec";
+const KEN_PIN = "MANOR"; // ← Change this to Ken's actual PIN
+// ─────────────────────────────────────────────────────────────────────────────
+
+let allIssues    = [];
+let manorIssues  = [];
+
+// ── PIN ───────────────────────────────────────────────────────────────────────
+function checkPin() {
+  const val = document.getElementById("pinInput").value;
+  if (val === KEN_PIN) {
+    document.getElementById("pinOverlay").style.display = "none";
+    document.getElementById("pinInput").value = "";
+    loadIssues();
+  } else {
+    const err = document.getElementById("pinError");
+    err.style.display = "block";
+    setTimeout(() => err.style.display = "none", 3000);
+    document.getElementById("pinInput").value = "";
+  }
+}
+
+// ── TAB SWITCHER ──────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  ["view","add","update"].forEach(t => {
+    document.getElementById("card-" + t).classList.toggle("active", t === tab);
+  });
+  document.querySelectorAll(".tab-btn").forEach((b, i) => {
+    b.classList.toggle("active", ["view","add","update"][i] === tab);
+  });
+}
+
+// ── PARSE CSV ─────────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().replace(/\r/g, "").split("\n");
+  const rows  = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = [];
+    let cur = "", inQ = false;
+    for (let c = 0; c < lines[i].length; c++) {
+      const ch = lines[i][c];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
+      else { cur += ch; }
+    }
+    cols.push(cur.trim());
+    // Columns: Category | Topic | CM Notes | Status | Source
+    const [category, topic, cmNotes, status, source] = cols;
+    if (category && topic) {
+      rows.push({
+        category: category.trim(),
+        topic:    topic.trim(),
+        notes:    (cmNotes || "").trim(),
+        status:   (status  || "Not Started").trim(),
+        source:   (source  || "General").trim()
+      });
+    }
+  }
+  return rows;
+}
+
+// ── LOAD DATA ─────────────────────────────────────────────────────────────────
+async function loadIssues() {
+  try {
+    const resp = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
+    const text = await resp.text();
+    allIssues   = parseCSV(text);
+    manorIssues = allIssues.filter(i => i.source === "Manor");
+    renderManorList();
+    populateUpdateDropdown();
+  } catch(e) {
+    document.getElementById("manor-list").innerHTML =
+      '<div class="no-issues">⚠️ Could not load issues. Please refresh the page.</div>';
+  }
+}
+
+// ── VIEW: RENDER MANOR ISSUES ─────────────────────────────────────────────────
+function statusClass(s) {
+  if (s === "Completed")   return "s-completed";
+  if (s === "In Progress") return "s-inprogress";
+  if (s === "On Hold")     return "s-onhold";
+  return "s-notstarted";
+}
+
+function renderManorList() {
+  const container = document.getElementById("manor-list");
+  if (!manorIssues.length) {
+    container.innerHTML = '<div class="no-issues">No Manor issues logged yet.<br>Use the <strong>Add a New Issue</strong> tab to get started.</div>';
+    return;
+  }
+  container.innerHTML = manorIssues.map(i => `
+    <div class="issue-card">
+      <div class="issue-card-header">
+        <div class="issue-card-topic">${esc(i.topic)}</div>
+        <span class="status-badge ${statusClass(i.status)}">${i.status}</span>
+      </div>
+      ${i.notes ? `<div class="issue-card-notes">${esc(i.notes)}</div>` : '<div class="issue-card-notes" style="font-style:italic">No notes yet.</div>'}
+    </div>`).join("");
+}
+
+// ── ADD: SIMILARITY CHECK ─────────────────────────────────────────────────────
+let similarTimer = null;
+function checkSimilar() {
+  clearTimeout(similarTimer);
+  similarTimer = setTimeout(() => {
+    const typed  = document.getElementById("add-topic").value.toLowerCase().trim();
+    const box    = document.getElementById("similar-box");
+    const list   = document.getElementById("similar-list");
+    if (typed.length < 4) { box.style.display = "none"; return; }
+
+    const words   = typed.split(/\s+/).filter(w => w.length > 3);
+    const matches = allIssues.filter(i => {
+      const haystack = (i.topic + " " + i.notes).toLowerCase();
+      return words.some(w => haystack.includes(w));
+    });
+
+    if (!matches.length) { box.style.display = "none"; return; }
+
+    list.innerHTML = matches.slice(0, 5).map(m =>
+      `<li><strong>${esc(m.category)}</strong> — ${esc(m.topic)}
+       <span style="font-size:0.82em;opacity:0.8;"> (${m.status})</span></li>`
+    ).join("");
+    box.style.display = "block";
+  }, 500);
+}
+
+// ── ADD: SUBMIT ───────────────────────────────────────────────────────────────
+async function submitAdd() {
+  const topic  = document.getElementById("add-topic").value.trim();
+  const notes  = document.getElementById("add-notes").value.trim();
+  const status = document.getElementById("add-status").value;
+
+  if (!topic)  { alert("Please describe the issue before adding it."); return; }
+  if (!status) { alert("Please select a status for this issue."); return; }
+
+  const btn = document.getElementById("add-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Adding issue…';
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "add", category: "Manor", topic, notes, status, source: "Manor" }),
+      mode: "no-cors"
+    });
+    showMsg("add-success");
+    document.getElementById("add-topic").value  = "";
+    document.getElementById("add-notes").value  = "";
+    document.getElementById("add-status").value = "";
+    document.getElementById("similar-box").style.display = "none";
+    // Reload data after a short delay so the new item appears
+    setTimeout(loadIssues, 3000);
+  } catch(e) {
+    showMsg("add-error");
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "Add Issue to Tracker";
+}
+
+// ── UPDATE: POPULATE DROPDOWN ─────────────────────────────────────────────────
+function populateUpdateDropdown() {
+  const sel = document.getElementById("upd-issue");
+  sel.innerHTML = '<option value="">— Select an issue —</option>';
+  manorIssues.forEach((i, idx) => {
+    const o = document.createElement("option");
+    o.value = idx;
+    o.textContent = i.topic;
+    sel.appendChild(o);
+  });
+}
+
+function showCurrentIssue() {
+  const idx  = document.getElementById("upd-issue").value;
+  const box  = document.getElementById("current-box");
+  const nf   = document.getElementById("upd-notes-field");
+  const sf   = document.getElementById("upd-status-field");
+  const btn  = document.getElementById("upd-btn");
+
+  if (idx === "") {
+    box.style.display = nf.style.display = sf.style.display = btn.style.display = "none";
+    return;
+  }
+  const issue = manorIssues[idx];
+  document.getElementById("current-notes-text").textContent =
+    issue.notes || "(no notes recorded yet)";
+  document.getElementById("upd-status").value = issue.status;
+  box.style.display = nf.style.display = sf.style.display = btn.style.display = "block";
+}
+
+// ── UPDATE: SUBMIT ────────────────────────────────────────────────────────────
+async function submitUpdate() {
+  const idx    = document.getElementById("upd-issue").value;
+  const notes  = document.getElementById("upd-notes").value.trim();
+  const status = document.getElementById("upd-status").value;
+
+  if (idx === "")  { alert("Please select an issue to update."); return; }
+  if (!status)     { alert("Please select a status."); return; }
+
+  const issue = manorIssues[idx];
+  const btn   = document.getElementById("upd-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Saving…';
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action:   "update",
+        category: issue.category,
+        topic:    issue.topic,
+        notes:    notes || issue.notes,
+        status:   status
+      }),
+      mode: "no-cors"
+    });
+    showMsg("upd-success");
+    document.getElementById("upd-issue").value  = "";
+    document.getElementById("upd-notes").value  = "";
+    document.getElementById("current-box").style.display          = "none";
+    document.getElementById("upd-notes-field").style.display      = "none";
+    document.getElementById("upd-status-field").style.display     = "none";
+    document.getElementById("upd-btn").style.display              = "none";
+    setTimeout(loadIssues, 3000);
+  } catch(e) {
+    showMsg("upd-error");
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = "Save Changes";
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function showMsg(id) {
+  const el = document.getElementById(id);
+  el.style.display = "block";
+  setTimeout(() => el.style.display = "none", 6000);
+}
+</script>
+</body>
+</html>

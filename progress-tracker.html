@@ -206,6 +206,19 @@
   .s-onhold     { background: var(--amber-bg); color: var(--amber-text); border-color: var(--amber-border); }
   .s-notstarted { background: var(--gray-bg);  color: var(--gray-text);  border-color: var(--gray-border); }
 
+  .manor-badge {
+    font-size: 0.72em;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #f0e8ff;
+    color: #5b2d8e;
+    border: 1px solid #9b59b6;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
   /* ── Loading / error states ── */
   .state-msg {
     text-align: center;
@@ -349,9 +362,9 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    const [category, topic, cmNotes, status] = cols;
+    const [category, topic, cmNotes, status, source] = cols;
     if (category && topic && status) {
-      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes || "").trim(), status: status.trim() });
+      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes || "").trim(), status: status.trim(), source: (source || "General").trim() });
     }
   }
   return rows;
@@ -397,7 +410,7 @@ function buildAccordion(grouped) {
     const rows = issues.map(i =>
       `<div class="issue-row" data-status="${i.status}">
         <div class="issue-text">
-          <div class="issue-name">${escHtml(i.topic)}</div>
+          <div class="issue-name">${escHtml(i.topic)}${i.source === "Manor" ? ' <span class="manor-badge">🏡 Manor</span>' : ""}</div>
           ${i.notes ? `<div class="issue-note">${escHtml(i.notes)}</div>` : ""}
         </div>
         <span class="badge ${statusClass(i.status)}">${statusLabel(i.status)}</span>

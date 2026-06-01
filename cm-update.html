@@ -405,9 +405,9 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    const [category, topic, cmNotes, status] = cols;
+    const [category, topic, cmNotes, status, source] = cols;
     if (category && topic) {
-      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes || "").trim(), status: (status || "").trim() });
+      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes || "").trim(), status: (status || "").trim(), source: (source || "General").trim() });
     }
   }
   return rows;
@@ -446,7 +446,7 @@ function populateIssues() {
   const issues = issueData.filter(i => i.category === cat);
   issues.forEach(i => {
     const o = document.createElement("option");
-    o.value = i.topic; o.textContent = i.topic;
+    o.value = i.topic; o.textContent = i.topic + (i.source === "Manor" ? " 🏡" : "");
     o.dataset.notes = i.notes;
     sel.appendChild(o);
   });
@@ -518,7 +518,7 @@ async function submitAdd() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Adding…';
 
-  const payload = JSON.stringify({ action: "add", category, topic, notes, status });
+  const payload = JSON.stringify({ action: "add", category, topic, notes, status, source: "General" });
 
   try {
     await fetch(APPS_SCRIPT_URL, {
