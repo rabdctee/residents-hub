@@ -207,8 +207,11 @@
       .hub-sidebar { width: 230px; }
     }
     @media (max-width: 768px) {
-      .hub-wrapper   { flex-direction: column; }
-      .hub-sidebar   {
+      .hub-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .hub-sidebar {
         width: 100%;
         border-right: none;
         border-bottom: 2px solid #c5d8ee;
@@ -216,6 +219,10 @@
         position: static;
         max-height: none;
         overflow-y: visible;
+        z-index: auto;
+      }
+      .hub-main {
+        width: 100%;
       }
     }
 
