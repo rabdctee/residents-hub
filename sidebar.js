@@ -206,6 +206,38 @@
     @media (max-width: 900px) {
       .hub-sidebar { width: 230px; }
     }
+    /* Font size control */
+    .sb-font-ctrl {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 12px;
+      border-top: 1px solid #c5d8ee;
+      margin-top: 4px;
+    }
+    .sb-font-ctrl span {
+      font-size: 0.72em;
+      color: #5f6368;
+      margin-right: 2px;
+    }
+    .sb-font-btn {
+      font-weight: 700;
+      padding: 3px 8px;
+      border: 1.5px solid #c5d8ee;
+      border-radius: 6px;
+      background: #fff;
+      color: #1F4E79;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+      line-height: 1.4;
+    }
+    .sb-font-btn:hover { background: #E7F1FB; }
+    .sb-font-btn.sb-font-active { background: #1F4E79; color: #fff; border-color: #1F4E79; }
+    .sb-font-btn.sb-sz-sm { font-size: 11px; }
+    .sb-font-btn.sb-sz-md { font-size: 14px; }
+    .sb-font-btn.sb-sz-lg { font-size: 17px; }
+
     @media (max-width: 768px) {
       .hub-wrapper {
         flex-direction: column;
@@ -498,6 +530,33 @@
         }
       }
     }
+
+  // ── FONT SIZE CONTROL ─────────────────────────────────────
+    var savedSize = localStorage.getItem('hubFontSize') || '18';
+    document.documentElement.style.fontSize = savedSize + 'px';
+
+    var fontCtrl = document.createElement('div');
+    fontCtrl.className = 'sb-font-ctrl';
+    fontCtrl.innerHTML =
+      '<span>Text size:</span>' +
+      '<button class="sb-font-btn sb-sz-sm' + (savedSize==='16'  ? ' sb-font-active' : '') + '" data-size="16">A\u2212</button>' +
+      '<button class="sb-font-btn sb-sz-md' + (savedSize==='18'  ? ' sb-font-active' : '') + '" data-size="18">A</button>' +
+      '<button class="sb-font-btn sb-sz-lg' + (savedSize==='21'  ? ' sb-font-active' : '') + '" data-size="21">A+</button>';
+
+    var sbSection = document.querySelector('.sb-section');
+    if (sbSection) sbSection.appendChild(fontCtrl);
+
+    fontCtrl.querySelectorAll('.sb-font-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var size = btn.getAttribute('data-size');
+        document.documentElement.style.fontSize = size + 'px';
+        localStorage.setItem('hubFontSize', size);
+        fontCtrl.querySelectorAll('.sb-font-btn').forEach(function(b) {
+          b.classList.remove('sb-font-active');
+        });
+        btn.classList.add('sb-font-active');
+      });
+    });
 
   }); // end DOMContentLoaded
 
