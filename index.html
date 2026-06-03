@@ -2829,7 +2829,7 @@ function viewSocialMeeting() {
             // Same day — show the same quote again
             if (state.lastDate === today && state.todayQuoteIndex !== null) {
                 var q = byTheme[state.todayTheme][state.todayQuoteIndex];
-                if (q) { showQuote(q.text, q.author); return; }
+                if (q && state.todayQuoteIndex === state.todayQuoteIndex) { showQuote(q.text, q.author); return; }
             }
 
             // New day — advance to next theme
@@ -2838,7 +2838,7 @@ function viewSocialMeeting() {
 
             // Pick quote using today's date as a seed — same result for everyone on the same day
             var dateSeed = parseInt(today.replace(/-/g, ''), 10); // e.g. 20260603
-            var idx = dateSeed % pool.length;
+            var idx = pool.length > 0 ? dateSeed % pool.length : 0;
 
             state.lastDate        = today;
             state.todayTheme      = theme;
