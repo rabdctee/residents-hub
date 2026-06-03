@@ -405,9 +405,9 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    const [category, topic, cmNotes, status, source] = cols;
-    if (category && topic) {
-      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes || "").trim(), status: (status || "").trim(), source: (source || "General").trim() });
+    const [category, topic, cmNotes, status] = cols;
+    if (category && topic && status) {
+      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim() });
     }
   }
   return rows;
