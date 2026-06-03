@@ -2836,17 +2836,15 @@ function viewSocialMeeting() {
             var theme = THEME_ORDER[state.themeIndex % THEME_ORDER.length];
             var pool  = byTheme[theme] || [];
 
-            if (!state.queues[theme] || state.queues[theme].length === 0) {
-                state.queues[theme] = shuffle(pool.map(function (_, i) { return i; }));
-            }
+            // Pick quote using today's date as a seed — same result for everyone on the same day
+            var dateSeed = parseInt(today.replace(/-/g, ''), 10); // e.g. 20260603
+            var idx = dateSeed % pool.length;
 
-            var idx = state.queues[theme].shift();
             state.lastDate        = today;
             state.todayTheme      = theme;
             state.todayQuoteIndex = idx;
             state.themeIndex      = (state.themeIndex + 1) % THEME_ORDER.length;
             saveState(state);
-
             showQuote(pool[idx].text, pool[idx].author);
         })
         .catch(function () {
