@@ -533,7 +533,7 @@
 
   // ── FONT SIZE CONTROL ─────────────────────────────────────
     var savedSize = localStorage.getItem('hubFontSize') || '18';
-    document.documentElement.style.fontSize = savedSize + 'px';
+    document.body.style.fontSize = savedSize + 'px';
 
     var fontCtrl = document.createElement('div');
     fontCtrl.className = 'sb-font-ctrl';
@@ -549,7 +549,7 @@
     fontCtrl.querySelectorAll('.sb-font-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var size = btn.getAttribute('data-size');
-        document.documentElement.style.fontSize = size + 'px';
+        document.body.style.fontSize = size + 'px';
         localStorage.setItem('hubFontSize', size);
         fontCtrl.querySelectorAll('.sb-font-btn').forEach(function(b) {
           b.classList.remove('sb-font-active');
