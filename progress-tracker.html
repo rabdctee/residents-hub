@@ -239,7 +239,7 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    const [category, topic, cmNotes, status] = cols;
+    const category = cols[0], topic = cols[1], cmNotes = cols[2], status = cols[3];
     if (category && topic && status) {
       rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim() });
     }
