@@ -317,7 +317,12 @@
           <li><a href="index.html"${isActive('index.html') ? ' class="sb-active"' : ''}>🏠 Home</a></li>
         </ul>
 
-        <!-- Social Club -->
+       <!-- Welcome to BDRV -->
+      <ul class="sb-links">
+      <li><a href="welcome.html"${isActive('welcome.html') ? ' class="sb-active"' : ''}>🌟 Welcome to BDRV</a></li>
+      </ul>
+
+      <!-- Social Club -->
         <div class="sb-acc-header${openNews}" onclick="sbToggle('sba-news')">
           🎉 Social Club <span class="sb-acc-arrow">▼</span>
         </div>
