@@ -1233,17 +1233,17 @@ setInterval(loadWeather, 1800000);
 
 <!-- HAVE A QUESTION — full width below the grid -->
 <div class="ask-section" style="margin-top:10px;">
-  <h2>🙋 Have a Question?</h2>
-  <p>Can't find what you're looking for on this site? Send us your question and we will do our best to help.</p>
+  <h2>💬 Share Your Thoughts</h2>
+  <p>Have a suggestion, an opinion, or something you'd like the committee to know? We'd love to hear from you.</p>
   <div id="homeQuestionForm">
     <label class="ask-label" for="hq-name">Your name (optional)</label>
     <input class="ask-input" type="text" id="hq-name" placeholder="e.g. Maggie & Max May Unit 42">
-    <label class="ask-label" for="hq-text">Your question</label>
-    <textarea class="ask-textarea" id="hq-text" placeholder="e.g. Where do I find the Social Club calendar?"></textarea>
-    <button class="ask-btn" onclick="submitHomeQuestion()">Send My Question →</button>
+    <label class="ask-label" for="hq-text">Your thoughts</label>
+    <textarea class="ask-textarea" id="hq-text" placeholder="e.g. placeholder="e.g. It would be great if we could have a suggestion box in the foyer"?"></textarea>
+    <button class="ask-btn" onclick="submitHomeQuestion()">Share Your Thoughts →</button>
   </div>
   <div class="ask-success" id="homeAskSuccess">
-    ✅ Thank you! Your question has been received. We will look into it and get back to you soon.
+    ✅ Thank you! Your thoughts have been received. We really appreciate you sharing them with us.
   </div>
 </div>
 
@@ -2919,7 +2919,7 @@ function submitHomeQuestion() {
   var question = document.getElementById('hq-text').value.trim();
 
   if (!question) {
-    alert('Please type your question before sending.');
+   alert('Please type your thoughts before sending.');
     return;
   }
 
