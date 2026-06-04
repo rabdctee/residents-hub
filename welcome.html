@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-V5X3VEVK8R');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to BDRV | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+<style>
+
+/* ===== Base ===== */
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:#f5f5f5;
+  font-size:18px;
+  line-height:1.7;
+  color:#1a1a1a;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  background:#ffffff;
+  box-shadow:0 2px 10px rgba(0,0,0,0.12);
+}
+
+/* ===== Header ===== */
+header{
+  background:#1F4E79;
+  color:white;
+  padding:36px 20px 30px;
+  text-align:center;
+}
+header h1{ font-size:2em; font-weight:700; }
+header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+header .page-tagline{
+  margin-top:14px;
+  font-size:1.15em;
+  font-weight:700;
+}
+header .page-tagline span{
+  display:inline-block;
+  background:rgba(255,255,255,0.18);
+  border-radius:6px;
+  padding:6px 22px;
+  color:#fff;
+}
+
+/* ===== Page content ===== */
+.page-content{ padding:30px 25px 50px; }
+
+/* ===== Welcome banner ===== */
+.welcome-banner{
+  background:linear-gradient(135deg, #1F4E79 0%, #2a6099 100%);
+  border-radius:10px;
+  padding:32px 30px;
+  color:white;
+  margin-bottom:32px;
+  display:flex;
+  align-items:flex-start;
+  gap:20px;
+}
+.welcome-banner-icon{
+  font-size:3em;
+  flex-shrink:0;
+  line-height:1;
+}
+.welcome-banner h2{
+  font-size:1.4em;
+  font-weight:700;
+  margin-bottom:8px;
+  color:#C9A44A;
+}
+.welcome-banner p{
+  font-size:0.95em;
+  opacity:0.92;
+  line-height:1.65;
+}
+
+/* ===== Section heading ===== */
+.section-heading{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:36px 0 18px;
+}
+.section-heading-line{
+  flex:1;
+  height:2px;
+  background:#E7F1FB;
+}
+.section-heading-text{
+  font-size:1em;
+  font-weight:700;
+  color:#1F4E79;
+  white-space:nowrap;
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+}
+
+/* ===== Signpost cards grid ===== */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:16px;
+  margin-bottom:10px;
+}
+
+.signpost-card{
+  background:#ffffff;
+  border:1px solid #c5d8ee;
+  border-radius:8px;
+  padding:20px 20px 18px;
+  transition:box-shadow 0.2s, transform 0.15s;
+  text-decoration:none;
+  color:inherit;
+  display:block;
+  border-top:4px solid #1F4E79;
+}
+.signpost-card:hover{
+  box-shadow:0 4px 14px rgba(31,78,121,0.14);
+  transform:translateY(-2px);
+}
+.signpost-card .card-icon{
+  font-size:2em;
+  margin-bottom:10px;
+  display:block;
+}
+.signpost-card .card-title{
+  font-size:1em;
+  font-weight:700;
+  color:#1F4E79;
+  margin-bottom:6px;
+}
+.signpost-card .card-desc{
+  font-size:0.85em;
+  color:#555;
+  line-height:1.55;
+}
+.signpost-card .card-link{
+  display:inline-block;
+  margin-top:12px;
+  font-size:0.82em;
+  font-weight:700;
+  color:#1F4E79;
+  background:#E7F1FB;
+  border-radius:5px;
+  padding:5px 12px;
+}
+.signpost-card:hover .card-link{
+  background:#1F4E79;
+  color:#fff;
+}
+
+/* Gold accent variant */
+.signpost-card.gold-top{
+  border-top-color:#C9A44A;
+}
+.signpost-card.gold-top .card-title{ color:#7a5200; }
+.signpost-card.gold-top .card-link{ background:#fff8e7; color:#7a5200; }
+.signpost-card.gold-top:hover .card-link{ background:#C9A44A; color:#fff; }
+
+/* ===== Info box ===== */
+.info-box{
+  background:#E7F1FB;
+  border-left:4px solid #1F4E79;
+  padding:16px 20px;
+  margin-bottom:28px;
+  border-radius:0 6px 6px 0;
+  font-size:0.92em;
+  line-height:1.65;
+}
+.info-box strong{ color:#1F4E79; }
+
+/* ===== Tip box ===== */
+.tip-box{
+  background:#fffdf3;
+  border:1px solid #f0d98a;
+  border-left:4px solid #C9A44A;
+  border-radius:0 6px 6px 0;
+  padding:14px 18px;
+  margin-bottom:24px;
+  font-size:0.88em;
+  color:#5a4000;
+  line-height:1.6;
+}
+
+/* ===== Contact card ===== */
+.contact-card{
+  background:#1F4E79;
+  border-radius:10px;
+  padding:28px 30px;
+  color:white;
+  margin-top:36px;
+  display:flex;
+  align-items:center;
+  gap:22px;
+  flex-wrap:wrap;
+}
+.contact-card-icon{ font-size:2.5em; flex-shrink:0; }
+.contact-card h3{
+  font-size:1.1em;
+  font-weight:700;
+  color:#C9A44A;
+  margin-bottom:6px;
+}
+.contact-card p{ font-size:0.92em; opacity:0.9; line-height:1.6; }
+.contact-card a{
+  color:#C9A44A;
+  font-weight:700;
+  text-decoration:none;
+}
+.contact-card a:hover{ text-decoration:underline; }
+
+/* ===== Responsive ===== */
+@media(max-width:768px){
+  header h1{ font-size:1.6em; }
+  .page-content{ padding:22px 16px 40px; }
+  .welcome-banner{ flex-direction:column; gap:12px; }
+  .card-grid{ grid-template-columns:1fr; }
+  .contact-card{ flex-direction:column; gap:12px; }
+}
+
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="container">
+
+<!-- ===== HEADER ===== -->
+<header>
+  <h1>Bridgeman Downs Retirement Village</h1>
+  <p>Residents' Information Hub</p>
+  <p class="page-tagline"><span>🌟 Welcome to BDRV</span></p>
+</header>
+
+<!-- ===== PAGE CONTENT ===== -->
+<div class="page-content">
+
+  <!-- Welcome banner -->
+  <div class="welcome-banner">
+    <div class="welcome-banner-icon">👋</div>
+    <div>
+      <h2>Welcome — we're glad you're here!</h2>
+      <p>Whether you are a new resident just settling in, or simply new to this website,
+      this page is your starting point. Here you will find a quick guide to everything
+      available on the Residents' Hub — just click any item below to go straight there.</p>
+    </div>
+  </div>
+
+  <!-- Tip -->
+  <div class="tip-box">
+    💡 <strong>Handy tip:</strong> Bookmark this website so you can come back easily anytime.
+    On your phone or tablet, look for a <em>"Add to Home Screen"</em> option — it works just
+    like an app!
+  </div>
+
+  <!-- ── SOCIAL CLUB ── -->
+  <div class="section-heading">
+    <div class="section-heading-line"></div>
+    <div class="section-heading-text">🎉 Social Life</div>
+    <div class="section-heading-line"></div>
+  </div>
+
+  <div class="info-box">
+    <strong>What is the Social Club?</strong><br>
+    The Social Club is run by a small group of enthusiastic resident volunteers who organise
+    events and activities to keep life in our community fun, friendly and connected.
+    From morning teas and movie afternoons to happy hours and other Social Club events — there is
+    always something to look forward to. Everyone is welcome, and new ideas are always
+    appreciated!
+  </div>
+
+  <div class="card-grid">
+
+    <a class="signpost-card" href="index.html#events">
+      <span class="card-icon">🎉</span>
+      <div class="card-title">Upcoming Events</div>
+      <div class="card-desc">See what's on at the village — from morning teas and movie afternoons
+      to happy hours and other Social Club events. You can register for events right here on the Hub.</div>
+      <span class="card-link">View Events →</span>
+    </a>
+
+    <a class="signpost-card" href="concerts.html">
+      <span class="card-icon">🎵</span>
+      <div class="card-title">City Hall Concerts</div>
+      <div class="card-desc">Information about the Brisbane City Hall concert series,
+      including how to join a group booking with fellow residents.</div>
+      <span class="card-link">Concert Info →</span>
+    </a>
+
+    <a class="signpost-card" href="info-sessions.html">
+      <span class="card-icon">🎓</span>
+      <div class="card-title">Information Sessions</div>
+      <div class="card-desc">Upcoming talks and presentations on topics of interest to
+      residents — health, legal matters, technology, and more.</div>
+      <span class="card-link">See Sessions →</span>
+    </a>
+
+  </div>
+
+  <!-- ── COMMUNITY ── -->
+  <div class="section-heading">
+    <div class="section-heading-line"></div>
+    <div class="section-heading-text">🌺 Our Community</div>
+    <div class="section-heading-line"></div>
+  </div>
+
+  <div class="card-grid">
+
+    <a class="signpost-card" href="community-life.html">
+      <span class="card-icon">🌺</span>
+      <div class="card-title">Community Life</div>
+      <div class="card-desc">A celebration of the talent and spirit of our village — artwork,
+      poetry, recipes, photos and stories contributed by residents.</div>
+      <span class="card-link">Explore →</span>
+    </a>
+
+    <a class="signpost-card" href="our-story.html">
+      <span class="card-icon">🏡</span>
+      <div class="card-title">Our Story</div>
+      <div class="card-desc">The history and memories of Bridgeman Downs — shared by the
+      people who have made this village their home.</div>
+      <span class="card-link">Read More →</span>
+    </a>
+
+    <a class="signpost-card" href="village-map.html">
+      <span class="card-icon">🗺️</span>
+      <div class="card-title">Village Map</div>
+      <div class="card-desc">Find your way around the village — facilities, buildings,
+      car parks, and key locations all in one place.</div>
+      <span class="card-link">Open Map →</span>
+    </a>
+
+    <a class="signpost-card" href="classifieds.html">
+      <span class="card-icon">📌</span>
+      <div class="card-title">Classifieds</div>
+      <div class="card-desc">Items for sale, wanted ads, and giveaways posted by
+      residents of the village.</div>
+      <span class="card-link">Browse Classifieds →</span>
+    </a>
+
+    <a class="signpost-card" href="savings.html">
+      <span class="card-icon">🛒</span>
+      <div class="card-title">Best Buys</div>
+      <div class="card-desc">Tips and discounts shared by residents — great deals on
+      everyday items, services, and local businesses.</div>
+      <span class="card-link">See Best Buys →</span>
+    </a>
+
+  </div>
+
+  <!-- ── RESIDENTS COMMITTEE ── -->
+  <div class="section-heading">
+    <div class="section-heading-line"></div>
+    <div class="section-heading-text">📋 Residents Committee</div>
+    <div class="section-heading-line"></div>
+  </div>
+
+  <div class="info-box">
+    <strong>What is the Residents Committee?</strong><br>
+    The Residents Committee (RC) is a group of volunteers elected by residents to represent
+    your interests and work with village management on issues that matter to you.
+    The committee meets regularly and keeps all residents informed.
+  </div>
+
+  <div class="card-grid">
+
+    <a class="signpost-card gold-top" href="rc-notices.html">
+      <span class="card-icon">📋</span>
+      <div class="card-title">RC Notices</div>
+      <div class="card-desc">Official notices, updates and announcements from the Residents
+      Committee — the best way to stay informed about what's happening.</div>
+      <span class="card-link">Read Notices →</span>
+    </a>
+
+    <a class="signpost-card gold-top" href="progress-tracker.html">
+      <span class="card-icon">📊</span>
+      <div class="card-title">Issues Progress Tracker</div>
+      <div class="card-desc">See what issues residents have raised and track the progress
+      of each one — from logged, to in progress, to completed.</div>
+      <span class="card-link">View Tracker →</span>
+    </a>
+
+    <a class="signpost-card gold-top" href="community-info.html">
+      <span class="card-icon">🔒</span>
+      <div class="card-title">Residents Only</div>
+      <div class="card-desc">Committee meeting minutes, financial reports and other documents
+      for residents. A PIN is required — ask a committee member for access.</div>
+      <span class="card-link">Residents Area →</span>
+    </a>
+
+  </div>
+
+  <!-- ── HELP & INFO ── -->
+  <div class="section-heading">
+    <div class="section-heading-line"></div>
+    <div class="section-heading-text">📚 Help &amp; Information</div>
+    <div class="section-heading-line"></div>
+  </div>
+
+  <div class="card-grid">
+
+    <a class="signpost-card" href="how-to.html">
+      <span class="card-icon">❓</span>
+      <div class="card-title">Help &amp; How To</div>
+      <div class="card-desc">Plain-English guides on using your phone, tablet, email,
+      TV and more — written especially for our residents.</div>
+      <span class="card-link">Get Help →</span>
+    </a>
+
+    <a class="signpost-card" href="useful-links.html">
+      <span class="card-icon">🔗</span>
+      <div class="card-title">Useful Links</div>
+      <div class="card-desc">A handy collection of trusted websites for health information,
+      government services, local services and more.</div>
+      <span class="card-link">Browse Links →</span>
+    </a>
+
+    <a class="signpost-card" href="memories.html">
+      <span class="card-icon">🕰️</span>
+      <div class="card-title">Down Memory Lane</div>
+      <div class="card-desc">A special collection of memories and photos from residents —
+      a wonderful way to get to know the people around you.</div>
+      <span class="card-link">Take a Look →</span>
+    </a>
+
+  </div>
+
+  <!-- ── SHARE YOUR THOUGHTS ── -->
+  <div class="section-heading">
+    <div class="section-heading-line"></div>
+    <div class="section-heading-text">💬 Have Your Say</div>
+    <div class="section-heading-line"></div>
+  </div>
+
+  <div class="card-grid">
+
+    <a class="signpost-card" href="index.html#share-thoughts"
+       onclick="if(window.showPage){showPage('contact');return false;}else{window.location.href='index.html?page=contact';return false;}">
+      <span class="card-icon">💬</span>
+      <div class="card-title">Share Your Thoughts</div>
+      <div class="card-desc">Have a suggestion, an opinion, or something you'd like the
+      committee to know? We want to hear from you — no question too small.</div>
+      <span class="card-link">Share Now →</span>
+    </a>
+
+  </div>
+
+  <!-- Contact card -->
+  <div class="contact-card">
+    <div class="contact-card-icon">✉️</div>
+    <div>
+      <h3>Need help or have a question?</h3>
+      <p>The Residents Committee is here to help. You can reach us anytime by email at
+      <a href="mailto:rabd.ctee@gmail.com">rabd.ctee@gmail.com</a> — we will do our best
+      to get back to you promptly.<br><br>
+      You can also use the <strong>Share Your Thoughts</strong> button on the Home page
+      to send a message directly to the committee.</p>
+    </div>
+  </div>
+
+</div><!-- end page-content -->
+</div><!-- end container -->
+
+</body>
+</html>
