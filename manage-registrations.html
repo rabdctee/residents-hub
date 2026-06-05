@@ -415,17 +415,18 @@
 
   // ── Render summary ─────────────────────────────────────────
   function renderSummary(rows) {
-    var totalPeople = 0, paid = 0, dietary = 0;
+    var totalPeople = 0, paid = 0, unpaid = 0, dietary = 0;
     rows.forEach(function(r) {
-      totalPeople += parseInt(r.number) || 1;
-      if (r.paid) paid++;
-      if (r.dietary && r.dietary.trim() && r.dietary.toLowerCase() !== 'nil') dietary++;
+      var n = parseInt(r.number) || 1;
+      totalPeople += n;
+      if (r.paid) paid += n; else unpaid += n;
+      if (r.dietary && r.dietary.trim() && r.dietary.toLowerCase() !== 'nil') dietary += n;
     });
     document.getElementById('summary').innerHTML =
       '<div class="summary-pill"><strong>' + rows.length + '</strong> registrations</div>' +
       '<div class="summary-pill"><strong>' + totalPeople + '</strong> total people</div>' +
       '<div class="summary-pill" style="border-color:#a8d5b8;"><strong style="color:var(--green);">' + paid + '</strong> paid</div>' +
-      '<div class="summary-pill" style="border-color:#f1b0a8;"><strong style="color:var(--red);">' + (rows.length - paid) + '</strong> unpaid</div>' +
+      '<div class="summary-pill" style="border-color:#f1b0a8;"><strong style="color:var(--red);">' + unpaid + '</strong> unpaid</div>' +
       (dietary > 0 ? '<div class="summary-pill" style="border-color:#f5c518;"><strong style="color:var(--orange);">' + dietary + '</strong> dietary req.</div>' : '');
   }
 
