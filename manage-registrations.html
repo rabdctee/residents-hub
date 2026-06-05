@@ -419,11 +419,10 @@
     rows.forEach(function(r) {
       var n = parseInt(r.number) || 1;
       totalPeople += n;
-      if (r.paid) paid++; else unpaid++;
+      if (r.paid) paid += n; else unpaid += n;
       if (r.dietary && r.dietary.trim() && r.dietary.toLowerCase() !== 'nil') dietary += n;
     });
     document.getElementById('summary').innerHTML =
-      '<div class="summary-pill"><strong>' + rows.length + '</strong> registrations</div>' +
       '<div class="summary-pill"><strong>' + totalPeople + '</strong> total people</div>' +
       '<div class="summary-pill" style="border-color:#a8d5b8;"><strong style="color:var(--green);">' + paid + '</strong> paid</div>' +
       '<div class="summary-pill" style="border-color:#f1b0a8;"><strong style="color:var(--red);">' + unpaid + '</strong> unpaid</div>' +
