@@ -296,8 +296,8 @@
 
   // ── BUILD SIDEBAR HTML ─────────────────────────────────────
   // Determine which accordion group should auto-open
-  var communityPages = ['concerts.html','savings.html','info-sessions.html',
-                        'classifieds.html','memories.html','community-life.html','village-map.html'];
+  var communityPages = ['concerts.html','sports-hub.html','savings.html','info-sessions.html',
+   'classifieds.html','memories.html','community-life.html','village-map.html'];
   var newsPages      = ['index.html'];
   var infoPages      = ['useful-links.html','how-to.html','contacts.html']; // Guides & Links
 
@@ -341,6 +341,7 @@
           <ul class="sb-links">
             <li><a href="index.html" onclick="if(window.showPage){showPage('activity-contacts');return false;}else{window.location.href='index.html#activity-contacts';return false;}">🚶 Activities &amp; Contacts</a></li>
             <li><a href="concerts.html"${isActive('concerts.html') ? ' class="sb-active"' : ''}>🎵 City Hall Concerts</a></li>
+            <li><a href="sports-hub.html"${isActive('sports-hub.html') ? ' class="sb-active"' : ''}>🏆 Sports Hub</a></li>
             <li><a href="savings.html"${isActive('savings.html') ? ' class="sb-active"' : ''}>🛒 Best Buys</a></li>
             <li><a href="info-sessions.html"${isActive('info-sessions.html') ? ' class="sb-active"' : ''}>🎓 Information Sessions</a></li>
             <li><a href="classifieds.html"${isActive('classifieds.html') ? ' class="sb-active"' : ''}>📌 Classifieds</a></li>
