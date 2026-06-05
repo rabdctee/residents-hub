@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-V5X3VEVK8R');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sports Hub | Bridgeman Downs Residents' Hub</title>
+<style>
+
+/* ===== Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+  background: #f5f5f5;
+  color: #1a1a1a;
+  line-height: 1.65;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ===== Header ===== */
+header {
+  background: #1F4E79;
+  color: white;
+  padding: 30px 20px;
+  text-align: center;
+}
+header h1 { font-size: 2em; font-weight: 700; }
+header p  { margin-top: 8px; font-size: 0.95em; opacity: 0.88; }
+
+/* ===== Container ===== */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+.page-content { padding: 28px 24px 52px; }
+
+/* ===== Page banner ===== */
+.page-banner {
+  background: linear-gradient(135deg, #1F4E79 0%, #1a3f66 100%);
+  border-radius: 8px;
+  padding: 22px 24px;
+  margin-bottom: 24px;
+  border-left: 5px solid #C9A44A;
+  position: relative;
+  overflow: hidden;
+}
+.page-banner::after {
+  content: "🏆";
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 3.5em;
+  opacity: 0.15;
+}
+.page-banner h1 { font-size: 1.4em; color: #fff; font-weight: 700; margin-bottom: 4px; }
+.page-banner p  { color: #C9A44A; font-size: 0.88em; font-weight: 600; }
+
+/* ===== Info box ===== */
+.info-box {
+  background: #E7F1FB;
+  border-left: 4px solid #1F4E79;
+  border-radius: 0 6px 6px 0;
+  padding: 13px 18px;
+  margin-bottom: 28px;
+  font-size: 0.88em;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* ===== Sport section ===== */
+.sport-section {
+  border: 1px solid #c5d8ee;
+  border-radius: 10px;
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+/* Section header — clickable accordion toggle */
+.sport-header {
+  background: #1F4E79;
+  color: white;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+.sport-header:hover { background: #174069; }
+.sport-icon   { font-size: 1.6em; flex-shrink: 0; }
+.sport-title  { flex: 1; }
+.sport-title h2 { font-size: 1.1em; font-weight: 700; margin-bottom: 2px; }
+.sport-title .sport-subtitle { font-size: 0.78em; opacity: 0.82; font-weight: 400; }
+.sport-badge {
+  background: #C9A44A;
+  color: #1F4E79;
+  font-size: 0.7em;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+.sport-badge.live   { background: #e74c3c; color: white; }
+.sport-badge.season { background: #27ae60; color: white; }
+.sport-badge.upcoming { background: #C9A44A; color: #1F4E79; }
+.sport-badge.offseason { background: #95a5a6; color: white; }
+
+.sport-toggle {
+  font-size: 1.1em;
+  transition: transform 0.25s;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.sport-section.open .sport-toggle { transform: rotate(180deg); }
+
+/* Section body */
+.sport-body {
+  display: none;
+  padding: 20px;
+  background: #fff;
+}
+.sport-section.open .sport-body { display: block; }
+
+/* Sport summary text */
+.sport-summary {
+  font-size: 0.9em;
+  color: #444;
+  margin-bottom: 18px;
+  line-height: 1.65;
+}
+.sport-summary strong { color: #1F4E79; }
+
+/* Link grid */
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.sport-link-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f8fbff;
+  border: 1px solid #c5d8ee;
+  border-radius: 8px;
+  padding: 14px 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.18s, border-color 0.18s, transform 0.15s;
+  border-left: 4px solid #1F4E79;
+}
+.sport-link-card:hover {
+  box-shadow: 0 3px 12px rgba(31,78,121,0.13);
+  border-color: #1F4E79;
+  transform: translateY(-1px);
+}
+.sport-link-card.free-card  { border-left-color: #27ae60; }
+.sport-link-card.paid-card  { border-left-color: #e67e22; }
+.sport-link-card.info-card  { border-left-color: #8e44ad; }
+
+.slc-icon { font-size: 1.4em; flex-shrink: 0; margin-top: 1px; }
+.slc-text  {}
+.slc-label {
+  font-size: 0.88em;
+  font-weight: 700;
+  color: #1F4E79;
+  margin-bottom: 2px;
+}
+.slc-desc  { font-size: 0.78em; color: #666; line-height: 1.45; }
+.slc-tag   {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 0.7em;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.tag-free { background: #e8f8ee; color: #1a6e38; }
+.tag-paid { background: #fff0e0; color: #9a4a00; }
+.tag-info { background: #f3eafd; color: #5c1f9a; }
+
+/* Broadcast note */
+.broadcast-note {
+  margin-top: 14px;
+  font-size: 0.82em;
+  color: #666;
+  background: #fffdf3;
+  border: 1px solid #f0e0a0;
+  border-radius: 6px;
+  padding: 10px 14px;
+  line-height: 1.55;
+}
+.broadcast-note strong { color: #5a4000; }
+
+/* World Cup highlight */
+.wc-highlight {
+  background: linear-gradient(135deg, #fff8e6 0%, #fff3d0 100%);
+  border: 2px solid #C9A44A;
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  font-size: 0.88em;
+  line-height: 1.65;
+}
+.wc-highlight .wc-title {
+  font-weight: 700;
+  color: #7a4f00;
+  font-size: 1em;
+  margin-bottom: 6px;
+}
+.wc-highlight ul {
+  list-style: none;
+  padding: 0;
+}
+.wc-highlight ul li {
+  padding: 2px 0;
+  color: #5a3800;
+}
+.wc-highlight ul li::before {
+  content: "⚽ ";
+}
+
+/* ===== Footer ===== */
+footer {
+  background: #1F4E79;
+  color: #c5d8ee;
+  text-align: center;
+  font-size: 0.75em;
+  padding: 14px 20px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 680px) {
+  .page-content { padding: 18px 14px 40px; }
+  .link-grid { grid-template-columns: 1fr; }
+  .page-banner::after { display: none; }
+}
+
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <h1>Bridgeman Downs Retirement Village</h1>
+  <p>Residents' Information Hub</p>
+  <p style="margin-top:14px;font-size:1.1em;font-weight:600;">
+    <span style="display:inline-block;background:rgba(255,255,255,0.18);border-radius:6px;padding:6px 22px;">🏆 Sports Hub</span>
+  </p>
+</header>
+
+<!-- ===== PAGE CONTENT ===== -->
+<div class="container"><div class="page-content">
+
+  <!-- Banner -->
+  <div class="page-banner">
+    <h1>🏆 Sports Hub</h1>
+    <p>Fixtures · Live Scores · Where to Watch — all your sports in one place</p>
+  </div>
+
+  <!-- Info -->
+  <div class="info-box">
+    📺 &nbsp;Click on any sport below to expand it and find fixtures, live scores, and where to watch —
+    on TV or online. Links marked <strong style="color:#1a6e38;">FREE</strong> cost nothing to use.
+    Links marked <strong style="color:#9a4a00;">PAID</strong> require a subscription.
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ⚽  WORLD CUP  (open by default)
+  ══════════════════════════════════════════ -->
+  <div class="sport-section open" id="sec-worldcup">
+    <div class="sport-header" onclick="toggleSection('sec-worldcup')">
+      <span class="sport-icon">⚽</span>
+      <div class="sport-title">
+        <h2>FIFA World Cup 2026</h2>
+        <div class="sport-subtitle">11 June – 19 July 2026 · USA, Canada &amp; Mexico</div>
+      </div>
+      <span class="sport-badge live">LIVE NOW</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <div class="wc-highlight">
+        <div class="wc-title">🇦🇺 Australia (the Socceroos) are in Group D</div>
+        <ul>
+          <li>Sat 14 June — Australia vs Turkey · BC Place, Vancouver</li>
+          <li>Fri 20 June — United States vs Australia · Lumen Field, Seattle</li>
+          <li>Wed 25 June — Paraguay vs Australia · AT&amp;T Stadium, Dallas</li>
+        </ul>
+        <div style="margin-top:8px;font-size:0.9em;color:#5a3800;">
+          ⏰ <strong>Note on timing:</strong> Matches are played in North America. Most Australian
+          kick-off times fall between <strong>4am – 12pm AEST</strong> — worth setting the alarm!
+        </div>
+      </div>
+
+      <p class="sport-summary">
+        The biggest sporting event on the planet — 48 nations, 104 matches, 37 days.
+        <strong>Great news for Australian fans:</strong> SBS has exclusive rights and every single
+        match is completely free to watch, both on TV and online.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.sbs.com.au/sport/fifa-world-cup-2026" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">SBS Sport — Watch Live</div>
+            <div class="slc-desc">Every match live &amp; free on SBS and SBS VICELAND. Stream on SBS On Demand (free account required).</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.sbs.com.au/ondemand" target="_blank">
+          <span class="slc-icon">📱</span>
+          <div class="slc-text">
+            <div class="slc-label">SBS On Demand</div>
+            <div class="slc-desc">Stream live on your phone, tablet, laptop or Smart TV. Also replays &amp; highlights. Free account needed.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card info-card" href="https://www.fifa.com/en/tournaments/mens/worldcup/canadamexicousa2026" target="_blank">
+          <span class="slc-icon">🌐</span>
+          <div class="slc-text">
+            <div class="slc-label">FIFA Official Site</div>
+            <div class="slc-desc">Full fixture list, results, group standings, squads and match stats — the official World Cup source.</div>
+            <span class="slc-tag tag-info">INFO</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card info-card" href="https://www.espn.com/soccer/story/_/id/48939282/2026-fifa-world-cup-fixtures-results-match-schedule-group-stage-knockout-rounds-bracket" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">ESPN — Full Schedule &amp; Results</div>
+            <div class="slc-desc">Day-by-day fixture list with results, live scores and bracket as the tournament progresses.</div>
+            <span class="slc-tag tag-info">INFO</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        📡 <strong>On TV:</strong> SBS (Ch 3) and SBS VICELAND (Ch 31) — free to air, no subscription needed.<br>
+        💻 <strong>Online:</strong> SBS On Demand (sbs.com.au/ondemand) — free but requires a free account.<br>
+        📱 <strong>App:</strong> Download the <em>SBS On Demand</em> app from the App Store or Google Play.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏉  NRL
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-nrl">
+    <div class="sport-header" onclick="toggleSection('sec-nrl')">
+      <span class="sport-icon">🏉</span>
+      <div class="sport-title">
+        <h2>NRL — National Rugby League</h2>
+        <div class="sport-subtitle">2026 Telstra Premiership · Grand Final: Sun 4 October</div>
+      </div>
+      <span class="sport-badge season">IN SEASON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        The NRL season runs from March to October, with three free-to-air games per week on
+        <strong>Channel 9</strong>. Every game of every round is on <strong>Fox League / Kayo</strong>.
+        State of Origin is exclusively live on <strong>Channel 9 / 9Now</strong> (free).
+        The Brisbane Broncos enter 2026 as defending premiers.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.nrl.com/draw/" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">NRL Official Draw &amp; Fixtures</div>
+            <div class="slc-desc">This week's fixtures, results and the full season draw from the official NRL website.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.nrl.com/live-updates/" target="_blank">
+          <span class="slc-icon">⚡</span>
+          <div class="slc-text">
+            <div class="slc-label">NRL Live Scores</div>
+            <div class="slc-desc">Live match scores, try scorers and match stats updated in real time during games.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.9now.com.au/live/channel-9" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">9Now — Watch Live (Free)</div>
+            <div class="slc-desc">Stream Channel 9's free-to-air NRL coverage live online. Thursday, Friday &amp; Sunday selected games plus all State of Origin.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo Sports — Every Game Live</div>
+            <div class="slc-desc">Every match of every round, live and on demand. Replays, highlights and analysis. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        📡 <strong>Free to air:</strong> Channel 9 — Thu, Fri &amp; Sun games plus all State of Origin matches.<br>
+        💻 <strong>Free stream:</strong> 9Now (9now.com.au) — same games as Channel 9, stream online for free.<br>
+        🎬 <strong>Every game:</strong> Kayo Sports or Foxtel — subscription required.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏈  AFL
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-afl">
+    <div class="sport-header" onclick="toggleSection('sec-afl')">
+      <span class="sport-icon">🏈</span>
+      <div class="sport-title">
+        <h2>AFL — Australian Football League</h2>
+        <div class="sport-subtitle">2026 AFL Premiership · Grand Final: late September</div>
+      </div>
+      <span class="sport-badge season">IN SEASON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        The AFL season runs March to September. <strong>Channel 7 / 7plus</strong> broadcast selected
+        games free to air — Thursday nights, Friday nights, Sunday afternoons and all marquee matches.
+        The Grand Final is exclusive to <strong>Channel 7</strong> (free). Every game of every round
+        is on <strong>Fox Footy / Kayo</strong>.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.afl.com.au/matches/scores" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">AFL Official — Fixtures &amp; Scores</div>
+            <div class="slc-desc">This round's fixtures, live scores, results and the full season draw from AFL.com.au.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://7plus.com.au/sport/afl" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">7plus — Watch Live (Free)</div>
+            <div class="slc-desc">Stream Channel 7's free-to-air AFL coverage live. Thursday, Friday &amp; Sunday selected games. Grand Final exclusive.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo Sports — Every Game Live</div>
+            <div class="slc-desc">Every match live and on demand, plus Fox Footy coverage, replays and highlights. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card info-card" href="https://www.afl.com.au/ladder" target="_blank">
+          <span class="slc-icon">🏆</span>
+          <div class="slc-text">
+            <div class="slc-label">AFL Ladder &amp; Standings</div>
+            <div class="slc-desc">The current AFL season ladder — see how every team is placed right now.</div>
+            <span class="slc-tag tag-info">INFO</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        📡 <strong>Free to air:</strong> Channel 7 — selected games each round. Grand Final exclusive to Channel 7.<br>
+        💻 <strong>Free stream:</strong> 7plus (7plus.com.au) — same games as Channel 7, stream free online.<br>
+        🎬 <strong>Every game:</strong> Kayo Sports or Foxtel Fox Footy — subscription required.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🎾  TENNIS
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-tennis">
+    <div class="sport-header" onclick="toggleSection('sec-tennis')">
+      <span class="sport-icon">🎾</span>
+      <div class="sport-title">
+        <h2>Tennis — Grand Slams &amp; Major Events</h2>
+        <div class="sport-subtitle">Wimbledon: 30 June – 13 July 2026</div>
+      </div>
+      <span class="sport-badge upcoming">WIMBLEDON NEXT</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        The four Grand Slams are the biggest events in tennis. In Australia, the
+        <strong>Australian Open</strong> is on Channel 9 / 9Now (free). <strong>Wimbledon</strong>
+        and the <strong>US Open</strong> are on Stan Sport (paid). The
+        <strong>French Open</strong> is on beIN Sports / Kayo (paid).
+        Stan Sport also covers the full ATP and WTA tour year-round.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.atptour.com/en/scores/current" target="_blank">
+          <span class="slc-icon">⚡</span>
+          <div class="slc-text">
+            <div class="slc-label">ATP Live Scores (Men's)</div>
+            <div class="slc-desc">Live scores, draws and results for all current men's ATP tour events.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.wtatennis.com/scores" target="_blank">
+          <span class="slc-icon">⚡</span>
+          <div class="slc-text">
+            <div class="slc-label">WTA Live Scores (Women's)</div>
+            <div class="slc-desc">Live scores, draws and results for all current women's WTA tour events.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.wimbledon.com/en_GB/scores/draws/index.html" target="_blank">
+          <span class="slc-icon">🌿</span>
+          <div class="slc-text">
+            <div class="slc-label">Wimbledon — Draws &amp; Scores</div>
+            <div class="slc-desc">Official Wimbledon site — draws, results and scores. Tournament runs 30 June – 13 July 2026.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://www.stan.com.au/sport" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">Stan Sport — Wimbledon &amp; US Open</div>
+            <div class="slc-desc">Stream Wimbledon and US Open live in Australia. Subscription required (~$30/month for Stan + Sport).</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.9now.com.au" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">9Now — Australian Open (Free)</div>
+            <div class="slc-desc">Stream Australian Open coverage free on 9Now. January 2027 will be the next Australian Open.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🌿 <strong>Wimbledon 2026:</strong> 30 June – 13 July · Stan Sport (subscription) · 9Now has some free coverage.<br>
+        🇦🇺 <strong>Australian Open:</strong> Channel 9 / 9Now — free to air each January.<br>
+        🇫🇷 <strong>French Open:</strong> beIN Sports / Kayo — subscription required.<br>
+        🇺🇸 <strong>US Open:</strong> Stan Sport — subscription required.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏏  CRICKET
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-cricket">
+    <div class="sport-header" onclick="toggleSection('sec-cricket')">
+      <span class="sport-icon">🏏</span>
+      <div class="sport-title">
+        <h2>Cricket</h2>
+        <div class="sport-subtitle">T20 World Cup 2026 (India &amp; Sri Lanka) · BBL from Dec 2026</div>
+      </div>
+      <span class="sport-badge live">T20 WORLD CUP ON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        The <strong>ICC Men's T20 World Cup 2026</strong> is currently underway in India and Sri Lanka.
+        Australia have exited the tournament. The domestic <strong>Big Bash League (BBL)</strong>
+        returns in December 2026 on Channel 7 / 7plus (free). International Test and ODI cricket
+        is on Fox Cricket / Kayo, with some matches on Channel 7.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.icc-cricket.com/cricket-world-cup/standings/men" target="_blank">
+          <span class="slc-icon">🌍</span>
+          <div class="slc-text">
+            <div class="slc-label">ICC — T20 World Cup Scores &amp; Tables</div>
+            <div class="slc-desc">Live scores, standings, fixtures and results for the current T20 World Cup from the official ICC site.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.cricket.com.au/matches" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">Cricket Australia — Fixtures &amp; Results</div>
+            <div class="slc-desc">Australian cricket schedule, match results and live scores from Cricket Australia's official site.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://7plus.com.au/sport/cricket" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">7plus — BBL &amp; Selected Tests (Free)</div>
+            <div class="slc-desc">Watch Big Bash League and selected international cricket free on 7plus. BBL returns December 2026.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo — Fox Cricket (All Matches)</div>
+            <div class="slc-desc">Every Test, ODI and T20I live plus the full BBL. Fox Cricket available via Kayo subscription.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🌍 <strong>T20 World Cup 2026 (now on):</strong> Fox Cricket / Kayo (paid). ICC.tv has some free coverage.<br>
+        🏏 <strong>Big Bash League:</strong> Channel 7 / 7plus (free) from December 2026.<br>
+        🏏 <strong>International cricket:</strong> Mostly Fox Cricket / Kayo (paid); some Tests on Channel 7 (free).
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏐  NETBALL
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-netball">
+    <div class="sport-header" onclick="toggleSection('sec-netball')">
+      <span class="sport-icon">🏐</span>
+      <div class="sport-title">
+        <h2>Netball — Suncorp Super Netball</h2>
+        <div class="sport-subtitle">2026 Super Netball Season</div>
+      </div>
+      <span class="sport-badge season">IN SEASON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        Australia's top netball competition features eight teams. Selected matches are broadcast
+        free via <strong>Kayo Freebies</strong> — a no-subscription section of Kayo available
+        to everyone. The full season is on <strong>Kayo Sports</strong> (subscription) and
+        <strong>Fox Sports</strong>. The Australian Diamonds (national team) play international
+        events throughout the year.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://supernetball.com.au/draw" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">Super Netball — Draw &amp; Results</div>
+            <div class="slc-desc">Full fixture draw, round-by-round results and ladder from the official Super Netball website.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://kayosports.com.au/freebies" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo Freebies — Free Matches</div>
+            <div class="slc-desc">Selected Super Netball games available free with no subscription via Kayo Freebies. Sunday games &amp; finals included.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo Sports — All Matches</div>
+            <div class="slc-desc">Watch every Super Netball match live and on demand. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card info-card" href="https://supernetball.com.au/ladder" target="_blank">
+          <span class="slc-icon">🏆</span>
+          <div class="slc-text">
+            <div class="slc-label">Super Netball Ladder</div>
+            <div class="slc-desc">Current season standings — see where every team sits on the Super Netball ladder.</div>
+            <span class="slc-tag tag-info">INFO</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        📺 <strong>Free matches:</strong> Kayo Freebies (kayosports.com.au/freebies) — no subscription, no cost.<br>
+        🎬 <strong>All matches:</strong> Kayo Sports or Foxtel Fox Sports — subscription required.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏀  BASKETBALL
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-basketball">
+    <div class="sport-header" onclick="toggleSection('sec-basketball')">
+      <span class="sport-icon">🏀</span>
+      <div class="sport-title">
+        <h2>Basketball — NBL &amp; NBA</h2>
+        <div class="sport-subtitle">NBL Season from October · NBA Playoffs on now</div>
+      </div>
+      <span class="sport-badge live">NBA FINALS</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        Two competitions to follow: the <strong>NBL</strong> (Australia's national league, season
+        starts October) and the <strong>NBA</strong> (the American league, currently in the
+        Finals). The NBL is on Kayo / ESPN. The NBA is on ESPN / Kayo. Both the
+        <strong>Boomers</strong> (men) and <strong>Opals</strong> (women) represent Australia
+        internationally.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://nbl.com.au/games" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">NBL — Fixtures &amp; Results</div>
+            <div class="slc-desc">Full NBL draw, scores, standings and news from Australia's national basketball league. Season begins October 2026.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.nba.com/scores" target="_blank">
+          <span class="slc-icon">⚡</span>
+          <div class="slc-text">
+            <div class="slc-label">NBA Live Scores</div>
+            <div class="slc-desc">Live scores, box scores and results for every NBA game — directly from the official NBA website.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo Sports — NBL &amp; NBA Live</div>
+            <div class="slc-desc">Watch NBL and NBA games live and on demand in Australia. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card info-card" href="https://www.nba.com/standings" target="_blank">
+          <span class="slc-icon">🏆</span>
+          <div class="slc-text">
+            <div class="slc-label">NBA Standings</div>
+            <div class="slc-desc">Current NBA standings — Eastern and Western Conference ladder from the official NBA site.</div>
+            <span class="slc-tag tag-info">INFO</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🏀 <strong>NBL (Australia):</strong> Kayo Sports / ESPN — subscription. Season starts October 2026.<br>
+        🏀 <strong>NBA (America):</strong> NBA League Pass / Kayo — subscription. Finals on now.<br>
+        🆓 <strong>Free scores:</strong> nba.com/scores and nbl.com.au are free for scores and standings.
+      </div>
+
+    </div>
+  </div>
+
+</div></div><!-- end container -->
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  Bridgeman Downs Residents' Hub &nbsp;|&nbsp; Managed by the Residents Committee &nbsp;|&nbsp;
+  Broadcast information correct as of June 2026 — subject to change
+</footer>
+
+<script>
+function toggleSection(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
