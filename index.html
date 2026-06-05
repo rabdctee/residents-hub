@@ -2771,7 +2771,7 @@ function viewSocialMeeting() {
     var STORAGE_KEY = 'bdrv_quote_state';
 
     function todayKey() {
-        return new Date().toISOString().split('T')[0];
+        var d = new Date(); return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     }
 
     function shuffle(arr) {
