@@ -16,223 +16,122 @@
     --green:       #155724;
     --green-bg:    #d4edda;
     --green-border:#28a745;
+    --amber-bg:    #fff3cd;
+    --amber-text:  #7a5200;
+    --amber-border:#e0a800;
+    --gray-bg:     #f0f0f0;
+    --gray-text:   #3a3a3a;
+    --gray-border: #888;
     --radius:      8px;
     --font:        'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: var(--font);
-    font-size: 18px;
-    background: #f0f4f8;
-    color: var(--text);
-    line-height: 1.6;
-  }
+  body { font-family: var(--font); font-size: 18px; background: #f0f4f8; color: var(--text); line-height: 1.6; }
 
   /* ── PIN overlay ── */
-  #pinOverlay {
-    position: fixed; inset: 0;
-    background: var(--navy);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 9999;
-  }
-  .pin-box {
-    background: white;
-    border-radius: 12px;
-    padding: 40px 36px;
-    max-width: 360px; width: 90%;
-    text-align: center;
-  }
+  #pinOverlay { position: fixed; inset: 0; background: var(--navy); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+  .pin-box { background: white; border-radius: 12px; padding: 40px 36px; max-width: 360px; width: 90%; text-align: center; }
   .pin-logo { font-size: 36px; margin-bottom: 12px; }
   .pin-box h2 { font-size: 18px; color: var(--navy); margin-bottom: 6px; }
   .pin-box p  { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
-  .pin-input {
-    width: 100%; padding: 14px;
-    font-size: 24px; letter-spacing: 10px; text-align: center;
-    border: 2px solid var(--border); border-radius: var(--radius);
-    font-family: var(--font); margin-bottom: 16px;
-    transition: border-color 0.2s;
-  }
+  .pin-input { width: 100%; padding: 14px; font-size: 24px; letter-spacing: 10px; text-align: center; border: 2px solid var(--border); border-radius: var(--radius); font-family: var(--font); margin-bottom: 16px; }
   .pin-input:focus { outline: none; border-color: var(--navy); }
-  .pin-btn {
-    width: 100%; padding: 14px;
-    background: var(--navy); color: white;
-    border: none; border-radius: var(--radius);
-    font-family: var(--font); font-size: 16px; font-weight: 700;
-    cursor: pointer; transition: background 0.15s;
-  }
+  .pin-btn { width: 100%; padding: 14px; background: var(--navy); color: white; border: none; border-radius: var(--radius); font-family: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; }
   .pin-btn:hover { background: var(--navy-light); }
   .pin-error { color: var(--red); font-size: 13px; margin-top: 12px; display: none; }
 
   /* ── Header ── */
-  .page-header {
-    background: var(--navy);
-    color: white;
-    padding: 1.25rem 1.5rem;
-  }
+  .page-header { background: var(--navy); color: white; padding: 1.25rem 1.5rem; }
   .page-header h1 { font-size: 1.6em; font-weight: 700; margin-bottom: 0.1rem; }
   .page-header p  { font-size: 0.88em; opacity: 0.85; }
 
+  /* ── Toolbar ── */
+  .toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 0.75rem 1.5rem; background: #f8fbff; border-bottom: 1px solid var(--border); }
+  .toolbar-left { font-size: 0.82em; color: var(--muted); }
+  .add-btn-top { font-size: 0.85em; font-weight: 700; padding: 8px 16px; background: var(--navy); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-family: var(--font); }
+  .add-btn-top:hover { background: var(--navy-light); }
+
   /* ── Main ── */
-  .main {
-    max-width: 680px;
-    margin: 1.5rem auto;
-    padding: 0 1rem 3rem;
-  }
+  .main { max-width: 860px; margin: 1rem auto; padding: 0 1rem 3rem; }
 
-  /* ── Tab switcher ── */
-  .tabs {
-    display: flex;
-    gap: 0;
-    margin-bottom: 1.25rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .tab-btn {
-    flex: 1;
-    padding: 12px 10px;
-    font-family: var(--font);
-    font-size: 0.92em;
-    font-weight: 700;
-    border: none;
-    cursor: pointer;
-    background: white;
-    color: var(--muted);
-    border-right: 1px solid var(--border);
-    transition: background 0.15s, color 0.15s;
-  }
-  .tab-btn:last-child { border-right: none; }
-  .tab-btn.active {
-    background: var(--navy);
-    color: white;
-  }
-  .tab-btn:hover:not(.active) {
-    background: var(--surface);
-    color: var(--navy);
-  }
-
-  /* ── Cards ── */
-  .card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    display: none;
-  }
-  .card.active { display: block; }
-  .card h2 {
-    font-size: 1.05em;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 2px solid var(--surface);
-  }
-
-  /* ── Form elements ── */
-  .field { margin-bottom: 1.1rem; }
-  label {
-    display: block;
-    font-size: 0.88em;
-    font-weight: 700;
-    color: var(--navy);
-    margin-bottom: 5px;
-  }
+  /* ── Add new issue panel ── */
+  .add-panel { background: white; border: 2px solid var(--navy); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; display: none; }
+  .add-panel.open { display: block; }
+  .add-panel h2 { font-size: 1em; font-weight: 700; color: var(--navy); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--surface); }
+  .add-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+  .add-grid .full { grid-column: 1 / -1; }
+  .field-label { font-size: 0.82em; font-weight: 700; color: var(--navy); display: block; margin-bottom: 4px; }
   select, input[type="text"], textarea {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 0.92em;
-    font-family: var(--font);
-    border: 2px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    background: white;
-    transition: border-color 0.2s;
-    appearance: none;
+    width: 100%; padding: 9px 11px; font-size: 0.88em; font-family: var(--font);
+    border: 2px solid var(--border); border-radius: 6px; color: var(--text);
+    background: white; appearance: none;
   }
   select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231F4E79' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
-  select:focus, input:focus, textarea:focus {
-    outline: none;
-    border-color: var(--navy);
-  }
-  textarea { resize: vertical; min-height: 100px; line-height: 1.5; }
+  select:focus, input:focus, textarea:focus { outline: none; border-color: var(--navy); }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  .add-actions { display: flex; gap: 10px; margin-top: 1rem; }
+  .btn-save { flex: 1; padding: 11px; background: var(--navy); color: white; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.92em; font-weight: 700; cursor: pointer; }
+  .btn-save:hover { background: var(--navy-light); }
+  .btn-save:disabled { background: #aaa; cursor: not-allowed; }
+  .btn-cancel { padding: 11px 18px; background: white; color: var(--muted); border: 2px solid var(--border); border-radius: 6px; font-family: var(--font); font-size: 0.92em; font-weight: 700; cursor: pointer; }
+  .btn-cancel:hover { background: var(--surface); color: var(--navy); }
 
-  .field-hint {
-    font-size: 0.78em;
-    color: var(--muted);
-    margin-top: 4px;
-  }
+  /* ── Category accordion ── */
+  .cat-block { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; cursor: pointer; background: var(--surface); gap: 10px; user-select: none; }
+  .cat-header:hover { background: #cfe0f5; }
+  .cat-name { font-weight: 700; font-size: 1.05em; color: var(--navy); }
+  .cat-count { font-size: 0.75em; color: var(--muted); margin-left: 6px; }
+  .cat-chevron { color: var(--navy); font-size: 1em; transition: transform 0.25s; flex-shrink: 0; }
+  .cat-block.open .cat-chevron { transform: rotate(180deg); }
+  .cat-body { display: none; border-top: 1px solid var(--border); }
+  .cat-block.open .cat-body { display: block; }
 
-  /* ── Current notes preview ── */
-  .current-notes {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 10px 12px;
-    font-size: 0.85em;
-    color: var(--muted);
-    margin-bottom: 1.1rem;
-    display: none;
-    line-height: 1.5;
-  }
-  .current-notes strong { color: var(--navy); display: block; margin-bottom: 3px; font-size: 0.9em; }
+  /* ── Issue rows ── */
+  .issue-row { border-bottom: 1px solid var(--border); background: white; }
+  .issue-row:last-child { border-bottom: none; }
+  .issue-summary { display: flex; align-items: flex-start; justify-content: space-between; padding: 11px 16px; gap: 12px; cursor: pointer; }
+  .issue-summary:hover { background: #f8fbff; }
+  .issue-left { flex: 1; min-width: 0; }
+  .issue-title { font-size: 0.9em; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+  .issue-note-preview { font-size: 0.78em; color: var(--muted); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px; }
+  .issue-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .badge { font-size: 0.72em; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1.5px solid transparent; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .edit-hint { font-size: 0.7em; color: var(--muted); font-style: italic; }
+  .s-completed  { background: var(--green-bg);  color: var(--green);      border-color: var(--green-border); }
+  .s-inprogress { background: var(--surface);   color: var(--navy);       border-color: var(--navy); }
+  .s-onhold     { background: var(--amber-bg);  color: var(--amber-text); border-color: var(--amber-border); }
+  .s-notstarted { background: var(--gray-bg);   color: var(--gray-text);  border-color: var(--gray-border); }
 
-  /* ── Submit button ── */
-  .submit-btn {
-    width: 100%;
-    padding: 14px;
-    background: var(--navy);
-    color: white;
-    border: none;
-    border-radius: var(--radius);
-    font-family: var(--font);
-    font-size: 1em;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 0.5rem;
-    transition: background 0.15s;
-  }
-  .submit-btn:hover { background: var(--navy-light); }
-  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+  /* ── Inline edit panel ── */
+  .issue-edit { display: none; padding: 12px 16px 16px; background: #f8fbff; border-top: 1px solid var(--border); }
+  .issue-row.editing .issue-edit { display: block; }
+  .issue-row.editing .issue-summary { background: #eef5fc; }
+  .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .edit-grid .full { grid-column: 1 / -1; }
+  .edit-actions { display: flex; gap: 8px; }
+  .btn-update { flex: 1; padding: 9px; background: var(--navy); color: white; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.85em; font-weight: 700; cursor: pointer; }
+  .btn-update:hover { background: var(--navy-light); }
+  .btn-update:disabled { background: #aaa; cursor: not-allowed; }
+  .btn-discard { padding: 9px 14px; background: white; color: var(--muted); border: 2px solid var(--border); border-radius: 6px; font-family: var(--font); font-size: 0.85em; font-weight: 700; cursor: pointer; }
+  .btn-discard:hover { background: var(--surface); color: var(--navy); }
 
-  /* ── Status messages ── */
-  .msg {
-    padding: 12px 14px;
-    border-radius: 6px;
-    font-size: 0.88em;
-    font-weight: 600;
-    margin-top: 1rem;
-    display: none;
-  }
-  .msg-success {
-    background: var(--green-bg);
-    color: var(--green);
-    border: 1px solid var(--green-border);
-  }
-  .msg-error {
-    background: #fdecea;
-    color: var(--red);
-    border: 1px solid #f5c6cb;
-  }
+  /* ── Toast notification ── */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); padding: 12px 22px; border-radius: 8px; font-size: 0.88em; font-weight: 700; z-index: 8888; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+  .toast-success { background: var(--green-bg); color: var(--green); border: 1.5px solid var(--green-border); }
+  .toast-error   { background: #fdecea; color: var(--red); border: 1.5px solid #f5c6cb; }
 
-  /* ── Loading spinner ── */
-  .spinner {
-    display: inline-block;
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,0.4);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    vertical-align: middle;
-    margin-right: 6px;
-  }
+  /* ── Loading ── */
+  .state-msg { text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 0.92em; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  @media(max-width:600px){
-    .page-header h1 { font-size: 1.3em; }
-    .card { padding: 1.1rem; }
+  @media(max-width:640px){
+    .add-grid, .edit-grid { grid-template-columns: 1fr; }
+    .add-grid .full, .edit-grid .full { grid-column: 1; }
+    .issue-note-preview { display: none; }
+    .edit-hint { display: none; }
   }
 </style>
 </head>
@@ -258,110 +157,85 @@
   <p>Issues Progress Tracker — Bridgeman Downs Retirement Village</p>
 </div>
 
+<!-- ── TOOLBAR ── -->
+<div class="toolbar">
+  <div class="toolbar-left">Tap any issue to edit it inline. Changes save directly to the Google Sheet.</div>
+  <button class="add-btn-top" onclick="toggleAddPanel()">➕ Add New Issue</button>
+</div>
+
 <!-- ── MAIN ── -->
 <div class="main">
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('update')">✏️ Update an Issue</button>
-    <button class="tab-btn" onclick="switchTab('add')">➕ Add a New Issue</button>
+  <!-- ADD NEW ISSUE PANEL -->
+  <div class="add-panel" id="add-panel">
+    <h2>➕ Add a New Issue</h2>
+    <div class="add-grid">
+      <div>
+        <label class="field-label" for="add-category">Category</label>
+        <select id="add-category">
+          <option value="">— Select a category —</option>
+          <option>Safety &amp; Emergency</option>
+          <option>Infrastructure &amp; Maintenance</option>
+          <option>Staffing &amp; Management</option>
+          <option>Facilities &amp; Amenity</option>
+          <option>Environment &amp; Grounds</option>
+          <option>Administration &amp; Finance</option>
+          <option>Security</option>
+          <option>Initiatives</option>
+          <option>Manor</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label" for="add-category-new">Or type a new category</label>
+        <input type="text" id="add-category-new" placeholder="e.g. Transport">
+      </div>
+      <div class="full">
+        <label class="field-label" for="add-topic">Issue / Topic</label>
+        <input type="text" id="add-topic" placeholder="Brief description of the issue">
+      </div>
+      <div class="full">
+        <label class="field-label" for="add-notes">CM Notes</label>
+        <textarea id="add-notes" placeholder="Current status, actions taken, next steps…" rows="3"></textarea>
+      </div>
+      <div>
+        <label class="field-label" for="add-status">Status</label>
+        <select id="add-status">
+          <option value="">— Select a status —</option>
+          <option>Not Started</option>
+          <option>In Progress</option>
+          <option>On Hold</option>
+          <option>Completed</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label" for="add-source">Source</label>
+        <select id="add-source">
+          <option value="General">General</option>
+          <option value="Manor">Manor</option>
+        </select>
+      </div>
+    </div>
+    <div class="add-actions">
+      <button class="btn-save" id="add-btn" onclick="submitAdd()">Add Issue</button>
+      <button class="btn-cancel" onclick="toggleAddPanel()">Cancel</button>
+    </div>
+    <div id="add-msg" style="display:none;margin-top:0.75rem;font-size:0.85em;font-weight:700;"></div>
   </div>
 
-  <!-- UPDATE EXISTING ISSUE -->
-  <div class="card active" id="card-update">
-    <h2>Update CM Notes on an Existing Issue</h2>
-
-    <div class="field">
-      <label for="upd-category">Category</label>
-      <select id="upd-category" onchange="populateIssues()">
-        <option value="">— Select a category —</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label for="upd-issue">Issue</label>
-      <select id="upd-issue" onchange="showCurrentNotes()" disabled>
-        <option value="">— Select an issue —</option>
-      </select>
-    </div>
-
-    <div class="current-notes" id="current-notes-box">
-      <strong>Current CM notes:</strong>
-      <span id="current-notes-text"></span>
-    </div>
-
-    <div class="field">
-      <label for="upd-notes">Updated CM Notes</label>
-      <textarea id="upd-notes" placeholder="Type the updated notes here…" rows="4"></textarea>
-      <div class="field-hint">This will replace the existing CM notes for this issue.</div>
-    </div>
-
-    <button class="submit-btn" id="upd-btn" onclick="submitUpdate()">Save Update</button>
-    <div class="msg msg-success" id="upd-success">✅ Notes updated successfully. The tracker will refresh within a few minutes.</div>
-    <div class="msg msg-error"   id="upd-error">⚠️ Something went wrong. Please try again.</div>
-  </div>
-
-  <!-- ADD NEW ISSUE -->
-  <div class="card" id="card-add">
-    <h2>Add a New Issue</h2>
-
-    <div class="field">
-      <label for="add-category">Category</label>
-      <select id="add-category">
-        <option value="">— Select a category —</option>
-        <option>Safety &amp; Emergency</option>
-        <option>Infrastructure &amp; Maintenance</option>
-        <option>Staffing &amp; Management</option>
-        <option>Facilities &amp; Amenity</option>
-        <option>Environment &amp; Grounds</option>
-        <option>Administration &amp; Finance</option>
-        <option>Security</option>
-        <option>Initiatives</option>
-      </select>
-      <div class="field-hint">Or type a new category name below if none of the above apply.</div>
-    </div>
-
-    <div class="field">
-      <label for="add-category-new">New category name <span style="font-weight:400;color:var(--muted)">(leave blank if using one above)</span></label>
-      <input type="text" id="add-category-new" placeholder="e.g. Transport">
-    </div>
-
-    <div class="field">
-      <label for="add-topic">Issue / Topic</label>
-      <input type="text" id="add-topic" placeholder="Brief description of the issue">
-    </div>
-
-    <div class="field">
-      <label for="add-notes">CM Notes</label>
-      <textarea id="add-notes" placeholder="Current status, actions taken, next steps…" rows="4"></textarea>
-    </div>
-
-    <div class="field">
-      <label for="add-status">Status</label>
-      <select id="add-status">
-        <option value="">— Select a status —</option>
-        <option>Not Started</option>
-        <option>In Progress</option>
-        <option>On Hold</option>
-        <option>Completed</option>
-      </select>
-    </div>
-
-    <button class="submit-btn" id="add-btn" onclick="submitAdd()">Add Issue</button>
-    <div class="msg msg-success" id="add-success">✅ New issue added successfully. The tracker will refresh within a few minutes.</div>
-    <div class="msg msg-error"   id="add-error">⚠️ Something went wrong. Please try again.</div>
-  </div>
+  <!-- ACCORDION -->
+  <div id="loading" class="state-msg">⏳ Loading issues…</div>
+  <div id="accordion" style="display:none"></div>
 
 </div>
 
+<!-- ── TOAST ── -->
+<div class="toast toast-success" id="toast-success">✅ Saved successfully</div>
+<div class="toast toast-error"   id="toast-error">⚠️ Something went wrong — please try again</div>
+
 <script>
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
-// Same CSV URL as progress-tracker.html
-const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?output=csv";
-
-// Apps Script URL — you will get this after deploying the Apps Script
+const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?output=csv";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzLxgp_7yqtX2pnCeCjU5M5gifZJoFB5dNZJL6_TpE9ppzXfnh2hi-GDkC2oJzRHrkTw/exec";
-
-// CM PIN
 const CM_PIN = "CMUD";
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -382,22 +256,26 @@ function checkPin() {
   }
 }
 
-// ── TAB SWITCHER ─────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  document.querySelectorAll(".tab-btn").forEach((b, i) =>
-    b.classList.toggle("active", (i === 0 && tab === "update") || (i === 1 && tab === "add"))
-  );
-  document.getElementById("card-update").classList.toggle("active", tab === "update");
-  document.getElementById("card-add").classList.toggle("active", tab === "add");
+// ── STATUS HELPERS ────────────────────────────────────────────────────────────
+function statusClass(s) {
+  if (s === "Completed")   return "s-completed";
+  if (s === "In Progress") return "s-inprogress";
+  if (s === "On Hold")     return "s-onhold";
+  return "s-notstarted";
+}
+function statusIcon(s) {
+  if (s === "Completed")   return "✓";
+  if (s === "In Progress") return "⟳";
+  if (s === "On Hold")     return "⏸";
+  return "○";
 }
 
-// ── LOAD ISSUES FROM SHEET ───────────────────────────────────────────────────
+// ── CSV PARSER ────────────────────────────────────────────────────────────────
 function parseCSV(text) {
   const lines = text.trim().split("\n");
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
-    const cols = [];
-    let cur = "", inQ = false;
+    const cols = []; let cur = "", inQ = false;
     for (let c = 0; c < lines[i].length; c++) {
       const ch = lines[i][c];
       if (ch === '"') { inQ = !inQ; }
@@ -405,103 +283,159 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    const [category, topic, cmNotes, status] = cols;
+    // Read by position — ignores any extra columns (e.g. column E Source)
+    const category = cols[0], topic = cols[1], cmNotes = cols[2], status = cols[3], source = cols[4] || "General";
     if (category && topic && status) {
-      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim() });
+      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), source: source.trim() });
     }
   }
   return rows;
 }
 
+// ── LOAD ──────────────────────────────────────────────────────────────────────
 async function loadIssues() {
   try {
     const resp = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
     const text = await resp.text();
     issueData = parseCSV(text);
-    populateCategories();
+    buildAccordion();
   } catch(e) {
-    console.error("Could not load issues:", e);
+    document.getElementById("loading").textContent = "⚠️ Could not load issues. Please refresh.";
   }
 }
 
-function populateCategories() {
-  const cats = [...new Set(issueData.map(i => i.category))];
-  const sel = document.getElementById("upd-category");
-  sel.innerHTML = '<option value="">— Select a category —</option>';
-  cats.forEach(c => {
-    const o = document.createElement("option");
-    o.value = c; o.textContent = c;
-    sel.appendChild(o);
+// ── BUILD ACCORDION ───────────────────────────────────────────────────────────
+function buildAccordion() {
+  const acc = document.getElementById("accordion");
+  acc.innerHTML = "";
+
+  const grouped = {};
+  issueData.forEach(i => { if (!grouped[i.category]) grouped[i.category] = []; grouped[i.category].push(i); });
+
+  Object.entries(grouped).forEach(([catName, issues]) => {
+    const block = document.createElement("div");
+    block.className = "cat-block";
+    block.dataset.cat = catName;
+
+    const rows = issues.map((issue, idx) => {
+      const uid = `issue-${catName.replace(/\s+/g,'-')}-${idx}`;
+      const notePreview = issue.notes || "(no notes yet)";
+      return `
+        <div class="issue-row" id="${uid}">
+          <div class="issue-summary" onclick="toggleEdit('${uid}')">
+            <div class="issue-left">
+              <div class="issue-title">${escHtml(issue.topic)}</div>
+              <div class="issue-note-preview">${escHtml(notePreview)}</div>
+            </div>
+            <div class="issue-right">
+              <span class="badge ${statusClass(issue.status)}">${statusIcon(issue.status)} ${issue.status}</span>
+              <span class="edit-hint">tap to edit</span>
+            </div>
+          </div>
+          <div class="issue-edit">
+            <div class="edit-grid">
+              <div>
+                <label class="field-label">Category</label>
+                <input type="text" class="edit-category" value="${escHtml(issue.category)}">
+              </div>
+              <div>
+                <label class="field-label">Status</label>
+                <select class="edit-status">
+                  ${["Not Started","In Progress","On Hold","Completed"].map(s =>
+                    `<option${s === issue.status ? " selected" : ""}>${s}</option>`
+                  ).join("")}
+                </select>
+              </div>
+              <div class="full">
+                <label class="field-label">CM Notes</label>
+                <textarea class="edit-notes" rows="3">${escHtml(issue.notes)}</textarea>
+              </div>
+            </div>
+            <div class="edit-actions">
+              <button class="btn-update" onclick="submitInlineUpdate('${uid}', '${escHtml(issue.category)}', '${escHtml(issue.topic)}')">Save changes</button>
+              <button class="btn-discard" onclick="toggleEdit('${uid}')">Discard</button>
+            </div>
+          </div>
+        </div>`;
+    }).join("");
+
+    block.innerHTML = `
+      <div class="cat-header" onclick="this.closest('.cat-block').classList.toggle('open')">
+        <span class="cat-name">${escHtml(catName)}<span class="cat-count">(${issues.length})</span></span>
+        <span class="cat-chevron">▼</span>
+      </div>
+      <div class="cat-body">${rows}</div>`;
+
+    acc.appendChild(block);
   });
+
+  document.getElementById("loading").style.display = "none";
+  acc.style.display = "block";
 }
 
-function populateIssues() {
-  const cat = document.getElementById("upd-category").value;
-  const sel = document.getElementById("upd-issue");
-  sel.innerHTML = '<option value="">— Select an issue —</option>';
-  document.getElementById("current-notes-box").style.display = "none";
-
-  if (!cat) { sel.disabled = true; return; }
-
-  const issues = issueData.filter(i => i.category === cat);
-  issues.forEach(i => {
-    const o = document.createElement("option");
-    o.value = i.topic; o.textContent = i.topic + (i.source === "Manor" ? " 🏡" : "");
-    o.dataset.notes = i.notes;
-    sel.appendChild(o);
-  });
-  sel.disabled = false;
+// ── TOGGLE INLINE EDIT ────────────────────────────────────────────────────────
+function toggleEdit(uid) {
+  const row = document.getElementById(uid);
+  const isEditing = row.classList.contains("editing");
+  // Close all open edit panels first
+  document.querySelectorAll(".issue-row.editing").forEach(r => r.classList.remove("editing"));
+  if (!isEditing) {
+    row.classList.add("editing");
+    row.querySelector(".edit-notes").focus();
+  }
 }
 
-function showCurrentNotes() {
-  const sel = document.getElementById("upd-issue");
-  const box = document.getElementById("current-notes-box");
-  const txt = document.getElementById("current-notes-text");
-  const chosen = sel.options[sel.selectedIndex];
-  if (!chosen || !chosen.value) { box.style.display = "none"; return; }
-  const notes = chosen.dataset.notes || "";
-  txt.textContent = notes || "(no notes recorded yet)";
-  box.style.display = "block";
-}
+// ── SUBMIT INLINE UPDATE ──────────────────────────────────────────────────────
+async function submitInlineUpdate(uid, originalCategory, originalTopic) {
+  const row      = document.getElementById(uid);
+  const category = row.querySelector(".edit-category").value.trim();
+  const status   = row.querySelector(".edit-status").value;
+  const notes    = row.querySelector(".edit-notes").value.trim();
+  const btn      = row.querySelector(".btn-update");
 
-// ── SUBMIT UPDATE ────────────────────────────────────────────────────────────
-async function submitUpdate() {
-  const category = document.getElementById("upd-category").value;
-  const topic    = document.getElementById("upd-issue").value;
-  const notes    = document.getElementById("upd-notes").value.trim();
+  if (!category) { alert("Category cannot be empty."); return; }
 
-  if (!category || !topic) { alert("Please select a category and an issue."); return; }
-  if (!notes)               { alert("Please enter the updated CM notes."); return; }
-
-  const btn = document.getElementById("upd-btn");
   btn.disabled = true;
-  var _msgs4 = ['<span class="spinner"></span>Saving…','<span class="spinner"></span>Almost there…','<span class="spinner"></span>Just a moment…'];
-  var _mi4 = 0; btn.innerHTML = _msgs4[0];
-  var _mt4 = setInterval(function(){ _mi4 = (_mi4+1)%_msgs4.length; btn.innerHTML = _msgs4[_mi4]; }, 3000);
+  btn.innerHTML = '<span class="spinner"></span>Saving…';
 
-  const payload = JSON.stringify({ action: "update", category, topic, notes });
+  const payload = JSON.stringify({
+    action: "update",
+    originalCategory,
+    originalTopic,
+    category,
+    topic: originalTopic,
+    notes,
+    status
+  });
 
   try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      body: payload,
-      mode: "no-cors"
-    });
-    showMsg("upd-success");
-    document.getElementById("upd-notes").value = "";
-    document.getElementById("upd-issue").value = "";
-    document.getElementById("upd-category").value = "";
-    document.getElementById("current-notes-box").style.display = "none";
-    document.getElementById("upd-issue").disabled = true;
+    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+
+    // Update local data and refresh the badge/preview in the DOM
+    const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
+    if (issue) { issue.category = category; issue.notes = notes; issue.status = status; }
+
+    row.querySelector(".issue-note-preview").textContent = notes || "(no notes yet)";
+    const badge = row.querySelector(".badge");
+    badge.className = "badge " + statusClass(status);
+    badge.textContent = statusIcon(status) + " " + status;
+
+    row.classList.remove("editing");
+    showToast("success");
   } catch(e) {
-    showMsg("upd-error");
+    showToast("error");
   }
 
   btn.disabled = false;
-  btn.innerHTML = "Save Update";
+  btn.innerHTML = "Save changes";
 }
 
-// ── SUBMIT ADD ───────────────────────────────────────────────────────────────
+// ── ADD NEW ISSUE ─────────────────────────────────────────────────────────────
+function toggleAddPanel() {
+  const panel = document.getElementById("add-panel");
+  panel.classList.toggle("open");
+}
+
 async function submitAdd() {
   const catSelect = document.getElementById("add-category").value;
   const catNew    = document.getElementById("add-category-new").value.trim();
@@ -509,6 +443,7 @@ async function submitAdd() {
   const topic     = document.getElementById("add-topic").value.trim();
   const notes     = document.getElementById("add-notes").value.trim();
   const status    = document.getElementById("add-status").value;
+  const source    = document.getElementById("add-source").value;
 
   if (!category) { alert("Please select or enter a category."); return; }
   if (!topic)    { alert("Please enter an issue topic."); return; }
@@ -518,33 +453,39 @@ async function submitAdd() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Adding…';
 
-  const payload = JSON.stringify({ action: "add", category, topic, notes, status, source: "General" });
+  const payload = JSON.stringify({ action: "add", category, topic, notes, status, source });
 
   try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      body: payload,
-      mode: "no-cors"
-    });
-    showMsg("add-success");
+    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+    showToast("success");
     document.getElementById("add-category").value = "";
     document.getElementById("add-category-new").value = "";
     document.getElementById("add-topic").value = "";
     document.getElementById("add-notes").value = "";
     document.getElementById("add-status").value = "";
+    document.getElementById("add-source").value = "General";
+    document.getElementById("add-panel").classList.remove("open");
+    // Reload accordion to show new issue
+    setTimeout(() => loadIssues(), 2000);
   } catch(e) {
-    showMsg("add-error");
+    showToast("error");
   }
 
   btn.disabled = false;
   btn.innerHTML = "Add Issue";
 }
 
-// ── HELPERS ──────────────────────────────────────────────────────────────────
-function showMsg(id) {
-  const el = document.getElementById(id);
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(type) {
+  const el = document.getElementById("toast-" + type);
   el.style.display = "block";
-  setTimeout(() => el.style.display = "none", 5000);
+  setTimeout(() => el.style.display = "none", 3500);
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  if (!s) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 </script>
 </body>
