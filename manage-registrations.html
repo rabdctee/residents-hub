@@ -419,7 +419,7 @@
     rows.forEach(function(r) {
       var n = parseInt(r.number) || 1;
       totalPeople += n;
-      if (r.paid) paid += n; else unpaid += n;
+      if (r.paid) paid++; else unpaid++;
       if (r.dietary && r.dietary.trim() && r.dietary.toLowerCase() !== 'nil') dietary += n;
     });
     document.getElementById('summary').innerHTML =
