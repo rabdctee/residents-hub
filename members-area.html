@@ -494,6 +494,7 @@ function showNameOverlay() {
 function selectMember(name, role, org) {
   currentMember = { name, role, org };
   sessionStorage.setItem(MEMBER_KEY, JSON.stringify(currentMember));
+  sessionStorage.setItem("bdrv_member_org", org);
   document.getElementById("name-overlay").classList.remove("visible");
   showApp();
 }
@@ -507,6 +508,7 @@ function switchMember() {
 
 function goToNameSelector() {
   sessionStorage.removeItem(MEMBER_KEY);
+  sessionStorage.removeItem("bdrv_member_org");
   currentMember = null;
   document.getElementById("main-content").style.display = "none";
   document.getElementById("pin-overlay").style.display = "none";
@@ -538,6 +540,8 @@ window.onload = function() {
     if (saved) {
       try {
         currentMember = JSON.parse(saved);
+        // Restore org so getOrg() works correctly without URL parameter
+        if (currentMember.org) sessionStorage.setItem("bdrv_member_org", currentMember.org);
         document.getElementById("pin-overlay").style.display = "none";
         showApp();
         return;
