@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SC Role Dashboard — BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef3f8;
+    color: #222;
+    font-size: 17px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── PIN OVERLAY ── */
+  #pin-overlay {
+    position: fixed; inset: 0; background: #1F4E79; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px; padding: 30px;
+  }
+  #pin-overlay h2 { color: white; font-size: 1.4em; text-align: center; }
+  #pin-overlay p  { color: rgba(255,255,255,0.75); font-size: 0.9em; text-align: center; }
+  #pin-input {
+    font-size: 1.6em; letter-spacing: 0.4em; text-align: center;
+    padding: 12px 20px; border-radius: 8px; border: none; width: 180px; outline: none;
+  }
+  #pin-error { color: #ffcccc; font-size: 0.85em; min-height: 1.2em; text-align: center; }
+  #pin-overlay.hidden { display: none; }
+
+  /* ── ROLE SELECTOR OVERLAY ── */
+  #role-overlay {
+    position: fixed; inset: 0; ground: #1F4E79; z-index: 9998;
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px; padding: 30px;
+  }
+  #role-overlay.visible { display: flex; }
+  #role-overlay h2 { color: white; font-size: 1.3em; text-align: center; }
+  #role-overlay p  { color: rgba(255,255,255,0.75); font-size: 0.88em; text-align: center; max-width: 400px; }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    width: 100%;
+    max-width: 680px;
+  }
+  .role-btn {
+    ground: white; border: none; border-radius: 10px;
+    padding: 18px 14px; cursor: pointer; text-align: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .role-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,0.2); }
+  .role-btn .role-icon  { font-size: 1.8em; display: block; margin-bottom: 8px; }
+  .role-btn .role-org   { font-size: 0.68em; font-weight: 700; letter-spacing: 0.1em;
+                          text-transform: uppercase; color: #888; margin-bottom: 3px; }
+  .role-btn .role-label { font-size: 0.9em; font-weight: 700; color: #1F4E79; line-height: 1.3; }
+
+  /* RC vs SC accent */
+  .role-btn.rc { border-top: 4px solid #1F4E79; }
+  .role-btn.sc { border-top: 4px solid #2e7d32; }
+
+  /* ── BACK BAR ── */
+  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee; }
+  .back-bar a {
+    color: #1F4E79; background: white; border: 2px solid #c5d8ee; border-radius: 10px;
+    padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 16px;
+    display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;
+  }
+  .back-bar a:hover { background: #E7F1FB; border-color: #1F4E79; }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 1100px; margin: 0 auto; padding: 30px 20px 60px; }
+
+  /* ── HEADER ── */
+  .dash-header {
+    border-radius: 12px; padding: 28px 30px; margin-bottom: 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px; color: white;
+  }
+  .dash-header.rc-header { background: #1F4E79; }
+  .dash-header.sc-header { background: #2e7d32; }
+  .dash-header-left h1 { font-size: 1.5em; font-weight: 700; }
+  .dash-header-left p  { font-size: 0.82em; opacity: 0.8; margin-top: 4px; }
+  .dash-header-right {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+  }
+  .dash-date {
+    background: rgba(255,255,255,0.15); border-radius: 8px;
+    padding: 10px 18px; font-size: 0.85em; text-align: right; line-height: 1.5;
+  }
+  .dash-date strong { display: block; font-size: 1.1em; }
+  .btn-switch-role {
+    background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4);
+    color: white; border-radius: 8px; padding: 7px 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.78em; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-switch-role:hover { background: rgba(255,255,255,0.35); }
+
+  /* ── SECTION HEADINGS ── */
+  .section-label {
+    font-size: 0.72em; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #1F4E79; margin: 28px 0 12px;
+    border-left: 3px solid #C9A44A; padding-left: 10px;
+  }
+  .section-label.sc { color: #2e7d32; }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  /* ── ADMIN CARD ── */
+  .admin-card {
+    background: white; border-radius: 10px; border: 1px solid #d0e2f2;
+    border-left: 5px solid #1F4E79; padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: box-shadow 0.2s, transform 0.15s;
+  }
+  .admin-card:hover { box-shadow: 0 4px 16px rgba(31,78,121,0.13); transform: translateY(-2px); }
+  .admin-card.cat-content  { border-left-color: #2e7d32; }
+  .admin-card.cat-finance  { border-left-color: #C9A44A; }
+  .admin-card.cat-docs     { border-left-color: #00838f; }
+  .admin-card.cat-system   { border-left-color: #6a1b9a; }
+  .admin-card.cat-resident { border-left-color: #1F4E79; }
+
+  .card-top { display: flex; align-items: flex-start; gap: 12px; }
+  .card-icon  { font-size: 1.6em; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+  .card-title { font-size: 0.95em; font-weight: 700; color: #1F4E79; line-height: 1.3; }
+  .card-desc  { font-size: 0.78em; color: #5f6368; line-height: 1.5; }
+  .card-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+
+  .btn-action {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 14px; border-radius: 6px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.78em; font-weight: 700; cursor: pointer;
+    text-decoration: none; border: none; transition: opacity 0.2s; white-space: nowrap;
+  }
+  .btn-action:hover { opacity: 0.82; }
+  .btn-primary   { background: #1F4E79; color: white; }
+  .btn-secondary { background: white; color: #1F4E79; border: 2px solid #c5d8ee; }
+  .btn-green     { background: #2e7d32; color: white; }
+  .btn-gold      { background: #C9A44A; color: white; }
+  .btn-teal      { background: #00838f; color: white; }
+  .btn-purple    { background: #6a1b9a; color: white; }
+
+  /* ── CHECKLIST STRIP ── */
+  .checklist-strip {
+    background: white; border-radius: 10px; border: 1px solid #d0e2f2;
+    padding: 20px 24px; margin-top: 28px;
+  }
+  .checklist-strip h3 { font-size: 0.9em; font-weight: 700; color: #1F4E79; margin-bottom: 14px; }
+  .checklist-items {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px;
+  }
+  .check-item {
+    display: flex; align-items: center; gap: 10px; font-size: 0.82em; color: #333;
+    cursor: pointer; padding: 6px 8px; border-radius: 6px;
+    transition: background 0.15s; user-select: none;
+  }
+  .check-item:hover { background: #f0f6fc; }
+  .check-item input[type="checkbox"] {
+    width: 17px; height: 17px; accent-color: #1F4E79; cursor: pointer; flex-shrink: 0;
+  }
+  .check-item.done span { text-decoration: line-through; color: #aaa; }
+  .checklist-footer { margin-top: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .btn-reset-checks {
+    background: white; border: 2px solid #c5d8ee; color: #1F4E79; border-radius: 6px;
+    padding: 6px 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.78em; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-reset-checks:hover { background: #E7F1FB; }
+  #check-progress { font-size: 0.78em; color: #5f6368; }
+
+  /* ── FOOTER ── */
+  .dash-footer { margin-top: 40px; text-align: center; font-size: 0.72em; color: #999; }
+
+  @media (max-width: 600px) {
+    .dash-header { flex-direction: column; }
+    .card-grid { grid-template-columns: 1fr; }
+    .role-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<!-- ── PIN OVERLAY ── -->
+<div id="pin-overlay">
+  <h2>🔒 Social Club Dashboard</h2>
+  <p>Enter the committee PIN to continue.</p>
+  <input type="password" id="pin-input" maxlength="6" placeholder="••••"
+         inputmode="numeric" autocomplete="off">
+  <div id="pin-error"></div>
+</div>
+
+<!-- ── ROLE SELECTOR OVERLAY ── -->
+<div id="role-overlay">
+  <h2>Who are you?</h2>
+  <p>Select your role to see your task dashboard.</p>
+  <div style="width:100%;max-width:680px;">
+    <div class="role-grid">
+      <button class="role-btn sc" onclick="selectRole('sc-convenor')">
+        <span class="role-icon">⭐</span>
+        <span class="role-org">SC</span>
+        <span class="role-label">Convenor</span>
+      </button>
+      <button class="role-btn sc" onclick="selectRole('sc-secretary')">
+        <span class="role-icon">📝</span>
+        <span class="role-org">SC</span>
+        <span class="role-label">Secretary</span>
+      </button>
+      <button class="role-btn sc" onclick="selectRole('sc-treasurer')">
+        <span class="role-icon">💰</span>
+        <span class="role-org">SC</span>
+        <span class="role-label">Treasurer</span>
+      </button>
+      <button class="role-btn sc" onclick="selectRole('sc-events')">
+        <span class="role-icon">🎟️</span>
+        <span class="role-org">SC</span>
+        <span class="role-label">Events Coordinator</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── BACK BAR ── -->
+<div class="back-bar" id="back-bar" style="display:none;">
+  <a href="committee.html">⬅️ Back to Committee Area</a>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="page-wrap" id="main-content" style="display:none;">
+
+  <div class="dash-header sc-header" id="dash-header">
+    <div class="dash-header-left">
+      <h1 id="dash-title"></h1>
+      <p id="dash-subtitle">Social Club Role Dashboard — BDRV</p>
+    </div>
+    <div class="dash-header-right">
+      <div class="dash-date">
+        <strong id="today-day"></strong>
+        <span id="today-date"></span>
+      </div>
+      <button class="btn-switch-role" onclick="switchRole()">⇄ Switch Role</button>
+    </div>
+  </div>
+
+  <!-- SC SECRETARY + CONVENOR — Documents -->
+  <div class="role-section" data-roles="sc-secretary sc-convenor">
+    <div class="section-label sc">Documents</div>
+    <div class="card-grid">
+      <div class="admin-card cat-docs">
+        <div class="card-top">
+          <div class="card-icon">📤</div>
+          <div>
+            <div class="card-title">Upload a Document</div>
+            <div class="card-desc">Upload meeting minutes, reports or notices to the Hub.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="upload-document.html" class="btn-action btn-teal">📤 Upload</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC TREASURER + CONVENOR — Finance -->
+  <div class="role-section" data-roles="sc-treasurer sc-convenor">
+    <div class="section-label sc">Finance</div>
+    <div class="card-grid">
+      <div class="admin-card cat-finance">
+        <div class="card-top"><div class="card-icon">💰</div><div>
+          <div class="card-title">Record a Transaction</div>
+          <div class="card-desc">Add a new income or expense transaction for the Social Club.</div>
+        </div></div>
+        <div class="card-actions"><a href="record-transaction.html" class="btn-action btn-gold">💰 Record</a></div>
+      </div>
+      <div class="admin-card cat-finance">
+        <div class="card-top"><div class="card-icon">🏦</div><div>
+          <div class="card-title">Update Bank Balance</div>
+          <div class="card-desc">Record the latest bank statement balance for reconciliation.</div>
+        </div></div>
+        <div class="card-actions"><a href="update-bank-balance.html" class="btn-action btn-gold">🏦 Update</a></div>
+      </div>
+      <div class="admin-card cat-finance">
+        <div class="card-top"><div class="card-icon">✏️</div><div>
+          <div class="card-title">Correct a Transaction</div>
+          <div class="card-desc">Amend an existing transaction that was entered incorrectly.</div>
+        </div></div>
+        <div class="card-actions"><a href="correct-transaction.html" class="btn-action btn-gold">✏️ Correct</a></div>
+      </div>
+      <div class="admin-card cat-finance">
+        <div class="card-top"><div class="card-icon">🗑️</div><div>
+          <div class="card-title">Delete a Transaction</div>
+          <div class="card-desc">Flag a transaction for removal from the financial records.</div>
+        </div></div>
+        <div class="card-actions"><a href="delete-transaction.html" class="btn-action btn-gold">🗑️ Delete</a></div>
+      </div>
+      <div class="admin-card cat-finance">
+        <div class="card-top"><div class="card-icon">📈</div><div>
+          <div class="card-title">View Transactions</div>
+          <div class="card-desc">Search and review the full Social Club transaction history.</div>
+        </div></div>
+        <div class="card-actions"><a href="view-transactions.html" class="btn-action btn-gold">📈 View</a></div>
+      </div>
+      <div class="admin-card cat-finance">
+        <div class="card-top"><div class="card-icon">🏦</div><div>
+          <div class="card-title">Upload Bank Statement</div>
+          <div class="card-desc">Upload the monthly bank statement to the document library.</div>
+        </div></div>
+        <div class="card-actions"><a href="upload-bank-statement.html" class="btn-action btn-gold">🏦 Upload</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC EVENTS + CONVENOR — Events -->
+  <div class="role-section" data-roles="sc-events sc-convenor">
+    <div class="section-label sc">Events &amp; Registrations</div>
+    <div class="card-grid">
+      <div class="admin-card cat-content">
+        <div class="card-top"><div class="card-icon">🗓️</div><div>
+          <div class="card-title">What's On (Upcoming Events)</div>
+          <div class="card-desc">Add, edit or remove items from the home page What's On widget.</div>
+        </div></div>
+        <div class="card-actions">
+          <a href="manage-upcoming-events.html" class="btn-action btn-green">⚙️ Manage Events</a>
+          <a href="index.html" class="btn-action btn-secondary">👁 View Home Page</a>
+        </div>
+      </div>
+      <div class="admin-card cat-content">
+        <div class="card-top"><div class="card-icon">🎟️</div><div>
+          <div class="card-title">Event Registrations</div>
+          <div class="card-desc">View, add, edit or remove registrations for upcoming events.</div>
+        </div></div>
+        <div class="card-actions">
+          <a href="manage-registrations.html" class="btn-action btn-green">⚙️ Manage</a>
+          <a href="view-registrations.html" class="btn-action btn-secondary">👁 View</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC CONVENOR — Announcements -->
+  <div class="role-section" data-roles="sc-convenor">
+    <div class="section-label sc">Announcements</div>
+    <div class="card-grid">
+      <div class="admin-card cat-content">
+        <div class="card-top"><div class="card-icon">📢</div><div>
+          <div class="card-title">Latest Announcements</div>
+          <div class="card-desc">Add, edit or remove announcements shown on the home page.</div>
+        </div></div>
+        <div class="card-actions">
+          <a href="manage-announcements.html" class="btn-action btn-green">⚙️ Manage Announcements</a>
+          <a href="index.html" class="btn-action btn-secondary">👁 View Home Page</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC CONVENOR — Communication -->
+  <div class="role-section" data-roles="sc-convenor">
+    <div class="section-label sc">Communication</div>
+    <div class="card-grid">
+      <div class="admin-card cat-system">
+        <div class="card-top"><div class="card-icon">📧</div><div>
+          <div class="card-title">SC Convenor Email</div>
+          <div class="card-desc">Check bdsc.convenor@gmail.com for correspondence.</div>
+        </div></div>
+        <div class="card-actions">
+          <a href="https://mail.google.com/mail/u/0/#inbox?authuser=bdsc.convenor@gmail.com"
+             target="_blank" class="btn-action btn-purple">📧 Open Gmail</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC SECRETARY — Communication -->
+  <div class="role-section" data-roles="sc-secretary">
+    <div class="section-label sc">Communication</div>
+    <div class="card-grid">
+      <div class="admin-card cat-system">
+        <div class="card-top"><div class="card-icon">📧</div><div>
+          <div class="card-title">SC Secretary Email</div>
+          <div class="card-desc">Check bdsc.secret@gmail.com for correspondence.</div>
+        </div></div>
+        <div class="card-actions">
+          <a href="https://mail.google.com/mail/u/0/#inbox?authuser=bdsc.secret@gmail.com"
+             target="_blank" class="btn-action btn-purple">📧 Open Gmail</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC TREASURER — Communication -->
+  <div class="role-section" data-roles="sc-treasurer">
+    <div class="section-label sc">Communication</div>
+    <div class="card-grid">
+      <div class="admin-card cat-system">
+        <div class="card-top"><div class="card-icon">📧</div><div>
+          <div class="card-title">SC Treasurer Email</div>
+          <div class="card-desc">Check bdsc.treas@gmail.com for correspondence.</div>
+        </div></div>
+        <div class="card-actions">
+          <a href="https://mail.google.com/mail/u/0/#inbox?authuser=bdsc.treas@gmail.com"
+             target="_blank" class="btn-action btn-purple">📧 Open Gmail</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SC EVENTS — Communication -->
+  <div class="role-section" data-roles="sc-events">
+    <div class="section-label sc">Communication</div>
+    <div class="card-grid">
+      <div class="admin-card cat-system">
+        <div class="card-top"><div class="card-icon">📧</div><div>
+          <div class="card-title">SC Events Email</div>
+          <div class="card-desc">Check bdsc.convenor@gmail.com for events correspondence.</div>
+        </div></div>
+        <div class="card-actions">
+          <a href="https://mail.google.com/mail/u/0/#inbox?authuser=bdsc.convenor@gmail.com"
+             target="_blank" class="btn-action btn-purple">📧 Open Gmail</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="checklist-strip">
+    <h3>✅ Daily Checklist — tick off as you go (resets each day)</h3>
+    <div class="checklist-items" id="checklist-items"></div>
+    <div class="checklist-footer">
+      <button class="btn-reset-checks" onclick="resetChecks()">↺ Reset All</button>
+      <span id="check-progress"></span>
+    </div>
+  </div>
+
+  <div class="dash-footer">
+    Social Club Dashboard &nbsp;|&nbsp; Bridgeman Downs Retirement Village &nbsp;|&nbsp; Committee Use Only
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+const ROLES = {
+  "sc-convenor": {
+    "label": "SC Convenor",
+    "org": "Social Club",
+    "icon": "⭐",
+    "header": "sc-header",
+    "checks": [
+      "SC Convenor email (bdsc.convenor) checked",
+      "Document uploads — anything pending?",
+      "What's On widget — events still current?",
+      "Latest Announcements — any updates needed?",
+      "Event Registrations — any changes?"
+    ]
+  },
+  "sc-secretary": {
+    "label": "SC Secretary",
+    "org": "Social Club",
+    "icon": "📝",
+    "header": "sc-header",
+    "checks": [
+      "SC Secretary email (bdsc.secret) checked",
+      "Document uploads — anything pending?"
+    ]
+  },
+  "sc-treasurer": {
+    "label": "SC Treasurer",
+    "org": "Social Club",
+    "icon": "💰",
+    "header": "sc-header",
+    "checks": [
+      "SC Treasurer email (bdsc.treas) checked",
+      "Transaction records up to date?",
+      "Bank balance reconciled?",
+      "Bank statement uploaded for the month?"
+    ]
+  },
+  "sc-events": {
+    "label": "SC Events Coordinator",
+    "org": "Social Club",
+    "icon": "🎟️",
+    "header": "sc-header",
+    "checks": [
+      "SC Convenor email (bdsc.convenor) checked",
+      "What's On widget — events still current?",
+      "Event Registrations — any changes?"
+    ]
+  }
+};
+
+const CORRECT_PIN = '5304';
+const SESSION_KEY = 'bdrv_committee_auth';
+const ROLE_KEY    = 'sc_admin_role';
+
+const pinInput    = document.getElementById('pin-input');
+const pinError    = document.getElementById('pin-error');
+const pinOverlay  = document.getElementById('pin-overlay');
+const roleOverlay = document.getElementById('role-overlay');
+
+const savedAuth = sessionStorage.getItem(SESSION_KEY);
+const savedRole = sessionStorage.getItem(ROLE_KEY);
+if (savedAuth === 'true' && savedRole && ROLES[savedRole]) {
+  pinOverlay.classList.add('hidden');
+  showDashboard(savedRole);
+} else if (savedAuth === 'true') {
+  pinOverlay.classList.add('hidden');
+  roleOverlay.classList.add('visible');
+}
+
+pinInput.addEventListener('keydown', e => { if (e.key === 'Enter') checkPin(); });
+pinInput.addEventListener('input', function() { if (this.value.length >= 4) checkPin(); });
+
+function checkPin() {
+  if (pinInput.value === CORRECT_PIN) {
+    sessionStorage.setItem(SESSION_KEY, 'true');
+    pinOverlay.classList.add('hidden');
+    roleOverlay.classList.add('visible');
+  } else if (pinInput.value.length >= CORRECT_PIN.length) {
+    pinError.textContent = '⚠️ Incorrect PIN — please try again.';
+    pinInput.value = '';
+    setTimeout(() => { pinError.textContent = ''; }, 2500);
+  }
+}
+
+function selectRole(roleKey) {
+  sessionStorage.setItem(ROLE_KEY, roleKey);
+  roleOverlay.classList.remove('visible');
+  showDashboard(roleKey);
+}
+
+function switchRole() {
+  sessionStorage.removeItem(ROLE_KEY);
+  document.getElementById('main-content').style.display = 'none';
+  document.getElementById('back-bar').style.display = 'none';
+  roleOverlay.classList.add('visible');
+}
+
+function showDashboard(roleKey) {
+  const role = ROLES[roleKey];
+  const header = document.getElementById('dash-header');
+  header.className = 'dash-header ' + role.header;
+  document.getElementById('dash-title').textContent = role.icon + ' ' + role.label;
+
+  document.querySelectorAll('.role-section').forEach(section => {
+    const roles = section.dataset.roles.split(' ');
+    section.style.display = roles.includes(roleKey) ? '' : 'none';
+  });
+
+  const now = new Date();
+  document.getElementById('today-date').textContent =
+    now.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('today-day').textContent =
+    now.toLocaleDateString('en-AU', { weekday: 'long' });
+
+  buildChecklist(roleKey);
+  document.getElementById('back-bar').style.display = '';
+  document.getElementById('main-content').style.display = '';
+}
+
+function buildChecklist(roleKey) {
+  const checks     = ROLES[roleKey].checks;
+  const storageKey = 'role_checks_' + roleKey;
+  const dateKey    = 'role_checks_date_' + roleKey;
+  const todayStr   = new Date().toISOString().slice(0, 10);
+
+  if (localStorage.getItem(dateKey) !== todayStr) {
+    localStorage.removeItem(storageKey);
+    localStorage.setItem(dateKey, todayStr);
+  }
+
+  const saved = localStorage.getItem(storageKey);
+  const state = saved ? JSON.parse(saved) : {};
+  const container = document.getElementById('checklist-items');
+  container.innerHTML = '';
+
+  checks.forEach((label, i) => {
+    const key     = 'check_' + i;
+    const checked = !!state[key];
+    const item    = document.createElement('label');
+    item.className = 'check-item' + (checked ? ' done' : '');
+    item.innerHTML = '<input type="checkbox" ' + (checked ? 'checked' : '') + '><span>' + label + '</span>';
+    item.querySelector('input').addEventListener('change', function() {
+      const s = JSON.parse(localStorage.getItem(storageKey) || '{}');
+      s[key] = this.checked;
+      localStorage.setItem(storageKey, JSON.stringify(s));
+      item.classList.toggle('done', this.checked);
+      updateProgress(checks.length, storageKey);
+    });
+    container.appendChild(item);
+  });
+  updateProgress(checks.length, storageKey);
+}
+
+function updateProgress(total, storageKey) {
+  const state = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  const done  = Object.values(state).filter(Boolean).length;
+  const el    = document.getElementById('check-progress');
+  if (done === total) { el.textContent = '🎉 All done for today!'; el.style.color = '#2e7d32'; }
+  else { el.textContent = done + ' of ' + total + ' completed'; el.style.color = '#5f6368'; }
+}
+
+function resetChecks() {
+  const roleKey    = sessionStorage.getItem(ROLE_KEY);
+  const storageKey = 'role_checks_' + roleKey;
+  localStorage.removeItem(storageKey);
+  buildChecklist(roleKey);
+}
+</script>
+</body>
+</html>
