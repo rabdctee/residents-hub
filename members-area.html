@@ -286,6 +286,7 @@
   </div>
 
   <!-- RC section -->
+  <div id="rc-section">
   <div class="section-label">Residents Committee</div>
   <div class="card-grid">
 
@@ -343,6 +344,9 @@
 
   </div>
 
+  </div><!-- /#rc-section -->
+
+  <div id="sc-section">
   <!-- SC section -->
   <div class="section-label">Social Club</div>
   <div class="card-grid">
@@ -373,7 +377,7 @@
       </div>
     </div>
 
-  </div>
+  </div><!-- /#sc-section -->
 
 </div><!-- /.page-wrap -->
 
@@ -387,6 +391,36 @@ const CSV_URL       = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SR
 let currentMember = null;
 let allActions    = [];
 let editingRow    = null;
+
+// Read ?org=rc or ?org=sc from URL
+function getOrg() {
+  return new URLSearchParams(window.location.search).get("org") || "";
+}
+
+// Hide name buttons that don't belong to the current org
+function filterNameButtons() {
+  const org = getOrg();
+  if (!org) return; // show all if no org specified
+  document.querySelectorAll(".name-btn").forEach(btn => {
+    const isRC = btn.classList.contains("rc-member");
+    const isSC = btn.classList.contains("sc-member");
+    if (org === "rc" && !isRC) btn.style.display = "none";
+    if (org === "sc" && !isSC) btn.style.display = "none";
+  });
+  // Also hide the "Other / General Member" group label if only one org
+  document.querySelectorAll(".name-group-label").forEach(label => {
+    if (label.textContent.trim() === "Other / General Member") {
+      // Keep only the matching general member button visible
+      const grid = label.nextElementSibling;
+      if (grid) {
+        grid.querySelectorAll(".name-btn").forEach(btn => {
+          if (org === "rc" && !btn.classList.contains("rc-member")) btn.style.display = "none";
+          if (org === "sc" && !btn.classList.contains("sc-member")) btn.style.display = "none";
+        });
+      }
+    }
+  });
+}
 
 // ── PIN ───────────────────────────────────────────────────────────────────────
 function checkPin() {
@@ -407,6 +441,7 @@ document.getElementById("pin-input").addEventListener("keydown", e => {
 function showNameOverlay() {
   document.getElementById("pin-overlay").style.display = "none";
   document.getElementById("name-overlay").classList.add("visible");
+  filterNameButtons();
 }
 
 // ── NAME SELECTION ────────────────────────────────────────────────────────────
@@ -428,6 +463,16 @@ function showApp() {
   document.getElementById("main-content").style.display = "block";
   document.getElementById("greeting-text").textContent =
     "Hello, " + currentMember.name + " (" + currentMember.role + ")";
+
+  // Show only the relevant section based on org
+  const org = getOrg();
+  document.getElementById("rc-section").style.display = (org === "sc") ? "none" : "";
+  document.getElementById("sc-section").style.display = (org === "rc") ? "none" : "";
+
+  // Update header subtitle
+  const subtitles = { rc: "Residents Committee", sc: "Social Club", "": "Residents & Social Club Committee" };
+  document.getElementById("header-subtitle").textContent = subtitles[org] || subtitles[""];
+
   loadMyActions();
 }
 
