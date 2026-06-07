@@ -288,12 +288,23 @@ window.onload = function() {
 };
 
 // ── Data layer ────────────────────────────────────────────────────────────────
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SRoD_AgQcjrtBrgF95eLDkh2EmZAIusLrw0BaCZi2-U2Q6KWyd9h0Xw8LISjmdW-yWihLLsW/pub?gid=0&single=true&output=csv";
+
 let allActions = [];
 let editingRow = null;
 
-function api(params) {
-  const url = SCRIPT_URL + "?" + new URLSearchParams(params).toString();
-  return fetch(url).then(r => r.json());
+// Parse a single CSV line handling quoted fields
+function parseCSVLine(line) {
+  const cols = [];
+  let cur = "", inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQ = !inQ; }
+    else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
+    else { cur += ch; }
+  }
+  cols.push(cur.trim());
+  return cols;
 }
 
 function loadActions() {
@@ -301,18 +312,45 @@ function loadActions() {
   document.getElementById("action-table").style.display = "none";
   document.getElementById("empty-state").style.display = "none";
 
-  api({ action: "getAll" }).then(data => {
-    document.getElementById("table-loading").style.display = "none";
-    if (!data.success) { showError("Could not load actions: " + data.error); return; }
-    allActions = data.actions || [];
-    populateOwnerFilter();
-    renderSummary();
-    applyFilters();
-    document.getElementById("action-table").style.display = "table";
-  }).catch(err => {
-    document.getElementById("table-loading").style.display = "none";
-    showError("Network error loading actions. Please try again.");
-  });
+  fetch(CSV_URL + "&cachebust=" + Date.now())
+    .then(r => r.text())
+    .then(csv => {
+      document.getElementById("table-loading").style.display = "none";
+      const lines = csv.split("\n").filter(l => l.trim());
+      // Row 1 is the header — skip it; data starts at row index 1 (sheet row 2)
+      allActions = [];
+      for (let i = 1; i < lines.length; i++) {
+        const c = parseCSVLine(lines[i]);
+        if (!c[0]) continue; // skip blank ref
+        allActions.push({
+          row:      i + 1,   // 1-based sheet row number (header = row 1, first data = row 2)
+          ref:      c[0] || "",
+          meeting:  c[1] || "",
+          action:   c[2] || "",
+          owner:    c[3] || "",
+          due:      c[4] || "",
+          issueRef: c[5] || "",
+          status:   c[6] || "Open",
+          notes:    c[7] || "",
+          addedBy:  c[8] || "",
+        });
+      }
+      populateOwnerFilter();
+      renderSummary();
+      applyFilters();
+      document.getElementById("action-table").style.display = "table";
+    })
+    .catch(() => {
+      document.getElementById("table-loading").style.display = "none";
+      showError("Network error loading actions. Please try again.");
+    });
+}
+
+// Fire-and-forget POST to Apps Script (no-cors — same pattern as cm-update.html)
+function postScript(params) {
+  const payload = new FormData();
+  Object.entries(params).forEach(([k, v]) => payload.append(k, v));
+  return fetch(SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
 }
 
 // ── Rendering ─────────────────────────────────────────────────────────────────
@@ -453,23 +491,17 @@ function saveEdit(rowNum) {
   const newStatus = document.getElementById("edit-status").value;
   const newNotes  = document.getElementById("edit-notes").value.trim();
 
-  showSuccess("Saving…");
+  // Update local cache immediately (optimistic — no-cors gives no response)
+  const a = allActions.find(x => x.row === rowNum);
+  if (a) { a.status = newStatus; a.notes = newNotes; }
+  editingRow = null;
+  renderSummary();
+  applyFilters();
+  showSuccess("Saved. Sheet will update within a few seconds.");
 
-  Promise.all([
-    api({ action: "updateStatus", row: rowNum, status: newStatus }),
-    api({ action: "updateNote",   row: rowNum, notes: newNotes  }),
-  ]).then(([r1, r2]) => {
-    if (!r1.success || !r2.success) {
-      showError("Save failed. Please try again."); return;
-    }
-    // Update local cache
-    const a = allActions.find(x => x.row === rowNum);
-    if (a) { a.status = newStatus; a.notes = newNotes; }
-    editingRow = null;
-    renderSummary();
-    applyFilters();
-    showSuccess("Saved successfully.");
-  }).catch(() => showError("Network error. Please try again."));
+  // Post both updates to Apps Script (fire-and-forget)
+  postScript({ action: "updateStatus", row: rowNum, status: newStatus });
+  postScript({ action: "updateNote",   row: rowNum, notes: newNotes  });
 }
 
 // ── Add action ────────────────────────────────────────────────────────────────
@@ -495,23 +527,19 @@ function submitAdd() {
   if (!owner)   { showError("Please select an owner."); return; }
   if (!dueRaw)  { showError("Please set a due date."); return; }
 
-  // Format due date for display
   const dueDate = new Date(dueRaw);
   const due = dueDate.toLocaleDateString("en-AU", { day:"numeric", month:"short", year:"2-digit" });
 
-  showSuccess("Adding action…");
+  // Fire-and-forget POST — Apps Script will assign the ref number and add the row
+  postScript({ action:"addAction", action, owner, due, meeting, issueRef, addedBy });
 
-  api({ action:"addAction", action:action, owner, due, meeting, issueRef, addedBy })
-    .then(data => {
-      if (!data.success) { showError("Failed to add: " + data.error); return; }
-      closeAddPanel();
-      // Clear form
-      ["f-action","f-meeting","f-issue"].forEach(id => document.getElementById(id).value = "");
-      document.getElementById("f-due").value = "";
-      document.getElementById("f-owner").value = "";
-      showSuccess("Action " + data.ref + " added successfully.");
-      loadActions(); // Reload everything
-    }).catch(() => showError("Network error. Please try again."));
+  // Clear and close form
+  closeAddPanel();
+  ["f-action","f-meeting","f-issue"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("f-due").value = "";
+  document.getElementById("f-owner").value = "";
+
+  showSuccess("Action submitted. Reload in a few seconds to see it appear.");
 }
 
 // ── Feedback helpers ──────────────────────────────────────────────────────────
