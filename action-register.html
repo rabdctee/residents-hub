@@ -346,11 +346,17 @@ function loadActions() {
     });
 }
 
-// Fire-and-forget POST to Apps Script (no-cors — same pattern as cm-update.html)
+// Fire-and-forget POST to Apps Script (no-cors — URL-encoded body)
 function postScript(params) {
-  const payload = new FormData();
-  Object.entries(params).forEach(([k, v]) => payload.append(k, v));
-  return fetch(SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+  const body = Object.entries(params)
+    .map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
+    .join("&");
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+    mode: "no-cors"
+  });
 }
 
 // ── Rendering ─────────────────────────────────────────────────────────────────
@@ -531,7 +537,7 @@ function submitAdd() {
   const due = dueDate.toLocaleDateString("en-AU", { day:"numeric", month:"short", year:"2-digit" });
 
   // Fire-and-forget POST — Apps Script will assign the ref number and add the row
-  postScript({ action:"addAction", action, owner, due, meeting, issueRef, addedBy });
+  postScript({ action:"addAction", actionText: action, owner, due, meeting, issueRef, addedBy });
 
   // Clear and close form
   closeAddPanel();
