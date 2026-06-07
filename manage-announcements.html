@@ -230,7 +230,7 @@
     <div class="top-bar-title">📢 Manage Announcements</div>
     <div class="top-bar-sub">Residents Hub — Home Page Announcements</div>
   </div>
-  <a class="back-btn" href="committee.html">← Back to Committee Page</a>
+  <button class="back-btn" onclick="history.back()" style="cursor:pointer;border:none;">← Back</button>
 </div>
 
 <div class="content">
@@ -336,6 +336,7 @@
   function checkPin() {
     var val = document.getElementById('pinInput').value;
     if (val === '5304') {
+      sessionStorage.setItem('bdrv_committee_auth', 'true');
       document.getElementById('pinOverlay').style.display = 'none';
       document.getElementById('pinInput').value = '';
       loadAnnouncements();
@@ -344,6 +345,11 @@
       err.style.display = 'block';
       document.getElementById('pinInput').value = '';
       document.getElementById('pinInput').focus();
+
+// Skip PIN if already authenticated this session
+if (sessionStorage.getItem('bdrv_committee_auth') === 'true') {
+  document.getElementById('pinOverlay').style.display = 'none';
+}
       setTimeout(function() { err.style.display = 'none'; }, 3000);
     }
   }
