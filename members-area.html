@@ -243,8 +243,9 @@
 </div>
 
 <!-- ── BACK BAR ── -->
-<div class="back-bar">
-  <a href="committee.html">⬅️ Back to Committee Area</a>
+<div class="back-bar" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+  <button onclick="goToNameSelector()" class="back-btn" style="background:white;color:#1F4E79;border:2px solid #1F4E79;">👤 Switch Member</button>
+  <a href="committee.html" class="back-btn" style="background:#1F4E79;color:white;text-decoration:none;">⬅️ Back to Committee Area</a>
 </div>
 
 <!-- ── MAIN CONTENT ── -->
@@ -433,7 +434,13 @@ let editingRow    = null;
 
 // Read ?org=rc or ?org=sc from URL
 function getOrg() {
-  return new URLSearchParams(window.location.search).get("org") || "";
+  // URL parameter takes priority; fall back to session storage
+  const urlOrg = new URLSearchParams(window.location.search).get("org") || "";
+  if (urlOrg) {
+    sessionStorage.setItem("bdrv_member_org", urlOrg);
+    return urlOrg;
+  }
+  return sessionStorage.getItem("bdrv_member_org") || "";
 }
 
 // Hide name buttons that don't belong to the current org
@@ -496,6 +503,15 @@ function switchMember() {
   currentMember = null;
   document.getElementById("main-content").style.display = "none";
   document.getElementById("name-overlay").classList.add("visible");
+}
+
+function goToNameSelector() {
+  sessionStorage.removeItem(MEMBER_KEY);
+  currentMember = null;
+  document.getElementById("main-content").style.display = "none";
+  document.getElementById("pin-overlay").style.display = "none";
+  document.getElementById("name-overlay").classList.add("visible");
+  filterNameButtons();
 }
 
 function showApp() {
