@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Members Area — BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef3f8; color: #222; font-size: 17px;
+    line-height: 1.6; min-height: 100vh;
+  }
+
+  /* ── PIN OVERLAY ── */
+  #pin-overlay {
+    position: fixed; inset: 0; background: #1F4E79; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px; padding: 30px;
+  }
+  #pin-overlay h2 { color: white; font-size: 1.4em; text-align: center; }
+  #pin-overlay p  { color: rgba(255,255,255,0.75); font-size: 0.9em; text-align: center; max-width: 360px; }
+  #pin-input {
+    font-size: 1.6em; letter-spacing: 0.4em; text-align: center;
+    padding: 12px 20px; border-radius: 8px; border: none; width: 180px; outline: none;
+  }
+  #pin-error { color: #ffcccc; font-size: 0.85em; min-height: 1.2em; text-align: center; }
+
+  /* ── NAME SELECTOR OVERLAY ── */
+  #name-overlay {
+    position: fixed; inset: 0; background: #1F4E79; z-index: 9998;
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px; padding: 30px;
+  }
+  #name-overlay.visible { display: flex; }
+  #name-overlay h2 { color: white; font-size: 1.3em; text-align: center; }
+  #name-overlay p  { color: rgba(255,255,255,0.75); font-size: 0.88em; text-align: center; max-width: 400px; }
+
+  .name-groups { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 20px; }
+  .name-group-label {
+    color: rgba(255,255,255,0.55); font-size: 0.75em; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; padding-left: 2px;
+  }
+  .name-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px;
+  }
+  .name-btn {
+    background: white; border: none; border-radius: 10px;
+    padding: 14px 12px; cursor: pointer; text-align: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .name-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.2); }
+  .name-btn .nb-icon  { font-size: 1.6em; display: block; margin-bottom: 6px; }
+  .name-btn .nb-org   { font-size: 0.68em; font-weight: 700; letter-spacing: 0.1em;
+                        text-transform: uppercase; color: #888; margin-bottom: 2px; }
+  .name-btn .nb-name  { font-size: 0.88em; font-weight: 700; color: #1F4E79; }
+  .name-btn.rc-member { border-top: 4px solid #1F4E79; }
+  .name-btn.sc-member { border-top: 4px solid #2e7d32; }
+  .name-btn.both-member { border-top: 4px solid #6a1b9a; }
+  .divider { border-top: 1px solid rgba(255,255,255,0.15); }
+
+  /* ── BACK BAR ── */
+  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee; }
+  .back-bar a {
+    color: #1F4E79; background: white; border: 2px solid #c5d8ee; border-radius: 10px;
+    padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 16px;
+    display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;
+  }
+  .back-bar a:hover { background: #E7F1FB; border-color: #1F4E79; }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 960px; margin: 0 auto; padding: 30px 20px 60px; }
+
+  /* ── HEADER ── */
+  .dash-header {
+    border-radius: 12px; padding: 24px 28px; margin-bottom: 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px; color: white; background: #1F4E79;
+  }
+  .dash-header-left h1 { font-size: 1.4em; font-weight: 700; }
+  .dash-header-left p  { font-size: 0.82em; opacity: 0.8; margin-top: 4px; }
+  .dash-greeting { font-size: 0.88em; opacity: 0.85; }
+  .btn-switch {
+    background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4);
+    color: white; border-radius: 8px; padding: 7px 14px; cursor: pointer;
+    font-family: 'Segoe UI', sans-serif; font-size: 0.82em; margin-top: 6px;
+  }
+  .btn-switch:hover { background: rgba(255,255,255,0.3); }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 0.78em; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #1F4E79; border-bottom: 2px solid #c5d8ee;
+    padding-bottom: 6px; margin: 28px 0 14px;
+  }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;
+  }
+  .info-card {
+    background: white; border-radius: 12px; border: 1px solid #c5d8ee;
+    border-left: 5px solid #1F4E79; padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: box-shadow 0.2s;
+  }
+  .info-card:hover { box-shadow: 0 4px 16px rgba(31,78,121,0.12); }
+  .info-card.sc-card { border-left-color: #2e7d32; }
+  .card-top { display: flex; align-items: flex-start; gap: 14px; }
+  .card-icon { font-size: 1.6em; line-height: 1; flex-shrink: 0; }
+  .card-title { font-weight: 700; color: #1F4E79; font-size: 1em; }
+  .card-desc  { font-size: 0.84em; color: #555; margin-top: 2px; line-height: 1.4; }
+  .card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ── BUTTONS ── */
+  .btn-action {
+    display: inline-block; padding: 7px 14px; border-radius: 7px;
+    font-size: 0.84em; font-weight: 600; text-decoration: none;
+    border: none; cursor: pointer; font-family: 'Segoe UI', sans-serif;
+    transition: opacity 0.15s;
+  }
+  .btn-action:hover { opacity: 0.85; }
+  .btn-navy    { background: #1F4E79; color: white; }
+  .btn-green   { background: #2e7d32; color: white; }
+  .btn-outline { background: white; color: #1F4E79; border: 2px solid #1F4E79; }
+
+  /* ── ACTION REGISTER INLINE PREVIEW ── */
+  #my-actions-section { display: none; }
+  .my-actions-table { width: 100%; border-collapse: collapse; font-size: 0.88em; margin-top: 4px; }
+  .my-actions-table th {
+    background: #1F4E79; color: white; padding: 8px 10px;
+    text-align: left; font-weight: 600; font-size: 0.85em;
+  }
+  .my-actions-table td { padding: 8px 10px; border-bottom: 1px solid #e0eaf4; vertical-align: top; }
+  .my-actions-table tr:last-child td { border-bottom: none; }
+  .my-actions-table tr:hover td { background: #f0f7ff; }
+  .pill { display: inline-block; font-size: 0.78em; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+  .pill-open       { background: #dbeafe; color: #1e40af; }
+  .pill-inprogress { background: #fef3c7; color: #92400e; }
+  .pill-done       { background: #dcfce7; color: #166534; }
+  .pill-deferred   { background: #fee2e2; color: #991b1b; }
+  .overdue { color: #c0392b; font-weight: 600; }
+
+  .edit-inline-row td { background: #f0f8ff; }
+  .edit-inline-row select, .edit-inline-row textarea {
+    font-size: 0.88em; border: 1px solid #c5d8ee; border-radius: 5px;
+    padding: 4px 7px; width: 100%; font-family: 'Segoe UI', sans-serif;
+  }
+  .edit-inline-row textarea { min-height: 50px; resize: vertical; }
+  .save-btn   { background: #166534; color: white; border: none; border-radius: 5px; padding: 4px 10px; cursor: pointer; font-size: 0.82em; margin-right: 4px; }
+  .cancel-btn { background: #6b7280; color: white; border: none; border-radius: 5px; padding: 4px 10px; cursor: pointer; font-size: 0.82em; }
+  .icon-btn   { background: none; border: none; cursor: pointer; color: #2E75B6; padding: 2px 5px; border-radius: 4px; }
+  .icon-btn:hover { background: #E7F1FB; }
+  .empty-note { color: #888; font-style: italic; font-size: 0.9em; padding: 16px 0; }
+
+  @media(max-width:600px) { .card-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<!-- ── PIN OVERLAY ── -->
+<div id="pin-overlay">
+  <h2>🔒 Committee Members Area</h2>
+  <p>This area is for RC and SC members. Enter the committee PIN to continue.</p>
+  <input type="password" id="pin-input" maxlength="6" placeholder="••••"
+         inputmode="numeric" autocomplete="off"
+         onkeydown="if(event.key==='Enter') checkPin()">
+  <div id="pin-error"></div>
+</div>
+
+<!-- ── NAME SELECTOR OVERLAY ── -->
+<div id="name-overlay">
+  <h2>Welcome — who are you?</h2>
+  <p>This helps us show your action items. Your name is only stored for this session.</p>
+  <div class="name-groups">
+
+    <div>
+      <div class="name-group-label">Residents Committee</div>
+      <div class="name-grid">
+        <button class="name-btn rc-member" onclick="selectMember('Rick','RC','rc')">
+          <span class="nb-icon">👤</span>
+          <span class="nb-org">RC</span>
+          <span class="nb-name">Rick</span>
+        </button>
+        <button class="name-btn rc-member" onclick="selectMember('Jocelyn','RC Secretary','rc')">
+          <span class="nb-icon">📝</span>
+          <span class="nb-org">RC</span>
+          <span class="nb-name">Jocelyn</span>
+        </button>
+        <button class="name-btn rc-member" onclick="selectMember('Fay','RC Treasurer','rc')">
+          <span class="nb-icon">💰</span>
+          <span class="nb-org">RC</span>
+          <span class="nb-name">Fay</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="name-group-label">Social Club</div>
+      <div class="name-grid">
+        <button class="name-btn sc-member" onclick="selectMember('Kathy','SC Convenor','sc')">
+          <span class="nb-icon">⭐</span>
+          <span class="nb-org">SC</span>
+          <span class="nb-name">Kathy</span>
+        </button>
+        <button class="name-btn sc-member" onclick="selectMember('Judy','SC Secretary','sc')">
+          <span class="nb-icon">📝</span>
+          <span class="nb-org">SC</span>
+          <span class="nb-name">Judy</span>
+        </button>
+        <button class="name-btn sc-member" onclick="selectMember('Marie','SC Treasurer','sc')">
+          <span class="nb-icon">💰</span>
+          <span class="nb-org">SC</span>
+          <span class="nb-name">Marie</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div>
+      <div class="name-group-label">Other / General Member</div>
+      <div class="name-grid">
+        <button class="name-btn rc-member" onclick="selectMember('RC Member','RC Member','rc')">
+          <span class="nb-icon">👥</span>
+          <span class="nb-org">RC</span>
+          <span class="nb-name">RC Member</span>
+        </button>
+        <button class="name-btn sc-member" onclick="selectMember('SC Member','SC Member','sc')">
+          <span class="nb-icon">👥</span>
+          <span class="nb-org">SC</span>
+          <span class="nb-name">SC Member</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── BACK BAR ── -->
+<div class="back-bar">
+  <a href="committee.html">⬅️ Back to Committee Area</a>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="page-wrap" id="main-content" style="display:none;">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <h1>👥 Members Area</h1>
+      <p id="header-subtitle">Residents &amp; Social Club Committee</p>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+      <span class="dash-greeting" id="greeting-text"></span>
+      <button class="btn-switch" onclick="switchMember()">Switch name</button>
+    </div>
+  </div>
+
+  <!-- My Actions (shown only when name is identified and has actions) -->
+  <div id="my-actions-section">
+    <div class="section-label">📌 My Action Items</div>
+    <div style="background:white;border-radius:12px;border:1px solid #c5d8ee;overflow:hidden;">
+      <table class="my-actions-table">
+        <thead>
+          <tr>
+            <th style="width:80px">Ref</th>
+            <th>Action</th>
+            <th style="width:90px">Due</th>
+            <th style="width:110px">Status</th>
+            <th style="width:180px">Notes</th>
+            <th style="width:50px"></th>
+          </tr>
+        </thead>
+        <tbody id="my-actions-body"></tbody>
+      </table>
+      <div id="my-actions-empty" class="empty-note" style="padding:16px 20px;display:none;">
+        No open actions assigned to you right now.
+      </div>
+    </div>
+  </div>
+
+  <!-- RC section -->
+  <div class="section-label">Residents Committee</div>
+  <div class="card-grid">
+
+    <div class="info-card">
+      <div class="card-top">
+        <div class="card-icon">✅</div>
+        <div>
+          <div class="card-title">Action Register</div>
+          <div class="card-desc">View all RC meeting actions and their progress. Update your own items.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="action-register.html" class="btn-action btn-navy">✅ Open Register</a>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="card-top">
+        <div class="card-icon">📢</div>
+        <div>
+          <div class="card-title">RC Notices</div>
+          <div class="card-desc">Read the latest notices and communications from the Residents Committee.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="rc-notices.html" class="btn-action btn-navy">📢 View Notices</a>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="card-top">
+        <div class="card-icon">🔧</div>
+        <div>
+          <div class="card-title">Village Issues Tracker</div>
+          <div class="card-desc">See all issues raised by residents and their current progress.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="progress-tracker.html" class="btn-action btn-navy">🔧 View Tracker</a>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="card-top">
+        <div class="card-icon">📄</div>
+        <div>
+          <div class="card-title">Meeting Documents</div>
+          <div class="card-desc">Access agendas, minutes and quarterly meeting documents.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="community-info.html#meetings" class="btn-action btn-navy">📄 View Documents</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SC section -->
+  <div class="section-label">Social Club</div>
+  <div class="card-grid">
+
+    <div class="info-card sc-card">
+      <div class="card-top">
+        <div class="card-icon">🎉</div>
+        <div>
+          <div class="card-title">What's On</div>
+          <div class="card-desc">Upcoming events, activities and social club programmes.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="whats-on.html" class="btn-action btn-green">🎉 View Events</a>
+      </div>
+    </div>
+
+    <div class="info-card sc-card">
+      <div class="card-top">
+        <div class="card-icon">🎵</div>
+        <div>
+          <div class="card-title">Concerts &amp; Shows</div>
+          <div class="card-desc">Upcoming concerts, theatre trips and entertainment outings.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="concerts.html" class="btn-action btn-green">🎵 View Concerts</a>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /.page-wrap -->
+
+<script>
+const COMMITTEE_PIN = "5304";
+const SESSION_KEY   = "bdrv_committee_auth";
+const MEMBER_KEY    = "bdrv_member_name";
+const SCRIPT_URL    = "https://script.google.com/macros/s/AKfycbwG6RXWVplDVFen82zZnMmAM5S43HbydythoKcgb87f1gaUT4jnbjOeXKGJGZ752796/exec";
+const CSV_URL       = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SRoD_AgQcjrtBrgF95eLDkh2EmZAIusLrw0BaCZi2-U2Q6KWyd9h0Xw8LISjmdW-yWihLLsW/pub?gid=0&single=true&output=csv";
+
+let currentMember = null;
+let allActions    = [];
+let editingRow    = null;
+
+// ── PIN ───────────────────────────────────────────────────────────────────────
+function checkPin() {
+  const val = document.getElementById("pin-input").value.trim();
+  if (val === COMMITTEE_PIN) {
+    sessionStorage.setItem(SESSION_KEY, "true");
+    showNameOverlay();
+  } else {
+    document.getElementById("pin-error").textContent = "Incorrect PIN. Please try again.";
+    document.getElementById("pin-input").value = "";
+    document.getElementById("pin-input").focus();
+  }
+}
+document.getElementById("pin-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") checkPin();
+});
+
+function showNameOverlay() {
+  document.getElementById("pin-overlay").style.display = "none";
+  document.getElementById("name-overlay").classList.add("visible");
+}
+
+// ── NAME SELECTION ────────────────────────────────────────────────────────────
+function selectMember(name, role, org) {
+  currentMember = { name, role, org };
+  sessionStorage.setItem(MEMBER_KEY, JSON.stringify(currentMember));
+  document.getElementById("name-overlay").classList.remove("visible");
+  showApp();
+}
+
+function switchMember() {
+  sessionStorage.removeItem(MEMBER_KEY);
+  currentMember = null;
+  document.getElementById("main-content").style.display = "none";
+  document.getElementById("name-overlay").classList.add("visible");
+}
+
+function showApp() {
+  document.getElementById("main-content").style.display = "block";
+  document.getElementById("greeting-text").textContent =
+    "Hello, " + currentMember.name + " (" + currentMember.role + ")";
+  loadMyActions();
+}
+
+// ── ON LOAD ───────────────────────────────────────────────────────────────────
+window.onload = function() {
+  if (sessionStorage.getItem(SESSION_KEY) === "true") {
+    const saved = sessionStorage.getItem(MEMBER_KEY);
+    if (saved) {
+      try {
+        currentMember = JSON.parse(saved);
+        document.getElementById("pin-overlay").style.display = "none";
+        showApp();
+        return;
+      } catch(e) {}
+    }
+    showNameOverlay();
+  }
+};
+
+// ── ACTION REGISTER ───────────────────────────────────────────────────────────
+function parseCSVLine(line) {
+  const cols = []; let cur = "", inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQ = !inQ; }
+    else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
+    else { cur += ch; }
+  }
+  cols.push(cur.trim());
+  return cols;
+}
+
+function loadMyActions() {
+  // Generic/unknown members — skip the actions preview
+  if (!currentMember || currentMember.name === "RC Member" || currentMember.name === "SC Member") {
+    document.getElementById("my-actions-section").style.display = "none";
+    return;
+  }
+
+  fetch(CSV_URL + "&cachebust=" + Date.now())
+    .then(r => r.text())
+    .then(csv => {
+      const lines = csv.split("\n").filter(l => l.trim());
+      allActions = [];
+      for (let i = 1; i < lines.length; i++) {
+        const c = parseCSVLine(lines[i]);
+        if (!c[0]) continue;
+        allActions.push({
+          row: i + 1, ref: c[0], meeting: c[1], action: c[2],
+          owner: c[3], due: c[4], issueRef: c[5],
+          status: c[6] || "Open", notes: c[7] || ""
+        });
+      }
+      renderMyActions();
+    })
+    .catch(() => {
+      // Silently fail — don't block the rest of the page
+    });
+}
+
+function renderMyActions() {
+  const mine = allActions.filter(a =>
+    a.owner === currentMember.name &&
+    a.status !== "Done" &&
+    a.status !== "Deferred"
+  );
+
+  const section = document.getElementById("my-actions-section");
+  const tbody   = document.getElementById("my-actions-body");
+  const empty   = document.getElementById("my-actions-empty");
+
+  section.style.display = "block";
+
+  if (!mine.length) {
+    tbody.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  tbody.innerHTML = mine.map(a => {
+    const over = isOverdue(a.due, a.status);
+    const dueTxt = over
+      ? `<span class="overdue">${a.due} ⚠</span>`
+      : a.due;
+    return `<tr data-row="${a.row}">
+      <td style="font-weight:700;color:#1F4E79">${a.ref}</td>
+      <td>${escHtml(a.action)}</td>
+      <td>${dueTxt}</td>
+      <td><span class="pill ${pillClass(a.status)}">${a.status}</span></td>
+      <td style="color:#555;font-style:italic;font-size:0.88em">${escHtml(a.notes)}</td>
+      <td><button class="icon-btn" title="Update this action" onclick="startEdit(${a.row})">✏️</button></td>
+    </tr>`;
+  }).join("");
+}
+
+function pillClass(s) {
+  if (s === "Done")        return "pill-done";
+  if (s === "In Progress") return "pill-inprogress";
+  if (s === "Deferred")    return "pill-deferred";
+  return "pill-open";
+}
+
+function isOverdue(due, status) {
+  if (!due || status === "Done" || status === "Deferred") return false;
+  const d = new Date(due); return !isNaN(d) && d < new Date();
+}
+
+function escHtml(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ── INLINE EDIT ───────────────────────────────────────────────────────────────
+function startEdit(rowNum) {
+  if (editingRow) cancelEdit();
+  editingRow = rowNum;
+  const a = allActions.find(x => x.row === rowNum);
+  if (!a) return;
+  const tr = document.querySelector(`#my-actions-body tr[data-row="${rowNum}"]`);
+  tr.classList.add("edit-inline-row");
+  tr.innerHTML = `
+    <td style="font-weight:700;color:#1F4E79">${a.ref}</td>
+    <td style="color:#555;font-size:0.88em">${escHtml(a.action)}</td>
+    <td>${a.due}</td>
+    <td>
+      <select id="ei-status">
+        ${["Open","In Progress","Done","Deferred"].map(s =>
+          `<option${s===a.status?" selected":""}>${s}</option>`).join("")}
+      </select>
+    </td>
+    <td><textarea id="ei-notes" placeholder="Add a progress note…">${escHtml(a.notes)}</textarea></td>
+    <td>
+      <button class="save-btn" onclick="saveEdit(${rowNum})">Save</button>
+      <button class="cancel-btn" onclick="cancelEdit()">✕</button>
+    </td>`;
+}
+
+function cancelEdit() {
+  editingRow = null;
+  renderMyActions();
+}
+
+function saveEdit(rowNum) {
+  const newStatus = document.getElementById("ei-status").value;
+  const newNotes  = document.getElementById("ei-notes").value.trim();
+
+  const a = allActions.find(x => x.row === rowNum);
+  if (a) { a.status = newStatus; a.notes = newNotes; }
+  editingRow = null;
+  renderMyActions();
+
+  // Fire-and-forget POST
+  const post = (params) => {
+    const body = Object.entries(params)
+      .map(([k,v]) => encodeURIComponent(k)+"="+encodeURIComponent(v)).join("&");
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body, mode: "no-cors"
+    });
+  };
+  post({ action: "updateStatus", row: rowNum, status: newStatus });
+  post({ action: "updateNote",   row: rowNum, notes: newNotes  });
+}
+</script>
+</body>
+</html>
