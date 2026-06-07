@@ -291,7 +291,7 @@
     <div class="top-bar-title">🏦 Update Bank Balance</div>
     <div class="top-bar-sub">Record actual bank balance from statement</div>
   </div>
-  <button class="back-btn" onclick="smartBack('role-admin.html')" style="cursor:pointer;border:none;">← Back</button>
+  <button class="back-btn" onclick="history.back()" style="cursor:pointer;border:none;">← Back</button>
 </div>
 
 <div class="container">
@@ -321,7 +321,7 @@
       <div class="error-msg" id="formError"></div>
 
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="smartBack('role-admin.html')">✕ Cancel</button>
+        <button class="btn btn-secondary" onclick="history.back()">✕ Cancel</button>
         <button class="btn btn-primary" onclick="showReview()">Review →</button>
       </div>
 
@@ -521,11 +521,7 @@ function resetForm() {
 }
 
   // ── Smart back navigation ─────────────────────────────────────────────────
-  function smartBack(fallback) {
-    var ref = document.referrer;
-    if (ref && ref.includes("role-admin.html")) {
-      window.location.href = "role-admin.html";
-    } else {
+  function smartBack() { history.back(); } else {
       window.location.href = fallback || "committee.html";
     }
   }

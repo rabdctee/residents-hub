@@ -289,7 +289,7 @@
     <div class="top-bar-title">✏️ Correct a Transaction</div>
     <div class="top-bar-sub">Update an incorrectly recorded entry</div>
   </div>
-  <button class="back-btn" onclick="smartBack('role-admin.html')" style="cursor:pointer;border:none;">← Back</button>
+  <button class="back-btn" onclick="history.back()" style="cursor:pointer;border:none;">← Back</button>
 </div>
 
 <div class="container">
@@ -371,7 +371,7 @@
       <div class="error-msg" id="step2Error"></div>
 
       <div class="btn-row">
-        <button class="btn btn-secondary" onclick="smartBack('role-admin.html')" style="text-align:center;">✕ Cancel</button>
+        <button class="btn btn-secondary" onclick="history.back()" style="text-align:center;">✕ Cancel</button>
         <button class="btn btn-primary" onclick="showReview()">Review Changes →</button>
       </div>
 
@@ -763,11 +763,7 @@ function resetAll() {
 }
 
   // ── Smart back navigation ─────────────────────────────────────────────────
-  function smartBack(fallback) {
-    var ref = document.referrer;
-    if (ref && ref.includes("role-admin.html")) {
-      window.location.href = "role-admin.html";
-    } else {
+  function smartBack() { history.back(); } else {
       window.location.href = fallback || "committee.html";
     }
   }
