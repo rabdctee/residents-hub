@@ -206,43 +206,53 @@
 <div id="role-overlay">
   <h2>Who are you?</h2>
   <p>Select your role. You will only see tasks relevant to you.</p>
-  <div class="role-grid">
-    <button class="role-btn rc" onclick="selectRole('rc-secretary')">
-      <span class="role-icon">📝</span>
-      <span class="role-org">RC</span>
-      <span class="role-label">Secretary</span>
-    </button>
-    <button class="role-btn rc" onclick="selectRole('rc-treasurer')">
-      <span class="role-icon">💰</span>
-      <span class="role-org">RC</span>
-      <span class="role-label">Treasurer</span>
-    </button>
-    <button class="role-btn sc" onclick="selectRole('sc-convenor')">
-      <span class="role-icon">⭐</span>
-      <span class="role-org">SC</span>
-      <span class="role-label">Convenor</span>
-    </button>
-    <button class="role-btn sc" onclick="selectRole('sc-secretary')">
-      <span class="role-icon">📝</span>
-      <span class="role-org">SC</span>
-      <span class="role-label">Secretary</span>
-    </button>
-    <button class="role-btn sc" onclick="selectRole('sc-treasurer')">
-      <span class="role-icon">💰</span>
-      <span class="role-org">SC</span>
-      <span class="role-label">Treasurer</span>
-    </button>
-    <button class="role-btn sc" onclick="selectRole('sc-events')">
-      <span class="role-icon">🎟️</span>
-      <span class="role-org">SC</span>
-      <span class="role-label">Events Coordinator</span>
-    </button>
+
+  <div style="width:100%;max-width:680px;">
+    <div style="color:rgba(255,255,255,0.55);font-size:0.75em;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;padding-left:2px;">Residents Committee</div>
+    <div class="role-grid" style="margin-bottom:20px;">
+      <button class="role-btn rc" onclick="selectRole('rc-secretary')">
+        <span class="role-icon">📝</span>
+        <span class="role-org">RC</span>
+        <span class="role-label">Secretary</span>
+      </button>
+      <button class="role-btn rc" onclick="selectRole('rc-treasurer')">
+        <span class="role-icon">💰</span>
+        <span class="role-org">RC</span>
+        <span class="role-label">Treasurer</span>
+      </button>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,0.15);margin-bottom:20px;"></div>
+
+    <div style="color:rgba(255,255,255,0.55);font-size:0.75em;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;padding-left:2px;">Social Club</div>
+    <div class="role-grid">
+      <button class="role-btn sc" onclick="selectRole('sc-convenor')">
+        <span class="role-icon">⭐</span>
+        <span class="role-org">SC</span>
+        <span class="role-label">Convenor</span>
+      </button>
+      <button class="role-btn sc" onclick="selectRole('sc-secretary')">
+        <span class="role-icon">📝</span>
+        <span class="role-org">SC</span>
+        <span class="role-label">Secretary</span>
+      </button>
+      <button class="role-btn sc" onclick="selectRole('sc-treasurer')">
+        <span class="role-icon">💰</span>
+        <span class="role-org">SC</span>
+        <span class="role-label">Treasurer</span>
+      </button>
+      <button class="role-btn sc" onclick="selectRole('sc-events')">
+        <span class="role-icon">🎟️</span>
+        <span class="role-org">SC</span>
+        <span class="role-label">Events Coordinator</span>
+      </button>
+    </div>
   </div>
 </div>
 
 <!-- ── BACK BAR ── -->
 <div class="back-bar" id="back-bar" style="display:none;">
-  <a href="committee.html">⬅️ Back to Committee Area</a>
+  <a href="role-admin.html">⬅️ Back to Role Admin</a>
 </div>
 
 <!-- ── MAIN CONTENT ── -->
@@ -277,7 +287,7 @@
           </div>
         </div>
         <div class="card-actions">
-          <a href="action-register.html" class="btn-action btn-green">✅ Open Register</a>
+          <a href="action-register.html" class="btn-action btn-green">Open Register</a>
         </div>
       </div>
     </div>
