@@ -245,6 +245,7 @@ let issueData = [];
 function checkPin() {
   const val = document.getElementById("pinInput").value;
   if (val === CM_PIN) {
+    sessionStorage.setItem("bdrv_cmupdate_auth", "true");
     document.getElementById("pinOverlay").style.display = "none";
     document.getElementById("pinInput").value = "";
     loadIssues();
@@ -254,6 +255,12 @@ function checkPin() {
     setTimeout(() => err.style.display = "none", 3000);
     document.getElementById("pinInput").value = "";
   }
+}
+
+// Skip PIN if already authenticated this session
+if (sessionStorage.getItem("bdrv_cmupdate_auth") === "true") {
+  document.getElementById("pinOverlay").style.display = "none";
+  loadIssues();
 }
 
 // ── STATUS HELPERS ────────────────────────────────────────────────────────────
