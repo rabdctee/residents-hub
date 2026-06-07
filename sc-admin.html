@@ -509,9 +509,15 @@ const pinOverlay  = document.getElementById('pin-overlay');
 const roleOverlay = document.getElementById('role-overlay');
 
 const savedAuth = sessionStorage.getItem(SESSION_KEY);
-// Always clear the saved role on fresh page load — role selector should always appear
-sessionStorage.removeItem(ROLE_KEY);
-if (savedAuth === 'true') {
+const savedRole = sessionStorage.getItem(ROLE_KEY);
+// Clear the saved role only if arriving from committee.html (fresh entry point)
+// so that returning from a task page restores the previous role
+const comingFromCommittee = document.referrer.includes('committee.html');
+if (comingFromCommittee) sessionStorage.removeItem(ROLE_KEY);
+if (savedAuth === 'true' && savedRole && ROLES[savedRole] && !comingFromCommittee) {
+  pinOverlay.classList.add('hidden');
+  showDashboard(savedRole);
+} else if (savedAuth === 'true') {
   pinOverlay.classList.add('hidden');
   roleOverlay.classList.add('visible');
 }
