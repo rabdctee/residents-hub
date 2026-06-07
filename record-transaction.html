@@ -38,19 +38,6 @@
     border-bottom: 3px solid var(--gold);
   }
 
-  header .back-link {
-    color: var(--gold);
-    text-decoration: none;
-    font-family: Arial, sans-serif;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    opacity: 0.9;
-    transition: opacity 0.2s;
-  }
-  header .back-link:hover { opacity: 1; }
-
   header h1 {
     font-size: 20px;
     font-weight: normal;
@@ -369,14 +356,14 @@
   }
   .top-bar-title { color:white; font-size:1em; font-weight:700; font-family:Arial,sans-serif; }
   .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; font-family:Arial,sans-serif; }
-  .back-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: #1F4E79; color: #fff; border: none;
-    border-radius: 6px; padding: 8px 16px;
-    font-size: 0.95rem; font-family: 'Segoe UI', Arial, sans-serif;
-    cursor: pointer; text-decoration: none;
-  }
-  .back-btn:hover { background: #2E75B6; }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #1F4E79; color: #fff; border: none;
+  border-radius: 6px; padding: 8px 16px;
+  font-size: 0.95rem; font-family: 'Segoe UI', Arial, sans-serif;
+  cursor: pointer; text-decoration: none;
+}
+.back-btn:hover { background: #2E75B6; }
 </style>
 </style>
 </head>
@@ -400,7 +387,7 @@
     <div class="top-bar-title">📝 Record a New Transaction</div>
     <div class="top-bar-sub">Financial Data Entry</div>
   </div>
-  <button class="back-btn" onclick="history.back()" style="cursor:pointer;border:none;">← Back</button>
+  <button onclick="history.back()" class="back-btn">← Back</button>
 </div>
 
 <div class="container">

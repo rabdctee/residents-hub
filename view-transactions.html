@@ -25,12 +25,13 @@
     .top-bar-sub { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
     .btn-group { display:flex; gap:8px; flex-shrink:0; }
     .back-btn {
-      display:inline-flex; align-items:center; gap:6px;
-      background:white; color:var(--navy); padding:9px 16px;
-      border-radius:7px; text-decoration:none; font-weight:700;
-      font-size:0.88em; border:2px solid white; white-space:nowrap;
-    }
-    .back-btn:hover { background:var(--navy-light); }
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #1F4E79; color: #fff; border: none;
+  border-radius: 6px; padding: 8px 16px;
+  font-size: 0.95rem; font-family: 'Segoe UI', Arial, sans-serif;
+  cursor: pointer; text-decoration: none;
+}
+.back-btn:hover { background: #2E75B6; }
     .print-btn {
       display:inline-flex; align-items:center; gap:6px;
       background:rgba(255,255,255,0.15); color:white;
@@ -125,7 +126,7 @@
     </div>
     <div class="btn-group">
       <button class="print-btn" onclick="window.print()">&#128424;&#65039; Print</button>
-      <button class="back-btn" onclick="history.back()" style="cursor:pointer;border:none;">&#8592; Back</button>
+      <button onclick="history.back()" class="back-btn">← Back</button>
     </div>
   </div>
 

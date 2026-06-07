@@ -25,14 +25,6 @@
     }
     .top-bar-title { color:white; font-size:1em; font-weight:700; }
     .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
-    .back-btn {
-      display:inline-flex; align-items:center; gap:6px;
-      background:white; color:var(--navy); padding:9px 16px;
-      border-radius:7px; text-decoration:none; font-weight:700;
-      font-size:0.88em; border:2px solid white; white-space:nowrap;
-      transition:background 0.2s;
-    }
-    .back-btn:hover { background:var(--navy-light); }
     .content { max-width:620px; margin:0 auto; padding:24px 16px 60px; }
     .card {
       background:white; border-radius:12px;
@@ -108,7 +100,15 @@
     }
     .btn-another:hover { background:var(--navy-light); }
     @media(max-width:480px){ .top-bar { padding:10px 14px; } .back-btn { font-size:0.82em; padding:8px 12px; } .card-body { padding:16px; } }
-  </style>
+  .back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #1F4E79; color: #fff; border: none;
+  border-radius: 6px; padding: 8px 16px;
+  font-size: 0.95rem; font-family: 'Segoe UI', Arial, sans-serif;
+  cursor: pointer; text-decoration: none;
+}
+.back-btn:hover { background: #2E75B6; }
+</style>
 </head>
 <body>
 
@@ -117,7 +117,7 @@
     <div class="top-bar-title">&#128228; Upload a Document</div>
     <div class="top-bar-sub">Bridgeman Downs &#8212; Committee use only</div>
   </div>
-  <button class="back-btn" onclick="history.back()">&#8592; Back</button>
+  <button class="back-btn" onclick="history.back()">← Back</button>
 </div>
 
 <div class="content">
@@ -217,9 +217,7 @@
       </p>
       <div class="success-detail" id="successDetail"></div>
       <button class="btn-another" onclick="resetForm()">&#128228; Upload Another Document</button>
-      <button class="back-btn" onclick="history.back()" style="margin-top:10px;justify-content:center;display:flex;cursor:pointer;">
-        &#8592; Back
-      </button>
+      <button onclick="history.back()" class="back-btn">← Back</button>
     </div>
   </div>
 
