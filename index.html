@@ -1137,7 +1137,7 @@ if (month === 2 && day === 17) {
 <!-- Emergency button - EXTRA LARGE for seniors -->
 <div class="sidebar-widget" style="background:#fff;border:none;padding:0;">
 <button class="emergency-btn" onclick="showPage('contact');setTimeout(function(){document.getElementById('emergency-contacts').scrollIntoView({behavior:'smooth',block:'start'});},100);">
-🚨 EMERGENCY CONTACTS
+🚨 Emergency Services & Community Contacts
 </button>
 </div>
 
@@ -2478,7 +2478,7 @@ var searchableContent = [
     // ── Top-level pages ──────────────────────────────────────
     {page: 'events',            section: null, title: '🗓️ Events Calendar',           keywords: 'events calendar activities schedule social what on anzac day gunfire breakfast singalong opera ballet show upcoming'},
     {page: 'activity-contacts', section: null, title: '🎉 Activities & Groups',        keywords: 'activities groups clubs fitness walking art craft rummykub rumikub cards games social bridge mahjong swimming pool exercise bingo canasta bowls carpet bowls kelly pool scrabble trivia poetry singing line dancing book club morning tea movies'},
-    {page: 'contact',           section: null, title: '📞 Emergency Contacts',         keywords: 'emergency ambulance fire police doctor medical urgent help 000 energex maintenance after hours'},
+    {page: 'contact',           section: null, title: '📞 Emergency Services & Community Contacts',         keywords: 'emergency ambulance fire police doctor medical urgent help 000 energex maintenance after hours'},
     {page: 'contact',           section: null, title: '📞 Committee Contacts',         keywords: 'office reception manager maintenance admin phone call committee email rick fay jocelyn kathy marie judy chairperson treasurer secretary convenor feedback'},
     {page: 'newsletter',        section: null, title: '📰 Newsletter',                 keywords: 'news newsletter announcements notices updates information social club march april'},
     {page: 'committee',         section: null, title: '👥 Committees',                 keywords: 'committee upload documents record transaction finances social club delete correct'},
@@ -3099,7 +3099,7 @@ function displayAnnouncements(announcements) {
     emergencyDiv.style.cssText = 'background:#d32f2f;border-color:#c62828;';
     emergencyDiv.innerHTML = `
         <button class="btn" style="background:white;color:#d32f2f;font-size:16px;font-weight:bold;margin:0;" onclick="showPage('contact');setTimeout(function(){document.getElementById('emergency-contacts').scrollIntoView({behavior:'smooth',block:'start'});},100);">
-            🚨 Emergency Contacts
+           🚨 Emergency Services & Community Contacts
         </button>
     `;
     container.appendChild(emergencyDiv);
