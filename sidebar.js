@@ -378,9 +378,10 @@
           <li><a href="rc-notices.html"${isActive('rc-notices.html') ? ' class="sb-active"' : ''}>📋 Residents Committee Notices<span class="sb-notice-badge" id="sb-rc-badge" style="display:none;"></span></a></li>
         </ul>
 
-        <!-- Residents Only — always visible -->
-        <ul class="sb-links">
+         <!-- Residents Only — always visible -->
+         <ul class="sb-links">
           <li><a href="community-info.html" class="sb-lock${isActive('community-info.html') ? ' sb-active' : ''}">🔒 Residents Only</a></li>
+          <li><a href="residents-contact-list.html" class="sb-lock${isActive('residents-contact-list.html') ? ' sb-active' : ''}">📒 Residents Contact List</a></li>
         </ul>
 
       </div>
