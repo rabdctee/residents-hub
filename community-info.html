@@ -802,8 +802,8 @@
           var fileId    = cols[2] ? cols[2].trim() : null;
           var rowFolder = cols[3] ? cols[3].trim() : null;
           if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
-            newHtml += '<li><a href="https://drive.google.com/file/d/' + fileId +
-              '/preview" target="_blank">📄 ' + fileName + '</a></li>';
+            newHtml += '<li><a href="view-document.html?id=' + encodeURIComponent(fileId) +
+              '&title=' + encodeURIComponent(fileName) + '&back=community-info.html" target="_blank">📄 ' + fileName + '</a></li>';
           }
         }
         var baseHtml = '';
