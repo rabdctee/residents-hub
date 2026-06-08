@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Residents Contact List – BDRV Hub</title>
+<style>
+  :root {
+    --navy: #1a3a5c;
+    --gold: #c8922a;
+    --light-gold: #f0d9a8;
+    --bg: #f5f7fa;
+    --white: #ffffff;
+    --text: #2c3e50;
+    --muted: #7f8c8d;
+    --border: #dde3ea;
+    --green: #27ae60;
+    --red: #e74c3c;
+    --row-even: #f9fbfd;
+    --row-hover: #eef4fb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── PIN OVERLAY ── */
+  #pin-overlay {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, var(--navy) 0%, #2c5282 100%);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+  }
+  #pin-overlay.hidden { display: none; }
+
+  .pin-box {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 48px 40px;
+    text-align: center;
+    width: 340px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .pin-box .logo { font-size: 2.2rem; margin-bottom: 8px; }
+  .pin-box h2 { color: var(--navy); font-size: 1.3rem; margin-bottom: 6px; }
+  .pin-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 28px; }
+  .pin-box input {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.6rem;
+    letter-spacing: 8px;
+    text-align: center;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    outline: none;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .pin-box input:focus { border-color: var(--navy); }
+  .pin-box input.error { border-color: var(--red); animation: shake 0.3s; }
+  .pin-error { color: var(--red); font-size: 0.85rem; margin-bottom: 12px; min-height: 20px; }
+  .pin-box button {
+    width: 100%;
+    padding: 14px;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .pin-box button:hover { background: #2c5282; }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  /* ── MAIN CONTENT ── */
+  #main-content { display: none; }
+  #main-content.visible { display: block; }
+
+  header {
+    background: linear-gradient(135deg, var(--navy) 0%, #2c5282 100%);
+    color: white;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  header h1 { font-size: 1.5rem; font-weight: 700; }
+  header p { font-size: 0.85rem; opacity: 0.75; margin-top: 2px; }
+  .header-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 20px;
+  }
+
+  /* ── LOADING / ERROR ── */
+  .status-box {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 48px 20px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .status-box.error { color: var(--red); }
+  .spinner {
+    display: inline-block;
+    width: 32px; height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--navy);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SEARCH BAR ── */
+  .search-wrap {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .search-wrap input {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 16px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--navy); }
+  .search-wrap input::placeholder { color: var(--muted); }
+  .clear-btn {
+    padding: 12px 20px;
+    background: var(--border);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text);
+    transition: background 0.2s;
+  }
+  .clear-btn:hover { background: #c5ccd6; }
+  .result-count { font-size: 0.85rem; color: var(--muted); white-space: nowrap; }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--navy);
+    color: white;
+    padding: 14px 20px;
+    text-align: left;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  thead th:first-child { width: 80px; }
+  thead th:last-child { width: 180px; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  tbody tr:nth-child(even) { background: var(--row-even); }
+  tbody tr:hover { background: var(--row-hover); }
+
+  td { padding: 13px 20px; font-size: 0.95rem; }
+  td.unit { font-weight: 700; color: var(--navy); }
+  td.phone { color: var(--muted); font-family: monospace; font-size: 0.92rem; }
+  td.notes { font-size: 0.82rem; color: var(--muted); font-style: italic; }
+
+  .no-results {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--muted);
+    font-size: 1rem;
+    display: none;
+  }
+
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- PIN OVERLAY -->
+<div id="pin-overlay">
+  <div class="pin-box">
+    <div class="logo">🏘️</div>
+    <h2>Residents Contact List</h2>
+    <p>Please enter the PIN to access this page.</p>
+    <input type="password" id="pin-input" maxlength="4" placeholder="••••"
+           oninput="if(this.value.length===4) checkPin()"
+           onkeydown="if(event.key==='Enter') checkPin()">
+    <div class="pin-error" id="pin-error"></div>
+    <button onclick="checkPin()">Enter</button>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main-content">
+  <header>
+    <div>
+      <h1>🏘️ Residents Contact List</h1>
+      <p>Bridgeman Downs Retirement Village — Residents Only</p>
+    </div>
+    <div class="header-badge" id="last-updated">Loading…</div>
+  </header>
+
+  <div class="container">
+
+    <div id="loading-box" class="status-box">
+      <div class="spinner"></div>
+      <div>Loading contact list…</div>
+    </div>
+
+    <div id="error-box" class="status-box error" style="display:none;">
+      ⚠️ Could not load the contact list. Please check your internet connection and try again.
+    </div>
+
+    <div id="data-section" style="display:none;">
+      <div class="search-wrap">
+        <input type="text" id="search-input" placeholder="Search by name or unit number…" oninput="doSearch()">
+        <button class="clear-btn" onclick="clearSearch()">Clear</button>
+        <span class="result-count" id="result-count"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table id="contact-table">
+          <thead>
+            <tr>
+              <th>Unit</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+        <div class="no-results" id="no-results">No residents found matching your search.</div>
+      </div>
+    </div>
+
+  </div>
+  <footer>BDRV Residents' Information Hub &nbsp;·&nbsp; Residents Only &nbsp;·&nbsp; Do not distribute</footer>
+</div>
+
+<script>
+// ── CONFIG ──
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR8apnCzgW_8Qcy7KKvKlx9BbME7Ym_DqGE9-m302OrAX6iYr2QOCI8cQ_PpGFSgOhJvJnDt1a2s_nf/pub?gid=1397639661&single=true&output=csv';
+const CORRECT_PIN = '4035';
+const SESSION_KEY = 'bdrv_committee_auth';
+
+// ── PIN ──
+function checkPin() {
+  const val = document.getElementById('pin-input').value;
+  if (val === CORRECT_PIN) {
+    sessionStorage.setItem(SESSION_KEY, 'true');
+    document.getElementById('pin-overlay').classList.add('hidden');
+    document.getElementById('main-content').classList.add('visible');
+    loadData();
+  } else {
+    const inp = document.getElementById('pin-input');
+    inp.classList.add('error');
+    document.getElementById('pin-error').textContent = 'Incorrect PIN. Please try again.';
+    inp.value = '';
+    setTimeout(() => inp.classList.remove('error'), 600);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+    document.getElementById('pin-overlay').classList.add('hidden');
+    document.getElementById('main-content').classList.add('visible');
+    loadData();
+  }
+});
+
+// ── CSV PARSER ──
+function parseCSV(text) {
+  const lines = text.split('\n').map(l => l.trimEnd());
+  const rows = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (!lines[i].trim()) continue;
+    const cols = [];
+    let cur = '', inQ = false;
+    for (let c = 0; c < lines[i].length; c++) {
+      const ch = lines[i][c];
+      if (ch === '"') { inQ = !inQ; }
+      else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+      else { cur += ch; }
+    }
+    cols.push(cur);
+    rows.push(cols);
+  }
+  return rows;
+}
+
+// ── LOAD DATA ──
+async function loadData() {
+  try {
+    const resp = await fetch(CSV_URL);
+    if (!resp.ok) throw new Error('Fetch failed');
+    const text = await resp.text();
+    const rows = parseCSV(text);
+
+    // Row 0: date in A1
+    const lastUpdated = rows[0] && rows[0][0] ? rows[0][0].trim() : '';
+    document.getElementById('last-updated').textContent =
+      lastUpdated ? 'Updated: ' + lastUpdated : 'Members Only';
+
+    // Row 1: headers — skip
+    // Row 2+: data
+    const contacts = [];
+    for (let i = 2; i < rows.length; i++) {
+      const r = rows[i];
+      if (!r || !r[1] || !r[1].trim()) continue; // skip empty name rows
+      contacts.push({
+        unit:  (r[0] || '').trim(),
+        name:  (r[1] || '').trim(),
+        phone: (r[2] || '').trim(),
+        notes: (r[3] || '').trim()
+      });
+    }
+
+    renderTable(contacts);
+    document.getElementById('loading-box').style.display = 'none';
+    document.getElementById('data-section').style.display = 'block';
+
+  } catch (e) {
+    document.getElementById('loading-box').style.display = 'none';
+    document.getElementById('error-box').style.display = 'block';
+  }
+}
+
+// ── RENDER ──
+function renderTable(contacts) {
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+  contacts.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.dataset.unit = r.unit.toLowerCase();
+    tr.dataset.name = r.name.toLowerCase();
+    tr.innerHTML = `
+      <td class="unit">${r.unit}</td>
+      <td>${r.name}</td>
+      <td class="phone">${r.phone || '<span style="color:#bbb">—</span>'}</td>
+      <td class="notes">${r.notes}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  updateCount();
+}
+
+// ── SEARCH ──
+function doSearch() {
+  const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const rows = document.querySelectorAll('#table-body tr');
+  let visible = 0;
+  rows.forEach(tr => {
+    const match = !q || tr.dataset.unit.includes(q) || tr.dataset.name.includes(q);
+    tr.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  const total = rows.length;
+  document.getElementById('result-count').textContent =
+    q ? `${visible} of ${total} residents` : `${total} residents`;
+  document.getElementById('no-results').style.display =
+    visible === 0 ? 'block' : 'none';
+}
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  doSearch();
+}
+
+function updateCount() {
+  const total = document.querySelectorAll('#table-body tr').length;
+  document.getElementById('result-count').textContent = `${total} residents`;
+}
+</script>
+</body>
+</html>
