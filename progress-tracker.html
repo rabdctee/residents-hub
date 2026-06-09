@@ -239,9 +239,9 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    const category = cols[0], topic = cols[1], cmNotes = cols[2], status = cols[3];
+const issueNum = cols[0], category = cols[1], topic = cols[2], cmNotes = cols[3], status = cols[4];
     if (category && topic && status) {
-      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim() });
+      rows.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim() });
     }
   }
   return rows;
