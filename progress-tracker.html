@@ -403,10 +403,20 @@ async function loadData() {
 }
 
 document.querySelectorAll(".filter-btn").forEach(btn => {
-  btn.addEventListener("click", () => { activeFilter = btn.dataset.filter; applyFilterAndSearch(); });
+  btn.addEventListener("click", () => {
+    activeFilter = btn.dataset.filter;
+    searchInput.value = ""; searchTerm = "";
+    searchClear.style.display = "none";
+    applyFilterAndSearch();
+  });
 });
 document.querySelectorAll(".dash-card").forEach(card => {
-  card.addEventListener("click", () => { activeFilter = card.dataset.filter; applyFilterAndSearch(); });
+  card.addEventListener("click", () => {
+    activeFilter = card.dataset.filter;
+    searchInput.value = ""; searchTerm = "";
+    searchClear.style.display = "none";
+    applyFilterAndSearch();
+  });
 });
 
 const searchInput = document.getElementById("search-input");
