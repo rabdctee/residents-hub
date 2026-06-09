@@ -273,8 +273,12 @@
 
   <!-- My Actions (shown only when name is identified and has actions) -->
   <div id="my-actions-section">
-    <div class="section-label">📌 My Action Items</div>
-    <div style="background:white;border-radius:12px;border:1px solid #c5d8ee;overflow:hidden;">
+    <div class="section-label" id="actions-toggle" onclick="toggleActions()"
+         style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;">
+      <span>📌 My Action Items</span>
+      <span id="actions-chevron" style="font-size:0.85em;transition:transform 0.2s;">▼</span>
+    </div>
+    <div id="actions-body" style="background:white;border-radius:12px;border:1px solid #c5d8ee;overflow:hidden;">
       <table class="my-actions-table">
         <thead>
           <tr>
@@ -702,8 +706,16 @@ function saveEdit(rowNum) {
       body, mode: "no-cors"
     });
   };
-  post({ action: "updateStatus", row: rowNum, status: newStatus });
+ post({ action: "updateStatus", row: rowNum, status: newStatus });
   post({ action: "updateNote",   row: rowNum, notes: newNotes  });
+}
+
+function toggleActions() {
+  const body = document.getElementById("actions-body");
+  const chevron = document.getElementById("actions-chevron");
+  const isOpen = body.style.display !== "none";
+  body.style.display = isOpen ? "none" : "";
+  chevron.style.transform = isOpen ? "rotate(-90deg)" : "";
 }
 </script>
 </body>
