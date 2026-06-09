@@ -177,8 +177,11 @@
         <input type="date" id="f-meeting">
       </div>
       <div>
-        <label>Issue # (if linked to Issues Tracker) — <a href="progress-tracker.html" target="_blank" style="font-weight:normal;color:var(--mid-blue);font-size:0.85rem">Open Tracker ↗</a></label>
-        <input type="text" id="f-issue" placeholder="e.g. ISS-07">
+        <label>Issue # (if linked to Issues Tracker)</label>
+        <select id="f-issue">
+          <option value="">— none —</option>
+        </select>
+        <div id="issues-loading" style="font-size:0.8rem;color:#888;margin-top:3px;display:none">Loading issues…</div>
       </div>
       <div>
         <label>Added by</label>
