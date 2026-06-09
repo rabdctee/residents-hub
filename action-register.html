@@ -176,14 +176,14 @@
         <label>Meeting date (when action was agreed) *</label>
         <input type="date" id="f-meeting">
       </div>
-      <div>
+      <div style="position:relative;">
         <label>Issue # (if linked to Issues Tracker)</label>
-        <input type="text" id="f-issue-search" placeholder="Search issues…"
-               oninput="filterIssues()"
-               style="margin-bottom:5px;width:100%;font-size:0.95rem;border:1px solid var(--border);border-radius:7px;padding:8px 10px;background:#f9fbfd;font-family:var(--font);">
-        <select id="f-issue">
-          <option value="">— none —</option>
-        </select>
+        <input type="text" id="f-issue-search" placeholder="Type to search issues…" autocomplete="off"
+               oninput="filterIssues()" onfocus="filterIssues()"
+               style="width:100%;font-size:0.95rem;border:1px solid var(--border);border-radius:7px;padding:8px 10px;background:#f9fbfd;font-family:var(--font);">
+        <div id="f-issue-selected" style="margin-top:4px;font-size:0.85rem;color:var(--navy);min-height:1.2em;"></div>
+        <input type="hidden" id="f-issue">
+        <div id="issue-suggestions" style="display:none;position:absolute;z-index:999;background:white;border:1px solid var(--border);border-radius:7px;width:100%;max-height:200px;overflow-y:auto;box-shadow:0 4px 12px rgba(0,0,0,0.12);"></div>
         <div id="issues-loading" style="font-size:0.8rem;color:#888;margin-top:3px;display:none">Loading issues…</div>
       </div>
       <div>
@@ -309,26 +309,52 @@ function loadIssuesDropdown() {
     .catch(() => { lbl.style.display = "none"; });
 }
 
-function renderIssueOptions(list) {
-  const sel = document.getElementById("f-issue");
-  sel.innerHTML = '<option value="">— none —</option>';
-  list.forEach(({ issueNum, topic }) => {
-    const opt = document.createElement("option");
-    opt.value = issueNum;
-    opt.textContent = issueNum + " — " + topic;
-    sel.appendChild(opt);
-  });
-}
-
 function filterIssues() {
-  const term = document.getElementById("f-issue-search").value.toLowerCase();
+  const term = document.getElementById("f-issue-search").value.toLowerCase().trim();
+  const box = document.getElementById("issue-suggestions");
   const filtered = term
     ? allIssues.filter(i =>
         i.issueNum.toLowerCase().includes(term) ||
         i.topic.toLowerCase().includes(term))
     : allIssues;
-  renderIssueOptions(filtered);
+
+  if (!term && filtered.length === allIssues.length) { box.style.display = "none"; return; }
+
+  box.innerHTML = "";
+  if (filtered.length === 0) {
+    box.innerHTML = `<div style="padding:10px;color:#888;font-size:0.9rem;">No matching issues</div>`;
+  } else {
+    filtered.forEach(({ issueNum, topic }) => {
+      const item = document.createElement("div");
+      item.textContent = issueNum + " — " + topic;
+      item.style.cssText = "padding:9px 12px;cursor:pointer;font-size:0.9rem;border-bottom:1px solid #eef2f7;";
+      item.onmouseover = () => item.style.background = "#f0f6ff";
+      item.onmouseout  = () => item.style.background = "";
+      item.onmousedown = () => selectIssue(issueNum, topic);
+      box.appendChild(item);
+    });
+  }
+  box.style.display = "block";
 }
+
+function selectIssue(issueNum, topic) {
+  document.getElementById("f-issue").value = issueNum;
+  document.getElementById("f-issue-search").value = "";
+  document.getElementById("f-issue-selected").textContent = issueNum + " — " + topic;
+  document.getElementById("issue-suggestions").style.display = "none";
+}
+
+function clearIssueSelection() {
+  document.getElementById("f-issue").value = "";
+  document.getElementById("f-issue-selected").textContent = "";
+}
+
+// Hide suggestions when clicking elsewhere
+document.addEventListener("click", e => {
+  if (!e.target.closest("#issue-suggestions") && e.target.id !== "f-issue-search") {
+    document.getElementById("issue-suggestions").style.display = "none";
+  }
+});
 
 // ── PIN gate ──────────────────────────────────────────────────────────────────
 function checkPin() {
