@@ -444,7 +444,7 @@ function renderTable(actions) {
     const over   = isOverdue(a.due, a.status);
     const dueTxt = over ? `<span style="color:#c0392b;font-weight:600">${formatDate(a.due)} ⚠</span>` : formatDate(a.due);
     const issueHtml = a.issueRef
-      ? `<a class="issue-link" href="${ISSUES_PAGE}" title="View Issues Tracker">${a.issueRef}</a>`
+     ? `<a class="issue-link" href="${ISSUES_PAGE}?issue=${encodeURIComponent(a.issueRef)}" title="View in Issues Tracker" target="_blank">${a.issueRef}</a>`
       : "";
 
     return `<tr class="${isDone ? 'row-done' : ''}" data-row="${a.row}">
