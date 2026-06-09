@@ -292,9 +292,11 @@ function buildAccordion(grouped) {
       `<span class="mini-pill ${statusClass(s)}" data-status="${s}">${n} ${statusLabel(s)}</span>`
     ).join("");
     const rows = issues.map(i =>
-      `<div class="issue-row" data-status="${i.status}" data-topic="${escHtml(i.topic).toLowerCase()}">
+      `<div class="issue-row" data-status="${i.status}" data-topic="${escHtml(i.topic).toLowerCase()}" data-issuenum="${escHtml(i.issueNum).toLowerCase()}">
         <div class="issue-text">
-          <div class="issue-name">${escHtml(i.topic)}</div>
+          <div class="issue-name">
+            ${i.issueNum ? `<span id="issue-${i.issueNum}" style="font-size:0.75em;background:#e8f0fb;color:#1F4E79;border:1px solid #c5d8ee;border-radius:4px;padding:1px 6px;margin-right:6px;font-weight:700;">${escHtml(i.issueNum)}</span>` : ""}${escHtml(i.topic)}
+          </div>
           ${i.notes ? `<div class="issue-note">${escHtml(i.notes)}</div>` : ""}
         </div>
         <span class="badge ${statusClass(i.status)}">${statusIcon(i.status)} ${statusLabel(i.status)}</span>
@@ -329,6 +331,7 @@ function applyFilterAndSearch() {
     block.querySelectorAll(".issue-row").forEach(row => {
       const statusMatch = activeFilter === "all" || row.dataset.status === activeFilter;
       const searchMatch = !searchTerm || row.dataset.topic.includes(searchTerm) ||
+        (row.dataset.issuenum && row.dataset.issuenum.includes(searchTerm)) ||
         (row.querySelector(".issue-note") || {textContent:""}).textContent.toLowerCase().includes(searchTerm);
       const show = statusMatch && searchMatch;
       row.classList.toggle("hidden", !show);
