@@ -175,9 +175,11 @@
       <div>
         <label>Meeting date (when action was agreed) *</label>
         <input type="date" id="f-meeting">
-      </div>
       <div>
         <label>Issue # (if linked to Issues Tracker)</label>
+        <input type="text" id="f-issue-search" placeholder="Search issues…"
+               oninput="filterIssues()"
+               style="margin-bottom:5px;width:100%;font-size:0.95rem;border:1px solid var(--border);border-radius:7px;padding:8px 10px;background:#f9fbfd;font-family:var(--font);">
         <select id="f-issue">
           <option value="">— none —</option>
         </select>
@@ -271,6 +273,8 @@ const SESSION_KEY   = "bdrv_committee_auth";
 const ISSUES_PAGE   = "progress-tracker.html";
 const ISSUES_CSV    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 
+let allIssues = []; // cache for search filtering
+
 function loadIssuesDropdown() {
   const sel = document.getElementById("f-issue");
   const lbl = document.getElementById("issues-loading");
@@ -281,7 +285,7 @@ function loadIssuesDropdown() {
     .then(csv => {
       lbl.style.display = "none";
       const lines = csv.trim().split("\n").slice(1); // skip header
-      sel.innerHTML = '<option value="">— none —</option>';
+      allIssues = [];
       lines.forEach(line => {
         const cols = [];
         let cur = "", inQ = false;
@@ -292,16 +296,36 @@ function loadIssuesDropdown() {
           else { cur += ch; }
         }
         cols.push(cur.trim());
-        const issueNum = cols[0], topic = cols[2]; // col A = Issue#, col C = Topic
-        if (issueNum && topic) {
-          const opt = document.createElement("option");
-          opt.value = issueNum;
-          opt.textContent = issueNum + " — " + topic;
-          sel.appendChild(opt);
+        const issueNum = cols[0], topic = cols[2], status = cols[4]; // col E = Status
+        const activeStatuses = ["in progress", "not started", "on hold"];
+        if (issueNum && topic && activeStatuses.includes((status||"").toLowerCase())) {
+          allIssues.push({ issueNum, topic });
         }
       });
+      renderIssueOptions(allIssues);
     })
     .catch(() => { lbl.style.display = "none"; });
+}
+
+function renderIssueOptions(list) {
+  const sel = document.getElementById("f-issue");
+  sel.innerHTML = '<option value="">— none —</option>';
+  list.forEach(({ issueNum, topic }) => {
+    const opt = document.createElement("option");
+    opt.value = issueNum;
+    opt.textContent = issueNum + " — " + topic;
+    sel.appendChild(opt);
+  });
+}
+
+function filterIssues() {
+  const term = document.getElementById("f-issue-search").value.toLowerCase();
+  const filtered = term
+    ? allIssues.filter(i =>
+        i.issueNum.toLowerCase().includes(term) ||
+        i.topic.toLowerCase().includes(term))
+    : allIssues;
+  renderIssueOptions(filtered);
 }
 
 // ── PIN gate ──────────────────────────────────────────────────────────────────
