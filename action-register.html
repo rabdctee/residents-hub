@@ -584,7 +584,11 @@ function saveEdit(rowNum) {
 function toggleAddPanel() {
   const p = document.getElementById("add-panel");
   p.style.display = p.style.display === "block" ? "none" : "block";
-  if (p.style.display === "block") document.getElementById("f-action").focus();
+  if (p.style.display === "block") {
+    document.getElementById("f-action").focus();
+    document.getElementById("f-issue-search").value = "";
+    loadIssuesDropdown();
+  }
 }
 
 function closeAddPanel() {
