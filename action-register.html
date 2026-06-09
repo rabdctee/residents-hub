@@ -299,7 +299,8 @@ function loadIssuesDropdown() {
         cols.push(cur.trim());
         const issueNum = cols[0], topic = cols[2], status = cols[4]; // col E = Status
         const activeStatuses = ["in progress", "not started", "on hold"];
-        if (issueNum && topic && activeStatuses.includes((status||"").toLowerCase())) {
+        const cleanStatus = (status||"").toLowerCase().replace(/\r/g, "").trim();
+        if (issueNum && topic && activeStatuses.includes(cleanStatus)) {
           allIssues.push({ issueNum, topic });
         }
       });
