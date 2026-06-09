@@ -269,6 +269,40 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG6RXWVplDVFen82zZn
 const COMMITTEE_PIN = "5304";
 const SESSION_KEY   = "bdrv_committee_auth";
 const ISSUES_PAGE   = "progress-tracker.html";
+const ISSUES_CSV    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
+
+function loadIssuesDropdown() {
+  const sel = document.getElementById("f-issue");
+  const lbl = document.getElementById("issues-loading");
+  if (!sel) return;
+  lbl.style.display = "block";
+  fetch(ISSUES_CSV + "&cachebust=" + Date.now())
+    .then(r => r.text())
+    .then(csv => {
+      lbl.style.display = "none";
+      const lines = csv.trim().split("\n").slice(1); // skip header
+      sel.innerHTML = '<option value="">— none —</option>';
+      lines.forEach(line => {
+        const cols = [];
+        let cur = "", inQ = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') { inQ = !inQ; }
+          else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
+          else { cur += ch; }
+        }
+        cols.push(cur.trim());
+        const issueNum = cols[0], topic = cols[2]; // col A = Issue#, col C = Topic
+        if (issueNum && topic) {
+          const opt = document.createElement("option");
+          opt.value = issueNum;
+          opt.textContent = issueNum + " — " + topic;
+          sel.appendChild(opt);
+        }
+      });
+    })
+    .catch(() => { lbl.style.display = "none"; });
+}
 
 // ── PIN gate ──────────────────────────────────────────────────────────────────
 function checkPin() {
@@ -287,6 +321,7 @@ function showApp() {
   document.getElementById("pin-gate").style.display = "none";
   document.getElementById("main-content").style.display = "block";
   loadActions();
+  loadIssuesDropdown();
 }
 
 // Check for existing session on load
