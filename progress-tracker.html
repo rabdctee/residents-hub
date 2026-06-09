@@ -361,6 +361,20 @@ async function loadData() {
     buildDashboard(allData);
     buildAccordion(grouped);
     applyFilterAndSearch();
+    // Auto-search if linked from Action Register
+    const urlParams = new URLSearchParams(window.location.search);
+    const issueParam = urlParams.get("issue");
+    if (issueParam) {
+      const searchInput = document.getElementById("search-input");
+      const searchClear = document.getElementById("search-clear");
+      searchInput.value = issueParam;
+      searchTerm = issueParam.toLowerCase();
+      searchClear.style.display = "block";
+      applyFilterAndSearch();
+      document.querySelectorAll(".cat-block").forEach(b => {
+        if (b.style.display !== "none") b.classList.add("open");
+      });
+    }
     document.getElementById("last-updated").textContent =
       "Last refreshed: " + new Date().toLocaleString("en-AU", { dateStyle: "medium", timeStyle: "short" }) +
       " · Updates automatically every 5 minutes";
@@ -381,20 +395,6 @@ document.querySelectorAll(".dash-card").forEach(card => {
   card.addEventListener("click", () => { activeFilter = card.dataset.filter; applyFilterAndSearch(); });
 });
 
-// Auto-search if linked from Action Register
-    const urlParams = new URLSearchParams(window.location.search);
-    const issueParam = urlParams.get("issue");
-    if (issueParam) {
-      const input = document.getElementById("search-input");
-      input.value = issueParam;
-      searchTerm = issueParam.toLowerCase();
-      searchClear.style.display = "block";
-      applyFilterAndSearch();
-      // Expand all categories so the issue is visible
-      document.querySelectorAll(".cat-block").forEach(b => {
-        if (b.style.display !== "none") b.classList.add("open");
-      });
-    }  
 const searchInput = document.getElementById("search-input");
 const searchClear = document.getElementById("search-clear");
 searchInput.addEventListener("input", () => {
