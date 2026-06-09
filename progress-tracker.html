@@ -289,7 +289,7 @@ function buildAccordion(grouped) {
     const catCounts = {};
     issues.forEach(i => { catCounts[i.status] = (catCounts[i.status]||0) + 1; });
     const miniPills = Object.entries(catCounts).map(([s, n]) =>
-      `<span class="mini-pill ${statusClass(s)}" data-status="${s}">${n} ${statusLabel(s)}</span>`
+      `<span class="mini-pill ${statusClass(s)}" data-status="${s}" title="Filter by ${statusLabel(s)}" style="cursor:pointer;">${n} ${statusLabel(s)}</span>`
     ).join("");
     const rows = issues.map(i =>
       `<div class="issue-row" data-status="${i.status}" data-topic="${escHtml(i.topic).toLowerCase()}" data-issuenum="${escHtml(i.issueNum).toLowerCase()}">
@@ -315,6 +315,14 @@ function buildAccordion(grouped) {
       </div>
       <div class="cat-body">${rows}</div>`;
     block.querySelector(".cat-header").addEventListener("click", () => block.classList.toggle("open"));
+    block.querySelectorAll(".mini-pill").forEach(pill => {
+      pill.addEventListener("click", e => {
+        e.stopPropagation();
+        activeFilter = pill.dataset.status;
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === activeFilter));
+        applyFilterAndSearch();
+      });
+    });
     acc.appendChild(block);
   });
 }
