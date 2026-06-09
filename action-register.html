@@ -570,7 +570,7 @@ function startEdit(rowNum) {
     <td class="col-action" style="color:#555;font-size:0.88rem" colspan="3">${escHtml(a.action)}</td>
     <td class="col-issue">${a.issueRef || ""}</td>
     <td class="col-status">
-      <select id="edit-status" style="padding-right:20px;min-width:100px;">
+      <select id="edit-status" style="padding-right:10px;min-width:80px;">
         ${["Open","In Progress","Done","Deferred"].map(s =>
           `<option${s===a.status?" selected":""}>${s}</option>`).join("")}
       </select>
