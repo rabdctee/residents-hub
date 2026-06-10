@@ -723,7 +723,7 @@ if (sessionStorage.getItem('hub_admin_auth') === 'yes') {
   pinOverlay.classList.add('hidden');
   document.getElementById('back-bar').style.display = '';
   mainContent.style.display = '';
-  init();
+  setTimeout(init, 0);
 }
 
 pinInput.addEventListener('keydown', function(e) {
@@ -779,7 +779,8 @@ const STORAGE_KEY = 'hub_admin_checks';
 const DATE_KEY    = 'hub_admin_checks_date';
 
 function todayStr() {
-  return new Date().toISOString().slice(0, 10);
+  // Use Brisbane local time (not UTC) to avoid date rolling over at 10pm
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'Australia/Brisbane' });
 }
 
 function loadChecks() {
