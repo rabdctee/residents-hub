@@ -438,7 +438,8 @@
       </div>
     </div>
 
-    <div class="info-card sc-card">
+    <!-- Standard card — hidden for Events Coordinator -->
+    <div class="info-card sc-card" id="ec-card-standard">
       <div class="card-top">
         <div class="card-icon">🎟️</div>
         <div>
@@ -449,6 +450,23 @@
       <div class="card-actions">
         <a href="register-for-event.html" class="btn-action btn-green">🎟️ Register for Event</a>
         <a href="view-registrations.html" class="btn-action btn-outline">👁 View Registrations</a>
+      </div>
+    </div>
+
+    <!-- Enhanced card — shown only for Events Coordinator -->
+    <div class="info-card sc-card" id="ec-card-coordinator" style="display:none;">
+      <div class="card-top">
+        <div class="card-icon">🎟️</div>
+        <div>
+          <div class="card-title">Events &amp; Registrations</div>
+          <div class="card-desc">Manage upcoming events and registrations.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="manage-events.html" class="btn-action btn-green">⚙️ Manage Events</a>
+        <a href="index.html#events" class="btn-action btn-outline" style="color:#2e7d32;border-color:#2e7d32;">👁 View Home Page</a>
+        <a href="manage-registrations.html" class="btn-action btn-green">⚙️ Manage Registrations</a>
+        <a href="view-registrations.html" class="btn-action btn-outline" style="color:#2e7d32;border-color:#2e7d32;">👁 View Registrations</a>
       </div>
     </div>
 
@@ -609,6 +627,13 @@ function showApp() {
   // Show Manor Issues card only for Manor Advisor
   const manorCard = document.getElementById("manor-card");
   if (manorCard) manorCard.style.display = (currentMember.role === "Manor Advisor") ? "" : "none";
+
+  // Show enhanced Events card only for Events Coordinator
+  const isEC = (currentMember.role === "SC Events Coordinator");
+  const ecStd  = document.getElementById("ec-card-standard");
+  const ecCoord = document.getElementById("ec-card-coordinator");
+  if (ecStd)   ecStd.style.display   = isEC ? "none" : "";
+  if (ecCoord) ecCoord.style.display = isEC ? ""     : "none";
 
   loadMyActions();
 }
