@@ -463,27 +463,42 @@ function switchTab(tab) {
 // ── PARSE CSV ─────────────────────────────────────────────────────────────────
 function parseCSV(text) {
   const lines = text.trim().replace(/\r/g, "").split("\n");
-  const rows  = [];
-  for (let i = 1; i < lines.length; i++) {
+  if (lines.length < 2) return [];
+
+  // Parse a single CSV line respecting quoted fields
+  function parseLine(line) {
     const cols = [];
     let cur = "", inQ = false;
-    for (let c = 0; c < lines[i].length; c++) {
-      const ch = lines[i][c];
+    for (let c = 0; c < line.length; c++) {
+      const ch = line[c];
       if (ch === '"') { inQ = !inQ; }
       else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    // Columns: Category | Topic | CM Notes | Status | Source
-    const [category, topic, cmNotes, status, source] = cols;
+    return cols;
+  }
+
+  // Use header row to find columns by name (case-insensitive, partial match)
+  const headers = parseLine(lines[0]).map(h => h.toLowerCase());
+  const ci = name => headers.findIndex(h => h.includes(name.toLowerCase()));
+
+  const iCat    = ci("category");
+  const iTopic  = ci("topic");
+  const iNotes  = ci("notes");      // CM Notes or Notes
+  const iStatus = ci("status");
+  const iSource = ci("source");
+
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = parseLine(lines[i]);
+    const category = iCat    >= 0 ? (cols[iCat]    || "").trim() : "";
+    const topic    = iTopic  >= 0 ? (cols[iTopic]   || "").trim() : "";
+    const notes    = iNotes  >= 0 ? (cols[iNotes]   || "").trim() : "";
+    const status   = iStatus >= 0 ? (cols[iStatus]  || "Not Started").trim() : "Not Started";
+    const source   = iSource >= 0 ? (cols[iSource]  || "General").trim() : "General";
     if (category && topic) {
-      rows.push({
-        category: category.trim(),
-        topic:    topic.trim(),
-        notes:    (cmNotes || "").trim(),
-        status:   (status  || "Not Started").trim(),
-        source:   (source  || "General").trim()
-      });
+      rows.push({ category, topic, notes, status, source });
     }
   }
   return rows;
@@ -495,7 +510,7 @@ async function loadIssues() {
     const resp = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
     const text = await resp.text();
     allIssues   = parseCSV(text);
-    manorIssues = allIssues.filter(i => i.source === "Manor");
+    manorIssues = allIssues.filter(i => i.source.toLowerCase().includes("manor"));
     renderManorList();
     populateUpdateDropdown();
   } catch(e) {
