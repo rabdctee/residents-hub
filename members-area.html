@@ -247,6 +247,11 @@
           <span class="nb-org">Residents Committee</span><br>
           <span class="nb-name">Member</span>
         </button>
+        <button class="name-btn rc-member" onclick="selectMember('Ken','Manor Advisor','rc')">
+          <span class="nb-icon">🏡</span>
+          <span class="nb-org">Residents Committee</span><br>
+          <span class="nb-name">Manor Advisor</span>
+        </button>
       </div>
     </div>
 
@@ -395,6 +400,19 @@
       </div>
       <div class="card-actions">
         <a href="community-info.html#meetings" class="btn-action btn-navy">📄 View Documents</a>
+      </div>
+    </div>
+
+    <div class="info-card" id="manor-card" style="display:none;">
+      <div class="card-top">
+        <div class="card-icon">🏡</div>
+        <div>
+          <div class="card-title">Manor Issues</div>
+          <div class="card-desc">View and update issues specific to Ken Richards Manor residents.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="ken-update.html" class="btn-action btn-navy">🏡 Manor Issues</a>
       </div>
     </div>
 
@@ -587,6 +605,10 @@ function showApp() {
   // Update header subtitle
   const subtitles = { rc: "Residents Committee", sc: "Social Club", "": "Residents & Social Club Committee" };
   document.getElementById("header-subtitle").textContent = subtitles[org] || subtitles[""];
+
+  // Show Manor Issues card only for Manor Advisor
+  const manorCard = document.getElementById("manor-card");
+  if (manorCard) manorCard.style.display = (currentMember.role === "Manor Advisor") ? "" : "none";
 
   loadMyActions();
 }
