@@ -29,36 +29,61 @@
 
   /* ── NAME SELECTOR OVERLAY ── */
   #name-overlay {
-    position: fixed; inset: 0; background: #1F4E79; z-index: 9998;
+    position: fixed; inset: 0; background: #1a3a5c; z-index: 9998;
     display: none; align-items: center; justify-content: center;
-    flex-direction: column; gap: 24px; padding: 30px;
+    flex-direction: column; gap: 28px; padding: 30px; overflow-y: auto;
   }
   #name-overlay.visible { display: flex; }
-  #name-overlay h2 { color: white; font-size: 1.3em; text-align: center; }
-  #name-overlay p  { color: rgba(255,255,255,0.75); font-size: 0.88em; text-align: center; max-width: 400px; }
+  #name-overlay h2 { color: white; font-size: 1.7em; text-align: center; font-weight: 700; }
+  #name-overlay p  { color: rgba(255,255,255,0.8); font-size: 1em; text-align: center; max-width: 480px; }
 
-  .name-groups { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 20px; }
-  .name-group-label {
-    color: rgba(255,255,255,0.55); font-size: 0.75em; font-weight: 700;
-    letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; padding-left: 2px;
+  .name-groups { width: 100%; max-width: 780px; display: flex; flex-direction: column; gap: 24px; }
+
+  /* RC group has a blue tinted background panel */
+  .name-group-rc {
+    background: rgba(31,78,121,0.45); border-radius: 14px; padding: 18px 20px;
+    border: 2px solid rgba(100,160,220,0.4);
   }
+  /* SC group has a green tinted background panel */
+  .name-group-sc {
+    background: rgba(46,125,50,0.35); border-radius: 14px; padding: 18px 20px;
+    border: 2px solid rgba(100,190,110,0.4);
+  }
+  /* Generic member group */
+  .name-group-other {
+    background: rgba(255,255,255,0.08); border-radius: 14px; padding: 18px 20px;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+
+  .name-group-label {
+    font-size: 0.9em; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 12px; padding-left: 2px;
+  }
+  .name-group-rc   .name-group-label { color: #a8d4f5; }
+  .name-group-sc   .name-group-label { color: #a8e6a8; }
+  .name-group-other .name-group-label { color: rgba(255,255,255,0.6); }
+
   .name-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;
   }
   .name-btn {
-    background: white; border: none; border-radius: 10px;
-    padding: 14px 12px; cursor: pointer; text-align: center;
+    background: white; border: none; border-radius: 12px;
+    padding: 20px 14px; cursor: pointer; text-align: center;
     transition: transform 0.15s, box-shadow 0.15s;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
-  .name-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.2); }
-  .name-btn .nb-icon  { font-size: 1.6em; display: block; margin-bottom: 6px; }
-  .name-btn .nb-org   { font-size: 0.68em; font-weight: 700; letter-spacing: 0.1em;
-                        text-transform: uppercase; color: #888; margin-bottom: 2px; }
-  .name-btn .nb-name  { font-size: 0.88em; font-weight: 700; color: #1F4E79; }
-  .name-btn.rc-member { border-top: 4px solid #1F4E79; }
-  .name-btn.sc-member { border-top: 4px solid #2e7d32; }
-  .name-btn.both-member { border-top: 4px solid #6a1b9a; }
+  .name-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .name-btn .nb-icon  { font-size: 2em; display: block; margin-bottom: 8px; }
+  .name-btn .nb-org   { font-size: 0.72em; font-weight: 700; letter-spacing: 0.1em;
+                        text-transform: uppercase; margin-bottom: 4px; }
+  .name-btn .nb-name  { font-size: 1em; font-weight: 700; }
+  .name-btn.rc-member { border-top: 5px solid #1F4E79; }
+  .name-btn.rc-member .nb-org  { color: #1F4E79; }
+  .name-btn.rc-member .nb-name { color: #1F4E79; }
+  .name-btn.sc-member { border-top: 5px solid #2e7d32; }
+  .name-btn.sc-member .nb-org  { color: #2e7d32; }
+  .name-btn.sc-member .nb-name { color: #2e7d32; }
+  .name-btn.both-member { border-top: 5px solid #6a1b9a; }
   .divider { border-top: 1px solid rgba(255,255,255,0.15); }
 
   /* ── BACK BAR ── */
@@ -94,6 +119,28 @@
     font-size: 0.78em; font-weight: 700; letter-spacing: 0.1em;
     text-transform: uppercase; color: #1F4E79; border-bottom: 2px solid #c5d8ee;
     padding-bottom: 6px; margin: 28px 0 14px;
+  }
+
+  /* Distinct RC / SC section headers */
+  .section-header-rc {
+    background: #1F4E79; color: white;
+    border-radius: 10px 10px 0 0; padding: 12px 20px; margin-top: 32px;
+    font-size: 1em; font-weight: 700; letter-spacing: 0.05em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-header-sc {
+    background: #2e7d32; color: white;
+    border-radius: 10px 10px 0 0; padding: 12px 20px; margin-top: 32px;
+    font-size: 1em; font-weight: 700; letter-spacing: 0.05em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-body-rc {
+    background: #f0f6ff; border: 2px solid #c5d8ee; border-top: none;
+    border-radius: 0 0 10px 10px; padding: 18px; margin-bottom: 8px;
+  }
+  .section-body-sc {
+    background: #f0faf0; border: 2px solid #b2dfb2; border-top: none;
+    border-radius: 0 0 10px 10px; padding: 18px; margin-bottom: 8px;
   }
 
   /* ── CARD GRID ── */
@@ -177,8 +224,8 @@
   <p>This helps us show any action items assigned to you.</p>
   <div class="name-groups">
 
-    <div>
-      <div class="name-group-label">Residents Committee</div>
+    <div class="name-group-rc">
+      <div class="name-group-label">🏠 Residents Committee</div>
       <div class="name-grid">
         <button class="name-btn rc-member" onclick="selectMember('Rick','RC','rc')">
           <span class="nb-icon">👤</span>
@@ -195,13 +242,16 @@
           <span class="nb-org">Residents Committee</span>
           <span class="nb-name">Treasurer</span>
         </button>
+        <button class="name-btn rc-member" onclick="selectMember('RC Member','RC Member','rc')">
+          <span class="nb-icon">👥</span>
+          <span class="nb-org">Residents Committee</span><br>
+          <span class="nb-name">Member</span>
+        </button>
       </div>
     </div>
 
-    <div class="divider"></div>
-
-    <div>
-      <div class="name-group-label">Social Club</div>
+    <div class="name-group-sc">
+      <div class="name-group-label">🎉 Social Club Committee</div>
       <div class="name-grid">
         <button class="name-btn sc-member" onclick="selectMember('Kathy','SC Convenor','sc')">
           <span class="nb-icon">⭐</span>
@@ -217,19 +267,6 @@
           <span class="nb-icon">💰</span>
           <span class="nb-org">Social Committee</span><br>
           <span class="nb-name">Treasurer</span>
-        </button>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div>
-      <div class="name-group-label">Committee Member</div>
-      <div class="name-grid">
-        <button class="name-btn rc-member" onclick="selectMember('RC Member','RC Member','rc')">
-          <span class="nb-icon">👥</span>
-          <span class="nb-org">Residents Committee</span><br>
-          <span class="nb-name">Member</span>
         </button>
         <button class="name-btn sc-member" onclick="selectMember('SC Member','SC Member','sc')">
           <span class="nb-icon">👥</span>
@@ -300,7 +337,8 @@
 
   <!-- RC section -->
   <div id="rc-section">
-  <div class="section-label">Residents Committee</div>
+  <div class="section-header-rc">🏠 Residents Committee</div>
+  <div class="section-body-rc">
   <div class="card-grid">
 
     <div class="info-card">
@@ -356,11 +394,12 @@
     </div>
 
   </div>
-
+  </div><!-- /.section-body-rc -->
   </div><!-- /#rc-section -->
 
   <div id="sc-section">
-  <div class="section-label">Social Club</div>
+  <div class="section-header-sc">🎉 Social Club Committee</div>
+  <div class="section-body-sc">
   <div class="card-grid">
 
     <div class="info-card sc-card">
@@ -430,6 +469,7 @@
     </div>
 
   </div>
+  </div><!-- /.section-body-sc -->
   </div><!-- /#sc-section -->
 
 </div><!-- /.page-wrap -->
