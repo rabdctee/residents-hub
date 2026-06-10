@@ -290,10 +290,10 @@ function parseCSV(text) {
       else { cur += ch; }
     }
     cols.push(cur.trim());
-    // Read by position — ignores any extra columns (e.g. column E Source)
-    const category = cols[0], topic = cols[1], cmNotes = cols[2], status = cols[3], source = cols[4] || "General";
+    // Read by position — col A=IssueNum, B=Category, C=Topic, D=Notes, E=Status, F=Source
+    const issueNum = cols[0], category = cols[1], topic = cols[2], cmNotes = cols[3], status = cols[4], source = cols[5] || "General";
     if (category && topic && status) {
-      rows.push({ category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), source: source.trim() });
+      rows.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), source: source.trim() });
     }
   }
   return rows;
@@ -331,7 +331,7 @@ function buildAccordion() {
         <div class="issue-row" id="${uid}">
           <div class="issue-summary" onclick="toggleEdit('${uid}')">
             <div class="issue-left">
-              <div class="issue-title">${escHtml(issue.topic)}</div>
+              <div class="issue-title">${issue.issueNum ? `<span style="font-size:0.78em;color:var(--muted);font-weight:600;margin-right:6px;">${escHtml(issue.issueNum)}</span>` : ""}${escHtml(issue.topic)}</div>
               <div class="issue-note-preview">${escHtml(notePreview)}</div>
             </div>
             <div class="issue-right">
