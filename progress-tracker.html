@@ -107,6 +107,12 @@
   .no-results { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.92em; display: none; }
 
   /* ── Expand/collapse ── */
+  /* ── Print button ── */
+  .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: #1F4E79; border: 2px solid #1F4E79; border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
+  .print-btn:hover { background: #1F4E79; color: #fff; }
+  .print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  @media print { .print-btn, .filter-row, .font-ctrl, .expand-row, .page-header p, .dashboard, .progress-section, .last-updated { display: none !important; } }
+
   .expand-row { display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 0.75rem; }
   .expand-btn { font-size: 0.8em; color: var(--hub-blue); background: none; border: none; cursor: pointer; font-family: var(--font); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
   .expand-btn:hover { color: #163d60; }
@@ -182,6 +188,7 @@
   <button class="font-btn sm" data-size="16">A−</button>
   <button class="font-btn md active" data-size="18">A</button>
   <button class="font-btn lg" data-size="21">A+</button>
+  <button class="print-btn" id="print-btn" onclick="printIssues(this)" title="Print or save all issues as PDF" style="margin-left:auto;">🖨️ Print / Save PDF</button>
 </div>
 
 <div class="last-updated" id="last-updated">Loading data… · Updates automatically every 5 minutes</div>
@@ -450,5 +457,6 @@ document.getElementById("collapse-all").addEventListener("click", () => {
 loadData();
 setInterval(loadData, REFRESH_INTERVAL);
 </script>
+<script src="print-issues.js"></script>
 </body>
 </html>

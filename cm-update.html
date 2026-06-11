@@ -127,6 +127,11 @@
   .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* ── Print button ── */
+  .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: var(--navy); border: 2px solid var(--navy); border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
+  .print-btn:hover { background: var(--navy); color: #fff; }
+  .print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
   @media(max-width:640px){
     .add-grid, .edit-grid { grid-template-columns: 1fr; }
     .add-grid .full, .edit-grid .full { grid-column: 1; }
@@ -160,6 +165,7 @@
 <!-- ── TOOLBAR ── -->
 <div class="toolbar">
   <div class="toolbar-left">Tap any issue to edit it. Tap <strong>Add New Issue</strong> if you wish to add a new item.</div>
+  <button class="print-btn" id="print-btn" onclick="printIssues(this)" title="Print or save all issues as PDF">🖨️ Print / Save PDF</button>
   <button class="add-btn-top" onclick="toggleAddPanel()">➕ Add New Issue</button>
 </div>
 
@@ -495,5 +501,6 @@ function escHtml(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 </script>
+<script src="print-issues.js"></script>
 </body>
 </html>
