@@ -64,8 +64,17 @@
       background:white; border:2px solid var(--navy-mid);
       border-radius:8px; padding:8px 16px; font-size:0.83em;
       color:var(--navy); white-space:nowrap;
+      cursor:pointer; user-select:none; transition:box-shadow 0.15s, transform 0.1s;
     }
+    .summary-pill:hover { box-shadow:0 2px 8px rgba(0,0,0,0.13); transform:translateY(-1px); }
+    .summary-pill.active { box-shadow:0 0 0 3px var(--navy); }
     .summary-pill strong { display:block; font-size:1.15em; }
+
+    /* ── Print filter heading ── */
+    .print-filter-heading { display:none; }
+    @media print {
+      .print-filter-heading { display:block; font-size:1.1em; font-weight:700; margin-bottom:10px; color:#000; }
+    }
 
     /* ── Add button ── */
     .btn-add {
@@ -234,6 +243,7 @@
   </button>
 
   <div class="table-wrap">
+    <div class="print-filter-heading" id="printFilterHeading"></div>
     <table id="regTable">
       <thead>
         <tr>
@@ -319,6 +329,7 @@
   var editingRow       = null;
   var deleteRow        = null;
   var paidValue        = false;
+  var activeFilter     = 'all';   // 'all' | 'paid' | 'unpaid' | 'dietary'
 
   // ── Load events into dropdown ──────────────────────────────
   function loadEvents() {
@@ -363,6 +374,7 @@
       .then(function(r) { return r.json(); })
       .then(function(data) {
         allRegistrations = data.registrations || [];
+        activeFilter = 'all';
         renderTable(allRegistrations);
         renderSummary(allRegistrations);
         document.getElementById('addBtn').style.display = 'inline-flex';
@@ -414,6 +426,24 @@
     document.getElementById('regBody').innerHTML = html;
   }
 
+  // ── Apply pill filter & re-render table ────────────────────
+  function setPillFilter(filter) {
+    activeFilter = filter;
+    var filtered;
+    if (filter === 'paid')    filtered = allRegistrations.filter(function(r){ return r.paid; });
+    else if (filter === 'unpaid')   filtered = allRegistrations.filter(function(r){ return !r.paid; });
+    else if (filter === 'dietary')  filtered = allRegistrations.filter(function(r){ return r.dietary && r.dietary.trim() && r.dietary.toLowerCase() !== 'nil'; });
+    else                            filtered = allRegistrations;
+
+    renderTable(filtered);
+    renderSummary(allRegistrations);   // always recalculate totals from full set
+
+    // Update print heading
+    var labels = { all:'All Registrations', paid:'Paid Only', unpaid:'Unpaid Only', dietary:'Dietary Requirements' };
+    document.getElementById('printFilterHeading').textContent =
+      currentEvent + ' — ' + labels[filter];
+  }
+
   // ── Render summary ─────────────────────────────────────────
   function renderSummary(rows) {
     var totalPeople = 0, paid = 0, unpaid = 0, dietary = 0;
@@ -423,11 +453,18 @@
       if (r.paid) paid += n; else unpaid += n;
       if (r.dietary && r.dietary.trim() && r.dietary.toLowerCase() !== 'nil') dietary += n;
     });
+    var af = activeFilter;
     document.getElementById('summary').innerHTML =
-      '<div class="summary-pill"><strong>' + totalPeople + '</strong> total people</div>' +
-      '<div class="summary-pill" style="border-color:#a8d5b8;"><strong style="color:var(--green);">' + paid + '</strong> paid</div>' +
-      '<div class="summary-pill" style="border-color:#f1b0a8;"><strong style="color:var(--red);">' + unpaid + '</strong> unpaid</div>' +
-      (dietary > 0 ? '<div class="summary-pill" style="border-color:#f5c518;"><strong style="color:var(--orange);">' + dietary + '</strong> dietary req.</div>' : '');
+      '<div class="summary-pill' + (af==='all'?' active':'') + '" onclick="setPillFilter(\'all\')" title="Show all registrations">' +
+        '<strong>' + totalPeople + '</strong> all people</div>' +
+      '<div class="summary-pill' + (af==='paid'?' active':'') + '" style="border-color:#a8d5b8;" onclick="setPillFilter(\'paid\')" title="Click to show paid only">' +
+        '<strong style="color:var(--green);">' + paid + '</strong> paid</div>' +
+      '<div class="summary-pill' + (af==='unpaid'?' active':'') + '" style="border-color:#f1b0a8;" onclick="setPillFilter(\'unpaid\')" title="Click to show unpaid only">' +
+        '<strong style="color:var(--red);">' + unpaid + '</strong> unpaid</div>' +
+      (dietary > 0
+        ? '<div class="summary-pill' + (af==='dietary'?' active':'') + '" style="border-color:#f5c518;" onclick="setPillFilter(\'dietary\')" title="Click to show dietary requirements only">' +
+            '<strong style="color:var(--orange);">' + dietary + '</strong> dietary req.</div>'
+        : '');
   }
 
   // ── Edit modal ─────────────────────────────────────────────
