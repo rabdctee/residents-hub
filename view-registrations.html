@@ -64,13 +64,22 @@
       background:white; border:2px solid #e0e0e0; border-radius:10px;
       padding:10px 18px; min-width:90px; text-align:center;
       box-shadow:0 1px 4px rgba(0,0,0,0.06);
+      cursor:pointer; user-select:none; transition:box-shadow 0.15s, transform 0.1s;
     }
+    .tally-card:hover { box-shadow:0 3px 10px rgba(0,0,0,0.13); transform:translateY(-1px); }
+    .tally-card.active { box-shadow:0 0 0 3px #1F4E79; }
     .tally-card .tally-num  { font-size:1.6em; font-weight:800; line-height:1.1; }
     .tally-card .tally-lbl  { font-size:0.72em; color:#666; margin-top:2px; }
     .tally-total   .tally-num { color:#1F4E79; }
     .tally-paid    .tally-num { color:#15803d; }
     .tally-unpaid  .tally-num { color:#c0392b; }
     .tally-dietary .tally-num { color:#b45309; }
+
+    /* ── Print filter heading ── */
+    .print-filter-heading { display:none; }
+    @media print {
+      .print-filter-heading { display:block; font-size:1.1em; font-weight:700; margin-bottom:10px; color:#000; }
+    }
 
     /* ── Table wrapper ── */
     .table-wrap { flex:1; overflow:auto; padding:16px 20px 24px; }
@@ -92,7 +101,7 @@
 
     /* ── Print styles ── */
     @media print {
-      .top-bar, .info-bar, .filter-bar { display:none !important; }
+      .top-bar, .info-bar, .filter-bar, .tally-bar { display:none !important; }
       .table-wrap { padding:0; overflow:visible; }
       body { min-height:auto; }
     }
@@ -131,25 +140,26 @@
 
   <!-- Tally cards -->
   <div class="tally-bar" id="summary-bar" style="display:none;">
-    <div class="tally-card tally-total">
+    <div class="tally-card tally-total active" id="card-all" onclick="setTallyFilter('all')" title="Show all registrations">
       <div class="tally-num" id="sum-total">—</div>
-      <div class="tally-lbl">total people</div>
+      <div class="tally-lbl">all people</div>
     </div>
-    <div class="tally-card tally-paid">
+    <div class="tally-card tally-paid" id="card-paid" onclick="setTallyFilter('paid')" title="Click to show paid only">
       <div class="tally-num" id="sum-paid">—</div>
       <div class="tally-lbl">paid</div>
     </div>
-    <div class="tally-card tally-unpaid">
+    <div class="tally-card tally-unpaid" id="card-unpaid" onclick="setTallyFilter('unpaid')" title="Click to show unpaid only">
       <div class="tally-num" id="sum-unpaid">—</div>
       <div class="tally-lbl">unpaid</div>
     </div>
-    <div class="tally-card tally-dietary" id="sum-dietary-card" style="display:none;">
+    <div class="tally-card tally-dietary" id="sum-dietary-card" style="display:none;" onclick="setTallyFilter('dietary')" title="Click to show dietary requirements only">
       <div class="tally-num" id="sum-dietary">—</div>
       <div class="tally-lbl">dietary req.</div>
     </div>
   </div>
 
   <div class="table-wrap" id="table-wrap">
+    <div class="print-filter-heading" id="printFilterHeading"></div>
     <div class="status" id="status-msg">Loading registrations…</div>
   </div>
 
@@ -162,6 +172,7 @@
 
     let allRows    = [];   // array of objects, one per data row
     let headers    = [];   // column names from row 1
+    let activeFilter = 'all';  // 'all' | 'paid' | 'unpaid' | 'dietary'
 
     // ── Fetch & parse CSV ─────────────────────────────────────────────────
     async function loadData() {
@@ -260,6 +271,24 @@
       sel.value = events[0] || '__ALL__';
     }
 
+    // ── Reset pill filter when event changes ──────────────────────────────
+    document.getElementById('event-select').addEventListener('change', function() {
+      activeFilter = 'all';
+    });
+
+    // ── Tally pill filter ─────────────────────────────────────────────────
+    function setTallyFilter(filter) {
+      activeFilter = filter;
+      // Update active state on cards
+      ['all','paid','unpaid'].forEach(function(f) {
+        var card = document.getElementById('card-' + f);
+        if (card) card.classList.toggle('active', f === filter);
+      });
+      var dietCard = document.getElementById('sum-dietary-card');
+      if (dietCard) dietCard.classList.toggle('active', filter === 'dietary');
+      applyFilter();
+    }
+
     // ── Render table for the selected event ──────────────────────────────
     function applyFilter() {
       const sel     = document.getElementById('event-select');
@@ -270,6 +299,24 @@
         ? allRows
         : allRows.filter(r => (r[eventCol] || '').trim() === chosen);
 
+      // Sub-filter by tally pill selection
+      const paidColSub  = col('paid');
+      const dietColSub  = col('diet');
+      let displayRows = filtered;
+      if (activeFilter === 'paid') {
+        displayRows = filtered.filter(r => {
+          const v = (r[paidColSub] || '').trim().toLowerCase();
+          return v === 'true' || v === 'yes' || v === '✓';
+        });
+      } else if (activeFilter === 'unpaid') {
+        displayRows = filtered.filter(r => {
+          const v = (r[paidColSub] || '').trim().toLowerCase();
+          return !(v === 'true' || v === 'yes' || v === '✓');
+        });
+      } else if (activeFilter === 'dietary') {
+        displayRows = filtered.filter(r => (r[dietColSub] || '').trim() !== '');
+      }
+
       const wrap = document.getElementById('table-wrap');
       const statusEl = document.getElementById('status-msg');
 
@@ -277,6 +324,24 @@
         wrap.innerHTML = '<div class="status">No registrations found for this event.</div>';
         document.getElementById('row-count').textContent = '';
         document.getElementById('summary-bar').style.display = 'none';
+        return;
+      }
+
+      if (displayRows.length === 0) {
+        wrap.innerHTML = '<div class="status">No registrations match this filter.</div>';
+        document.getElementById('row-count').textContent = '0 registrations (filtered)';
+        // Still update tally totals and card highlights before returning
+        let tp=0,pp=0,up=0,dc=0;
+        const _pc=col('paid'),_nc=col('how many')>=0?col('how many'):col('number'),_dc2=col('diet');
+        filtered.forEach(row=>{const n=parseInt(row[_nc]||'1',10)||1,p=(row[_pc]||'').trim().toLowerCase(),d=(row[_dc2]||'').trim(),ok=p==='true'||p==='yes'||p==='✓';tp+=n;if(ok)pp+=n;else up+=n;if(d)dc++;});
+        document.getElementById('sum-total').textContent=tp;
+        document.getElementById('sum-paid').textContent=pp;
+        document.getElementById('sum-unpaid').textContent=up;
+        const _dc=document.getElementById('sum-dietary-card');
+        if(dc>0){document.getElementById('sum-dietary').textContent=dc;_dc.style.display='';}else{_dc.style.display='none';}
+        document.getElementById('summary-bar').style.display='';
+        ['all','paid','unpaid'].forEach(f=>{var c=document.getElementById('card-'+f);if(c)c.classList.toggle('active',f===activeFilter);});
+        _dc.classList.toggle('active',activeFilter==='dietary');
         return;
       }
 
@@ -298,13 +363,19 @@
       // Add any remaining columns not yet included
       headers.forEach((_, i) => { if (!displayCols.includes(i) && i !== eventCol) displayCols.push(i); });
 
-      let html = '<table><thead><tr>';
+      // Update print heading
+      const filterLabels = { all:'All Registrations', paid:'Paid Only', unpaid:'Unpaid Only', dietary:'Dietary Requirements' };
+      const eventLabel = chosen === '__ALL__' ? 'All Events' : chosen;
+      const printHeading = eventLabel + ' — ' + filterLabels[activeFilter];
+
+      let html = '<div class="print-filter-heading" id="printFilterHeading">' + escHtml(printHeading) + '</div>';
+      html += '<table><thead><tr>';
       displayCols.forEach(i => {
         html += `<th>${escHtml(headers[i] || '')}</th>`;
       });
       html += '</tr></thead><tbody>';
 
-      filtered.forEach(row => {
+      displayRows.forEach(row => {
         html += '<tr>';
         displayCols.forEach(i => {
           const val = (row[i] || '').trim();
@@ -325,7 +396,7 @@
       html += '</tbody></table>';
       wrap.innerHTML = html;
 
-      // ── Summary totals ────────────────────────────────────────────────
+      // ── Summary totals (always from full event set, not sub-filtered) ──────
       let totalPeople = 0, paidPeople = 0, unpaidPeople = 0, dietaryCount = 0;
       filtered.forEach(row => {
         const num    = parseInt(row[numCol] || '1', 10) || 1;
@@ -347,12 +418,21 @@
         dietCard.style.display = '';
       } else {
         dietCard.style.display = 'none';
+        if (activeFilter === 'dietary') { activeFilter = 'all'; }
       }
       document.getElementById('summary-bar').style.display = '';
 
-      const n = filtered.length;
+      // Sync active state on cards
+      ['all','paid','unpaid'].forEach(function(f) {
+        var card = document.getElementById('card-' + f);
+        if (card) card.classList.toggle('active', f === activeFilter);
+      });
+      if (dietCard) dietCard.classList.toggle('active', activeFilter === 'dietary');
+
+      const n = displayRows.length;
       document.getElementById('row-count').textContent =
-        n + ' registration' + (n === 1 ? '' : 's');
+        n + ' registration' + (n === 1 ? '' : 's') +
+        (activeFilter !== 'all' ? ' (filtered)' : '');
     }
 
     function escHtml(s) {
