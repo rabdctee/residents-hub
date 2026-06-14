@@ -449,7 +449,6 @@
         // Show newest first (skip header row)
         for (var i = rows.length - 1; i >= 1; i--) {
           var cols   = rows[i];
-          var cols   = parseCSV(lines[i]);
           var date   = cols[1] ? cols[1].trim() : '';
           var title  = cols[2] ? cols[2].trim() : '';
           var body   = cols[3] ? cols[3].trim() : '';
