@@ -936,19 +936,39 @@
     }
   })();
 
-  // ── Load RC Notices (Residents view) ──────────────────────
+// ── Load RC Notices (Residents view) ──────────────────────
   var RC_NOTICES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
+
+  function parseCSVFull(text) {
+    var rows = [], row = [], current = '', inQuotes = false;
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i], next = text[i + 1];
+      if (inQuotes) {
+        if (ch === '"' && next === '"') { current += '"'; i++; }
+        else if (ch === '"')           { inQuotes = false; }
+        else                           { current += ch; }
+      } else {
+        if      (ch === '"')  { inQuotes = true; }
+        else if (ch === ',')  { row.push(current); current = ''; }
+        else if (ch === '\r' && next === '\n') { row.push(current); rows.push(row); row = []; current = ''; i++; }
+        else if (ch === '\n' || ch === '\r')   { row.push(current); rows.push(row); row = []; current = ''; }
+        else                  { current += ch; }
+      }
+    }
+    if (current || row.length) { row.push(current); rows.push(row); }
+    return rows;
+  }
 
   function loadRCNotices() {
     fetch(RC_NOTICES_CSV + '&t=' + Date.now())
       .then(function(r) { return r.text(); })
       .then(function(csv) {
-        var lines   = csv.trim().split('\n');
-        var list    = document.getElementById('rcNoticesList');
+        var rows = parseCSVFull(csv);
+        var list = document.getElementById('rcNoticesList');
         var notices = [];
 
-        for (var i = 1; i < lines.length; i++) {
-          var cols   = parseCSVLine(lines[i].trim());
+        for (var i = 1; i < rows.length; i++) {
+          var cols   = rows[i];
           var status = cols[5] ? cols[5].trim() : '';
           if (status === 'Active') {
             notices.push({
