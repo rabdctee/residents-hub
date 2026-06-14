@@ -215,48 +215,37 @@
   // Record this visit so the sidebar badge clears
   localStorage.setItem('rcNoticesLastVisit', Date.now().toString());
 
-  // Splits full CSV text into rows, correctly handling quoted fields
-  // that contain embedded newlines
-  function splitCSVRows(text) {
-    var rows = [], cur = '', inQ = false;
+  // RFC-4180 compliant CSV parser — handles commas and line breaks inside quoted fields
+  function parseCSVFull(text) {
+    var rows = [], row = [], current = '', inQuotes = false;
     for (var i = 0; i < text.length; i++) {
-      var ch = text[i];
-      if (ch === '"') {
-        inQ = !inQ;
-        cur += ch;
-      } else if (ch === '\n' && !inQ) {
-        rows.push(cur);
-        cur = '';
+      var ch = text[i], next = text[i + 1];
+      if (inQuotes) {
+        if (ch === '"' && next === '"') { current += '"'; i++; }   // escaped quote ""
+        else if (ch === '"')            { inQuotes = false; }
+        else                            { current += ch; }
       } else {
-        cur += ch;
+        if      (ch === '"')  { inQuotes = true; }
+        else if (ch === ',')  { row.push(current); current = ''; }
+        else if (ch === '\r' && next === '\n') { row.push(current); rows.push(row); row = []; current = ''; i++; }
+        else if (ch === '\n' || ch === '\r')   { row.push(current); rows.push(row); row = []; current = ''; }
+        else                  { current += ch; }
       }
     }
-    if (cur) rows.push(cur);
+    if (current || row.length) { row.push(current); rows.push(row); }
     return rows;
-  }
-
-  function parseCSV(line) {
-    var cols = [], cur = '', inQ = false;
-    for (var i = 0; i < line.length; i++) {
-      var ch = line[i];
-      if (ch === '"')              { inQ = !inQ; }
-      else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
-      else                         { cur += ch; }
-    }
-    cols.push(cur);
-    return cols;
   }
 
   function loadPublicNotices() {
     fetch(CSV_URL + '&t=' + Date.now())
       .then(function(r) { return r.text(); })
       .then(function(csv) {
-        var lines   = splitCSVRows(csv.trim());
-        var list    = document.getElementById('publicNoticesList');
+        var rows = parseCSVFull(csv);
+        var list = document.getElementById('publicNoticesList');
         var notices = [];
 
-        for (var i = 1; i < lines.length; i++) {
-          var cols   = parseCSV(lines[i].trim());
+        for (var i = 1; i < rows.length; i++) {
+          var cols   = rows[i];
           var type   = cols[4] ? cols[4].trim() : '';
           var status = cols[5] ? cols[5].trim() : '';
           if (type === 'Public' && status === 'Active') {
@@ -286,13 +275,12 @@
             '</div>' +
             '<div class="notice-body">' + n.body + '</div>' +
             (n.link ? (function(rawLink, title) {
-            // Extract Drive file ID if it's a Drive URL, otherwise use as-is
-            var match = rawLink.match(/\/d\/([a-zA-Z0-9_-]+)/);
-            var href = match
-              ? 'view-document.html?id=' + match[1] + '&title=' + encodeURIComponent(title) + '&back=rc-notices'
-              : rawLink;
-            return '<div style="margin-top:10px;"><a href="' + href + '" target="_blank" style="display:inline-block;background:#1F4E79;color:white;font-size:0.82em;font-weight:700;padding:7px 16px;border-radius:6px;text-decoration:none;">📄 View Document</a></div>';
-          })(n.link, n.title) : '') +
+              var match = rawLink.match(/\/d\/([a-zA-Z0-9_-]+)/);
+              var href = match
+                ? 'view-document.html?id=' + match[1] + '&title=' + encodeURIComponent(title) + '&back=rc-notices'
+                : rawLink;
+              return '<div style="margin-top:10px;"><a href="' + href + '" target="_blank" style="display:inline-block;background:#1F4E79;color:white;font-size:0.82em;font-weight:700;padding:7px 16px;border-radius:6px;text-decoration:none;">📄 View Document</a></div>';
+            })(n.link, n.title) : '') +
             '</div>';
         });
         list.innerHTML = html;
