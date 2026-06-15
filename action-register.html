@@ -124,7 +124,7 @@
 
 <!-- PIN gate -->
 <div id="pin-gate">
-  <h2>🔒 Committee Access Only</h2>
+  <h2>🔒 Committee Access Required</h2>
   <p style="color:#555;font-size:0.95rem">Enter the committee PIN to view the Action Register.</p>
   <input type="password" id="pin-input" placeholder="PIN" maxlength="6" onkeydown="if(event.key==='Enter')checkPin()">
   <button onclick="checkPin()">Enter</button>
@@ -271,7 +271,7 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG6RXWVplDVFen82zZnMmAM5S43HbydythoKcgb87f1gaUT4jnbjOeXKGJGZ752796/exec"; // ← Replace after deploying
 const COMMITTEE_PIN = "5304";
-const SESSION_KEY   = "bdrv_committee_auth";
+const SESSION_KEY   = "bdrv_action_register_auth";
 const ISSUES_PAGE   = "progress-tracker.html";
 const ISSUES_CSV    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 
@@ -664,6 +664,7 @@ function showError(msg) {
   el.style.display = "block";
   document.getElementById("msg-success").style.display = "none";
 }
+</script>
 <script>
 (function(){
   var now = new Date();
