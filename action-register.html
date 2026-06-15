@@ -420,7 +420,7 @@ function loadActions() {
         const c = parseCSVLine(lines[i]);
         if (!c[0]) continue; // skip blank ref
         allActions.push({
-          row:      i + 1,   // 1-based sheet row number (header = row 1, first data = row 2)
+          row:      i + 1,   // 1-based sheet row: header=row1, i=1 → sheet row 2
           ref:      c[0] || "",
           meeting:  c[1] || "",
           action:   c[2] || "",
@@ -602,9 +602,8 @@ function saveEdit(rowNum) {
   applyFilters();
   showSuccess("Saved. Sheet will update within a few seconds.");
 
-  // Post both updates to Apps Script (fire-and-forget)
-  postScript({ action: "updateStatus", row: rowNum, status: newStatus });
-  postScript({ action: "updateNote",   row: rowNum, notes: newNotes  });
+  // Post single combined update to Apps Script (fire-and-forget)
+  postScript({ action: "updateAction", row: rowNum, status: newStatus, notes: newNotes });
 }
 
 // ── Add action ────────────────────────────────────────────────────────────────
