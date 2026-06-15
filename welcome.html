@@ -39,8 +39,9 @@ body{
 header{
   background:#1F4E79;
   color:white;
-  padding:36px 20px 30px;
+  padding:36px 160px 30px 20px;
   text-align:center;
+  position:relative;
 }
 header h1{ font-size:2em; font-weight:700; }
 header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
@@ -55,6 +56,21 @@ header .page-tagline span{
   border-radius:6px;
   padding:6px 22px;
   color:#fff;
+}
+.header-date{
+  position:absolute;
+  top:14px;
+  right:16px;
+  background:rgba(255,255,255,0.15);
+  border-radius:8px;
+  padding:8px 14px;
+  font-size:0.78em;
+  text-align:right;
+  line-height:1.5;
+}
+.header-date strong{ display:block; font-size:1.1em; }
+@media(max-width:600px){
+  .header-date{ position:static; display:inline-block; margin-top:14px; text-align:center; }
 }
 
 /* ===== Page content ===== */
@@ -241,6 +257,10 @@ header .page-tagline span{
 
 <!-- ===== HEADER ===== -->
 <header>
+  <div class="header-date">
+    <strong id="today-date">—</strong>
+    <span id="today-day">—</span>
+  </div>
   <h1>Bridgeman Downs Retirement Village</h1>
   <p>Residents' Information Hub</p>
   <p class="page-tagline"><span>🌟 Welcome to BDRV</span></p>
@@ -475,5 +495,14 @@ header .page-tagline span{
 </div><!-- end page-content -->
 </div><!-- end container -->
 
+<script>
+(function(){
+  var now = new Date();
+  document.getElementById('today-date').textContent =
+    now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('today-day').textContent =
+    now.toLocaleDateString('en-AU',{weekday:'long'});
+})();
+</script>
 </body>
 </html>
