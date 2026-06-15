@@ -124,7 +124,7 @@
 
 <!-- PIN gate -->
 <div id="pin-gate">
-  <h2>🔒 Committee Access Required</h2>
+  <h2>🔒 Committee Access Only</h2>
   <p style="color:#555;font-size:0.95rem">Enter the committee PIN to view the Action Register.</p>
   <input type="password" id="pin-input" placeholder="PIN" maxlength="6" onkeydown="if(event.key==='Enter')checkPin()">
   <button onclick="checkPin()">Enter</button>
@@ -138,6 +138,7 @@
 
   <div class="page-header">
     <div class="page-title">📋 RC Action Register</div>
+    <div style="font-size:0.82em;color:#555;" id="ar-date"></div>
     <button onclick="history.back()" class="back-btn">← Back</button>
   </div>
 
@@ -663,6 +664,14 @@ function showError(msg) {
   el.style.display = "block";
   document.getElementById("msg-success").style.display = "none";
 }
+<script>
+(function(){
+  var now = new Date();
+  var el = document.getElementById('ar-date');
+  if (el) el.textContent =
+    now.toLocaleDateString('en-AU',{weekday:'long'}) + ' ' +
+    now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+})();
 </script>
 </body>
 </html>

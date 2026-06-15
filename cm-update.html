@@ -160,6 +160,7 @@
 <div class="page-header">
   <h1>📋 CM Update</h1>
   <p>Issues Progress Tracker — Bridgeman Downs Retirement Village</p>
+  <p id="cm-date" style="font-size:0.8em;opacity:0.75;margin-top:4px;"></p>
 </div>
 
 <!-- ── TOOLBAR ── -->
@@ -497,6 +498,15 @@ function escHtml(s) {
   if (!s) return "";
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
+</script>
+<script>
+(function(){
+  var now = new Date();
+  var el = document.getElementById('cm-date');
+  if (el) el.textContent =
+    now.toLocaleDateString('en-AU',{weekday:'long'}) + ' ' +
+    now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+})();
 </script>
 <script src="print-issues.js"></script>
 </body>
