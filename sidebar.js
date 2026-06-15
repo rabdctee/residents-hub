@@ -238,6 +238,19 @@
     .sb-font-btn.sb-sz-md { font-size: 14px; }
     .sb-font-btn.sb-sz-lg { font-size: 17px; }
 
+    /* Header date block — injected by sidebar.js */
+    .sb-header-date {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.82em;
+      opacity: 0.88;
+      line-height: 1.6;
+    }
+    .sb-header-date strong {
+      display: block;
+      font-size: 1.05em;
+    }
+
     @media (max-width: 768px) {
       .hub-wrapper {
         flex-direction: column;
@@ -537,6 +550,22 @@
         }
       }
     }
+
+  // ── DATE BLOCK ────────────────────────────────────────────
+  // Appends a centred day/date line at the bottom of the page header.
+  // Only added if the header exists and doesn't already have one.
+  (function() {
+    var header = document.querySelector('header');
+    if (header && !header.querySelector('.sb-header-date')) {
+      var now = new Date();
+      var dateStr = now.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+      var dayStr  = now.toLocaleDateString('en-AU', { weekday: 'long' });
+      var dateDiv = document.createElement('div');
+      dateDiv.className = 'sb-header-date';
+      dateDiv.innerHTML = '<strong>' + dayStr + '</strong><span>' + dateStr + '</span>';
+      header.appendChild(dateDiv);
+    }
+  })();
 
   // ── FONT SIZE CONTROL ─────────────────────────────────────
     var savedSize = localStorage.getItem('hubFontSize') || '18';
