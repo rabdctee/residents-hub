@@ -600,10 +600,15 @@ function saveEdit(rowNum) {
   editingRow = null;
   renderSummary();
   applyFilters();
-  showSuccess("Saved. Sheet will update within a few seconds.");
+  showSuccess("Saved ✓ — changes visible now. Sheet syncs within ~30 seconds.");
 
   // Post single combined update to Apps Script (fire-and-forget)
   postScript({ action: "updateAction", row: rowNum, status: newStatus, notes: newNotes });
+
+  // Re-fetch from sheet after 30 seconds to confirm sync
+  setTimeout(function() {
+    loadActions();
+  }, 30000);
 }
 
 // ── Add action ────────────────────────────────────────────────────────────────
