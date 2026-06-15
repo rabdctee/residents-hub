@@ -136,6 +136,7 @@
 <div class="page-header">
   <h1>Issues Progress Tracker</h1>
   <p>Bridgeman Downs Retirement Village — Residents Committee</p>
+  <p id="pt-date" style="font-size:0.8em;opacity:0.75;margin-top:4px;"></p>
 </div>
 
 <div class="dashboard" id="dashboard">
@@ -468,6 +469,15 @@ document.getElementById("collapse-all").addEventListener("click", () => {
 
 loadData();
 setInterval(loadData, REFRESH_INTERVAL);
+</script>
+<script>
+(function(){
+  var now = new Date();
+  var el = document.getElementById('pt-date');
+  if (el) el.textContent =
+    now.toLocaleDateString('en-AU',{weekday:'long'}) + ' ' +
+    now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+})();
 </script>
 <script src="print-issues.js"></script>
 </body>

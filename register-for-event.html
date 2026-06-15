@@ -170,7 +170,7 @@
 <div class="top-bar">
   <div class="top-bar-info">
     <div class="top-bar-title">🗓️ Register for an Event</div>
-    <div class="top-bar-sub">Bridgeman Downs Residents Hub</div>
+    <div class="top-bar-sub">Bridgeman Downs Residents Hub &nbsp;·&nbsp; <span id="rfe-date"></span></div>
   </div>
   <a href="index.html#events" class="back-btn">← Back to Hub</a>
 </div>
@@ -425,6 +425,14 @@
       .replace(/&/g,'&amp;').replace(/</g,'&lt;')
       .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
+<script>
+(function(){
+  var now = new Date();
+  var el = document.getElementById('rfe-date');
+  if (el) el.textContent =
+    now.toLocaleDateString('en-AU',{weekday:'long'}) + ' ' +
+    now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+})();
 </script>
 
 </body>

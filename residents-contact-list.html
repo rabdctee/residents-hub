@@ -245,6 +245,7 @@
     <div>
       <h1>🏘️ Residents Contact List</h1>
       <p>Bridgeman Downs Retirement Village — Residents Only</p>
+      <p id="rcl-date" style="font-size:0.78em;opacity:0.7;margin-top:3px;"></p>
     </div>
     <div class="header-badge" id="last-updated">Loading…</div>
   </header>
@@ -420,6 +421,15 @@ function updateCount() {
   const total = document.querySelectorAll('#table-body tr').length;
   document.getElementById('result-count').textContent = `${total} residents`;
 }
+</script>
+<script>
+(function(){
+  var now = new Date();
+  var el = document.getElementById('rcl-date');
+  if (el) el.textContent =
+    now.toLocaleDateString('en-AU',{weekday:'long'}) + ' ' +
+    now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+})();
 </script>
 </body>
 </html>
