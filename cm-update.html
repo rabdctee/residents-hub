@@ -235,13 +235,13 @@
 </div>
 
 <!-- ── TOAST ── -->
-<div class="toast toast-success" id="toast-success">✅ Saved successfully</div>
+<div class="toast toast-success" id="toast-success">✅ Saved! Reloading to confirm…</div>
 <div class="toast toast-error"   id="toast-error">⚠️ Something went wrong — please try again</div>
 
 <script>
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
 const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?output=csv";
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzLxgp_7yqtX2pnCeCjU5M5gifZJoFB5dNZJL6_TpE9ppzXfnh2hi-GDkC2oJzRHrkTw/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJBsVGUur5l7ixOFKqkDHGVsThkoRBINZr7YRc4fxy4Bb0K0ifT8cpoEtoO8uMD_dN7Q/exec";
 const CM_PIN = "CMUD";
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -428,13 +428,10 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
     const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
     if (issue) { issue.category = category; issue.notes = notes; issue.status = status; }
 
-    row.querySelector(".issue-note-preview").textContent = notes || "(no notes yet)";
-    const badge = row.querySelector(".badge");
-    badge.className = "badge " + statusClass(status);
-    badge.textContent = statusIcon(status) + " " + status;
-
     row.classList.remove("editing");
     showToast("success");
+    // Reload after short delay so CM can see the toast, then confirm changes are live
+    setTimeout(() => loadIssues(), 2000);
   } catch(e) {
     showToast("error");
   }
