@@ -401,7 +401,7 @@
     var btn = document.getElementById('submitBtn');
     btn.disabled = false;
     document.getElementById('spinner').style.display = 'none';
-    document.getElementById('submitLabel').textContent = '✅ Submit Registration';
+    document.getElementById('submitLabel').textContent = 'Submit Registration';
   }
 
   function registerAnother() {
@@ -425,14 +425,14 @@
       .replace(/&/g,'&amp;').replace(/</g,'&lt;')
       .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-<script>
-(function(){
-  var now = new Date();
-  var el = document.getElementById('rfe-date');
-  if (el) el.textContent =
-    now.toLocaleDateString('en-AU',{weekday:'long'}) + ' ' +
-    now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
-})();
+
+  (function(){
+    var now = new Date();
+    var el = document.getElementById('rfe-date');
+    if (el) el.textContent =
+      now.toLocaleDateString('en-AU',{weekday:'long'}) + ' ' +
+      now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+  })();
 </script>
 
 </body>
