@@ -557,6 +557,58 @@ function showToast(type) {
   setTimeout(() => el.style.display = "none", 3500);
 }
 
+// ── DASHBOARD + PROGRESS BARS ─────────────────────────────────────────────────
+function buildDashboard() {
+  const counts = { Completed: 0, "In Progress": 0, "Not Started": 0, "On Hold": 0 };
+  issueData.forEach(r => { counts[r.status] = (counts[r.status]||0) + 1; });
+  const total = issueData.length;
+  document.getElementById("d-total").textContent = total;
+  document.getElementById("d-done").textContent  = counts["Completed"];
+  document.getElementById("d-prog").textContent  = counts["In Progress"];
+  document.getElementById("d-new").textContent   = counts["Not Started"];
+  document.getElementById("d-hold").textContent  = counts["On Hold"];
+
+  const bars = document.getElementById("progress-bars");
+  bars.innerHTML = [
+    { label: "Completed",   n: counts["Completed"],   col: "#28a745", tc: "#155724" },
+    { label: "In progress", n: counts["In Progress"], col: "#1F4E79", tc: "#1F4E79" },
+    { label: "Not started", n: counts["Not Started"], col: "#888",    tc: "#3a3a3a" },
+    { label: "On hold",     n: counts["On Hold"],     col: "#e0a800", tc: "#7a5200" },
+  ].map(b => {
+    const pct = total > 0 ? Math.round((b.n / total) * 100) : 0;
+    return `<div class="prog-row">
+      <span class="prog-name" style="color:${b.tc}">${b.label}</span>
+      <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${b.col};"></div></div>
+      <span class="prog-count" style="color:${b.tc}">${b.n}</span>
+    </div>`;
+  }).join("");
+  document.getElementById("progress-title").textContent = `Overall progress — ${total} issues`;
+  document.getElementById("progress-section").style.display = "block";
+}
+
+// ── FILTER BUTTONS ────────────────────────────────────────────────────────────
+let activeFilter = "all";
+function wireFilterBtns() {
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      activeFilter = this.dataset.filter;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === activeFilter));
+      applyFilter();
+    });
+  });
+}
+function applyFilter() {
+  document.querySelectorAll(".cat-block").forEach(block => {
+    let anyVisible = false;
+    block.querySelectorAll(".issue-row").forEach(row => {
+      const match = activeFilter === "all" || row.dataset.status === activeFilter;
+      row.style.display = match ? "" : "none";
+      if (match) anyVisible = true;
+    });
+    block.style.display = anyVisible ? "" : "none";
+  });
+}
+
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function escHtml(s) {
   if (!s) return "";
