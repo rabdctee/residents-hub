@@ -127,11 +127,6 @@
   .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── Print button ── */
-  .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: var(--navy); border: 2px solid var(--navy); border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
-  .print-btn:hover { background: var(--navy); color: #fff; }
-  .print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
   /* ── Dashboard cards ── */
   .dashboard { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; padding: 1rem 1.5rem 0.85rem; background: #f0f6ff; border-bottom: 1px solid var(--border); }
   .dash-card { border-radius: 8px; padding: 10px 8px 8px; text-align: center; border: 1.5px solid transparent; }
@@ -153,6 +148,11 @@
   .filter-btn { font-size: 0.78em; padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: #f0f4f8; color: var(--navy); cursor: pointer; font-family: var(--font); font-weight: 700; transition: background 0.15s, color 0.15s, border-color 0.15s; }
   .filter-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
   .filter-btn:hover:not(.active) { background: var(--surface); border-color: var(--navy); }
+
+    /* ── Print button ── */
+  .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: var(--navy); border: 2px solid var(--navy); border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
+  .print-btn:hover { background: var(--navy); color: #fff; }
+  .print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   @media(max-width:640px){
     .add-grid, .edit-grid { grid-template-columns: 1fr; }
@@ -298,7 +298,7 @@
 </div>
 
 <!-- ── TOAST ── -->
-<div class="toast toast-success" id="toast-success">✅ Saved!! Reloading to confirm…</div>
+<div class="toast toast-success" id="toast-success">✅ Saved! Reloading to confirm…</div>
 <div class="toast toast-error"   id="toast-error">⚠️ Something went wrong — please try again</div>
 
 <script>
@@ -360,8 +360,8 @@ function parseCSV(text) {
     }
     cols.push(cur.trim());
     // Read by position — col A=IssueNum, B=Category, C=Topic, D=Notes, E=Status, F=Source
-    const issueNum = cols[0], category = cols[1], topic = cols[2], cmNotes = cols[3], status = cols[4], source = cols[5] || "General";
-    if (category && topic && status) {
+    const issueNum = cols[0], category = cols[1], topic = cols[2], cmNotes = cols[3], status = cols[4] || "Not Started", source = cols[5] || "General";
+    if (category && topic) {
       rows.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), source: source.trim() });
     }
   }
@@ -380,58 +380,6 @@ async function loadIssues() {
   } catch(e) {
     document.getElementById("loading").textContent = "⚠️ Could not load issues. Please refresh.";
   }
-}
-
-// ── DASHBOARD + PROGRESS BARS ─────────────────────────────────────────────────
-function buildDashboard() {
-  const counts = { Completed: 0, "In Progress": 0, "Not Started": 0, "On Hold": 0 };
-  issueData.forEach(r => { counts[r.status] = (counts[r.status]||0) + 1; });
-  const total = issueData.length;
-  document.getElementById("d-total").textContent = total;
-  document.getElementById("d-done").textContent  = counts["Completed"];
-  document.getElementById("d-prog").textContent  = counts["In Progress"];
-  document.getElementById("d-new").textContent   = counts["Not Started"];
-  document.getElementById("d-hold").textContent  = counts["On Hold"];
-
-  const bars = document.getElementById("progress-bars");
-  bars.innerHTML = [
-    { label: "Completed",   n: counts["Completed"],   col: "#28a745", tc: "#155724" },
-    { label: "In progress", n: counts["In Progress"], col: "#1F4E79", tc: "#1F4E79" },
-    { label: "Not started", n: counts["Not Started"], col: "#888",    tc: "#3a3a3a" },
-    { label: "On hold",     n: counts["On Hold"],     col: "#e0a800", tc: "#7a5200" },
-  ].map(b => {
-    const pct = total > 0 ? Math.round((b.n / total) * 100) : 0;
-    return `<div class="prog-row">
-      <span class="prog-name" style="color:${b.tc}">${b.label}</span>
-      <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${b.col};"></div></div>
-      <span class="prog-count" style="color:${b.tc}">${b.n}</span>
-    </div>`;
-  }).join("");
-  document.getElementById("progress-title").textContent = `Overall progress — ${total} issues`;
-  document.getElementById("progress-section").style.display = "block";
-}
-
-// ── FILTER BUTTONS ────────────────────────────────────────────────────────────
-let activeFilter = "all";
-function wireFilterBtns() {
-  document.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-      activeFilter = this.dataset.filter;
-      document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === activeFilter));
-      applyFilter();
-    });
-  });
-}
-function applyFilter() {
-  document.querySelectorAll(".cat-block").forEach(block => {
-    let anyVisible = false;
-    block.querySelectorAll(".issue-row").forEach(row => {
-      const match = activeFilter === "all" || row.dataset.status === activeFilter;
-      row.style.display = match ? "" : "none";
-      if (match) anyVisible = true;
-    });
-    block.style.display = anyVisible ? "" : "none";
-  });
 }
 
 // ── BUILD ACCORDION ───────────────────────────────────────────────────────────
