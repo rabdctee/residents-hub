@@ -132,6 +132,28 @@
   .print-btn:hover { background: var(--navy); color: #fff; }
   .print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
+  /* ── Dashboard cards ── */
+  .dashboard { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; padding: 1rem 1.5rem 0.85rem; background: #f0f6ff; border-bottom: 1px solid var(--border); }
+  .dash-card { border-radius: 8px; padding: 10px 8px 8px; text-align: center; border: 1.5px solid transparent; }
+  .dash-num { font-size: 1.7em; font-weight: 700; line-height: 1.1; margin-bottom: 2px; }
+  .dash-lbl { font-size: 0.6em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* ── Progress bars ── */
+  .progress-section { padding: 0.8rem 1.5rem 0.7rem; background: #f0f6ff; border-bottom: 1px solid var(--border); }
+  .progress-title { font-size: 0.75em; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+  .prog-name { font-size: 0.7em; color: var(--muted); width: 88px; flex-shrink: 0; text-align: right; }
+  .prog-track { flex: 1; background: #dde8f5; border-radius: 20px; height: 13px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 20px; transition: width 0.4s ease; }
+  .prog-count { font-size: 0.7em; font-weight: 700; width: 22px; flex-shrink: 0; }
+
+  /* ── Filter pills ── */
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 0.65rem 1.5rem; border-bottom: 1px solid var(--border); align-items: center; background: #f8fbff; }
+  .filter-row span { font-size: 0.82em; color: var(--muted); }
+  .filter-btn { font-size: 0.78em; padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: #f0f4f8; color: var(--navy); cursor: pointer; font-family: var(--font); font-weight: 700; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .filter-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .filter-btn:hover:not(.active) { background: var(--surface); border-color: var(--navy); }
+
   @media(max-width:640px){
     .add-grid, .edit-grid { grid-template-columns: 1fr; }
     .add-grid .full, .edit-grid .full { grid-column: 1; }
@@ -168,6 +190,46 @@
   <div class="toolbar-left">Tap any issue to edit it. Tap <strong>Add New Issue</strong> if you wish to add a new item.</div>
   <button class="print-btn" id="print-btn" onclick="printIssues(this)" title="Print or save all issues as PDF">🖨️ Print / Save PDF</button>
   <button class="add-btn-top" onclick="toggleAddPanel()">➕ Add New Issue</button>
+</div>
+
+<!-- ── DASHBOARD CARDS ── -->
+<div class="dashboard" id="dashboard">
+  <div class="dash-card" style="background:#E7F1FB;border-color:#c5d8ee;">
+    <div class="dash-num" style="color:#1F4E79;" id="d-total">–</div>
+    <div class="dash-lbl" style="color:#1F4E79;">Total</div>
+  </div>
+  <div class="dash-card" style="background:#d4edda;border-color:#28a745;">
+    <div class="dash-num" style="color:#155724;" id="d-done">–</div>
+    <div class="dash-lbl" style="color:#155724;">Completed</div>
+  </div>
+  <div class="dash-card" style="background:#ddeeff;border-color:#1F4E79;">
+    <div class="dash-num" style="color:#1F4E79;" id="d-prog">–</div>
+    <div class="dash-lbl" style="color:#1F4E79;">In progress</div>
+  </div>
+  <div class="dash-card" style="background:#f0f0f0;border-color:#888;">
+    <div class="dash-num" style="color:#3a3a3a;" id="d-new">–</div>
+    <div class="dash-lbl" style="color:#3a3a3a;">Not started</div>
+  </div>
+  <div class="dash-card" style="background:#fff3cd;border-color:#e0a800;">
+    <div class="dash-num" style="color:#7a5200;" id="d-hold">–</div>
+    <div class="dash-lbl" style="color:#7a5200;">On hold</div>
+  </div>
+</div>
+
+<!-- ── PROGRESS BARS ── -->
+<div class="progress-section" id="progress-section" style="display:none">
+  <div class="progress-title" id="progress-title">Overall progress</div>
+  <div id="progress-bars"></div>
+</div>
+
+<!-- ── FILTER PILLS ── -->
+<div class="filter-row">
+  <span>Filter:</span>
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="Completed">Completed</button>
+  <button class="filter-btn" data-filter="In Progress">In progress</button>
+  <button class="filter-btn" data-filter="Not Started">Not started</button>
+  <button class="filter-btn" data-filter="On Hold">On hold</button>
 </div>
 
 <!-- ── MAIN ── -->
@@ -241,7 +303,7 @@
 
 <script>
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
-const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?output=csv";
+const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJBsVGUur5l7ixOFKqkDHGVsThkoRBINZr7YRc4fxy4Bb0K0ifT8cpoEtoO8uMD_dN7Q/exec";
 const CM_PIN = "CMUD";
 // ─────────────────────────────────────────────────────────────────────────────
@@ -312,10 +374,64 @@ async function loadIssues() {
     const resp = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
     const text = await resp.text();
     issueData = parseCSV(text);
+    buildDashboard();
     buildAccordion();
+    wireFilterBtns();
   } catch(e) {
     document.getElementById("loading").textContent = "⚠️ Could not load issues. Please refresh.";
   }
+}
+
+// ── DASHBOARD + PROGRESS BARS ─────────────────────────────────────────────────
+function buildDashboard() {
+  const counts = { Completed: 0, "In Progress": 0, "Not Started": 0, "On Hold": 0 };
+  issueData.forEach(r => { counts[r.status] = (counts[r.status]||0) + 1; });
+  const total = issueData.length;
+  document.getElementById("d-total").textContent = total;
+  document.getElementById("d-done").textContent  = counts["Completed"];
+  document.getElementById("d-prog").textContent  = counts["In Progress"];
+  document.getElementById("d-new").textContent   = counts["Not Started"];
+  document.getElementById("d-hold").textContent  = counts["On Hold"];
+
+  const bars = document.getElementById("progress-bars");
+  bars.innerHTML = [
+    { label: "Completed",   n: counts["Completed"],   col: "#28a745", tc: "#155724" },
+    { label: "In progress", n: counts["In Progress"], col: "#1F4E79", tc: "#1F4E79" },
+    { label: "Not started", n: counts["Not Started"], col: "#888",    tc: "#3a3a3a" },
+    { label: "On hold",     n: counts["On Hold"],     col: "#e0a800", tc: "#7a5200" },
+  ].map(b => {
+    const pct = total > 0 ? Math.round((b.n / total) * 100) : 0;
+    return `<div class="prog-row">
+      <span class="prog-name" style="color:${b.tc}">${b.label}</span>
+      <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${b.col};"></div></div>
+      <span class="prog-count" style="color:${b.tc}">${b.n}</span>
+    </div>`;
+  }).join("");
+  document.getElementById("progress-title").textContent = `Overall progress — ${total} issues`;
+  document.getElementById("progress-section").style.display = "block";
+}
+
+// ── FILTER BUTTONS ────────────────────────────────────────────────────────────
+let activeFilter = "all";
+function wireFilterBtns() {
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", function() {
+      activeFilter = this.dataset.filter;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === activeFilter));
+      applyFilter();
+    });
+  });
+}
+function applyFilter() {
+  document.querySelectorAll(".cat-block").forEach(block => {
+    let anyVisible = false;
+    block.querySelectorAll(".issue-row").forEach(row => {
+      const match = activeFilter === "all" || row.dataset.status === activeFilter;
+      row.style.display = match ? "" : "none";
+      if (match) anyVisible = true;
+    });
+    block.style.display = anyVisible ? "" : "none";
+  });
 }
 
 // ── BUILD ACCORDION ───────────────────────────────────────────────────────────
@@ -335,7 +451,7 @@ function buildAccordion() {
       const uid = `issue-${catName.replace(/\s+/g,'-')}-${idx}`;
       const notePreview = issue.notes || "(no notes yet)";
       return `
-        <div class="issue-row" id="${uid}">
+        <div class="issue-row" id="${uid}" data-status="${escHtml(issue.status)}">
           <div class="issue-summary" onclick="toggleEdit('${uid}')">
             <div class="issue-left">
               <div class="issue-title">${issue.issueNum ? `<span style="font-size:0.78em;color:var(--muted);font-weight:600;margin-right:6px;">${escHtml(issue.issueNum)}</span>` : ""}${escHtml(issue.topic)}</div>
