@@ -376,34 +376,19 @@
 
   // ── Write link back to Events sheet column F ───────────
   function updateEventsLink(driveLink, callback) {
-    if (!eventRow || !eventName) { callback(); return; }
+    if (!eventRow) { callback(); return; }
 
-    // Fetch current event data so we can pass all required fields to editEvent
-    fetch(EVENTS_SCRIPT_URL + '?action=getEvents')
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        var events = data.events || [];
-        var match  = events.find(function(ev) {
-          return ev.row == eventRow;
-        });
-        if (!match) { callback(); return; }
-        return fetch(EVENTS_SCRIPT_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({
-            action:   'editEvent',
-            row:      match.row,
-            name:     match.name,
-            date:     match.date,
-            time:     match.time,
-            location: match.location,
-            email:    match.email,
-            link:     driveLink
-          })
-        });
+    fetch(EVENTS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({
+        action: 'updateEventLink',
+        row:    eventRow,
+        link:   driveLink
       })
-      .then(function() { callback(); })
-      .catch(function() { callback(); }); // non-fatal — upload still succeeded
+    })
+    .then(function() { callback(); })
+    .catch(function() { callback(); }); // non-fatal — upload still succeeded
   }
 
   // ── Auto-update widget link ─────────────────────────────
