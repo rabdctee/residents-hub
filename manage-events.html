@@ -369,10 +369,16 @@
           <input class="form-input" type="email" id="evtEmail" placeholder="e.g. bdsc.convenor@gmail.com" value="bdsc.convenor@gmail.com">
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="evtLink">Link <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
-          <div class="form-hint">Paste a Google Drive PDF link or web address — e.g. a flyer or programme</div>
-          <input class="form-input" type="url" id="evtLink" placeholder="e.g. https://drive.google.com/file/d/…/view">
+        <!-- Link is set via Upload Doc after saving — hidden from the form -->
+        <input type="hidden" id="evtLink">
+
+        <div class="form-group" id="uploadDocGroup" style="display:none;">
+          <label class="form-label">Document</label>
+          <div class="form-hint" style="margin-bottom:8px;">Event saved — you can now upload a PDF flyer or programme.</div>
+          <button type="button" class="btn-upload" id="uploadDocBtn" onclick="uploadDocFromForm()">📎 Upload Doc</button>
+          <span id="uploadDocLinkDisplay" style="display:none; margin-left:10px; font-size:0.85em;">
+            🔗 <a id="uploadDocLink" href="#" target="_blank" rel="noopener">View uploaded document</a>
+          </span>
         </div>
 
         <hr class="divider">
@@ -649,13 +655,14 @@
     window.location.href = 'upload-event-document.html?' + params.toString();
   }
 
-  function loadEvents() {
+  function loadEvents(cb) {
     document.getElementById('eventList').innerHTML = '<div class="status-msg">Loading events…</div>';
     fetch(EVENTS_URL + '?action=getEvents')
       .then(function(r){ return r.json(); })
       .then(function(data){
         allEvents = data.events || [];
         renderEventList();
+        if (cb) cb(allEvents);
       })
       .catch(function(){
         document.getElementById('eventList').innerHTML =
@@ -722,9 +729,27 @@
         btn.disabled = false;
         btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
         if (data.status === 'ok') {
-          showAlert('alertForm','success', row ? 'Event updated successfully.' : 'Event added successfully.');
-          cancelEdit();
-          loadEvents();
+          if (row) {
+            showAlert('alertForm','success','Event updated successfully.');
+            cancelEdit();
+            loadEvents();
+          } else {
+            showAlert('alertForm','success','Event added! You can now upload a document below, or add another event.');
+            loadEvents(function(newEvents) {
+              var match = (newEvents || allEvents).filter(function(e){ return e.name === name; });
+              if (match.length) {
+                document.getElementById('editRow').value = match[match.length - 1].row;
+              }
+            });
+            document.getElementById('evtDate').value     = '';
+            document.getElementById('evtTime').value     = '';
+            document.getElementById('evtLocation').value = '';
+            document.getElementById('evtEmail').value    = 'bdsc.convenor@gmail.com';
+            document.getElementById('evtLink').value     = '';
+            document.getElementById('cancelBtn').style.display = 'inline-flex';
+            document.getElementById('uploadDocGroup').style.display = 'block';
+            document.getElementById('uploadDocLinkDisplay').style.display = 'none';
+          }
         } else {
           showAlert('alertForm','error','Error: ' + (data.message || 'Please try again.'));
         }
@@ -746,6 +771,24 @@
     document.getElementById('evtLink').value     = '';
     document.getElementById('submitBtn').textContent = '✓ Add Event';
     document.getElementById('cancelBtn').style.display = 'none';
+    document.getElementById('uploadDocGroup').style.display = 'none';
+    document.getElementById('uploadDocLinkDisplay').style.display = 'none';
+  }
+
+  function uploadDocFromForm() {
+    var row  = document.getElementById('editRow').value;
+    var name = document.getElementById('evtName').value.trim();
+    var link = document.getElementById('evtLink').value.trim();
+    if (!row || !name) {
+      alert('Please save the event first before uploading a document.');
+      return;
+    }
+    // Find the saved event to get its date
+    var match = allEvents.filter(function(e){ return e.row == row; });
+    var date  = match.length ? match[0].date : '';
+    var params = new URLSearchParams({ event: name, date: date, row: row });
+    if (link) params.set('existingLink', link);
+    window.location.href = 'upload-event-document.html?' + params.toString();
   }
 
   // ── Edit modal ──
