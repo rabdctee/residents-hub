@@ -642,6 +642,22 @@
     return days[date.getDay()] + ', ' + months[date.getMonth()] + ' ' + date.getDate();
   }
 
+  // Sanitise any date string for widget display — handles raw Date toString values
+  function safeWidgetDate(dateStr) {
+    if (!dateStr) return '';
+    // Already in clean format like 'Tue, Jul 21' — return as-is
+    if (/^[A-Z][a-z]+,\s/.test(dateStr)) return dateStr;
+    // Raw Date toString e.g. 'Tue Jul 21 2026 00:00:00 GMT+1000 ...'
+    var raw = new Date(dateStr);
+    if (!isNaN(raw.getTime())) {
+      var days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return days[raw.getDay()] + ', ' + months[raw.getMonth()] + ' ' + raw.getDate();
+    }
+    // dd/mm/yyyy or yyyy-mm-dd — run through toWidgetDate
+    return toWidgetDate(toInputDate(dateStr));
+  }
+
   // ═══════════════════════════════════════════════════════════
   // TAB 1 — ALL EVENTS
   // ═══════════════════════════════════════════════════════════
@@ -926,7 +942,7 @@
         '<div class="event-drag" title="Drag to reorder">⠿</div>' +
         '<div class="widget-event-info">' +
           '<div class="widget-event-name">' + esc(ev.name) + '</div>' +
-          '<div class="widget-event-meta">📅 ' + esc(ev.date) + '</div>' +
+          '<div class="widget-event-meta">📅 ' + esc(safeWidgetDate(ev.date)) + '</div>' +
           (ev.link ? '<div class="widget-event-link">🔗 ' + esc(ev.link) + '</div>' : '') +
         '</div>' +
         '<div class="widget-event-actions">' +
@@ -945,7 +961,7 @@
     var html = '';
     widgetEvents.forEach(function(ev) {
       html += '<div class="preview-event">' +
-        '<span class="preview-date">' + esc(ev.date) + '</span>' +
+        '<span class="preview-date">' + esc(safeWidgetDate(ev.date)) + '</span>' +
         '<span class="preview-name">' +
           (ev.link
             ? '<a href="' + esc(ev.link) + '" target="_blank" style="color:var(--navy);text-decoration:none;">' + esc(ev.name) + ' 🔗</a>'
@@ -1181,12 +1197,16 @@
     })
     .then(function(r){ return r.json(); })
     .then(function(){
-      closeDeleteWidget(); showToast('Removed from widget ✓');
+      closeDeleteWidget();
+      btn.disabled = false; btn.textContent = 'Remove';
+      showToast('Removed from widget ✓');
       loadWidgetEvents(); loadEventsForPicker();
     })
     .catch(function(){
-      closeDeleteWidget(); showToast('Removed from widget ✓');
-      setTimeout(function(){ loadWidgetEvents(); loadEventsForPicker(); }, 1000);
+      closeDeleteWidget();
+      btn.disabled = false; btn.textContent = 'Remove';
+      showToast('Could not remove — please try again.', true);
+      loadWidgetEvents(); loadEventsForPicker();
     });
   }
 
