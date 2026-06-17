@@ -160,7 +160,7 @@
     <div class="top-bar-title">📎 Upload Event Document</div>
     <div class="top-bar-sub">Social Club — Events Management</div>
   </div>
-  <button class="back-btn" onclick="smartBack('role-admin.html')">← Back</button>
+  <button class="back-btn" onclick="smartBack('manage-events.html')">← Back</button>
 </div>
 
 <div class="content">
@@ -453,12 +453,7 @@
 
   // ── Smart back navigation ─────────────────────────────────────────────────
   function smartBack(fallback) {
-    var ref = document.referrer;
-    if (ref && ref.includes("role-admin.html")) {
-      window.location.href = "role-admin.html";
-    } else {
-      window.location.href = fallback || "committee.html";
-    }
+    window.location.href = fallback || 'manage-events.html';
   }
 </script>
 </body>
