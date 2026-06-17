@@ -148,6 +148,9 @@
   .filter-btn { font-size: 0.78em; padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: #f0f4f8; color: var(--navy); cursor: pointer; font-family: var(--font); font-weight: 700; transition: background 0.15s, color 0.15s, border-color 0.15s; }
   .filter-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
   .filter-btn:hover:not(.active) { background: var(--surface); border-color: var(--navy); }
+  .search-wrap { display: flex; align-items: center; gap: 6px; background: #fff; border: 2px solid var(--navy); border-radius: 8px; padding: 5px 12px; margin-left: auto; }
+  .search-wrap input { border: none; outline: none; font-size: 0.8em; font-family: var(--font); color: var(--text); background: transparent; width: 160px; }
+  .search-clear { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 1em; padding: 0 2px; line-height: 1; display: none; }
 
     /* ── Print button ── */
   .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: var(--navy); border: 2px solid var(--navy); border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
@@ -230,6 +233,14 @@
   <button class="filter-btn" data-filter="In Progress">In progress</button>
   <button class="filter-btn" data-filter="Not Started">Not started</button>
   <button class="filter-btn" data-filter="On Hold">On hold</button>
+  <div class="search-wrap">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <circle cx="6.5" cy="6.5" r="4.5" stroke="#1F4E79" stroke-width="1.5"/>
+      <line x1="10" y1="10" x2="14" y2="14" stroke="#1F4E79" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <input type="text" id="search-input" placeholder="Search issues…" aria-label="Search issues">
+    <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
+  </div>
 </div>
 
 <!-- ── MAIN ── -->
@@ -348,25 +359,40 @@ function statusIcon(s) {
 
 // ── CSV PARSER ────────────────────────────────────────────────────────────────
 function parseCSV(text) {
-  const lines = text.trim().split("\n");
-  const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cols = []; let cur = "", inQ = false;
-    for (let c = 0; c < lines[i].length; c++) {
-      const ch = lines[i][c];
-      if (ch === '"') { inQ = !inQ; }
-      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
-      else { cur += ch; }
+  // Robust parser that handles newlines inside quoted fields
+  const allRows = [];
+  let cur = "", inQ = false, cols = [];
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      if (inQ && text[i+1] === '"') { cur += '"'; i++; }
+      else { inQ = !inQ; }
+    } else if (ch === ',' && !inQ) {
+      cols.push(cur.trim()); cur = "";
+    } else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQ) {
+      if (ch === '\r') i++;
+      cols.push(cur.trim()); cur = "";
+      allRows.push(cols); cols = [];
+    } else {
+      cur += ch;
     }
-    cols.push(cur.trim());
-    // Read by position — col A=IssueNum, B=Category, C=Topic, D=Notes, E=Status, F=Source
-    const issueNum = cols[0], category = cols[1], topic = cols[2], cmNotes = cols[3], status = cols[4] || "Not Started", source = cols[5] || "General";
+  }
+  if (cur || cols.length) { cols.push(cur.trim()); allRows.push(cols); }
+
+  if (allRows.length < 2) return [];
+  const rows = [];
+  for (let i = 1; i < allRows.length; i++) {
+    const c = allRows[i];
+    // Col A=IssueNum, B=Category, C=Topic, D=Notes, E=Status, F=Source
+    const issueNum = c[0], category = c[1], topic = c[2], cmNotes = c[3], status = c[4] || "Not Started", source = c[5] || "General";
     if (category && topic) {
       rows.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), source: source.trim() });
     }
   }
   return rows;
 }
+
+
 
 // ── LOAD ──────────────────────────────────────────────────────────────────────
 async function loadIssues() {
@@ -586,24 +612,46 @@ function buildDashboard() {
   document.getElementById("progress-section").style.display = "block";
 }
 
-// ── FILTER BUTTONS ────────────────────────────────────────────────────────────
+// ── FILTER + SEARCH ──────────────────────────────────────────────────────────
 let activeFilter = "all";
+let searchTerm = "";
 function wireFilterBtns() {
   document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.addEventListener("click", function() {
       activeFilter = this.dataset.filter;
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === activeFilter));
+      const si = document.getElementById("search-input");
+      const sc = document.getElementById("search-clear");
+      if (si) { si.value = ""; searchTerm = ""; sc.style.display = "none"; }
       applyFilter();
     });
   });
+  const si = document.getElementById("search-input");
+  const sc = document.getElementById("search-clear");
+  if (si) {
+    si.addEventListener("input", () => {
+      searchTerm = si.value.toLowerCase().trim();
+      sc.style.display = searchTerm ? "block" : "none";
+      applyFilter();
+    });
+    sc.addEventListener("click", () => {
+      si.value = ""; searchTerm = ""; sc.style.display = "none";
+      applyFilter();
+    });
+  }
 }
 function applyFilter() {
   document.querySelectorAll(".cat-block").forEach(block => {
     let anyVisible = false;
     block.querySelectorAll(".issue-row").forEach(row => {
-      const match = activeFilter === "all" || row.dataset.status === activeFilter;
-      row.style.display = match ? "" : "none";
-      if (match) anyVisible = true;
+      const statusMatch = activeFilter === "all" || row.dataset.status === activeFilter;
+      const searchMatch = !searchTerm ||
+        (row.dataset.topic && row.dataset.topic.includes(searchTerm)) ||
+        (row.dataset.issuenum && row.dataset.issuenum.includes(searchTerm)) ||
+        (row.querySelector(".issue-note-preview") || {textContent:""}).textContent.toLowerCase().includes(searchTerm);
+      const show = statusMatch && searchMatch;
+      row.style.display = show ? "" : "none";
+      if (show) anyVisible = true;
     });
     block.style.display = anyVisible ? "" : "none";
   });
