@@ -425,7 +425,7 @@ function buildAccordion() {
       const uid = `issue-${catName.replace(/\s+/g,'-')}-${idx}`;
       const notePreview = issue.notes || "(no notes yet)";
       return `
-        <div class="issue-row" id="${uid}" data-status="${escHtml(issue.status)}">
+        <div class="issue-row" id="${uid}" data-status="${escHtml(issue.status)}" data-topic="${escHtml(issue.topic).toLowerCase()}" data-issuenum="${escHtml(issue.issueNum).toLowerCase()}">
           <div class="issue-summary" onclick="toggleEdit('${uid}')">
             <div class="issue-left">
               <div class="issue-title">${issue.issueNum ? `<span style="font-size:0.78em;color:var(--muted);font-weight:600;margin-right:6px;">${escHtml(issue.issueNum)}</span>` : ""}${escHtml(issue.topic)}</div>
