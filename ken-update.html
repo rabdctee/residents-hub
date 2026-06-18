@@ -542,26 +542,19 @@ function parseCSV(text) {
     return cols;
   }
 
-  // Use header row to find columns by name (case-insensitive, partial match)
-  const headers = parseLine(lines[0]).map(h => h.toLowerCase());
-  const ci = name => headers.findIndex(h => h.includes(name.toLowerCase()));
-
-  const iCat    = ci("category");
-  const iTopic  = ci("topic");
-  const iNotes  = ci("notes");      // CM Notes or Notes
-  const iStatus = ci("status");
-  const iSource = ci("source");
-
+  // Read columns by position to match the sheet layout exactly:
+  // col 0=issueNum, 1=category, 2=topic, 3=cmNotes, 4=status, 5=source
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
-    const cols = parseLine(lines[i]);
-    const category = iCat    >= 0 ? (cols[iCat]    || "").trim() : "";
-    const topic    = iTopic  >= 0 ? (cols[iTopic]   || "").trim() : "";
-    const notes    = iNotes  >= 0 ? (cols[iNotes]   || "").trim() : "";
-    const status   = iStatus >= 0 ? (cols[iStatus]  || "Not Started").trim() : "Not Started";
-    const source   = iSource >= 0 ? (cols[iSource]  || "General").trim() : "General";
+    const c = parseLine(lines[i]);
+    const issueNum = (c[0] || "").trim();
+    const category = (c[1] || "").trim();
+    const topic    = (c[2] || "").trim();
+    const notes    = (c[3] || "").trim();
+    const status   = (c[4] || "Not Started").trim();
+    const source   = (c[5] || "General").trim();
     if (category && topic) {
-      rows.push({ category, topic, notes, status, source });
+      rows.push({ issueNum, category, topic, notes, status, source });
     }
   }
   return rows;
