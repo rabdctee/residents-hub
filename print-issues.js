@@ -20,19 +20,32 @@
   /* ── Helpers ── */
 
   function parseCSV(text) {
-    const lines = text.trim().split("\n");
-    const rows = [];
-    for (let i = 1; i < lines.length; i++) {
-      const cols = []; let cur = "", inQ = false;
-      for (let c = 0; c < lines[i].length; c++) {
-        const ch = lines[i][c];
-        if (ch === '"') { inQ = !inQ; }
-        else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
-        else { cur += ch; }
+    // Robust parser that handles newlines inside quoted fields
+    const allRows = [];
+    let cur = "", inQ = false, cols = [];
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (ch === '"') {
+        if (inQ && text[i+1] === '"') { cur += '"'; i++; }
+        else { inQ = !inQ; }
+      } else if (ch === ',' && !inQ) {
+        cols.push(cur.trim()); cur = "";
+      } else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQ) {
+        if (ch === '\r') i++;
+        cols.push(cur.trim()); cur = "";
+        allRows.push(cols); cols = [];
+      } else {
+        cur += ch;
       }
-      cols.push(cur.trim());
-      const issueNum = cols[0], category = cols[1], topic = cols[2],
-            cmNotes  = cols[3], status   = cols[4], source = cols[5] || "General";
+    }
+    if (cur || cols.length) { cols.push(cur.trim()); allRows.push(cols); }
+
+    if (allRows.length < 2) return [];
+    const rows = [];
+    for (let i = 1; i < allRows.length; i++) {
+      const c = allRows[i];
+      const issueNum = c[0], category = c[1], topic = c[2],
+            cmNotes  = c[3], status   = c[4], source = c[5] || "General";
       if (category && topic && status) {
         rows.push({
           issueNum: (issueNum || "").trim(),
