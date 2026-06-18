@@ -390,18 +390,27 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SRoD_AgQ
 let allActions = [];
 let editingRow = null;
 
-// Parse a single CSV line handling quoted fields
-function parseCSVLine(line) {
-  const cols = [];
-  let cur = "", inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') { inQ = !inQ; }
-    else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
-    else { cur += ch; }
+// Robust CSV parser — handles newlines inside quoted fields
+function parseCSVFull(text) {
+  const allRows = [];
+  let cur = "", inQ = false, cols = [];
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      if (inQ && text[i+1] === '"') { cur += '"'; i++; }
+      else { inQ = !inQ; }
+    } else if (ch === ',' && !inQ) {
+      cols.push(cur.trim()); cur = "";
+    } else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQ) {
+      if (ch === '\r') i++;
+      cols.push(cur.trim()); cur = "";
+      allRows.push(cols); cols = [];
+    } else {
+      cur += ch;
+    }
   }
-  cols.push(cur.trim());
-  return cols;
+  if (cur || cols.length) { cols.push(cur.trim()); allRows.push(cols); }
+  return allRows; // includes header row at index 0
 }
 
 function loadActions() {
@@ -413,11 +422,11 @@ function loadActions() {
     .then(r => r.text())
     .then(csv => {
       document.getElementById("table-loading").style.display = "none";
-      const lines = csv.split("\n").filter(l => l.trim());
+      const allRows = parseCSVFull(csv).slice(1).filter(r => r.length > 0);
       // Row 1 is the header — skip it; data starts at row index 1 (sheet row 2)
       allActions = [];
-      for (let i = 1; i < lines.length; i++) {
-        const c = parseCSVLine(lines[i]);
+      for (let i = 0; i < allRows.length; i++) {
+        const c = allRows[i];
         if (!c[0]) continue; // skip blank ref
         allActions.push({
           row:      i + 1,   // 1-based sheet row: header=row1, i=1 → sheet row 2

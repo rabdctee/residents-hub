@@ -525,28 +525,31 @@ function switchTab(tab) {
 
 // ── PARSE CSV ─────────────────────────────────────────────────────────────────
 function parseCSV(text) {
-  const lines = text.trim().replace(/\r/g, "").split("\n");
-  if (lines.length < 2) return [];
-
-  // Parse a single CSV line respecting quoted fields
-  function parseLine(line) {
-    const cols = [];
-    let cur = "", inQ = false;
-    for (let c = 0; c < line.length; c++) {
-      const ch = line[c];
-      if (ch === '"') { inQ = !inQ; }
-      else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
-      else { cur += ch; }
+  // Robust parser that handles newlines inside quoted fields
+  const allRows = [];
+  let cur = "", inQ = false, cols = [];
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      if (inQ && text[i+1] === '"') { cur += '"'; i++; }
+      else { inQ = !inQ; }
+    } else if (ch === ',' && !inQ) {
+      cols.push(cur.trim()); cur = "";
+    } else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQ) {
+      if (ch === '\r') i++;
+      cols.push(cur.trim()); cur = "";
+      allRows.push(cols); cols = [];
+    } else {
+      cur += ch;
     }
-    cols.push(cur.trim());
-    return cols;
   }
+  if (cur || cols.length) { cols.push(cur.trim()); allRows.push(cols); }
 
-  // Read columns by position to match the sheet layout exactly:
+  if (allRows.length < 2) return [];
   // col 0=issueNum, 1=category, 2=topic, 3=cmNotes, 4=status, 5=source
   const rows = [];
-  for (let i = 1; i < lines.length; i++) {
-    const c = parseLine(lines[i]);
+  for (let i = 1; i < allRows.length; i++) {
+    const c = allRows[i];
     const issueNum = (c[0] || "").trim();
     const category = (c[1] || "").trim();
     const topic    = (c[2] || "").trim();
