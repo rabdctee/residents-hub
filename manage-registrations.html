@@ -261,7 +261,7 @@
           <th>People</th>
           <th>Email</th>
           <th>Dietary</th>
-          <th>Paid</th>
+          <th class="paid-col-hdr">Paid</th>
           <th>Source</th>
           <th>Actions</th>
         </tr>
@@ -299,7 +299,7 @@
       <label class="form-label">Dietary Requirements</label>
       <textarea class="form-textarea" id="editDietary" placeholder="e.g. Gluten free, vegetarian — leave blank if none"></textarea>
     </div>
-    <div class="form-group">
+    <div class="form-group" id="paymentWrap">
       <label class="form-label">Payment Received</label>
       <div class="paid-toggle-wrap">
         <button class="paid-toggle" id="paidToggle" onclick="togglePaid()" type="button"></button>
@@ -340,6 +340,18 @@
   var paidValue        = false;
   var activeFilter     = 'all';   // 'all' | 'paid' | 'unpaid' | 'dietary'
 
+  function isFreeEvent() {
+    return currentEvent.trim().toUpperCase().startsWith('FREE EVENT');
+  }
+
+  function applyFreeEventUI() {
+    var free = isFreeEvent();
+    var th = document.querySelector('th.paid-col-hdr');
+    if (th) th.style.display = free ? 'none' : '';
+    var payWrap = document.getElementById('paymentWrap');
+    if (payWrap) payWrap.style.display = free ? 'none' : '';
+  }
+
   // ── Load events into dropdown ──────────────────────────────
   function loadEvents() {
     fetch(SCRIPT_URL + '?action=getEvents')
@@ -367,6 +379,7 @@
   // ── Load registrations for selected event ─────────────────
   function loadRegistrations() {
     currentEvent = document.getElementById('eventSelect').value;
+    applyFreeEventUI();
     if (!currentEvent) {
       document.getElementById('regBody').innerHTML =
         '<tr><td colspan="8" class="status-msg">Select an event to view registrations.</td></tr>';
@@ -410,9 +423,11 @@
 
     var html = '';
     rows.forEach(function(r) {
-      var paidBadge = r.paid
-        ? '<span class="paid-badge paid-yes">✓ Paid</span>'
-        : '<span class="paid-badge paid-no">✗ Unpaid</span>';
+      var paidBadge = isFreeEvent()
+        ? '<span class="paid-badge" style="background:#e8f5ee;color:#1a6b3a;border-color:#a8d5b8;">Free</span>'
+        : r.paid
+            ? '<span class="paid-badge paid-yes">✓ Paid</span>'
+            : '<span class="paid-badge paid-no">✗ Unpaid</span>';
 
       // Determine source
       var ts = r.timestamp ? r.timestamp.toString().toLowerCase() : '';
@@ -463,13 +478,17 @@
       if (r.dietary && r.dietary.trim() && r.dietary.toLowerCase() !== 'nil') dietary += n;
     });
     var af = activeFilter;
+    var free = isFreeEvent();
     document.getElementById('summary').innerHTML =
       '<div class="summary-pill' + (af==='all'?' active':'') + '" onclick="setPillFilter(\'all\')" title="Show all registrations">' +
         '<strong>' + totalPeople + '</strong> all people</div>' +
-      '<div class="summary-pill' + (af==='paid'?' active':'') + '" style="border-color:#a8d5b8;" onclick="setPillFilter(\'paid\')" title="Click to show paid only">' +
-        '<strong style="color:var(--green);">' + paid + '</strong> paid</div>' +
-      '<div class="summary-pill' + (af==='unpaid'?' active':'') + '" style="border-color:#f1b0a8;" onclick="setPillFilter(\'unpaid\')" title="Click to show unpaid only">' +
-        '<strong style="color:var(--red);">' + unpaid + '</strong> unpaid</div>' +
+      (free
+        ? '<div class="summary-pill" style="border-color:#1a6b3a;background:#e8f5ee;cursor:default;">' +
+            '<strong style="color:#1a6b3a;">Free</strong> no charge</div>'
+        : '<div class="summary-pill' + (af==='paid'?' active':'') + '" style="border-color:#a8d5b8;" onclick="setPillFilter(\'paid\')" title="Click to show paid only">' +
+            '<strong style="color:var(--green);">' + paid + '</strong> paid</div>' +
+          '<div class="summary-pill' + (af==='unpaid'?' active':'') + '" style="border-color:#f1b0a8;" onclick="setPillFilter(\'unpaid\')" title="Click to show unpaid only">' +
+            '<strong style="color:var(--red);">' + unpaid + '</strong> unpaid</div>') +
       (dietary > 0
         ? '<div class="summary-pill' + (af==='dietary'?' active':'') + '" style="border-color:#f5c518;" onclick="setPillFilter(\'dietary\')" title="Click to show dietary requirements only">' +
             '<strong style="color:var(--orange);">' + dietary + '</strong> dietary req.</div>'
@@ -560,7 +579,7 @@
         row:     editingRow,
         number:  document.getElementById('editNumber').value,
         dietary: document.getElementById('editDietary').value.trim(),
-        paid:    paidValue
+        paid:    isFreeEvent() ? true : paidValue
       };
     } else {
       var name = document.getElementById('editName').value.trim();
@@ -588,7 +607,7 @@
         email:   document.getElementById('editEmail').value.trim(),
         number:  document.getElementById('editNumber').value,
         dietary: document.getElementById('editDietary').value.trim(),
-        paid:    paidValue
+        paid:    isFreeEvent() ? true : paidValue
       };
     }
 

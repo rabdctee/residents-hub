@@ -152,6 +152,10 @@
       <div class="tally-num" id="sum-unpaid">—</div>
       <div class="tally-lbl">unpaid</div>
     </div>
+    <div class="tally-card" id="card-free" style="display:none;border-color:#1a6b3a;background:#e8f5ee;cursor:default;" title="Free event — no charge">
+      <div class="tally-num" style="color:#1a6b3a;">Free</div>
+      <div class="tally-lbl" style="color:#1a6b3a;">no charge</div>
+    </div>
     <div class="tally-card tally-dietary" id="sum-dietary-card" style="display:none;" onclick="setTallyFilter('dietary')" title="Click to show dietary requirements only">
       <div class="tally-num" id="sum-dietary">—</div>
       <div class="tally-lbl">dietary req.</div>
@@ -173,6 +177,24 @@
     let allRows    = [];   // array of objects, one per data row
     let headers    = [];   // column names from row 1
     let activeFilter = 'all';  // 'all' | 'paid' | 'unpaid' | 'dietary'
+
+    function isFreeEvent() {
+      const sel = document.getElementById('event-select');
+      return sel ? sel.value.trim().toUpperCase().startsWith('FREE EVENT') : false;
+    }
+
+    function applyFreeEventTallyUI() {
+      const free = isFreeEvent();
+      const paidCard   = document.getElementById('card-paid');
+      const unpaidCard = document.getElementById('card-unpaid');
+      const freeCard   = document.getElementById('card-free');
+      if (paidCard)   paidCard.style.display  = free ? 'none' : '';
+      if (unpaidCard) unpaidCard.style.display = free ? 'none' : '';
+      if (freeCard)   freeCard.style.display   = free ? ''     : 'none';
+      if (free && (activeFilter === 'paid' || activeFilter === 'unpaid')) {
+        activeFilter = 'all';
+      }
+    }
 
     // ── Fetch & parse CSV ─────────────────────────────────────────────────
     async function loadData() {
@@ -274,6 +296,7 @@
     // ── Reset pill filter when event changes ──────────────────────────────
     document.getElementById('event-select').addEventListener('change', function() {
       activeFilter = 'all';
+      applyFreeEventTallyUI();
     });
 
     // ── Tally pill filter ─────────────────────────────────────────────────
@@ -357,7 +380,11 @@
 
       // Build a sensible column order
       const displayCols = [];
-      [nameCol, numCol, unitCol, emailCol, dietCol, paidCol, tsCol].forEach(i => {
+      // For free events, exclude the paid column from display
+      const displayColList = isFreeEvent()
+        ? [nameCol, numCol, unitCol, emailCol, dietCol, tsCol]
+        : [nameCol, numCol, unitCol, emailCol, dietCol, paidCol, tsCol];
+      displayColList.forEach(i => {
         if (i >= 0 && !displayCols.includes(i)) displayCols.push(i);
       });
       // Add any remaining columns not yet included
@@ -421,6 +448,7 @@
         if (activeFilter === 'dietary') { activeFilter = 'all'; }
       }
       document.getElementById('summary-bar').style.display = '';
+      applyFreeEventTallyUI();
 
       // Sync active state on cards
       ['all','paid','unpaid'].forEach(function(f) {
