@@ -380,7 +380,6 @@
 
       // Build a sensible column order
       const displayCols = [];
-      // For free events, exclude the paid column from display
       const displayColList = isFreeEvent()
         ? [nameCol, numCol, unitCol, emailCol, dietCol, tsCol]
         : [nameCol, numCol, unitCol, emailCol, dietCol, paidCol, tsCol];
@@ -406,13 +405,15 @@
         html += '<tr>';
         displayCols.forEach(i => {
           const val = (row[i] || '').trim();
-          if (i === paidCol) {
+          if (i === paidCol && !isFreeEvent()) {
             const lower = val.toLowerCase();
             const cls   = lower === 'true' || lower === 'yes' || val === '✓' || val === 'TRUE'
                           ? 'paid-yes' : (val ? 'paid-no' : '');
             const label = lower === 'true' || val === 'TRUE' ? '✓ Yes'
                         : lower === 'false' || val === 'FALSE' ? '✗ No' : val;
             html += `<td class="${cls}">${escHtml(label)}</td>`;
+          } else if (i === paidCol) {
+            // free event — skip paid column
           } else {
             html += `<td>${escHtml(val)}</td>`;
           }

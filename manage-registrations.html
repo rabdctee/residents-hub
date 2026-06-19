@@ -346,8 +346,10 @@
 
   function applyFreeEventUI() {
     var free = isFreeEvent();
+    // Hide/show Paid column header
     var th = document.querySelector('th.paid-col-hdr');
     if (th) th.style.display = free ? 'none' : '';
+    // Hide/show Payment Received toggle in modals
     var payWrap = document.getElementById('paymentWrap');
     if (payWrap) payWrap.style.display = free ? 'none' : '';
   }
@@ -423,15 +425,13 @@
 
     var html = '';
     rows.forEach(function(r) {
-      var paidBadge = isFreeEvent()
-        ? '<span class="paid-badge" style="background:#e8f5ee;color:#1a6b3a;border-color:#a8d5b8;">Free</span>'
-        : r.paid
-            ? '<span class="paid-badge paid-yes">✓ Paid</span>'
-            : '<span class="paid-badge paid-no">✗ Unpaid</span>';
-
       // Determine source
       var ts = r.timestamp ? r.timestamp.toString().toLowerCase() : '';
       var source = (ts === 'paper' || ts === 'mailbox drop') ? '📄 Paper' : '🌐 Online';
+      var paidCell = isFreeEvent() ? '' :
+        '<td>' + (r.paid
+          ? '<span class="paid-badge paid-yes">✓ Paid</span>'
+          : '<span class="paid-badge paid-no">✗ Unpaid</span>') + '</td>';
 
       html += '<tr>' +
         '<td><strong>' + esc(r.name) + '</strong></td>' +
@@ -439,7 +439,7 @@
         '<td style="text-align:center;">' + esc(r.number) + '</td>' +
         '<td>' + esc(r.email) + '</td>' +
         '<td>' + (r.dietary ? esc(r.dietary) : '<span style="color:#aaa">—</span>') + '</td>' +
-        '<td>' + paidBadge + '</td>' +
+        paidCell +
         '<td style="font-size:0.82em;">' + source + '</td>' +
         '<td style="white-space:nowrap;">' +
           '<button class="btn-edit" onclick="openEditModal(' + r.row + ')">✏️ Edit</button>' +
