@@ -486,10 +486,6 @@
       // Sub-filter by tally pill selection
       const paidColSub  = col('paid');
       const dietColSub  = col('diet');
-      // For free events exclude paid column
-      const displayColList = isFreeEvent()
-        ? [nameCol, numCol, unitCol, emailCol, dietCol, tsCol]
-        : [nameCol, numCol, unitCol, emailCol, dietCol, paidCol, tsCol];
 
       // Sort by unit number (numeric), then name
       const unitColSort = col('unit');
@@ -557,6 +553,11 @@
       const emailCol = col('email');
       const dietCol  = col('diet');
       const tsCol    = col('timestamp');
+
+      // For free events exclude paid column
+      const displayColList = isFreeEvent()
+        ? [nameCol, numCol, unitCol, emailCol, dietCol, tsCol]
+        : [nameCol, numCol, unitCol, emailCol, dietCol, paidCol, tsCol];
 
       // Build a sensible column order
       const displayCols = [];
