@@ -273,6 +273,7 @@
     let allRows    = [];   // array of objects, one per data row
     let headers    = [];   // column names from row 1
     let activeFilter = 'all';  // 'all' | 'paid' | 'unpaid' | 'dietary'
+    let sortedEvents  = [];
 
     function isFreeEvent() {
       const sel = document.getElementById('event-select');
@@ -424,6 +425,7 @@
         sel.value = urlEvent;
       } else {
         sel.value = events[0] || '__ALL__';
+      sortedEvents = events;
       }
     }
 
@@ -443,6 +445,25 @@
         toggle.classList.remove('collapsed');
         body.style.maxHeight = body.scrollHeight + 'px';
         setTimeout(() => { body.style.maxHeight = 'none'; }, 260);
+      }
+    }
+
+    function toggleMac(id) {
+      var body   = document.getElementById(id + '-body');
+      var toggle = document.getElementById(id + '-toggle');
+      var isOpen = body.classList.contains('open');
+      if (isOpen) {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        requestAnimationFrame(function() {
+          body.style.maxHeight = '0';
+          body.classList.remove('open');
+          toggle.classList.remove('open');
+        });
+      } else {
+        body.classList.add('open');
+        toggle.classList.add('open');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        setTimeout(function() { body.style.maxHeight = 'none'; }, 260);
       }
     }
 
@@ -473,15 +494,97 @@
       applyFilter();
     }
 
+    function buildEventTable(rows, isFree) {
+      var paidColB  = col('paid');
+      var nameColB  = col('name');
+      var numColB   = col('how many') >= 0 ? col('how many') : col('number');
+      var unitColB  = col('unit');
+      var emailColB = col('email');
+      var dietColB  = col('diet');
+      var tsColB    = col('timestamp');
+      var colList   = isFree
+        ? [nameColB, numColB, unitColB, emailColB, dietColB, tsColB]
+        : [nameColB, numColB, unitColB, emailColB, dietColB, paidColB, tsColB];
+      var dCols = [];
+      colList.forEach(function(i) { if (i >= 0 && !dCols.includes(i)) dCols.push(i); });
+
+      rows = rows.slice().sort(function(a, b) {
+        var ua = parseInt(a[unitColB] || '0', 10) || 0;
+        var ub = parseInt(b[unitColB] || '0', 10) || 0;
+        if (ua !== ub) return ua - ub;
+        var na = (a[nameColB] || '').toLowerCase();
+        var nb = (b[nameColB] || '').toLowerCase();
+        return na < nb ? -1 : na > nb ? 1 : 0;
+      });
+
+      var html = '<table><thead><tr>';
+      dCols.forEach(function(i) { html += '<th>' + escHtml(headers[i] || '') + '</th>'; });
+      html += '</tr></thead><tbody>';
+      rows.forEach(function(row) {
+        html += '<tr>';
+        dCols.forEach(function(i) {
+          var val = (row[i] || '').trim();
+          if (i === paidColB && !isFree) {
+            var lower = val.toLowerCase();
+            var cls   = (lower === 'true' || lower === 'yes' || val === 'TRUE') ? 'paid-yes' : (val ? 'paid-no' : '');
+            var label = (lower === 'true' || val === 'TRUE') ? '\u2713 Yes' : (lower === 'false' || val === 'FALSE') ? '\u2717 No' : val;
+            html += '<td class="' + cls + '">' + escHtml(label) + '</td>';
+          } else if (i === paidColB && isFree) {
+            // skip paid col for free events
+          } else {
+            html += '<td>' + escHtml(val) + '</td>';
+          }
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      return html;
+    }
+
     // ── Render table for the selected event ──────────────────────────────
     function applyFilter() {
       const sel     = document.getElementById('event-select');
       const chosen  = sel.value;
       const eventCol = col('event');
 
-      const filtered = chosen === '__ALL__'
-        ? allRows
-        : allRows.filter(r => (r[eventCol] || '').trim() === chosen);
+      // Show all events as multi-accordion
+      if (chosen === '__ALL__') {
+        document.getElementById('summary-bar').style.display = 'none';
+        document.getElementById('row-count').textContent = '';
+        document.getElementById('accordion-wrap').style.display = 'none';
+        var wrap2 = document.getElementById('table-wrap');
+        var evCol2 = col('event');
+        var grouped = {};
+        sortedEvents.forEach(function(ev) { grouped[ev] = []; });
+        allRows.forEach(function(r) {
+          var ev = (r[evCol2] || '').trim();
+          if (grouped[ev] !== undefined) grouped[ev].push(r);
+        });
+        var html2 = '<div class="multi-accordion">';
+        sortedEvents.forEach(function(ev, idx) {
+          var rows = grouped[ev] || [];
+          if (!rows.length) return;
+          var free = ev.trim().toUpperCase().startsWith('FREE EVENT');
+          var badgeCls = free ? 'mac-badge free' : 'mac-badge';
+          var count = rows.length;
+          var id = 'mac-' + idx;
+          html2 += '<div class="mac-section">';
+          html2 += '<div class="mac-header" onclick="toggleMac(\'' + id + '\')">';
+          html2 += '<div class="mac-header-left">';
+          html2 += '<span class="mac-toggle" id="' + id + '-toggle">\u25b6</span>';
+          html2 += '<span class="mac-title">' + escHtml(ev) + '</span>';
+          html2 += '<span class="' + badgeCls + '">' + count + ' registration' + (count === 1 ? '' : 's') + (free ? ' · Free' : '') + '</span>';
+          html2 += '</div></div>';
+          html2 += '<div class="mac-body" id="' + id + '-body">';
+          html2 += buildEventTable(rows, free);
+          html2 += '</div></div>';
+        });
+        html2 += '</div>';
+        wrap2.innerHTML = html2;
+        return;
+      }
+
+      const filtered = allRows.filter(r => (r[eventCol] || '').trim() === chosen);
 
       // Sub-filter by tally pill selection
       const paidColSub  = col('paid');
