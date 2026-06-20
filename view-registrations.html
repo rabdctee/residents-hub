@@ -263,6 +263,8 @@
     </div>
   </div>
 
+  <div id="mac-container" style="display:none;"></div>
+
   <script>
     // ── Published CSV URL (same sheet, gid unchanged) ──────────────────────
     const CSV_URL =
@@ -419,14 +421,18 @@
       all.textContent = '— Show all events —';
       sel.appendChild(all);
 
+      sortedEvents = events;
+      console.log("sortedEvents set:", sortedEvents.length, "events", sortedEvents);
+
       // Default: URL param > most recent event
       const urlEvent = new URLSearchParams(window.location.search).get('event');
       if (urlEvent && events.includes(urlEvent)) {
         sel.value = urlEvent;
+      } else if (events.length > 0) {
+        sel.value = events[0];
       } else {
-        sel.value = events[0] || '__ALL__';
+        sel.value = '__ALL__';
       }
-      sortedEvents = events;
     }
 
     // ── Accordion toggle ──────────────────────────────────────────────────
@@ -549,10 +555,13 @@
 
       // Show all events as multi-accordion
       if (chosen === '__ALL__') {
+        if (!sortedEvents || sortedEvents.length === 0) return; // not ready yet
         document.getElementById('summary-bar').style.display = 'none';
         document.getElementById('row-count').textContent = '';
         document.getElementById('accordion-wrap').style.display = 'none';
-        var wrap2 = document.getElementById('table-wrap');
+        var macContainer = document.getElementById('mac-container');
+        macContainer.style.display = '';
+        var wrap2 = macContainer;
         var evCol2 = col('event');
         var grouped = {};
         sortedEvents.forEach(function(ev) { grouped[ev] = []; });
@@ -583,6 +592,10 @@
         wrap2.innerHTML = html2;
         return;
       }
+
+      // Hide multi-accordion when showing single event
+      var mc = document.getElementById('mac-container');
+      if (mc) mc.style.display = 'none';
 
       const filtered = allRows.filter(r => (r[eventCol] || '').trim() === chosen);
 
