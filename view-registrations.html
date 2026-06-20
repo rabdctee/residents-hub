@@ -77,6 +77,50 @@
 
     /* ── Print filter heading ── */
     .print-filter-heading { display:none; }
+    /* ── Accordion ── */
+    .accordion-wrap {
+      border: 1.5px solid #dde3ec;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 20px 24px;
+    }
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: #f0f4fa;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1.5px solid #dde3ec;
+    }
+    .accordion-header:hover { background: #e4eaf6; }
+    .accordion-title {
+      font-weight: 700;
+      font-size: 0.92em;
+      color: var(--navy);
+    }
+    .accordion-toggle {
+      font-size: 1.1em;
+      color: var(--navy);
+      transition: transform 0.2s;
+      line-height: 1;
+    }
+    .accordion-toggle.collapsed { transform: rotate(-90deg); }
+    .accordion-body {
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+    .accordion-body.collapsed { max-height: 0 !important; }
+    .table-wrap {
+      flex: 1;
+      overflow: auto;
+      padding: 16px 20px 24px;
+      margin: 0;
+      border-radius: 0;
+      border: none;
+    }
+
     @media print {
       .print-filter-heading { display:block; font-size:1.1em; font-weight:700; margin-bottom:10px; color:#000; }
     }
@@ -100,6 +144,50 @@
     .status.error { color:#b91c1c; }
 
     /* ── Print styles ── */
+    /* ── Accordion ── */
+    .accordion-wrap {
+      border: 1.5px solid #dde3ec;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 20px 24px;
+    }
+    .accordion-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: #f0f4fa;
+      cursor: pointer;
+      user-select: none;
+      border-bottom: 1.5px solid #dde3ec;
+    }
+    .accordion-header:hover { background: #e4eaf6; }
+    .accordion-title {
+      font-weight: 700;
+      font-size: 0.92em;
+      color: var(--navy);
+    }
+    .accordion-toggle {
+      font-size: 1.1em;
+      color: var(--navy);
+      transition: transform 0.2s;
+      line-height: 1;
+    }
+    .accordion-toggle.collapsed { transform: rotate(-90deg); }
+    .accordion-body {
+      overflow: hidden;
+      transition: max-height 0.25s ease;
+    }
+    .accordion-body.collapsed { max-height: 0 !important; }
+    .table-wrap {
+      flex: 1;
+      overflow: auto;
+      padding: 16px 20px 24px;
+      margin: 0;
+      border-radius: 0;
+      border: none;
+    }
+
     @media print {
       .top-bar, .info-bar, .filter-bar, .tally-bar { display:none !important; }
       .table-wrap { padding:0; overflow:visible; }
@@ -152,19 +240,23 @@
       <div class="tally-num" id="sum-unpaid">—</div>
       <div class="tally-lbl">unpaid</div>
     </div>
-    <div class="tally-card" id="card-free" style="display:none;border-color:#1a6b3a;background:#e8f5ee;cursor:default;" title="Free event — no charge">
-      <div class="tally-num" style="color:#1a6b3a;">Free</div>
-      <div class="tally-lbl" style="color:#1a6b3a;">no charge</div>
-    </div>
     <div class="tally-card tally-dietary" id="sum-dietary-card" style="display:none;" onclick="setTallyFilter('dietary')" title="Click to show dietary requirements only">
       <div class="tally-num" id="sum-dietary">—</div>
       <div class="tally-lbl">dietary req.</div>
     </div>
   </div>
 
-  <div class="table-wrap" id="table-wrap">
-    <div class="print-filter-heading" id="printFilterHeading"></div>
-    <div class="status" id="status-msg">Loading registrations…</div>
+  <div class="accordion-wrap" id="accordion-wrap" style="display:none;">
+    <div class="accordion-header" onclick="toggleAccordion()" id="accordion-header">
+      <span class="accordion-title" id="accordion-title">Registrations</span>
+      <span class="accordion-toggle" id="accordion-toggle">▼</span>
+    </div>
+    <div class="accordion-body" id="accordion-body">
+      <div class="table-wrap" id="table-wrap">
+        <div class="print-filter-heading" id="printFilterHeading"></div>
+        <div class="status" id="status-msg">Loading registrations…</div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -177,24 +269,6 @@
     let allRows    = [];   // array of objects, one per data row
     let headers    = [];   // column names from row 1
     let activeFilter = 'all';  // 'all' | 'paid' | 'unpaid' | 'dietary'
-
-    function isFreeEvent() {
-      const sel = document.getElementById('event-select');
-      return sel ? sel.value.trim().toUpperCase().startsWith('FREE EVENT') : false;
-    }
-
-    function applyFreeEventTallyUI() {
-      const free = isFreeEvent();
-      const paidCard   = document.getElementById('card-paid');
-      const unpaidCard = document.getElementById('card-unpaid');
-      const freeCard   = document.getElementById('card-free');
-      if (paidCard)   paidCard.style.display  = free ? 'none' : '';
-      if (unpaidCard) unpaidCard.style.display = free ? 'none' : '';
-      if (freeCard)   freeCard.style.display   = free ? ''     : 'none';
-      if (free && (activeFilter === 'paid' || activeFilter === 'unpaid')) {
-        activeFilter = 'all';
-      }
-    }
 
     // ── Fetch & parse CSV ─────────────────────────────────────────────────
     async function loadData() {
@@ -289,14 +363,45 @@
       all.textContent = '— Show all events —';
       sel.appendChild(all);
 
-      // Default to first option (most recent event)
-      sel.value = events[0] || '__ALL__';
+      // Default: URL param > most recent event
+      const urlEvent = new URLSearchParams(window.location.search).get('event');
+      if (urlEvent && events.includes(urlEvent)) {
+        sel.value = urlEvent;
+      } else {
+        sel.value = events[0] || '__ALL__';
+      }
+    }
+
+    // ── Accordion toggle ──────────────────────────────────────────────────
+    function toggleAccordion() {
+      const body    = document.getElementById('accordion-body');
+      const toggle  = document.getElementById('accordion-toggle');
+      const isOpen  = !body.classList.contains('collapsed');
+      if (isOpen) {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        requestAnimationFrame(() => {
+          body.classList.add('collapsed');
+          toggle.classList.add('collapsed');
+        });
+      } else {
+        body.classList.remove('collapsed');
+        toggle.classList.remove('collapsed');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        setTimeout(() => { body.style.maxHeight = 'none'; }, 260);
+      }
+    }
+
+    function openAccordion() {
+      const body   = document.getElementById('accordion-body');
+      const toggle = document.getElementById('accordion-toggle');
+      body.classList.remove('collapsed');
+      toggle.classList.remove('collapsed');
+      body.style.maxHeight = 'none';
     }
 
     // ── Reset pill filter when event changes ──────────────────────────────
     document.getElementById('event-select').addEventListener('change', function() {
       activeFilter = 'all';
-      applyFreeEventTallyUI();
     });
 
     // ── Tally pill filter ─────────────────────────────────────────────────
@@ -347,6 +452,10 @@
         wrap.innerHTML = '<div class="status">No registrations found for this event.</div>';
         document.getElementById('row-count').textContent = '';
         document.getElementById('summary-bar').style.display = 'none';
+        const aw = document.getElementById('accordion-wrap');
+        if (aw) { aw.style.display = ''; openAccordion(); }
+        const at = document.getElementById('accordion-title');
+        if (at) at.textContent = chosen + ' — 0 registrations';
         return;
       }
 
@@ -380,10 +489,7 @@
 
       // Build a sensible column order
       const displayCols = [];
-      const displayColList = isFreeEvent()
-        ? [nameCol, numCol, unitCol, emailCol, dietCol, tsCol]
-        : [nameCol, numCol, unitCol, emailCol, dietCol, paidCol, tsCol];
-      displayColList.forEach(i => {
+      [nameCol, numCol, unitCol, emailCol, dietCol, paidCol, tsCol].forEach(i => {
         if (i >= 0 && !displayCols.includes(i)) displayCols.push(i);
       });
       // Add any remaining columns not yet included
@@ -405,15 +511,13 @@
         html += '<tr>';
         displayCols.forEach(i => {
           const val = (row[i] || '').trim();
-          if (i === paidCol && !isFreeEvent()) {
+          if (i === paidCol) {
             const lower = val.toLowerCase();
             const cls   = lower === 'true' || lower === 'yes' || val === '✓' || val === 'TRUE'
                           ? 'paid-yes' : (val ? 'paid-no' : '');
             const label = lower === 'true' || val === 'TRUE' ? '✓ Yes'
                         : lower === 'false' || val === 'FALSE' ? '✗ No' : val;
             html += `<td class="${cls}">${escHtml(label)}</td>`;
-          } else if (i === paidCol) {
-            // free event — skip paid column
           } else {
             html += `<td>${escHtml(val)}</td>`;
           }
@@ -423,6 +527,16 @@
 
       html += '</tbody></table>';
       wrap.innerHTML = html;
+
+      // ── Show and title the accordion ────────────────────────────────────
+      const accWrap  = document.getElementById('accordion-wrap');
+      const accTitle = document.getElementById('accordion-title');
+      if (accWrap) accWrap.style.display = '';
+      if (accTitle) {
+        const label = chosen === '__ALL__' ? 'All Events' : chosen;
+        accTitle.textContent = label + ' — ' + (displayRows.length) + ' registration' + (displayRows.length === 1 ? '' : 's');
+      }
+      openAccordion();
 
       // ── Summary totals (always from full event set, not sub-filtered) ──────
       let totalPeople = 0, paidPeople = 0, unpaidPeople = 0, dietaryCount = 0;
@@ -449,7 +563,6 @@
         if (activeFilter === 'dietary') { activeFilter = 'all'; }
       }
       document.getElementById('summary-bar').style.display = '';
-      applyFreeEventTallyUI();
 
       // Sync active state on cards
       ['all','paid','unpaid'].forEach(function(f) {
