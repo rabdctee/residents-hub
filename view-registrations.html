@@ -341,34 +341,33 @@
         if (ev) seen.set(ev, (seen.get(ev) || 0) + 1);
       });
 
-      // Sort by event date extracted from name e.g. "Morning Tea (21/07/2026)"
-      // Falls back to sheet order if no date found in name
-      function extractEventDate(name) {
-        // Match dd/mm/yyyy in parentheses or anywhere in the name
-        const m = name.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
-        if (m) {
-          const y = m[3].length === 2 ? '20' + m[3] : m[3];
-          return new Date(+y, +m[2] - 1, +m[1]);
+      // Build a map of event -> latest timestamp row for date sorting
+      const tsCol2 = col('timestamp');
+      const latestTs = new Map();
+      allRows.forEach(r => {
+        const ev = (r[eventCol] || '').trim();
+        if (!ev) return;
+        // Try to parse the timestamp cell
+        const raw = (tsCol2 >= 0 ? r[tsCol2] : '') || '';
+        const d = new Date(raw);
+        if (!isNaN(d)) {
+          if (!latestTs.has(ev) || d > latestTs.get(ev)) latestTs.set(ev, d);
         }
-        // Also try "21 July 2026" style
-        const m2 = name.match(/(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{4})/i);
-        if (m2) {
-          return new Date(m2[0]);
-        }
+      });
+
+      // Also try extracting a date from the event name itself (e.g. "21/07/2026")
+      function extractNameDate(name) {
+        const m = name.match(/(\d{1,2})[\/](\d{1,2})[\/](\d{4})/);
+        if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
         return null;
       }
 
       const allKeys = [...seen.keys()];
-      // Give each event a sort key: dated events sort by date desc,
-      // undated events go to the bottom sorted by sheet order desc
-      const events = allKeys.sort((a, b) => {
-        const da = extractEventDate(a);
-        const db = extractEventDate(b);
-        if (da && db) return db - da;      // both dated: newest first
-        if (da && !db) return -1;          // a has date, b doesn't: a first
-        if (!da && db) return 1;           // b has date, a doesn't: b first
-        // neither has date: preserve reverse sheet order
-        return allKeys.indexOf(b) - allKeys.indexOf(a);
+      const events = allKeys.slice().sort((a, b) => {
+        // Prefer explicit date in event name, fall back to latest registration timestamp
+        const da = extractNameDate(a) || latestTs.get(a) || new Date(0);
+        const db = extractNameDate(b) || latestTs.get(b) || new Date(0);
+        return db - da;  // newest first
       });
 
       const sel = document.getElementById('event-select');
