@@ -341,37 +341,44 @@
         if (ev) seen.set(ev, (seen.get(ev) || 0) + 1);
       });
 
-      // Build a map of event -> latest timestamp row for date sorting
+      // Parse Australian date format dd/mm/yyyy or dd/mm/yyyy HH:mm:ss
+      function parseAusDate(str) {
+        if (!str) return null;
+        // dd/mm/yyyy HH:mm:ss  or  dd/mm/yyyy
+        const m = str.match(/^(\d{1,2})[\/](\d{1,2})[\/](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+        if (m) return new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0), +(m[6]||0));
+        // Fallback: try native parse (handles ISO etc)
+        const d = new Date(str);
+        return isNaN(d) ? null : d;
+      }
+
+      // Build a map of event -> latest registration date for sorting
       const tsCol2 = col('timestamp');
       const latestTs = new Map();
       allRows.forEach(r => {
         const ev = (r[eventCol] || '').trim();
         if (!ev) return;
-        // Try to parse the timestamp cell
         const raw = (tsCol2 >= 0 ? r[tsCol2] : '') || '';
-        const d = new Date(raw);
-        if (!isNaN(d)) {
+        const d = parseAusDate(raw);
+        if (d && !isNaN(d)) {
           if (!latestTs.has(ev) || d > latestTs.get(ev)) latestTs.set(ev, d);
         }
       });
 
-      // Also try extracting a date from the event name itself (e.g. "21/07/2026")
+      // Extract date from event name itself e.g. "Morning Tea (21/07/2026)"
       function extractNameDate(name) {
         const m = name.match(/(\d{1,2})[\/](\d{1,2})[\/](\d{4})/);
-        if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
+        if (m) return new Date(+m[3], +m[2]-1, +m[1]);
         return null;
       }
 
       const allKeys = [...seen.keys()];
       const events = allKeys.slice().sort((a, b) => {
-        // Prefer explicit date in event name, fall back to latest registration timestamp
+        // Name date takes priority, then latest registration timestamp
         const da = extractNameDate(a) || latestTs.get(a) || new Date(0);
         const db = extractNameDate(b) || latestTs.get(b) || new Date(0);
-        console.log(a, '->', da, '|', b, '->', db);
         return db - da;  // newest first
       });
-      console.log('Sorted events:', events);
-      console.log('Will default to:', events[0]);
 
       const sel = document.getElementById('event-select');
       sel.innerHTML = '';
