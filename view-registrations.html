@@ -367,8 +367,11 @@
         // Prefer explicit date in event name, fall back to latest registration timestamp
         const da = extractNameDate(a) || latestTs.get(a) || new Date(0);
         const db = extractNameDate(b) || latestTs.get(b) || new Date(0);
+        console.log(a, '->', da, '|', b, '->', db);
         return db - da;  // newest first
       });
+      console.log('Sorted events:', events);
+      console.log('Will default to:', events[0]);
 
       const sel = document.getElementById('event-select');
       sel.innerHTML = '';
