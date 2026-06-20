@@ -77,6 +77,20 @@
 
     /* ── Print filter heading ── */
     .print-filter-heading { display:none; }
+    /* ── Multi-accordion ── */
+    #mac-container { padding: 0 20px 24px; }
+    .mac-section { border: 1.5px solid #dde3ec; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+    .mac-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #f0f4fa; cursor: pointer; user-select: none; }
+    .mac-header:hover { background: #e4eaf6; }
+    .mac-header-left { display: flex; align-items: center; gap: 12px; }
+    .mac-title { font-weight: 700; font-size: 0.92em; color: var(--navy); }
+    .mac-badge { font-size: 0.78em; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--navy); color: white; }
+    .mac-badge.free { background: #1a6b3a; }
+    .mac-toggle { font-size: 0.9em; color: var(--navy); transition: transform 0.25s; display: inline-block; }
+    .mac-toggle.open { transform: rotate(90deg); }
+    .mac-body { overflow: hidden; transition: max-height 0.3s ease; }
+    .mac-body .table-wrap { padding: 12px 16px 16px; }
+
     /* ── Accordion ── */
     .accordion-wrap {
       border: 1.5px solid #dde3ec;
@@ -144,6 +158,20 @@
     .status.error { color:#b91c1c; }
 
     /* ── Print styles ── */
+    /* ── Multi-accordion ── */
+    #mac-container { padding: 0 20px 24px; }
+    .mac-section { border: 1.5px solid #dde3ec; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+    .mac-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #f0f4fa; cursor: pointer; user-select: none; }
+    .mac-header:hover { background: #e4eaf6; }
+    .mac-header-left { display: flex; align-items: center; gap: 12px; }
+    .mac-title { font-weight: 700; font-size: 0.92em; color: var(--navy); }
+    .mac-badge { font-size: 0.78em; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--navy); color: white; }
+    .mac-badge.free { background: #1a6b3a; }
+    .mac-toggle { font-size: 0.9em; color: var(--navy); transition: transform 0.25s; display: inline-block; }
+    .mac-toggle.open { transform: rotate(90deg); }
+    .mac-body { overflow: hidden; transition: max-height 0.3s ease; }
+    .mac-body .table-wrap { padding: 12px 16px 16px; }
+
     /* ── Accordion ── */
     .accordion-wrap {
       border: 1.5px solid #dde3ec;
@@ -584,8 +612,8 @@
           html2 += '<span class="mac-title">' + escHtml(ev) + '</span>';
           html2 += '<span class="' + badgeCls + '">' + count + ' registration' + (count === 1 ? '' : 's') + (free ? ' · Free' : '') + '</span>';
           html2 += '</div></div>';
-          html2 += '<div class="mac-body" id="' + id + '-body">';
-          html2 += buildEventTable(rows, free);
+          html2 += '<div class="mac-body" id="' + id + '-body" style="max-height:0;">';
+          html2 += '<div class="table-wrap">' + buildEventTable(rows, free) + '</div>';
           html2 += '</div></div>';
         });
         html2 += '</div>';
@@ -675,13 +703,11 @@
         ? [nameCol, numCol, unitCol, emailCol, dietCol, tsCol]
         : [nameCol, numCol, unitCol, emailCol, dietCol, paidCol, tsCol];
 
-      // Build a sensible column order
+      // Build column display order — only show our chosen columns
       const displayCols = [];
       displayColList.forEach(i => {
         if (i >= 0 && !displayCols.includes(i)) displayCols.push(i);
       });
-      // Add any remaining columns not yet included
-      headers.forEach((_, i) => { if (!displayCols.includes(i) && i !== eventCol) displayCols.push(i); });
 
       // Update print heading
       const filterLabels = { all:'All Registrations', paid:'Paid Only', unpaid:'Unpaid Only', dietary:'Dietary Requirements' };
