@@ -463,7 +463,17 @@
       // Sub-filter by tally pill selection
       const paidColSub  = col('paid');
       const dietColSub  = col('diet');
-      let displayRows = filtered;
+      // Sort by unit number (numeric), then name
+      const unitColSort = col('unit');
+      const nameColSort = col('name');
+      let displayRows = filtered.slice().sort((a, b) => {
+        const ua = parseInt(a[unitColSort] || '0', 10) || 0;
+        const ub = parseInt(b[unitColSort] || '0', 10) || 0;
+        if (ua !== ub) return ua - ub;
+        const na = (a[nameColSort] || '').toLowerCase();
+        const nb = (b[nameColSort] || '').toLowerCase();
+        return na < nb ? -1 : na > nb ? 1 : 0;
+      });
       if (activeFilter === 'paid') {
         displayRows = filtered.filter(r => {
           const v = (r[paidColSub] || '').trim().toLowerCase();
