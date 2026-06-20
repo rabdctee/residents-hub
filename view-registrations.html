@@ -341,11 +341,35 @@
         if (ev) seen.set(ev, (seen.get(ev) || 0) + 1);
       });
 
-      // Sort: most recent first — use the last-seen position as a proxy
-      // (rows are in submission order so later events appear later)
-      const events = [...seen.keys()];
-      // Reverse so the most recent event is first in the list
-      events.reverse();
+      // Sort by event date extracted from name e.g. "Morning Tea (21/07/2026)"
+      // Falls back to sheet order if no date found in name
+      function extractEventDate(name) {
+        // Match dd/mm/yyyy in parentheses or anywhere in the name
+        const m = name.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+        if (m) {
+          const y = m[3].length === 2 ? '20' + m[3] : m[3];
+          return new Date(+y, +m[2] - 1, +m[1]);
+        }
+        // Also try "21 July 2026" style
+        const m2 = name.match(/(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+(\d{4})/i);
+        if (m2) {
+          return new Date(m2[0]);
+        }
+        return null;
+      }
+
+      const allKeys = [...seen.keys()];
+      // Give each event a sort key: dated events sort by date desc,
+      // undated events go to the bottom sorted by sheet order desc
+      const events = allKeys.sort((a, b) => {
+        const da = extractEventDate(a);
+        const db = extractEventDate(b);
+        if (da && db) return db - da;      // both dated: newest first
+        if (da && !db) return -1;          // a has date, b doesn't: a first
+        if (!da && db) return 1;           // b has date, a doesn't: b first
+        // neither has date: preserve reverse sheet order
+        return allKeys.indexOf(b) - allKeys.indexOf(a);
+      });
 
       const sel = document.getElementById('event-select');
       sel.innerHTML = '';
