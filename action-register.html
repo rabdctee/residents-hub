@@ -72,8 +72,14 @@
   .col-due    { width: 90px; white-space: nowrap; }
   .col-issue  { width: 80px; }
   .col-status { width: 120px; }
-  .col-notes  { min-width: 160px; color: #444; font-style: italic; font-size: 0.88rem; }
-  .col-edit   { width: 60px; text-align: center; }
+  .col-notes    { min-width: 140px; color: #444; font-style: italic; font-size: 0.88rem; }
+  .col-outcome  { min-width: 160px; color: #166534; font-size: 0.88rem; }
+  .col-edit     { width: 60px; text-align: center; }
+
+  /* Clickable summary card */
+  .summary-card { cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; }
+  .summary-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); border-color: var(--mid-blue); }
+  .summary-card.active { border-color: var(--navy); box-shadow: 0 0 0 2px var(--navy); }
 
   .issue-link { color: var(--mid-blue); text-decoration: none; font-weight: 600; }
   .issue-link:hover { text-decoration: underline; }
@@ -114,8 +120,12 @@
   .empty-state { text-align: center; padding: 48px 20px; color: #888; }
   .empty-state p { margin-top: 8px; font-size: 0.95rem; }
 
+  /* Outcome required highlight */
+  .outcome-required { border-color: #f59e0b !important; background: #fffbeb !important; }
+  .outcome-label { color: #166534; font-weight: 700; }
+
   @media(max-width: 700px) {
-    .col-meet, .col-issue, .col-notes { display: none; }
+    .col-meet, .col-issue, .col-notes, .col-outcome { display: none; }
     .form-grid { grid-template-columns: 1fr; }
   }
 </style>
@@ -252,6 +262,7 @@
           <th class="col-issue">Issue #</th>
           <th class="col-status">Status</th>
           <th class="col-notes">Notes / Update</th>
+          <th class="col-outcome">✅ Outcome / Resolution</th>
           <th class="col-edit">Edit</th>
         </tr>
       </thead>
@@ -438,7 +449,9 @@ function loadActions() {
           issueRef: c[5] || "",
           status:   c[6] || "Open",
           notes:    c[7] || "",
-          addedBy:  c[8] || "",
+          addedBy:   c[8] || "",
+          addedDate: c[9] || "",
+          outcome:   c[10] || "",
         });
       }
       populateOwnerFilter();
@@ -490,20 +503,30 @@ function isOverdue(due, status) {
 function renderSummary() {
   const counts = { Open: 0, "In Progress": 0, Done: 0, Deferred: 0 };
   allActions.forEach(a => { if (counts[a.status] !== undefined) counts[a.status]++; });
+
+  const currentFilter = document.getElementById("fil-status").value;
+
   document.getElementById("summary-bar").innerHTML = [
-    ["Open",       counts["Open"],        "pill-open"],
-    ["In Progress",counts["In Progress"], "pill-inprogress"],
-    ["Done",       counts["Done"],        "pill-done"],
-    ["Deferred",   counts["Deferred"],    "pill-deferred"],
-  ].map(([label, count, cls]) => `
-    <div class="summary-card">
+    ["Open",        counts["Open"],         "pill-open",        "open"],
+    ["In Progress", counts["In Progress"],  "pill-inprogress",  "inprogress"],
+    ["Done",        counts["Done"],         "pill-done",        "done"],
+    ["Deferred",    counts["Deferred"],     "pill-deferred",    "deferred"],
+  ].map(([label, count, cls, val]) => `
+    <div class="summary-card${currentFilter === val ? ' active' : ''}" onclick="filterByStatus('${val}')" title="Click to filter by ${label}">
       <div class="count">${count}</div>
       <div class="label"><span class="pill ${cls}">${label}</span></div>
     </div>
-  `).join("") + `<div class="summary-card">
-    <div class="count">${allActions.length}</div>
-    <div class="label">Total</div>
-  </div>`;
+  `).join("") + `
+    <div class="summary-card${currentFilter === 'all' ? ' active' : ''}" onclick="filterByStatus('all')" title="Show all actions">
+      <div class="count">${allActions.length}</div>
+      <div class="label">Total</div>
+    </div>`;
+}
+
+function filterByStatus(val) {
+  document.getElementById("fil-status").value = val;
+  renderSummary();
+  applyFilters();
 }
 
 function populateOwnerFilter() {
@@ -521,10 +544,11 @@ function applyFilters() {
   const filtered = allActions.filter(a => {
     if (status !== "all" && a.status.toLowerCase().replace(" ","") !== status) return false;
     if (owner  !== "all" && a.owner !== owner) return false;
-    if (search && !a.action.toLowerCase().includes(search) && !a.notes.toLowerCase().includes(search)) return false;
+    if (search && !a.action.toLowerCase().includes(search) && !a.notes.toLowerCase().includes(search) && !a.outcome.toLowerCase().includes(search)) return false;
     return true;
   });
 
+  renderSummary(); // keeps active card highlight in sync with dropdown
   renderTable(filtered);
 }
 
@@ -556,6 +580,7 @@ function renderTable(actions) {
       <td class="col-issue">${issueHtml}</td>
       <td class="col-status"><span class="pill ${statusClass(a.status)}">${a.status}</span></td>
       <td class="col-notes">${escHtml(a.notes)}</td>
+      <td class="col-outcome">${a.outcome ? escHtml(a.outcome) : (a.status === 'Done' ? '<span style="color:#f59e0b;font-style:italic;font-size:0.82rem;">⚠ No outcome recorded</span>' : '')}</td>
       <td class="col-edit"><button class="icon-btn" title="Edit status / note" onclick="startEdit(${a.row})">✏️</button></td>
     </tr>`;
   }).join("");
@@ -580,13 +605,17 @@ function startEdit(rowNum) {
     <td class="col-action" style="color:#555;font-size:0.88rem" colspan="3">${escHtml(a.action)}</td>
     <td class="col-issue">${a.issueRef || ""}</td>
     <td class="col-status">
-      <select id="edit-status" style="padding-right:5px;min-width:50px;">
+      <select id="edit-status" style="padding-right:5px;min-width:50px;" onchange="toggleOutcomeField(this)">
         ${["Open","In Progress","Done","Deferred"].map(s =>
           `<option${s===a.status?" selected":""}>${s}</option>`).join("")}
       </select>
     </td>
     <td class="col-notes">
       <textarea id="edit-notes" placeholder="Add a progress note…">${escHtml(a.notes)}</textarea>
+    </td>
+    <td class="col-outcome">
+      <label id="outcome-label" class="outcome-label" style="font-size:0.8rem;display:block;margin-bottom:3px;${a.status==='Done'?'':'display:none!important'}">What was done? *</label>
+      <textarea id="edit-outcome" placeholder="Describe what was done to resolve this action…" style="${a.status==='Done'?'':'display:none'}">${escHtml(a.outcome)}</textarea>
     </td>
     <td class="col-edit">
       <button class="save-btn" onclick="saveEdit(${rowNum})">Save</button>
@@ -599,20 +628,41 @@ function cancelEdit() {
   applyFilters(); // re-render
 }
 
+function toggleOutcomeField(sel) {
+  const isDone = sel.value === "Done";
+  const outcomeBox = document.getElementById("edit-outcome");
+  const outcomeLabel = document.getElementById("outcome-label");
+  if (outcomeBox) {
+    outcomeBox.style.display = isDone ? "block" : "none";
+    if (outcomeLabel) outcomeLabel.style.display = isDone ? "block" : "none";
+    if (isDone) { outcomeBox.classList.add("outcome-required"); outcomeBox.focus(); }
+    else { outcomeBox.classList.remove("outcome-required"); }
+  }
+}
+
 function saveEdit(rowNum) {
-  const newStatus = document.getElementById("edit-status").value;
-  const newNotes  = document.getElementById("edit-notes").value.trim();
+  const newStatus  = document.getElementById("edit-status").value;
+  const newNotes   = document.getElementById("edit-notes").value.trim();
+  const outcomeEl  = document.getElementById("edit-outcome");
+  const newOutcome = outcomeEl ? outcomeEl.value.trim() : "";
+
+  // If marking Done, outcome is required
+  if (newStatus === "Done" && !newOutcome) {
+    if (outcomeEl) { outcomeEl.classList.add("outcome-required"); outcomeEl.focus(); }
+    showError("Please describe what was done to resolve this action before marking it Done.");
+    return;
+  }
 
   // Update local cache immediately (optimistic — no-cors gives no response)
   const a = allActions.find(x => x.row === rowNum);
-  if (a) { a.status = newStatus; a.notes = newNotes; }
+  if (a) { a.status = newStatus; a.notes = newNotes; if (newOutcome) a.outcome = newOutcome; }
   editingRow = null;
   renderSummary();
   applyFilters();
   showSuccess("Saved ✓ — changes visible now. Sheet syncs within ~30 seconds.");
 
   // Post single combined update to Apps Script (fire-and-forget)
-  postScript({ action: "updateAction", row: rowNum, status: newStatus, notes: newNotes });
+  postScript({ action: "updateAction", row: rowNum, status: newStatus, notes: newNotes, outcome: newOutcome });
 
   // Re-fetch from sheet after 30 seconds to confirm sync
   setTimeout(function() {
