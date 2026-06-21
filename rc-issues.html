@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CM Update – Issues Tracker</title>
+<title>RC Issues Update – BDRV</title>
 <style>
   :root {
     --navy:        #1F4E79;
@@ -171,8 +171,8 @@
 <div id="pinOverlay">
   <div class="pin-box">
     <div class="pin-logo">🔒</div>
-    <h2>CM Update</h2>
-    <p>This page is for Community Manager use only.<br>Please enter your PIN to continue.</p>
+    <h2>RC Issues Update</h2>
+    <p>Committee members only.<br>Please enter your PIN to continue.</p>
     <input type="password" class="pin-input" id="pinInput" maxlength="4"
            placeholder="••••" inputmode="numeric"
            onkeydown="if(event.key==='Enter')checkPin()">
@@ -183,7 +183,7 @@
 
 <!-- ── HEADER ── -->
 <div class="page-header">
-  <h1>📋 CM Update</h1>
+  <h1>📋 RC Issues Update</h1>
   <p>Issues Progress Tracker — Bridgeman Downs Retirement Village</p>
   <p id="cm-date" style="font-size:0.8em;opacity:0.75;margin-top:4px;"></p>
 </div>
@@ -194,7 +194,7 @@
 
   <!-- ── TOOLBAR ── -->
 <div class="toolbar">
-  <div class="toolbar-left">Tap any issue to expand and update CM notes or status.</div>
+  <div class="toolbar-left">Tap any issue to read CM notes and add an RC response or update status.</div>
   <button class="print-btn" id="print-btn" onclick="printIssues(this)" title="Print or save all issues as PDF">🖨️ Print / Save PDF</button>
 
 </div>
@@ -273,7 +273,7 @@
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
 const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJBsVGUur5l7ixOFKqkDHGVsThkoRBINZr7YRc4fxy4Bb0K0ifT8cpoEtoO8uMD_dN7Q/exec";
-const CM_PIN = "CMUD";
+const RC_PIN = "1957";
 // ─────────────────────────────────────────────────────────────────────────────
 
 let issueData = [];
@@ -281,8 +281,8 @@ let issueData = [];
 // ── PIN ──────────────────────────────────────────────────────────────────────
 function checkPin() {
   const val = document.getElementById("pinInput").value;
-  if (val === CM_PIN) {
-    sessionStorage.setItem("bdrv_cmupdate_auth", "true");
+  if (val === RC_PIN) {
+    sessionStorage.setItem("bdrv_rcissues_auth", "true");
     document.getElementById("pinOverlay").style.display = "none";
     document.getElementById("pinInput").value = "";
     loadIssues();
@@ -295,7 +295,7 @@ function checkPin() {
 }
 
 // Skip PIN if already authenticated this session
-if (sessionStorage.getItem("bdrv_cmupdate_auth") === "true") {
+if (sessionStorage.getItem("bdrv_rcissues_auth") === "true") {
   document.getElementById("pinOverlay").style.display = "none";
   loadIssues();
 }
@@ -416,6 +416,19 @@ function buildAccordion() {
             <div class="edit-actions">
               <button class="btn-update" onclick="submitInlineUpdate('${uid}', '${escHtml(issue.category)}', '${escHtml(issue.topic)}')">Save changes</button>
               <button class="btn-discard" onclick="toggleEdit('${uid}')">Discard</button>
+            </div>
+            <div style="margin-top:12px;padding-top:12px;border-top:2px dashed #c5d8ee;">
+              <label class="field-label" style="color:#2e7d32;margin-bottom:4px;display:block;">💬 RC Response</label>
+              <textarea class="rc-response-text" rows="2"
+                placeholder="Type your response to the CM here…"
+                style="width:100%;padding:9px 11px;font-size:0.88em;font-family:inherit;border:1.5px solid #2e7d32;border-radius:6px;resize:vertical;"></textarea>
+              <div style="margin-top:8px;">
+                <button class="btn-rc-respond"
+                  onclick="submitRcResponse('${uid}', '${escHtml(issue.category)}', '${escHtml(issue.topic)}')"
+                  style="padding:8px 18px;background:#2e7d32;color:white;border:none;border-radius:6px;font-family:inherit;font-size:0.82em;font-weight:700;cursor:pointer;">
+                  💬 Send RC Response
+                </button>
+              </div>
             </div>
 
           </div>
@@ -574,29 +587,75 @@ function applyFilter() {
   });
 }
 
-// ── CM ALERT — check for unread RC responses ─────────────────────────────────
-function checkRcAlerts() {
-  const alerts = JSON.parse(localStorage.getItem("bdrv_rc_alerts") || "[]");
-  if (alerts.length === 0) return;
+// ── RC RESPONSE ──────────────────────────────────────────────────────────────
+async function submitRcResponse(uid, originalCategory, originalTopic) {
+  const row      = document.getElementById(uid);
+  const textarea = row.querySelector(".rc-response-text");
+  const btn      = row.querySelector(".btn-rc-respond");
+  const response = textarea.value.trim();
 
-  // Only show for issues that actually contain [RC - in their notes
-  const relevant = alerts.filter(key => {
-    const [cat, topic] = key.split("||");
-    const issue = issueData.find(i => i.category === cat && i.topic === topic);
-    return issue && issue.notes.includes("[RC -");
+  if (!response) { alert("Please type a response before sending."); return; }
+
+  const now   = new Date();
+  const stamp = now.toLocaleDateString("en-AU", { day:"2-digit", month:"2-digit", year:"numeric" });
+  const prefix = `[RC - ${stamp}] ${response}`;
+
+  const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
+  const existingNotes = issue ? issue.notes : "";
+  const newNotes = existingNotes ? `${prefix}
+
+${existingNotes}` : prefix;
+
+  const status = row.querySelector(".edit-status").value;
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Sending…";
+
+  const payload = JSON.stringify({
+    action: "update",
+    originalCategory,
+    originalTopic,
+    category: originalCategory,
+    topic: originalTopic,
+    notes: newNotes,
+    status
   });
 
-  if (relevant.length === 0) { localStorage.removeItem("bdrv_rc_alerts"); return; }
+  try {
+    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
 
+    // Record alert for CM
+    const alerts = JSON.parse(localStorage.getItem("bdrv_rc_alerts") || "[]");
+    const key = `${originalCategory}||${originalTopic}`;
+    if (!alerts.includes(key)) alerts.push(key);
+    localStorage.setItem("bdrv_rc_alerts", JSON.stringify(alerts));
+
+    if (issue) { issue.notes = newNotes; issue.status = status; }
+    textarea.value = "";
+    row.classList.remove("editing");
+    showToast("success");
+    setTimeout(() => loadIssues(), 2000);
+  } catch(e) {
+    showToast("error");
+  }
+
+  btn.disabled = false;
+  btn.textContent = "💬 Send RC Response";
+}
+
+// ── RC UNREAD RESPONSE ALERT (shown to CM on her page) ───────────────────────
+function checkRcAlerts() {
+  // On rc-issues.html this shows a summary of responses sent today
+  const alerts = JSON.parse(localStorage.getItem("bdrv_rc_alerts") || "[]");
+  if (alerts.length === 0) return;
   const banner = document.getElementById("rc-alert-banner");
   const text   = document.getElementById("rc-alert-text");
-  text.textContent = `📬 The RC has responded to ${relevant.length} issue${relevant.length !== 1 ? "s" : ""}. Look for [RC - date] entries in the notes.`;
+  text.textContent = `📬 You have sent RC responses on ${alerts.length} issue${alerts.length !== 1 ? "s" : ""} this session. The CM will be alerted on her next login.`;
   banner.style.display = "block";
 }
 
 function dismissRcAlert() {
   document.getElementById("rc-alert-banner").style.display = "none";
-  localStorage.removeItem("bdrv_rc_alerts");
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────

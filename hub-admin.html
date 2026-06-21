@@ -449,6 +449,20 @@
       </div>
     </div>
 
+    <div class="admin-card cat-content">
+      <div class="card-top">
+        <div class="card-icon">💬</div>
+        <div>
+          <div class="card-title">RC Issues Response</div>
+          <div class="card-desc">Read CM notes and add RC responses or update status. For RC, SC and Manor Advisor use.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="rc-issues.html" class="btn-action btn-green">💬 RC Response</a>
+        <a href="progress-tracker.html" class="btn-action btn-secondary">📊 View Tracker</a>
+      </div>
+    </div>
+
     <div class="admin-card cat-content" id="add-issue-card">
       <div class="card-top">
         <div class="card-icon">➕</div>
@@ -865,7 +879,7 @@ function showAiMsg(text, color) {
 }
 
 // ── PIN ──────────────────────────────────────────────────────────────────────
-const CORRECT_PIN = '1957';   // ← change this to your actual PIN
+const CORRECT_PIN = '1957';   // ← hub-admin only
 
 const pinInput  = document.getElementById('pin-input');
 const pinError  = document.getElementById('pin-error');
