@@ -65,12 +65,12 @@
   tbody tr:hover { background: #f0f7ff; }
   tbody tr.row-done { opacity: 0.55; }
   tbody td { padding: 10px 12px; font-size: 0.92rem; vertical-align: top; }
-  .col-ref    { width: 70px; font-weight: 600; color: var(--navy); }
+  .col-ref    { width: 60px; font-weight: 600; color: var(--navy); }
   .col-meet   { width: 70px; white-space: nowrap; }
   .col-action { min-width: 200px; }
-  .col-owner  { width: 50px; }
+  .col-owner  { width: 60px; }
   .col-due    { width: 70px; white-space: nowrap; }
-  .col-issue  { width: 70px; }
+  .col-issue  { width: 60px; }
   .col-status { width: 80px; }
   .col-notes   { width: 130px; color: #444; font-style: italic; font-size: 0.88rem; }
   .col-outcome { width: 150px; color: #166534; font-size: 0.88rem; }
@@ -263,7 +263,7 @@
           <th class="col-issue">Issue #</th>
           <th class="col-status">Status</th>
           <th class="col-notes">Notes / Update</th>
-          <th class="col-outcome">Outcome / Resolution</th>
+          <th class="col-outcome">✅ Outcome / Resolution</th>
           <th class="col-edit">Edit</th>
         </tr>
       </thead>
@@ -489,10 +489,9 @@ function statusClass(s) {
 
 function formatDate(d) {
   if (!d) return "";
-  // Handle both date objects and strings like "1 May 26"
-  if (typeof d === "string") return d;
   const dt = new Date(d);
-  return isNaN(dt) ? String(d) : dt.toLocaleDateString("en-AU", { day:"numeric", month:"short", year:"2-digit" });
+  if (isNaN(dt.getTime())) return String(d); // unrecognised format — return as-is
+  return dt.toLocaleDateString("en-AU", { day:"numeric", month:"short", year:"2-digit" });
 }
 
 function isOverdue(due, status) {
@@ -574,7 +573,7 @@ function renderTable(actions) {
 
     return `<tr class="${isDone ? 'row-done' : ''}" data-row="${a.row}">
       <td class="col-ref">${a.ref}</td>
-      <td class="col-meet">${a.meeting}</td>
+      <td class="col-meet">${formatDate(a.meeting)}</td>
       <td class="col-action">${escHtml(a.action)}</td>
       <td class="col-owner">${escHtml(a.owner)}</td>
       <td class="col-due">${dueTxt}</td>
