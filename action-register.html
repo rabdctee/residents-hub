@@ -264,7 +264,7 @@
           <th class="col-issue">Issue #</th>
           <th class="col-status">Status</th>
           <th class="col-notes">Notes / Update</th>
-          <th class="col-outcome">✅ Outcome / Resolution</th>
+          <th class="col-outcome">Outcome / Resolution</th>
           <th class="col-edit">Edit</th>
         </tr>
       </thead>
@@ -606,7 +606,7 @@ function startEdit(rowNum) {
     <td class="col-action" style="color:#555;font-size:0.88rem" colspan="3">${escHtml(a.action)}</td>
     <td class="col-issue">${a.issueRef || ""}</td>
     <td class="col-status">
-      <select id="edit-status" style="padding-right:5px;min-width:50px;" onchange="toggleOutcomeField(this)">
+      <select id="edit-status" style="width:100%;min-width:100px;" onchange="toggleOutcomeField(this)">
         ${["Open","In Progress","Done","Deferred"].map(s =>
           `<option${s===a.status?" selected":""}>${s}</option>`).join("")}
       </select>
