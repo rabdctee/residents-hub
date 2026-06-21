@@ -142,6 +142,7 @@
   /* accent colours by category */
   .admin-card.cat-resident  { border-left-color: #1F4E79; }
   .admin-card.cat-content   { border-left-color: #2e7d32; }
+  .admin-card.cat-issues    { border-left-color: #c9010b; }
   .admin-card.cat-finance   { border-left-color: #C9A44A; }
   .admin-card.cat-docs      { border-left-color: #00838f; }
   .admin-card.cat-system    { border-left-color: #6a1b9a; }
@@ -196,6 +197,7 @@
   .btn-primary   { background: #1F4E79; color: white; }
   .btn-secondary { background: white; color: #1F4E79; border: 2px solid #c5d8ee; }
   .btn-green     { background: #2e7d32; color: white; }
+  .btn-red       { background: #c9010b; color: white; }
   .btn-gold      { background: #C9A44A; color: white; }
   .btn-teal      { background: #00838f; color: white; }
   .btn-purple    { background: #6a1b9a; color: white; }
@@ -418,7 +420,7 @@
         </div>
       </div>
       <div class="card-actions">
-        <button class="btn-action btn-green" onclick="toggleAddIssuePanel()">➕ Add Issue</button>
+        <button class="btn-action btn-red" onclick="toggleAddIssuePanel()">➕ Add Issue</button>
       </div>
       <!-- Inline Add Issue Panel -->
       <div id="add-issue-panel" style="display:none;margin-top:14px;border-top:2px solid #e8f0fe;padding-top:14px;">
@@ -494,7 +496,7 @@
         </div>
       </div>
       <div class="card-actions">
-        <a href="progress-tracker.html" class="btn-action btn-green">📊 View Tracker</a>
+        <a href="progress-tracker.html" class="btn-action btn-red">📊 View Tracker</a>
       </div>
     </div>
 
@@ -507,7 +509,7 @@
         </div>
       </div>
       <div class="card-actions">
-        <a href="cm-update.html" class="btn-action btn-green">🛠️ CM Update</a>
+        <a href="cm-update.html" class="btn-action btn-red">🛠️ CM Update</a>
       </div>
     </div>
 
@@ -520,7 +522,7 @@
         </div>
       </div>
       <div class="card-actions">
-        <a href="rc-issues.html" class="btn-action btn-green">💬 RC Response</a>
+        <a href="rc-issues.html" class="btn-action btn-red">💬 RC Response</a>
       </div>
     </div>
 
