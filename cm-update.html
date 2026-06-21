@@ -171,8 +171,8 @@
 <div id="pinOverlay">
   <div class="pin-box">
     <div class="pin-logo">🔒</div>
-    <h2>CM Update</h2>
-    <p>This page is for Community Manager use only.<br>Please enter your PIN to continue.</p>
+    <h2>Issues Update</h2>
+    <p>Enter your PIN to continue.</p>
     <input type="password" class="pin-input" id="pinInput" maxlength="4"
            placeholder="••••" inputmode="numeric"
            onkeydown="if(event.key==='Enter')checkPin()">
@@ -183,7 +183,7 @@
 
 <!-- ── HEADER ── -->
 <div class="page-header">
-  <h1>📋 CM Update</h1>
+  <h1 id="page-title">📋 Issues Update</h1>
   <p>Issues Progress Tracker — Bridgeman Downs Retirement Village</p>
   <p id="cm-date" style="font-size:0.8em;opacity:0.75;margin-top:4px;"></p>
 </div>
@@ -194,9 +194,15 @@
 
   <!-- ── TOOLBAR ── -->
 <div class="toolbar">
-  <div class="toolbar-left">Tap any issue to expand and update CM notes or status.</div>
+  <div class="toolbar-left" id="toolbar-tip">Tap any issue to expand and update CM notes or status.</div>
   <button class="print-btn" id="print-btn" onclick="printIssues(this)" title="Print or save all issues as PDF">🖨️ Print / Save PDF</button>
 
+</div>
+
+<!-- ── RC ALERT BANNER ── -->
+<div id="rc-alert-banner" style="display:none;background:#fff8e1;border-bottom:2px solid #e0a800;padding:10px 1.5rem;font-size:0.85em;color:#7a5200;font-weight:700;">
+  <span id="rc-alert-text"></span>
+  <button onclick="dismissRcAlert()" style="margin-left:12px;background:none;border:none;cursor:pointer;font-size:1em;color:#7a5200;font-weight:700;">✕ Dismiss</button>
 </div>
 
 <!-- ── DASHBOARD CARDS ── -->
@@ -267,29 +273,38 @@
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
 const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJBsVGUur5l7ixOFKqkDHGVsThkoRBINZr7YRc4fxy4Bb0K0ifT8cpoEtoO8uMD_dN7Q/exec";
-const CM_PIN = "CMUD";
+const CM_PIN   = "CMUD";
+const RC_PIN   = "5304";   // ← same as members-area
 // ─────────────────────────────────────────────────────────────────────────────
 
 let issueData = [];
+let userRole  = "";  // "cm" or "rc"
 
 // ── PIN ──────────────────────────────────────────────────────────────────────
 function checkPin() {
   const val = document.getElementById("pinInput").value;
   if (val === CM_PIN) {
-    sessionStorage.setItem("bdrv_cmupdate_auth", "true");
-    document.getElementById("pinOverlay").style.display = "none";
-    document.getElementById("pinInput").value = "";
-    loadIssues();
+    userRole = "cm";
+    sessionStorage.setItem("bdrv_cmupdate_auth", "cm");
+  } else if (val === RC_PIN) {
+    userRole = "rc";
+    sessionStorage.setItem("bdrv_cmupdate_auth", "rc");
   } else {
     const err = document.getElementById("pinError");
     err.style.display = "block";
     setTimeout(() => err.style.display = "none", 3000);
     document.getElementById("pinInput").value = "";
+    return;
   }
+  document.getElementById("pinOverlay").style.display = "none";
+  document.getElementById("pinInput").value = "";
+  loadIssues();
 }
 
 // Skip PIN if already authenticated this session
-if (sessionStorage.getItem("bdrv_cmupdate_auth") === "true") {
+const _savedRole = sessionStorage.getItem("bdrv_cmupdate_auth");
+if (_savedRole === "cm" || _savedRole === "rc") {
+  userRole = _savedRole;
   document.getElementById("pinOverlay").style.display = "none";
   loadIssues();
 }
@@ -351,9 +366,17 @@ async function loadIssues() {
     const resp = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
     const text = await resp.text();
     issueData = parseCSV(text);
+    // Update page title and tip to reflect role
+    const titleEl = document.getElementById("page-title");
+    if (titleEl) titleEl.textContent = userRole === "rc" ? "📋 RC Issues Update" : "📋 CM Update";
+    const tipEl = document.getElementById("toolbar-tip");
+    if (tipEl) tipEl.textContent = userRole === "rc"
+      ? "Tap any issue to respond to CM notes or update the status."
+      : "Tap any issue to expand and update CM notes or status.";
     buildDashboard();
     buildAccordion();
     wireFilterBtns();
+    checkRcAlerts();
   } catch(e) {
     document.getElementById("loading").textContent = "⚠️ Could not load issues. Please refresh.";
   }
@@ -410,6 +433,18 @@ function buildAccordion() {
               <button class="btn-update" onclick="submitInlineUpdate('${uid}', '${escHtml(issue.category)}', '${escHtml(issue.topic)}')">Save changes</button>
               <button class="btn-discard" onclick="toggleEdit('${uid}')">Discard</button>
             </div>
+            ${userRole === "rc" ? `
+            <div class="rc-response-panel" style="margin-top:12px;padding-top:12px;border-top:2px dashed #c5d8ee;">
+              <label class="field-label" style="color:#2e7d32;">💬 RC Response</label>
+              <textarea class="rc-response-text" rows="2" placeholder="Type your response to the CM here…"
+                style="width:100%;padding:9px 11px;font-size:0.88em;font-family:inherit;border:1.5px solid #2e7d32;border-radius:6px;margin-top:4px;resize:vertical;"></textarea>
+              <div style="display:flex;gap:8px;margin-top:8px;">
+                <button class="btn-rc-respond" onclick="submitRcResponse('${uid}', '${escHtml(issue.category)}', '${escHtml(issue.topic)}')"
+                  style="padding:8px 16px;background:#2e7d32;color:white;border:none;border-radius:6px;font-family:inherit;font-size:0.82em;font-weight:700;cursor:pointer;">
+                  💬 Send Response
+                </button>
+              </div>
+            </div>` : ""}
           </div>
         </div>`;
     }).join("");
@@ -564,6 +599,96 @@ function applyFilter() {
     });
     block.style.display = anyVisible ? "" : "none";
   });
+}
+
+// ── RC RESPONSE ──────────────────────────────────────────────────────────────
+async function submitRcResponse(uid, originalCategory, originalTopic) {
+  const row      = document.getElementById(uid);
+  const textarea = row.querySelector(".rc-response-text");
+  const btn      = row.querySelector(".btn-rc-respond");
+  const response = textarea.value.trim();
+
+  if (!response) { alert("Please type a response before sending."); return; }
+
+  // Build stamped prefix — newest at top
+  const now = new Date();
+  const stamp = now.toLocaleDateString("en-AU", { day:"2-digit", month:"2-digit", year:"numeric" });
+  const prefix = `[RC - ${stamp}] ${response}`;
+
+  // Get current notes from local data and prepend
+  const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
+  const existingNotes = issue ? issue.notes : "";
+  const newNotes = existingNotes ? `${prefix}
+
+${existingNotes}` : prefix;
+
+  // Also read status from the edit form (RC can change status too)
+  const status = row.querySelector(".edit-status").value;
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Sending…";
+
+  const payload = JSON.stringify({
+    action: "update",
+    originalCategory,
+    originalTopic,
+    category: originalCategory,
+    topic: originalTopic,
+    notes: newNotes,
+    status
+  });
+
+  try {
+    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+
+    // Mark this issue as having an unseen RC response (for CM alert)
+    const rcAlerts = JSON.parse(localStorage.getItem("bdrv_rc_alerts") || "[]");
+    const key = `${originalCategory}||${originalTopic}`;
+    if (!rcAlerts.includes(key)) rcAlerts.push(key);
+    localStorage.setItem("bdrv_rc_alerts", JSON.stringify(rcAlerts));
+
+    // Update local data
+    if (issue) { issue.notes = newNotes; issue.status = status; }
+
+    textarea.value = "";
+    row.classList.remove("editing");
+    showToast("success");
+    setTimeout(() => loadIssues(), 2000);
+  } catch(e) {
+    showToast("error");
+  }
+
+  btn.disabled = false;
+  btn.textContent = "💬 Send Response";
+}
+
+// ── CM ALERT — check for unread RC responses on login ────────────────────────
+function checkRcAlerts() {
+  if (userRole !== "cm") return;
+  const rcAlerts = JSON.parse(localStorage.getItem("bdrv_rc_alerts") || "[]");
+  if (rcAlerts.length === 0) return;
+
+  // Filter to only issues that actually have [RC - in their notes
+  const relevant = rcAlerts.filter(key => {
+    const [cat, topic] = key.split("||");
+    const issue = issueData.find(i => i.category === cat && i.topic === topic);
+    return issue && issue.notes.includes("[RC -");
+  });
+
+  if (relevant.length === 0) {
+    localStorage.removeItem("bdrv_rc_alerts");
+    return;
+  }
+
+  const banner = document.getElementById("rc-alert-banner");
+  const text   = document.getElementById("rc-alert-text");
+  text.textContent = `📬 You have RC responses on ${relevant.length} issue${relevant.length > 1 ? "s" : ""} — look for the [RC - date] entries in the notes.`;
+  banner.style.display = "block";
+}
+
+function dismissRcAlert() {
+  document.getElementById("rc-alert-banner").style.display = "none";
+  localStorage.removeItem("bdrv_rc_alerts");
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
