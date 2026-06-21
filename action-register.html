@@ -264,7 +264,7 @@
           <th class="col-issue">Issue #</th>
           <th class="col-status">Status</th>
           <th class="col-notes">Notes / Update</th>
-          <th class="col-outcome">Outcome / Resolution</th>
+          <th class="col-outcome">✅ Outcome / Resolution</th>
           <th class="col-edit">Edit</th>
         </tr>
       </thead>
@@ -602,25 +602,33 @@ function startEdit(rowNum) {
   const tr = document.querySelector(`tr[data-row="${rowNum}"]`);
   tr.classList.add("edit-row");
   tr.innerHTML = `
-    <td class="col-ref" colspan="2" style="font-weight:700;color:var(--navy)">${a.ref}</td>
-    <td class="col-action" style="color:#555;font-size:0.88rem" colspan="3">${escHtml(a.action)}</td>
-    <td class="col-issue">${a.issueRef || ""}</td>
-    <td class="col-status">
-      <select id="edit-status" style="width:100%;min-width:100px;" onchange="toggleOutcomeField(this)">
-        ${["Open","In Progress","Done","Deferred"].map(s =>
-          `<option${s===a.status?" selected":""}>${s}</option>`).join("")}
-      </select>
-    </td>
-    <td class="col-notes">
-      <textarea id="edit-notes" placeholder="Add a progress note…">${escHtml(a.notes)}</textarea>
-    </td>
-    <td class="col-outcome">
-      <label id="outcome-label" class="outcome-label" style="font-size:0.8rem;display:block;margin-bottom:3px;${a.status==='Done'?'':'display:none!important'}">What was done? *</label>
-      <textarea id="edit-outcome" placeholder="Describe what was done to resolve this action…" style="${a.status==='Done'?'':'display:none'}">${escHtml(a.outcome)}</textarea>
-    </td>
-    <td class="col-edit">
-      <button class="save-btn" onclick="saveEdit(${rowNum})">Save</button>
-      <button class="cancel-btn" onclick="cancelEdit()">✕</button>
+    <td colspan="10" style="padding:12px 14px;">
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;">
+        <span style="font-weight:700;color:var(--navy);font-size:0.95rem;white-space:nowrap;">${a.ref}</span>
+        <span style="color:#555;font-size:0.88rem;">${escHtml(a.action)}</span>
+        ${a.issueRef ? `<span style="margin-left:auto;font-size:0.85rem;color:var(--mid-blue);font-weight:600;white-space:nowrap;">${a.issueRef}</span>` : ""}
+      </div>
+      <div style="display:grid;grid-template-columns:160px 1fr 1fr auto;gap:10px;align-items:start;">
+        <div>
+          <label style="font-size:0.8rem;color:#555;font-weight:600;display:block;margin-bottom:4px;">Status</label>
+          <select id="edit-status" style="width:100%;font-size:0.9rem;border:1px solid var(--border);border-radius:6px;padding:6px 8px;background:#fff;" onchange="toggleOutcomeField(this)">
+            ${["Open","In Progress","Done","Deferred"].map(s =>
+              `<option${s===a.status?" selected":""}>${s}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.8rem;color:#555;font-weight:600;display:block;margin-bottom:4px;">Notes / Update</label>
+          <textarea id="edit-notes" placeholder="Add a progress note…" style="width:100%;font-size:0.9rem;border:1px solid var(--border);border-radius:6px;padding:6px 8px;background:#fff;resize:vertical;min-height:60px;font-family:var(--font);">${escHtml(a.notes)}</textarea>
+        </div>
+        <div>
+          <label id="outcome-label" class="outcome-label" style="font-size:0.8rem;display:block;margin-bottom:4px;${a.status==='Done'?'':'visibility:hidden'}">What was done? *</label>
+          <textarea id="edit-outcome" placeholder="Describe what was done to resolve this action…" style="width:100%;font-size:0.9rem;border:1px solid var(--border);border-radius:6px;padding:6px 8px;background:#fff;resize:vertical;min-height:60px;font-family:var(--font);${a.status==='Done'?'':'display:none'}">${escHtml(a.outcome)}</textarea>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;padding-top:22px;">
+          <button class="save-btn" onclick="saveEdit(${rowNum})">Save</button>
+          <button class="cancel-btn" onclick="cancelEdit()">✕ Cancel</button>
+        </div>
+      </div>
     </td>`;
 }
 
