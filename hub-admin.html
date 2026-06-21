@@ -439,13 +439,89 @@
       <div class="card-top">
         <div class="card-icon">🛠️</div>
         <div>
-          <div class="card-title">Issues Management</div>
-          <div class="card-desc">Add new issues, edit existing ones, or update status and notes directly as the RC Chair.</div>
+          <div class="card-title">Issues — CM Update</div>
+          <div class="card-desc">View the Issues Tracker and update CM notes and status. For use by the Community Manager.</div>
         </div>
       </div>
       <div class="card-actions">
-        <a href="cm-update.html" class="btn-action btn-green">🛠️ Manage Issues</a>
-        <a href="progress-tracker.html" class="btn-action btn-green">📊 View Tracker</a>
+        <a href="cm-update.html" class="btn-action btn-green">🛠️ CM Update</a>
+        <a href="progress-tracker.html" class="btn-action btn-secondary">📊 View Tracker</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-content" id="add-issue-card">
+      <div class="card-top">
+        <div class="card-icon">➕</div>
+        <div>
+          <div class="card-title">Add New Issue</div>
+          <div class="card-desc">Add a new item to the Issues Progress Tracker. For use by RC, SC and the Manor Advisor.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <button class="btn-action btn-green" onclick="toggleAddIssuePanel()">➕ Add Issue</button>
+      </div>
+      <!-- Inline Add Issue Panel -->
+      <div id="add-issue-panel" style="display:none;margin-top:14px;border-top:2px solid #e8f0fe;padding-top:14px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div>
+            <label style="font-size:0.76em;font-weight:700;color:#1F4E79;display:block;margin-bottom:4px;">Category</label>
+            <select id="ai-category" style="width:100%;padding:8px 10px;font-size:0.82em;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;">
+              <option value="">— Select —</option>
+              <option>Safety &amp; Emergency</option>
+              <option>Infrastructure &amp; Maintenance</option>
+              <option>Staffing &amp; Management</option>
+              <option>Facilities &amp; Amenities</option>
+              <option>Environment &amp; Grounds</option>
+              <option>Administration &amp; Finance</option>
+              <option>Security</option>
+              <option>Initiatives</option>
+              <option>Manor</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.76em;font-weight:700;color:#1F4E79;display:block;margin-bottom:4px;">Or new category</label>
+            <input type="text" id="ai-category-new" placeholder="e.g. Transport"
+              style="width:100%;padding:8px 10px;font-size:0.82em;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label style="font-size:0.76em;font-weight:700;color:#1F4E79;display:block;margin-bottom:4px;">Issue / Topic</label>
+            <input type="text" id="ai-topic" placeholder="Brief description of the issue"
+              style="width:100%;padding:8px 10px;font-size:0.82em;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;">
+          </div>
+          <div style="grid-column:1/-1;">
+            <label style="font-size:0.76em;font-weight:700;color:#1F4E79;display:block;margin-bottom:4px;">Initial Notes (optional)</label>
+            <textarea id="ai-notes" rows="3" placeholder="Background, context, next steps…"
+              style="width:100%;padding:8px 10px;font-size:0.82em;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;resize:vertical;"></textarea>
+          </div>
+          <div>
+            <label style="font-size:0.76em;font-weight:700;color:#1F4E79;display:block;margin-bottom:4px;">Status</label>
+            <select id="ai-status" style="width:100%;padding:8px 10px;font-size:0.82em;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;">
+              <option value="">— Select —</option>
+              <option>Not Started</option>
+              <option>In Progress</option>
+              <option>On Hold</option>
+              <option>Completed</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.76em;font-weight:700;color:#1F4E79;display:block;margin-bottom:4px;">Source</label>
+            <select id="ai-source" style="width:100%;padding:8px 10px;font-size:0.82em;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;">
+              <option value="General">General</option>
+              <option value="Manor">Manor</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button id="ai-submit-btn" onclick="submitNewIssue()"
+            style="flex:1;padding:9px;background:#1F4E79;color:white;border:none;border-radius:6px;font-family:inherit;font-size:0.82em;font-weight:700;cursor:pointer;">
+            ➕ Add Issue
+          </button>
+          <button onclick="toggleAddIssuePanel()"
+            style="padding:9px 14px;background:white;color:#888;border:2px solid #d0e2f2;border-radius:6px;font-family:inherit;font-size:0.82em;font-weight:700;cursor:pointer;">
+            Cancel
+          </button>
+        </div>
+        <div id="ai-msg" style="display:none;margin-top:10px;font-size:0.8em;font-weight:700;"></div>
       </div>
     </div>
 
@@ -724,6 +800,70 @@
 </div><!-- /page-wrap -->
 
 <script>
+// ── ADD NEW ISSUE ────────────────────────────────────────────────────────────
+const ISSUES_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJBsVGUur5l7ixOFKqkDHGVsThkoRBINZr7YRc4fxy4Bb0K0ifT8cpoEtoO8uMD_dN7Q/exec";
+
+function toggleAddIssuePanel() {
+  const panel = document.getElementById("add-issue-panel");
+  const isOpen = panel.style.display !== "none";
+  panel.style.display = isOpen ? "none" : "block";
+  if (!isOpen) {
+    // Scroll the card into view
+    document.getElementById("add-issue-card").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+}
+
+async function submitNewIssue() {
+  const catSelect = document.getElementById("ai-category").value;
+  const catNew    = document.getElementById("ai-category-new").value.trim();
+  const category  = catNew || catSelect;
+  const topic     = document.getElementById("ai-topic").value.trim();
+  const notes     = document.getElementById("ai-notes").value.trim();
+  const status    = document.getElementById("ai-status").value;
+  const source    = document.getElementById("ai-source").value;
+  const msgEl     = document.getElementById("ai-msg");
+  const btn       = document.getElementById("ai-submit-btn");
+
+  msgEl.style.display = "none";
+
+  if (!category) { showAiMsg("⚠️ Please select or enter a category.", "red"); return; }
+  if (!topic)    { showAiMsg("⚠️ Please enter an issue topic.", "red"); return; }
+  if (!status)   { showAiMsg("⚠️ Please select a status.", "red"); return; }
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Adding…";
+
+  const payload = JSON.stringify({ action: "add", category, topic, notes, status, source });
+
+  try {
+    await fetch(ISSUES_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+    // Clear fields
+    document.getElementById("ai-category").value = "";
+    document.getElementById("ai-category-new").value = "";
+    document.getElementById("ai-topic").value = "";
+    document.getElementById("ai-notes").value = "";
+    document.getElementById("ai-status").value = "";
+    document.getElementById("ai-source").value = "General";
+    showAiMsg("✅ Issue added successfully! It will appear in the tracker within a few minutes.", "#2e7d32");
+    setTimeout(() => {
+      document.getElementById("add-issue-panel").style.display = "none";
+      msgEl.style.display = "none";
+    }, 3000);
+  } catch(err) {
+    showAiMsg("❌ Something went wrong. Please try again.", "red");
+  }
+
+  btn.disabled = false;
+  btn.textContent = "➕ Add Issue";
+}
+
+function showAiMsg(text, color) {
+  const el = document.getElementById("ai-msg");
+  el.textContent = text;
+  el.style.color = color;
+  el.style.display = "block";
+}
+
 // ── PIN ──────────────────────────────────────────────────────────────────────
 const CORRECT_PIN = '1957';   // ← change this to your actual PIN
 

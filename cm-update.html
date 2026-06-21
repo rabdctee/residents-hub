@@ -194,9 +194,9 @@
 
   <!-- ── TOOLBAR ── -->
 <div class="toolbar">
-  <div class="toolbar-left">Tap any issue to edit it. Tap <strong>Add New Issue</strong> if you wish to add a new item.</div>
+  <div class="toolbar-left">Tap any issue to expand and update CM notes or status.</div>
   <button class="print-btn" id="print-btn" onclick="printIssues(this)" title="Print or save all issues as PDF">🖨️ Print / Save PDF</button>
-  <button class="add-btn-top" onclick="toggleAddPanel()">➕ Add New Issue</button>
+
 </div>
 
 <!-- ── DASHBOARD CARDS ── -->
@@ -251,60 +251,7 @@
 <div class="main">
 
   <!-- ADD NEW ISSUE PANEL -->
-  <div class="add-panel" id="add-panel">
-    <h2>➕ Add a New Issue</h2>
-    <div class="add-grid">
-      <div>
-        <label class="field-label" for="add-category">Category</label>
-        <select id="add-category">
-          <option value="">— Select a category —</option>
-          <option>Safety &amp; Emergency</option>
-          <option>Infrastructure &amp; Maintenance</option>
-          <option>Staffing &amp; Management</option>
-          <option>Facilities &amp; Amenity</option>
-          <option>Environment &amp; Grounds</option>
-          <option>Administration &amp; Finance</option>
-          <option>Security</option>
-          <option>Initiatives</option>
-          <option>Manor</option>
-        </select>
-      </div>
-      <div>
-        <label class="field-label" for="add-category-new">Or type a new category</label>
-        <input type="text" id="add-category-new" placeholder="e.g. Transport">
-      </div>
-      <div class="full">
-        <label class="field-label" for="add-topic">Issue / Topic</label>
-        <input type="text" id="add-topic" placeholder="Brief description of the issue">
-      </div>
-      <div class="full">
-        <label class="field-label" for="add-notes">CM Notes</label>
-        <textarea id="add-notes" placeholder="Current status, actions taken, next steps…" rows="3"></textarea>
-      </div>
-      <div>
-        <label class="field-label" for="add-status">Status</label>
-        <select id="add-status">
-          <option value="">— Select a status —</option>
-          <option>Not Started</option>
-          <option>In Progress</option>
-          <option>On Hold</option>
-          <option>Completed</option>
-        </select>
-      </div>
-      <div>
-        <label class="field-label" for="add-source">Source</label>
-        <select id="add-source">
-          <option value="General">General</option>
-          <option value="Manor">Manor</option>
-        </select>
-      </div>
-    </div>
-    <div class="add-actions">
-      <button class="btn-save" id="add-btn" onclick="submitAdd()">Add Issue</button>
-      <button class="btn-cancel" onclick="toggleAddPanel()">Cancel</button>
-    </div>
-    <div id="add-msg" style="display:none;margin-top:0.75rem;font-size:0.85em;font-weight:700;"></div>
-  </div>
+
 
   <!-- ACCORDION -->
   <div id="loading" class="state-msg">⏳ Loading issues…</div>
@@ -536,49 +483,7 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
 }
 
 // ── ADD NEW ISSUE ─────────────────────────────────────────────────────────────
-function toggleAddPanel() {
-  const panel = document.getElementById("add-panel");
-  panel.classList.toggle("open");
-}
 
-async function submitAdd() {
-  const catSelect = document.getElementById("add-category").value;
-  const catNew    = document.getElementById("add-category-new").value.trim();
-  const category  = catNew || catSelect;
-  const topic     = document.getElementById("add-topic").value.trim();
-  const notes     = document.getElementById("add-notes").value.trim();
-  const status    = document.getElementById("add-status").value;
-  const source    = document.getElementById("add-source").value;
-
-  if (!category) { alert("Please select or enter a category."); return; }
-  if (!topic)    { alert("Please enter an issue topic."); return; }
-  if (!status)   { alert("Please select a status."); return; }
-
-  const btn = document.getElementById("add-btn");
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Adding…';
-
-  const payload = JSON.stringify({ action: "add", category, topic, notes, status, source });
-
-  try {
-    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
-    showToast("success");
-    document.getElementById("add-category").value = "";
-    document.getElementById("add-category-new").value = "";
-    document.getElementById("add-topic").value = "";
-    document.getElementById("add-notes").value = "";
-    document.getElementById("add-status").value = "";
-    document.getElementById("add-source").value = "General";
-    document.getElementById("add-panel").classList.remove("open");
-    // Reload accordion to show new issue
-    setTimeout(() => loadIssues(), 2000);
-  } catch(e) {
-    showToast("error");
-  }
-
-  btn.disabled = false;
-  btn.innerHTML = "Add Issue";
-}
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
 function showToast(type) {
