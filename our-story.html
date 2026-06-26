@@ -330,6 +330,101 @@
       .help-grid{ grid-template-columns:1fr; }
     }
 
+    /* ===== From the Archives ===== */
+    .vault-box{
+      background:#fffdf4;
+      border:1px solid #e8d9a0;
+      border-left:4px solid #C9A44A;
+      border-radius:8px;
+      padding:24px 26px;
+      margin-bottom:30px;
+    }
+    .vault-box h3{
+      color:#1F4E79;
+      font-size:1em;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+    .vault-box .vault-sub{
+      font-size:0.82em;
+      color:#7a8a9a;
+      margin-bottom:16px;
+    }
+    .vault-rules{
+      list-style:none;
+      padding:0;
+      margin:0 0 18px;
+      border-top:1px solid #e8d9a0;
+    }
+    .vault-rules li{
+      display:flex;
+      gap:10px;
+      padding:9px 0;
+      border-bottom:1px dashed #e8d9a0;
+      font-size:0.88em;
+      color:#333;
+      line-height:1.5;
+    }
+    .vault-rules li:last-child{ border-bottom:none; }
+    .vault-rule-num{
+      font-weight:700;
+      color:#C9A44A;
+      flex-shrink:0;
+      width:30px;
+      font-size:0.85em;
+      padding-top:1px;
+    }
+    .vault-wage-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:0.85em;
+      margin:10px 0 16px;
+    }
+    .vault-wage-table th{
+      background:#1F4E79;
+      color:white;
+      padding:7px 12px;
+      text-align:left;
+      font-weight:600;
+    }
+    .vault-wage-table td{
+      padding:6px 12px;
+      border-bottom:1px solid #e8d9a0;
+      color:#333;
+    }
+    .vault-wage-table tr:last-child td{ border-bottom:none; }
+    .vault-wage-table tr:nth-child(even) td{ background:#fffbee; }
+    .vault-footer{
+      display:flex;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-top:14px;
+      padding-top:14px;
+      border-top:1px solid #e8d9a0;
+      font-size:0.82em;
+      color:#666;
+    }
+    .vault-attribution{
+      font-style:italic;
+      color:#2a7a4b;
+      font-weight:600;
+    }
+    .vault-pdf-link{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:#1F4E79;
+      color:white;
+      padding:8px 18px;
+      border-radius:6px;
+      text-decoration:none;
+      font-size:0.85em;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .vault-pdf-link:hover{ background:#163d61; }
+
     /* ===== Print ===== */
     @media print{
       .section-bar,.how-to-help,.cta-strip,.acc-chevron{ display:none !important; }
@@ -357,6 +452,7 @@
     <a href="#about">About</a>
     <a href="#history">Did You Know?</a>
     <a href="#questions">The Questions</a>
+    <a href="#vault">From the Archives</a>
     <a href="#share">Share Your Story</a>
   </div>
 
@@ -596,6 +692,53 @@
           <div class="question-row"><div class="q-num">4</div><div>Do you know of any other residents with particularly long memories of the village who we should speak with?</div></div>
         </div>
         <div class="acc-tip">💡 Your final thoughts are often the most important — please don't hold back.</div>
+      </div>
+    </div>
+
+    <!-- ===== FROM THE ARCHIVES ===== -->
+    <div class="section-divider" id="vault">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">🏛️ From the Archives — A Glimpse of the Past</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="vault-box">
+      <h3>Who Wants the Good Old Days Back???</h3>
+      <p class="vault-sub">Rules which applied to the clerical staff of Dalgety's in the early 1850s &nbsp;·&nbsp; <em>Source: Magpies Journal, No. 2, 1974</em></p>
+
+      <ul class="vault-rules">
+        <li><span class="vault-rule-num">(i)</span><span>Godliness, cleanliness and punctuality are the necessities of a good business.</span></li>
+        <li><span class="vault-rule-num">(ii)</span><span>On the recommendation of the Governor of this Colony, this firm has reduced the hours of work, and the Clerical Staff will now only have to be present between the hours of 7 a.m. and 6 p.m. on week days. The Sabbath is for Worship, but should any Man-of-War or other vessel require victualling, the clerical staff will work on the Sabbath.</span></li>
+        <li><span class="vault-rule-num">(iii)</span><span>Daily prayers will be held each morning in the Main Office. The Clerical Staff will be present.</span></li>
+        <li><span class="vault-rule-num">(iv)</span><span>Clothing must be of a sober nature. The Clerical Staff will not disport themselves in rainment of bright colours, nor will they wear hose unless in good repair.</span></li>
+        <li><span class="vault-rule-num">(v)</span><span>Overshoes and top-coats may not be worn in the office, but Neck Scarves and headwear may be worn in inclement weather.</span></li>
+        <li><span class="vault-rule-num">(vi)</span><span>A stove is provided for the benefit of Clerical Staff. Coal and wood must be kept in the locker. It is recommended that each member of the Clerical Staff bring 4 pounds of coal each day during cold weather.</span></li>
+        <li><span class="vault-rule-num">(vii)</span><span>No member of the Clerical Staff may leave the room without the permission of Mr. Duffy. The calls of nature are permitted and the Clerical Staff may use the garden below the second gate. This area must be kept in good order.</span></li>
+        <li><span class="vault-rule-num">(viii)</span><span>No talking is allowed in business hours.</span></li>
+        <li><span class="vault-rule-num">(ix)</span><span>The craving for tobacco, wines or spirits is a human weakness and, as such, forbidden to all members of Clerical Staff.</span></li>
+        <li><span class="vault-rule-num">(x)</span><span>Now that the hours of business have been drastically reduced, the partaking of food is allowed between 11.30 a.m. and noon, but work will not on any account cease.</span></li>
+        <li><span class="vault-rule-num">(xi)</span><span>Members of the Clerical Staff will provide their own pens. A new sharpener is available on application to Mr. Duffy.</span></li>
+        <li><span class="vault-rule-num">(xii)</span><span>Mr. Duffy will nominate a senior clerk to be responsible for the cleanliness of the Main Office and the Private Office, and all boys and juniors will report to him 40 minutes before prayers, and will remain after closing for similar work. Brushes, brooms, scrubbers and soap will be provided by the owners.</span></li>
+        <li><span class="vault-rule-num">(xiii)</span><span>The new increased weekly wages are as hereunder detailed:
+          <table class="vault-wage-table">
+            <tr><th>Position</th><th>Weekly Wage</th></tr>
+            <tr><td>Junior boys to 11 years old</td><td>1.4d</td></tr>
+            <tr><td>Boys to 14</td><td>2.1d</td></tr>
+            <tr><td>Juniors</td><td>4.8d</td></tr>
+            <tr><td>Junior Clerks</td><td>8.7d</td></tr>
+            <tr><td>Clerks</td><td>10.6d</td></tr>
+            <tr><td>Senior Clerks after 15 years with owners</td><td>21.1d</td></tr>
+          </table>
+          The owners hereby recognise the generosity of the new labour laws, but will expect a great rise in output of work to compensate for these near-Utopian conditions.
+        </span></li>
+      </ul>
+
+      <div class="vault-footer">
+        <div style="flex:1;min-width:200px;">
+          <p class="vault-attribution">💬 "Maybe times have changed?" — Ralph, 23 June 2026</p>
+          <p style="margin-top:6px;">Kindly contributed by Dr Ralph van Gelder, one of our residents, who felt this little piece of history deserved to be shared.</p>
+        </div>
+        <a class="vault-pdf-link" href="https://bdrv.au/view-document.html?id=1nmb4PzB_SYpt5-hg6lFe0GDJv-Ql88KU&back=our-story" target="_blank">📄 View Original Scan</a>
       </div>
     </div>
 
