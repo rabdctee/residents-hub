@@ -119,11 +119,11 @@
     "keywords": "register registration sign up book event booking rsvp reserve place"
   },
   {
-    "page": "events",
+    "page": "vault",
     "section": null,
-    "title": "🎉 Dining Menu",
-    "description": "Current dining menu for the restaurant",
-    "keywords": "dining menu restaurant food meal lunch dinner breakfast weekly menu"
+    "title": "🌺 From the Archives",
+    "description": "Read contribution from Residents",
+    "keywords": "history historical vault archives old"
   },
   {
     "page": "contact",
