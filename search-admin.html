@@ -254,6 +254,7 @@
     <div class="tab active" onclick="switchTab('tab-index')">📋 Search Index</div>
     <div class="tab" onclick="switchTab('tab-log')">📊 Search Log</div>
     <div class="tab" onclick="switchTab('tab-stats')">📈 Statistics</div>
+    <div class="tab" onclick="switchTab('tab-pages')">🗂️ Manage Pages</div>
   </div>
 
   <!-- ── TAB: SEARCH INDEX ── -->
@@ -270,17 +271,6 @@
           <label>Page *</label>
           <select id="new-page">
             <option value="">— select —</option>
-            <option value="home">🏠 Home</option>
-            <option value="events">🗓️ Events</option>
-            <option value="activity-contacts">🎉 Activities & Groups</option>
-            <option value="newsletter">📰 Newsletter</option>
-            <option value="how-to">❓ Help & How To</option>
-            <option value="community-life">🌺 Community</option>
-            <option value="useful-links">🔗 Useful Links</option>
-            <option value="issues-tracker">⚠️ Issues Progress Tracker</option>
-            <option value="village-info">🔒 Residents Only</option>
-            <option value="contact">📞 Contacts</option>
-            
           </select>
         </div>
         <div class="form-group">
@@ -335,6 +325,31 @@
     <div class="top-terms" id="topTerms"><span class="loading">Loading…</span></div>
   </div>
 
+  <!-- ── TAB: MANAGE PAGES ── -->
+  <div class="tab-panel" id="tab-pages">
+    <div class="section-title">Add a New Page</div>
+    <div class="add-form">
+      <div class="form-grid" style="grid-template-columns:1fr 2fr auto;">
+        <div class="form-group">
+          <label>Page filename (no .html) *</label>
+          <input type="text" id="new-page-name" placeholder="e.g. ken-update"/>
+        </div>
+        <div class="form-group">
+          <label>Label (shown in dropdown) *</label>
+          <input type="text" id="new-page-label" placeholder="e.g. 🏡 Ken's Update"/>
+        </div>
+        <button class="btn" onclick="addPage()" style="align-self:end;">➕ Add Page</button>
+      </div>
+      <div style="margin-top:10px;font-size:0.8em;color:#888;">
+        💡 Enter just the filename without <em>.html</em> — e.g. <strong>ken-update</strong> not ken-update.html.
+        Once added it will appear in the Page dropdown when adding or editing mappings.
+      </div>
+    </div>
+
+    <div class="section-title">Current Pages</div>
+    <div id="pagesTableWrap" class="loading">Loading…</div>
+  </div>
+
 </div><!-- end container -->
 
 <div id="toast"></div>
@@ -352,11 +367,13 @@ function saveConfig() {
 // ── DATA ──────────────────────────────────────────────────────
 var indexData = [];
 var logData   = [];
+var pagesData = [];
 
 function loadAll() {
   if (!SCRIPT_URL) { toast('⚠️ Please enter your Apps Script URL first', true); return; }
   loadIndex();
   loadLog();
+  loadPages();
 }
 
 // ── SEARCH INDEX ──────────────────────────────────────────────
@@ -422,11 +439,11 @@ function editMapping(row) {
   });
   if (!targetTr) return;
 
-  // Build the page options
-  var pages = ['home','newsletter','events','activity-contacts','contact','village-info','concerts','community','useful-links','how-to','progress-tracker','noticeboard','about'];
-  var pageOpts = pages.map(function(p) {
-    return '<option value="' + p + '"' + (p === item.page ? ' selected' : '') + '>' + p + '</option>';
-  }).join('');
+  // Build the page options from pagesData
+  var pageOpts = '<option value="">— select —</option>' +
+    pagesData.map(function(p) {
+      return '<option value="' + p.page + '"' + (p.page === item.page ? ' selected' : '') + '>' + (p.label || p.page) + '</option>';
+    }).join('');
 
   targetTr.innerHTML =
     '<td><input type="text" id="edit-kw-' + row + '" value="' + esc(item.keyword) + '" style="width:130px;padding:3px 6px;border:1px solid #ccc;border-radius:3px;font-size:0.88em;"></td>' +
@@ -617,12 +634,88 @@ function prefillAdd(term) {
   toast('💡 Term pre-filled — choose a page and title');
 }
 
+// ── PAGES ─────────────────────────────────────────────────────
+function loadPages() {
+  document.getElementById('pagesTableWrap').innerHTML = '<div class="loading">Loading pages…</div>';
+  fetch(SCRIPT_URL + '?action=getPages')
+    .then(r => r.json())
+    .then(data => {
+      pagesData = data.items || [];
+      renderPages();
+      populatePageDropdowns();
+    })
+    .catch(() => {
+      document.getElementById('pagesTableWrap').innerHTML =
+        '<div class="loading">Could not load pages.</div>';
+    });
+}
+
+function renderPages() {
+  if (!pagesData.length) {
+    document.getElementById('pagesTableWrap').innerHTML =
+      '<div class="loading">No pages yet.</div>';
+    return;
+  }
+  var html = '<table class="index-table"><thead><tr>' +
+    '<th>Page (no .html)</th><th>Label</th><th>Actions</th>' +
+    '</tr></thead><tbody>';
+  pagesData.forEach(function(item) {
+    html += '<tr>' +
+      '<td class="keyword-cell">' + esc(item.page) + '</td>' +
+      '<td>' + esc(item.label || '') + '</td>' +
+      '<td><button class="btn btn-danger btn-sm" onclick="deletePage(' + item.row + ',\'' + esc(item.page) + '\')">🗑 Remove</button></td>' +
+      '</tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('pagesTableWrap').innerHTML = html;
+}
+
+function populatePageDropdowns() {
+  var opts = '<option value="">— select —</option>' +
+    pagesData.map(function(p) {
+      return '<option value="' + p.page + '">' + esc(p.label || p.page) + '</option>';
+    }).join('');
+  document.getElementById('new-page').innerHTML = opts;
+}
+
+function addPage() {
+  var page  = document.getElementById('new-page-name').value.trim().toLowerCase().replace(/\.html$/i, '');
+  var label = document.getElementById('new-page-label').value.trim();
+  if (!page || !label) { toast('⚠️ Both filename and label are required', true); return; }
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'addPage', page: page, label: label })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) { toast('⚠️ ' + data.error, true); return; }
+    toast('✅ Page added: ' + page);
+    document.getElementById('new-page-name').value  = '';
+    document.getElementById('new-page-label').value = '';
+    loadPages();
+  })
+  .catch(() => toast('⚠️ Failed to add page', true));
+}
+
+function deletePage(row, page) {
+  if (!confirm('Remove "' + page + '" from the pages list?\n\nThis won\'t affect any existing mappings that use it.')) return;
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'deletePage', row: row })
+  })
+  .then(r => r.json())
+  .then(() => { toast('🗑️ Page removed'); loadPages(); })
+  .catch(() => toast('⚠️ Failed to remove page', true));
+}
+
 // ── TABS ──────────────────────────────────────────────────────
 function switchTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  var tabs = ['tab-index','tab-log','tab-stats'];
+  var tabs = ['tab-index','tab-log','tab-stats','tab-pages'];
   var idx  = tabs.indexOf(id);
   document.querySelectorAll('.tab')[idx].classList.add('active');
   if (id === 'tab-stats') buildStats();
