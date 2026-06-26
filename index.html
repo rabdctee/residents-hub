@@ -2980,16 +2980,15 @@ function loadCustomMappings() {
   fetch(SEARCH_LOGGER_URL + '?action=getIndex')
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      customSearchMappings = (data.items || [])
-        .filter(function(i) { return i.active; })
-        .map(function(i) {
-          return {
-            page:     i.page,
-            section:  i.section || null,
-            title:    i.title,
-            keywords: i.keyword
-          };
-        });
+      var internalPages = ['home','events','activity-contacts','contact','newsletter','committee','useful-links','about','village-info'];
+customSearchMappings = (data.items || [])
+  .filter(function(i) { return i.active; })
+  .map(function(i) {
+    var isInternal = internalPages.indexOf(i.page) !== -1;
+    return isInternal
+      ? { page: i.page, section: i.section || null, title: i.title, keywords: i.keyword }
+      : { url:  i.page + '.html',                   title: i.title, keywords: i.keyword };
+  });
     })
     .catch(function() {}); // silently fail — search still works without custom mappings
 }
