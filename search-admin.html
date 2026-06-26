@@ -423,7 +423,7 @@ function editMapping(row) {
   if (!targetTr) return;
 
   // Build the page options
-  var pages = ['home','newsletter','events','activity-contacts','contact','village-info','useful-links','how-to','progress-tracker','noticeboard','about'];
+  var pages = ['home','newsletter','events','activity-contacts','contact','village-info','concerts','community','useful-links','how-to','progress-tracker','noticeboard','about'];
   var pageOpts = pages.map(function(p) {
     return '<option value="' + p + '"' + (p === item.page ? ' selected' : '') + '>' + p + '</option>';
   }).join('');
