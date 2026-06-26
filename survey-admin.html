@@ -210,7 +210,8 @@
   <div class="survey-selector-bar">
     <label for="survey-select">📋 Survey:</label>
     <select id="survey-select" onchange="onSurveyChange()">
-      <option value="referral">Referral Money Survey (Current — closes 29 May 2026)</option>
+      <option value="bus">Village Bus Replacement Survey (Current)</option>
+      <option value="referral">Referral Money Survey (Closed — May 2026)</option>
       <!-- Add more past surveys here as needed -->
     </select>
     <button class="btn-reload" onclick="loadResults()">🔄 Refresh</button>
@@ -314,6 +315,10 @@
 
 // Survey registry — add past surveys here as needed
 const SURVEYS = {
+  bus: {
+    label: 'Village Bus Replacement Survey',
+    csv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=1171981688&single=true&output=csv'
+  },
   referral: {
     label: 'Referral Money Survey',
     csv: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=1981195128&single=true&output=csv'
