@@ -2987,7 +2987,7 @@ customSearchMappings = (data.items || [])
     var isInternal = internalPages.indexOf(i.page) !== -1;
     return isInternal
       ? { page: i.page, section: i.section || null, title: i.title, keywords: i.keyword }
-      : { url:  i.page + '.html',                   title: i.title, keywords: i.keyword };
+      : { url:  i.page.replace('#', '.html#') + (i.page.includes('#') ? '' : '.html'),  title: i.title, keywords: i.keyword };
   });
     })
     .catch(function() {}); // silently fail — search still works without custom mappings
