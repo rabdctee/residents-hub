@@ -148,28 +148,28 @@ We'd like to know your overall view before any decisions are made.</p>
 
    <div id="options-grid2">
       <div class="option-card" onclick="selectOption2(this)">
-        <input type="radio" name="choice2" value="Option 1 — A booking or sign-up system so seats are fairly allocated">
+        <input type="checkbox" name="choice2" value="A booking or sign-up system so seats are fairly allocated">
         <div class="option-number">1</div>
         <div class="option-info">
           <div class="option-title">A booking or sign-up system so seats are fairly allocated</div>
         </div>
       </div>
       <div class="option-card" onclick="selectOption2(this)">
-        <input type="radio" name="choice2" value="Option 2 — Running two trips to the same destination on the same day">
+        <input type="checkbox" name="choice2" value="Running two trips to the same destination on the same day">
         <div class="option-number">2</div>
         <div class="option-info">
           <div class="option-title">Running two trips to the same destination on the same day</div>
         </div>
       </div>
       <div class="option-card" onclick="selectOption2(this)">
-        <input type="radio" name="choice2" value="Option 3 — A combination of the above">
+        <input type="checkbox" name="choice2" value="A combination of the above">
         <div class="option-number">3</div>
         <div class="option-info">
           <div class="option-title">A combination of the above</div>
         </div>
       </div>
       <div class="option-card" onclick="selectOption2(this)">
-        <input type="radio" name="choice2" value="Option 4 — Other — please tell us below">
+        <input type="checkbox" name="choice2" value="Other — please tell us below">
         <div class="option-number">4</div>
         <div class="option-info">
           <div class="option-title">Other — please tell us below</div>
@@ -207,20 +207,21 @@ We'd like to know your overall view before any decisions are made.</p>
   }
 
   function selectOption2(card) {
-    document.querySelectorAll('#options-grid2 .option-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
-    card.querySelector('input').checked = true;
+    var cb = card.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    card.classList.toggle('selected', cb.checked);
   }
 
   function submitSurvey() {
     var choice = document.querySelector('input[name="choice"]:checked');
     if (!choice) { alert('Please select one of the options above.'); return; }
-    var choice2 = document.querySelector('input[name="choice2"]:checked');
-    var name    = document.getElementById('residentName').value.trim();
-    var comment = document.getElementById('extraComment').value.trim();
+    var checked2 = Array.from(document.querySelectorAll('input[name="choice2"]:checked')).map(cb => cb.value);
+    var choice2  = checked2.length > 0 ? checked2.join(' | ') : '';
+    var name     = document.getElementById('residentName').value.trim();
+    var comment  = document.getElementById('extraComment').value.trim();
     fetch(SCRIPT_URL, {
       method: 'POST', mode: 'no-cors',
-      body: new URLSearchParams({ action: 'survey', name: name, choice: choice.value, choice2: choice2 ? choice2.value : '', comment: comment })
+      body: new URLSearchParams({ action: 'survey', name: name, choice: choice.value, choice2: choice2, comment: comment })
     });
     document.querySelector('.survey-form').style.display = 'none';
     document.getElementById('thankyou').style.display = 'block';
