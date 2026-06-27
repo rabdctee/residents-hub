@@ -311,7 +311,7 @@
   // Determine which accordion group should auto-open
   var communityPages = ['concerts.html','sports-hub.html','savings.html','info-sessions.html',
    'classifieds.html','memories.html','community-life.html','village-map.html'];
-  var newsPages      = ['index.html'];
+  var newsPages      = ['index.html', 'news.html'];
   var infoPages      = ['useful-links.html','how-to.html','contacts.html']; // Guides & Links
 
   var openNews      = newsPages.some(isActive)      ? ' open' : '';
@@ -333,6 +333,11 @@
        <!-- Welcome to BDRV -->
       <ul class="sb-links">
       <li><a href="welcome.html"${isActive('welcome.html') ? ' class="sb-active"' : ''}>🌟 Welcome to BDRV</a></li>
+      </ul>
+
+      <!-- World News -->
+      <ul class="sb-links">
+        <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>🌏 World News</a></li>
       </ul>
 
       <!-- Social Club -->
