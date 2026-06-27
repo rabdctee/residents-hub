@@ -104,10 +104,10 @@ We'd like to know your overall view before any decisions are made.</p>
 
     <div class="name-section">
       <label>Your name and/or unit number (optional)</label>
-      <input type="text" id="residentName" placeholder="e.g. Jane Smith, Unit 42 — or leave blank to respond anonymously">
+      <input type="text" id="residentName" placeholder="e.g. Maggie & Max May, Unit 42 — or leave blank to respond anonymously">
     </div>
 
-    <p class="question-text">What is your overall position on replacing the village bus with a 12-seater minibus?</p>
+    <p class="question-text">What is your overall position on replacing the village bus with a 12-seater minibus?(Click only one option below)</p>
 
     <div id="options-grid">
       <div class="option-card" onclick="selectOption(this, 1)">
@@ -144,8 +144,40 @@ We'd like to know your overall view before any decisions are made.</p>
       </div>
     </div>
 
+    <p class="question-text">If the smaller bus does not have enough seats for everyone, which solution would you prefer? (Click all that apply)</p>
+
+   <div id="options-grid2">
+      <div class="option-card" onclick="selectOption2(this)">
+        <input type="radio" name="choice2" value="Option 1 — A booking or sign-up system so seats are fairly allocated">
+        <div class="option-number">1</div>
+        <div class="option-info">
+          <div class="option-title">A booking or sign-up system so seats are fairly allocated</div>
+        </div>
+      </div>
+      <div class="option-card" onclick="selectOption2(this)">
+        <input type="radio" name="choice2" value="Option 2 — Running two trips to the same destination on the same day">
+        <div class="option-number">2</div>
+        <div class="option-info">
+          <div class="option-title">Running two trips to the same destination on the same day</div>
+        </div>
+      </div>
+      <div class="option-card" onclick="selectOption2(this)">
+        <input type="radio" name="choice2" value="Option 3 — A combination of the above">
+        <div class="option-number">3</div>
+        <div class="option-info">
+          <div class="option-title">A combination of the above</div>
+        </div>
+      </div>
+      <div class="option-card" onclick="selectOption2(this)">
+        <input type="radio" name="choice2" value="Option 4 — Other — please tell us below">
+        <div class="option-number">4</div>
+        <div class="option-info">
+          <div class="option-title">Other — please tell us below</div>
+        </div>
+      </div>
+    </div>
     <div class="optional-section">
-      <label>Any comments? (optional)</label>
+      <label>Do you have any other thoughts or suggestions about the bus replacement? (optional)</label>
       <textarea id="extraComment" rows="3" style="width:100%;padding:10px;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;font-size:0.9em;" placeholder="Your thoughts…"></textarea>
     </div>
 
@@ -169,7 +201,13 @@ We'd like to know your overall view before any decisions are made.</p>
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyvm8OvQ2QX3axgUWpZlWrE3iVVZNRpTYyfK5i2b6MySQQJBajMvv8AwS-vyPQcWvWEgg/exec';
 
   function selectOption(card, n) {
-    document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('#options-grid .option-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    card.querySelector('input').checked = true;
+  }
+
+  function selectOption2(card) {
+    document.querySelectorAll('#options-grid2 .option-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     card.querySelector('input').checked = true;
   }
@@ -177,11 +215,12 @@ We'd like to know your overall view before any decisions are made.</p>
   function submitSurvey() {
     var choice = document.querySelector('input[name="choice"]:checked');
     if (!choice) { alert('Please select one of the options above.'); return; }
+    var choice2 = document.querySelector('input[name="choice2"]:checked');
     var name    = document.getElementById('residentName').value.trim();
     var comment = document.getElementById('extraComment').value.trim();
     fetch(SCRIPT_URL, {
       method: 'POST', mode: 'no-cors',
-      body: new URLSearchParams({ action: 'survey', name: name, choice: choice.value, comment: comment })
+      body: new URLSearchParams({ action: 'survey', name: name, choice: choice.value, choice2: choice2 ? choice2.value : '', comment: comment })
     });
     document.querySelector('.survey-form').style.display = 'none';
     document.getElementById('thankyou').style.display = 'block';
