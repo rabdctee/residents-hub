@@ -180,10 +180,7 @@
 
     // Build the iframe src
     if (fileId) {
-      var isHtml = (getParam('type') === 'html');
-      var src = isHtml
-        ? 'https://docs.google.com/viewer?url=https://drive.google.com/uc?id%3D' + fileId + '&embedded=true'
-        : 'https://drive.google.com/file/d/' + fileId + '/preview';
+      var src = 'https://drive.google.com/file/d/' + fileId + '/preview';
       document.getElementById('docFrame').src = src;
     } else {
       // No file ID — show error
