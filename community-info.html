@@ -851,11 +851,16 @@
 
   var financialReportUrls = {};
   function viewFinancialReport() {
-    var fileId = document.getElementById('financial-period').value;
-    if (!fileId) { alert('Please select a reporting period first'); return; }
+    var raw = document.getElementById('financial-period').value;
+    if (!raw) { alert('Please select a reporting period first'); return; }
+    var parts  = raw.split('|');
+    var fileId = parts[0];
+    var type   = parts[1] || 'pdf';
     var select = document.getElementById('financial-period');
     var label  = select.options[select.selectedIndex].text;
-    window.open('view-document.html?id=' + encodeURIComponent(fileId) + '&title=' + encodeURIComponent('Financial Report — ' + label) + '&back=community-info.html', '_blank');
+    var url = 'view-document.html?id=' + encodeURIComponent(fileId) + '&title=' + encodeURIComponent('Financial Report — ' + label) + '&back=community-info.html';
+    if (type === 'html') url += '&type=html';
+    window.open(url, '_blank');
   }
 
   var bankStatementUrls = {};
@@ -883,18 +888,23 @@
           var fileId = cols[2] ? cols[2].trim() : '';
           var folder = cols[3] ? cols[3].trim() : '';
           if (!name || !fileId) continue;
-          if (folder === 'Monthly Financial Reports') reports.push({name:name, id:fileId});
+          var fileType = cols[5] ? cols[5].trim().toLowerCase() : '';
+          var isHtml = (fileType === 'html');
+          if (folder === 'Monthly Financial Reports') reports.push({name:name, id:fileId, isHtml:isHtml});
           else if (folder === 'Bank Statements')       statements.push({name:name, id:fileId});
           else if (folder === 'Aveo Documents')        aveo.push({name:name, id:fileId});
         }
-        function buildOpts(items, placeholder) {
+        function buildOpts(items, placeholder, withType) {
           items.reverse();
           return '<option value="">' + placeholder + '</option>' +
-            items.map(function(d){ return '<option value="' + d.id + '">' + d.name + '</option>'; }).join('');
+            items.map(function(d){
+              var val = withType ? d.id + (d.isHtml ? '|html' : '|pdf') : d.id;
+              return '<option value="' + val + '">' + d.name + '</option>';
+            }).join('');
         }
-        if (reports.length)    document.getElementById('financial-period').innerHTML    = buildOpts(reports,    '-- Select Month --');
-        if (statements.length) document.getElementById('bank-statement-period').innerHTML = buildOpts(statements, '-- Select Month --');
-        if (aveo.length)       document.getElementById('aveo-document').innerHTML       = buildOpts(aveo,       '-- Select Document --');
+        if (reports.length)    document.getElementById('financial-period').innerHTML    = buildOpts(reports,    '-- Select Month --', true);
+        if (statements.length) document.getElementById('bank-statement-period').innerHTML = buildOpts(statements, '-- Select Month --', false);
+        if (aveo.length)       document.getElementById('aveo-document').innerHTML       = buildOpts(aveo,       '-- Select Document --', false);
       })
       .catch(function(){ console.log('Registry unavailable'); });
   }
