@@ -181,24 +181,10 @@
     // Build the iframe src
     if (fileId) {
       var isHtml = (getParam('type') === 'html');
-      if (isHtml) {
-        // Fetch the HTML file content and render it directly in an iframe
-        var exportUrl = 'https://drive.google.com/uc?export=download&id=' + fileId;
-        fetch(exportUrl)
-          .then(function(r) { return r.text(); })
-          .then(function(html) {
-            var frame = document.getElementById('docFrame');
-            frame.srcdoc = html;
-          })
-          .catch(function() {
-            // Fallback to preview if fetch fails
-            document.getElementById('docFrame').src =
-              'https://drive.google.com/file/d/' + fileId + '/preview';
-          });
-      } else {
-        var src = 'https://drive.google.com/file/d/' + fileId + '/preview';
-        document.getElementById('docFrame').src = src;
-      }
+      var src = isHtml
+        ? 'https://docs.google.com/viewer?url=https://drive.google.com/uc?id%3D' + fileId + '&embedded=true'
+        : 'https://drive.google.com/file/d/' + fileId + '/preview';
+      document.getElementById('docFrame').src = src;
     } else {
       // No file ID — show error
       document.getElementById('docFrame').style.display = 'none';
