@@ -180,7 +180,7 @@
 
     // Build the iframe src
     if (fileId) {
-      var src = 'https://drive.google.com/file/d/' + fileId + '/preview';
+     var src = 'https://drive.google.com/file/d/' + fileId + '/view?usp=sharing';
       document.getElementById('docFrame').src = src;
     } else {
       // No file ID — show error
