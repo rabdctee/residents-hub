@@ -493,6 +493,7 @@
     </div>
 
 
+
     <!-- VILLAGE BUDGETS -->
     <div id="sec-budgets" style="margin-top:4px;"></div>
     <div class="collapsible-header" onclick="toggleSection('budgets')">
@@ -585,7 +586,7 @@
         </div>
       </div>
 
-      <!-- Sub-accordion: Serviced Apartments — Unbundled -->
+      <!-- Sub-accordion: Serviced Apartments Unbundled -->
       <div class="collapsible-header" onclick="toggleSection('budget-sa-unbundled')" style="margin-top:8px;background:#f0f6fc;">
         <span class="collapsible-title" style="font-size:0.97em;">🏢 Serviced Apartments — Unbundled (54 units)</span>
         <span id="budget-sa-unbundled-arrow" class="collapsible-arrow">▼</span>
@@ -612,7 +613,7 @@
         </div>
       </div>
 
-      <!-- Sub-accordion: Serviced Apartments — Bundled -->
+      <!-- Sub-accordion: Serviced Apartments Bundled -->
       <div class="collapsible-header" onclick="toggleSection('budget-sa-bundled')" style="margin-top:8px;background:#f0f6fc;">
         <span class="collapsible-title" style="font-size:0.97em;">🏢 Serviced Apartments — Bundled (73 units)</span>
         <span id="budget-sa-bundled-arrow" class="collapsible-arrow">▼</span>
@@ -645,7 +646,6 @@
         💡 These figures are sourced from the FY2026/27 Levy Rates document prepared by the Residents Committee. Levies are set by Aveo under the Queensland Retirement Villages Act 1999. Contact the Community Manager on 07 3263 3788 with any questions.
       </div>
     </div>
-
 
     <!-- 1. RC NOTICES -->
     <div id="sec-rcnotices" style="margin-top:4px;"></div>
@@ -703,17 +703,17 @@
     });
 
     if (matches.length === 0) {
-      resultsDiv.innerHTML = '<div style="padding:14px 16px;color:#888;font-family:'Segoe UI',sans-serif;font-size:15px;">No sections found for "' + query + '"</div>';
+      resultsDiv.innerHTML = '<div style="padding:14px 16px;color:#888;font-family:\'Segoe UI\',sans-serif;font-size:15px;">No sections found for "' + query + '"</div>';
       resultsDiv.style.display = 'block';
       return;
     }
 
-    var html = '<div style="padding:10px 16px;color:#666;font-size:13px;font-family:'Segoe UI',sans-serif;font-weight:600;border-bottom:1px solid #e8eef5;">Found ' + matches.length + ' section(s):</div>';
+    var html = '<div style="padding:10px 16px;color:#666;font-size:13px;font-family:\'Segoe UI\',sans-serif;font-weight:600;border-bottom:1px solid #e8eef5;">Found ' + matches.length + ' section(s):</div>';
     matches.forEach(function(s) {
-      html += '<div onclick="openAndScrollTo('' + s.id + '','' + s.anchor + '')" ' +
-        'style="padding:13px 16px;cursor:pointer;font-family:'Segoe UI',sans-serif;font-size:16px;' +
+      html += '<div onclick="openAndScrollTo(\'' + s.id + '\',\'' + s.anchor + '\')" ' +
+        'style="padding:13px 16px;cursor:pointer;font-family:\'Segoe UI\',sans-serif;font-size:16px;' +
         'border-bottom:1px solid #f0f4f8;color:#1F4E79;font-weight:600;transition:background 0.15s;" ' +
-        'onmouseover="this.style.background='#E7F1FB'" onmouseout="this.style.background='white'">' +
+        'onmouseover="this.style.background=\'#E7F1FB\'" onmouseout="this.style.background=\'white\'">' +
         s.title + '</div>';
     });
     resultsDiv.innerHTML = html;
@@ -836,7 +836,7 @@
     var isOpen = panel.style.display !== 'none';
     ['agm','rc-monthly','rc-quarterly','sc-monthly'].forEach(function(k) {
       document.getElementById(k).style.display = 'none';
-      var b = document.querySelector('[onclick="toggleMeetingFolder('' + k + '', this)"]');
+      var b = document.querySelector('[onclick="toggleMeetingFolder(\'' + k + '\', this)"]');
       if (b) b.classList.remove('active');
     });
     if (!isOpen) {
@@ -862,7 +862,7 @@
       var div = document.createElement('div');
       div.className = 'subfolder-section';
       div.innerHTML =
-        '<button class="subfolder-toggle" onclick="toggleSubfolder('' + sfId + '', this)">' +
+        '<button class="subfolder-toggle" onclick="toggleSubfolder(\'' + sfId + '\', this)">' +
           '<span>📁 ' + q.quarter + ' Documents</span>' +
           '<span class="subfolder-arrow" id="' + sfId + '-arrow">▼</span>' +
         '</button>' +
@@ -911,8 +911,7 @@
     fetch(csvUrl)
       .then(function(r) { return r.text(); })
       .then(function(csvText) {
-        var lines = csvText.split('
-');
+        var lines = csvText.split('\n');
         var extraHtml = '';
         for (var i = 1; i < lines.length; i++) {
           var line = lines[i].trim();
@@ -951,8 +950,7 @@
     fetch(csvUrl)
       .then(function(r) { return r.text(); })
       .then(function(csvText) {
-        var lines = csvText.split('
-');
+        var lines = csvText.split('\n');
         var existingIds = (MEETING_FILES[key] || []).map(function(f) { return f.id; });
         var newHtml = '';
         for (var i = 1; i < lines.length; i++) {
@@ -1032,8 +1030,7 @@
     fetch(REGISTRY_CSV)
       .then(function(r) { return r.text(); })
       .then(function(csv) {
-        var lines = csv.split('
-');
+        var lines = csv.split('\n');
         var reports = [], statements = [], aveo = [];
         for (var i = 1; i < lines.length; i++) {
           var cols = parseCSVLine(lines[i].trim());
@@ -1101,10 +1098,8 @@
       } else {
         if      (ch === '"')  { inQuotes = true; }
         else if (ch === ',')  { row.push(current); current = ''; }
-        else if (ch === '\r' && next === '
-') { row.push(current); rows.push(row); row = []; current = ''; i++; }
-        else if (ch === '
-' || ch === '\r')   { row.push(current); rows.push(row); row = []; current = ''; }
+        else if (ch === '\r' && next === '\n') { row.push(current); rows.push(row); row = []; current = ''; i++; }
+        else if (ch === '\n' || ch === '\r')   { row.push(current); rows.push(row); row = []; current = ''; }
         else                  { current += ch; }
       }
     }
