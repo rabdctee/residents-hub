@@ -209,6 +209,21 @@
   .btn-unpublish:hover { background: #E7F1FB; border-color: #1F4E79; }
   .btn-unpublish:disabled { opacity: 0.45; cursor: not-allowed; }
 
+  .btn-delete {
+    border: 2px solid #c0392b;
+    border-radius: 5px;
+    padding: 7px 18px;
+    background: white;
+    color: #c0392b;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-delete:hover { background: #c0392b; color: white; }
+  .btn-delete:disabled { opacity: 0.45; cursor: not-allowed; }
+
   .card-status-msg {
     font-size: 0.82em;
     font-weight: 700;
@@ -295,7 +310,8 @@
     <strong>How this works:</strong> Submissions from residents appear here as <em>Pending</em>.
     Click <strong>Publish</strong> to make a listing visible on the Classifieds page, or
     <strong>Reject</strong> to decline it. Published listings can be unpublished at any time
-    using the <strong>Unpublish</strong> button on the Published tab.
+    using the <strong>Unpublish</strong> button on the Published tab. Use <strong>Delete</strong>
+    to permanently remove a stale listing — this cannot be undone.
   </div>
 
   <div class="tab-bar">
@@ -433,15 +449,18 @@ function renderTab() {
       actions = `
         <button class="btn-publish" onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','published','${cardId}')">✅ Publish</button>
         <button class="btn-reject"  onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','rejected','${cardId}')">❌ Reject</button>
+        <button class="btn-delete"  onclick="deleteRow(this,'${esc(r.timestamp)}','${esc(r.headline)}','${cardId}')">🗑️ Delete</button>
         <span class="card-status-msg" id="msg-${cardId}"></span>`;
     } else if (activeTab === 'published') {
       actions = `
         <button class="btn-unpublish" onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','pending','${cardId}')">↩️ Unpublish</button>
+        <button class="btn-delete"    onclick="deleteRow(this,'${esc(r.timestamp)}','${esc(r.headline)}','${cardId}')">🗑️ Delete</button>
         <span class="card-status-msg" id="msg-${cardId}"></span>`;
     } else {
       actions = `
         <button class="btn-publish" onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','published','${cardId}')">✅ Publish anyway</button>
         <button class="btn-unpublish" onclick="setStatus(this,'${esc(r.timestamp)}','${esc(r.headline)}','pending','${cardId}')">↩️ Return to Pending</button>
+        <button class="btn-delete"    onclick="deleteRow(this,'${esc(r.timestamp)}','${esc(r.headline)}','${cardId}')">🗑️ Delete</button>
         <span class="card-status-msg" id="msg-${cardId}"></span>`;
     }
 
@@ -485,7 +504,7 @@ async function setStatus(btnEl, timestamp, headline, newStatus, cardId) {
     updateBadges();
 
     msgEl.className = 'card-status-msg ok';
-    const labels = { published: 'Published ✅', rejected: 'Rejected ❌', pending: 'Returned to Pending ↩️' };
+    const labels = { published: 'Published ✅', rejected: 'Rejected ❌', pending: 'Returned to Pending ↩️', deleted: 'Deleted 🗑️' };
     msgEl.textContent = labels[newStatus] || 'Updated';
 
     // Fade card out then re-render
@@ -500,6 +519,17 @@ async function setStatus(btnEl, timestamp, headline, newStatus, cardId) {
     msgEl.className   = 'card-status-msg err';
     clearInterval(_cmt); msgEl.textContent = '❌ Error — please try again.';
   }
+}
+
+// ── DELETE ───────────────────────────────────────────────────────────────────
+async function deleteRow(btnEl, timestamp, headline, cardId) {
+  const sure = confirm('Delete this listing for good?\n\n"' + headline + '"\n\nThis cannot be undone.');
+  if (!sure) return;
+
+  // Deleting simply sets the status to 'deleted' so it drops out of every tab.
+  // This reuses the same save mechanism as Publish/Reject/Unpublish, so no
+  // changes to the Apps Script are needed.
+  await setStatus(btnEl, timestamp, headline, 'deleted', cardId);
 }
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
