@@ -423,7 +423,126 @@
   <div id="sc-section">
   <div class="section-header-sc">🎉 Social Club Committee</div>
   <div class="section-body-sc">
-  <div class="card-grid">
+
+  <!-- Treasurer-only box — a separate, clearly-labelled area at the top, shown only when the SC Treasurer is signed in -->
+  <div id="sc-treasurer-section" style="display:none;">
+    <div class="section-label" style="color:#2e7d32;border-bottom-color:#b2dfb2;margin-top:0;">💰 Treasurer — Finance</div>
+    <div class="card-grid">
+
+      <div class="info-card sc-card">
+        <div class="card-top">
+          <div class="card-icon">💰</div>
+          <div>
+            <div class="card-title">Record a Transaction</div>
+            <div class="card-desc">Add a new income or expense transaction for the Social Club.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="record-transaction.html" class="btn-action btn-green">💰 Record</a>
+        </div>
+      </div>
+
+      <div class="info-card sc-card">
+        <div class="card-top">
+          <div class="card-icon">🏦</div>
+          <div>
+            <div class="card-title">Update Bank Balance</div>
+            <div class="card-desc">Record the latest bank statement balance for reconciliation.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="update-bank-balance.html" class="btn-action btn-green">🏦 Update</a>
+        </div>
+      </div>
+
+      <div class="info-card sc-card">
+        <div class="card-top">
+          <div class="card-icon">✏️</div>
+          <div>
+            <div class="card-title">Correct a Transaction</div>
+            <div class="card-desc">Amend an existing transaction that was entered incorrectly.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="correct-transaction.html" class="btn-action btn-green">✏️ Correct</a>
+        </div>
+      </div>
+
+      <div class="info-card sc-card">
+        <div class="card-top">
+          <div class="card-icon">🗑️</div>
+          <div>
+            <div class="card-title">Delete a Transaction</div>
+            <div class="card-desc">Flag a transaction for removal from the financial records.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="delete-transaction.html" class="btn-action btn-green">🗑️ Delete</a>
+        </div>
+      </div>
+
+      <div class="info-card sc-card">
+        <div class="card-top">
+          <div class="card-icon">📈</div>
+          <div>
+            <div class="card-title">View Transactions</div>
+            <div class="card-desc">Search and review the full Social Club transaction history.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="view-transactions.html" class="btn-action btn-green">📈 View</a>
+        </div>
+      </div>
+
+      <div class="info-card sc-card">
+        <div class="card-top">
+          <div class="card-icon">🏦</div>
+          <div>
+            <div class="card-title">Upload Bank Statement</div>
+            <div class="card-desc">Upload the monthly bank statement to the document library.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="upload-bank-statement.html" class="btn-action btn-green">🏦 Upload</a>
+        </div>
+      </div>
+
+      <div class="info-card sc-card">
+        <div class="card-top">
+          <div class="card-icon">📧</div>
+          <div>
+            <div class="card-title">SC Treasurer Email</div>
+            <div class="card-desc">Check bdsc.treas@gmail.com for correspondence.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="https://mail.google.com/mail/u/0/#inbox?authuser=bdsc.treas@gmail.com" target="_blank" class="btn-action btn-outline">📧 Open Gmail</a>
+        </div>
+      </div>
+
+    </div><!-- /.card-grid (treasurer items) -->
+
+    <!-- Just the registrations count — kept for Marie, everything else in the general area below is hidden for her -->
+    <div class="card-grid" style="margin-top:16px;">
+      <div class="info-card sc-card">
+        <div class="card-top">
+          <div class="card-icon">🎟️</div>
+          <div>
+            <div class="card-title">Event Registrations</div>
+            <div class="card-desc">See how many residents have registered for upcoming events.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="view-registrations.html" class="btn-action btn-green">👁 View Registrations</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /#sc-treasurer-section -->
+
+  <!-- General SC items — hidden for the Treasurer so Finance stays the focus -->
+  <div id="sc-general-section">
+  <div class="card-grid" style="margin-top:24px;">
 
     <div class="info-card sc-card">
       <div class="card-top">
@@ -509,99 +628,9 @@
       </div>
     </div>
 
-    <!-- Treasurer-only cards — shown only when the SC Treasurer is signed in -->
-    <div class="info-card sc-card sc-treasurer-only" style="display:none;">
-      <div class="card-top">
-        <div class="card-icon">💰</div>
-        <div>
-          <div class="card-title">Record a Transaction</div>
-          <div class="card-desc">Add a new income or expense transaction for the Social Club.</div>
-        </div>
-      </div>
-      <div class="card-actions">
-        <a href="record-transaction.html" class="btn-action btn-green">💰 Record</a>
-      </div>
-    </div>
+  </div><!-- /.card-grid (general SC items) -->
+  </div><!-- /#sc-general-section -->
 
-    <div class="info-card sc-card sc-treasurer-only" style="display:none;">
-      <div class="card-top">
-        <div class="card-icon">🏦</div>
-        <div>
-          <div class="card-title">Update Bank Balance</div>
-          <div class="card-desc">Record the latest bank statement balance for reconciliation.</div>
-        </div>
-      </div>
-      <div class="card-actions">
-        <a href="update-bank-balance.html" class="btn-action btn-green">🏦 Update</a>
-      </div>
-    </div>
-
-    <div class="info-card sc-card sc-treasurer-only" style="display:none;">
-      <div class="card-top">
-        <div class="card-icon">✏️</div>
-        <div>
-          <div class="card-title">Correct a Transaction</div>
-          <div class="card-desc">Amend an existing transaction that was entered incorrectly.</div>
-        </div>
-      </div>
-      <div class="card-actions">
-        <a href="correct-transaction.html" class="btn-action btn-green">✏️ Correct</a>
-      </div>
-    </div>
-
-    <div class="info-card sc-card sc-treasurer-only" style="display:none;">
-      <div class="card-top">
-        <div class="card-icon">🗑️</div>
-        <div>
-          <div class="card-title">Delete a Transaction</div>
-          <div class="card-desc">Flag a transaction for removal from the financial records.</div>
-        </div>
-      </div>
-      <div class="card-actions">
-        <a href="delete-transaction.html" class="btn-action btn-green">🗑️ Delete</a>
-      </div>
-    </div>
-
-    <div class="info-card sc-card sc-treasurer-only" style="display:none;">
-      <div class="card-top">
-        <div class="card-icon">📈</div>
-        <div>
-          <div class="card-title">View Transactions</div>
-          <div class="card-desc">Search and review the full Social Club transaction history.</div>
-        </div>
-      </div>
-      <div class="card-actions">
-        <a href="view-transactions.html" class="btn-action btn-green">📈 View</a>
-      </div>
-    </div>
-
-    <div class="info-card sc-card sc-treasurer-only" style="display:none;">
-      <div class="card-top">
-        <div class="card-icon">🏦</div>
-        <div>
-          <div class="card-title">Upload Bank Statement</div>
-          <div class="card-desc">Upload the monthly bank statement to the document library.</div>
-        </div>
-      </div>
-      <div class="card-actions">
-        <a href="upload-bank-statement.html" class="btn-action btn-green">🏦 Upload</a>
-      </div>
-    </div>
-
-    <div class="info-card sc-card sc-treasurer-only" style="display:none;">
-      <div class="card-top">
-        <div class="card-icon">📧</div>
-        <div>
-          <div class="card-title">SC Treasurer Email</div>
-          <div class="card-desc">Check bdsc.treas@gmail.com for correspondence.</div>
-        </div>
-      </div>
-      <div class="card-actions">
-        <a href="https://mail.google.com/mail/u/0/#inbox?authuser=bdsc.treas@gmail.com" target="_blank" class="btn-action btn-outline">📧 Open Gmail</a>
-      </div>
-    </div>
-
-  </div>
   </div><!-- /.section-body-sc -->
   </div><!-- /#sc-section -->
 
@@ -720,11 +749,13 @@ function showApp() {
   const manorCard = document.getElementById("manor-card");
   if (manorCard) manorCard.style.display = (currentMember.role === "Manor Advisor") ? "" : "none";
 
-  // Show SC Treasurer cards only for the SC Treasurer
+  // Show the Treasurer box only for the SC Treasurer, and hide the general
+  // Social Club tiles for her (she has her own Registrations tile up top instead)
+  const treasurerSection = document.getElementById("sc-treasurer-section");
+  const generalSection   = document.getElementById("sc-general-section");
   const isTreasurer = (currentMember.role === "SC Treasurer");
-  document.querySelectorAll(".sc-treasurer-only").forEach(card => {
-    card.style.display = isTreasurer ? "" : "none";
-  });
+  if (treasurerSection) treasurerSection.style.display = isTreasurer ? "" : "none";
+  if (generalSection)   generalSection.style.display   = isTreasurer ? "none" : "";
 
   // Show enhanced Events card only for Events Coordinator
   const isEC = (currentMember.role === "SC Events Coordinator");
