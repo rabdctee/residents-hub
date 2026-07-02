@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Story — Admin Review | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+
+    /* ===== Base ===== */
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:18px;
+      line-height:1.6;
+      color:#222;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      background:white;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background:#1F4E79;
+      color:white;
+      padding:36px 20px 30px;
+      text-align:center;
+    }
+    header h1{ font-size:1.8em; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.1em;
+      font-weight:600;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(255,255,255,0.18);
+      border-radius:6px;
+      padding:6px 20px;
+    }
+
+    /* ===== PIN gate ===== */
+    #pinGate{
+      max-width:420px;
+      margin:60px auto;
+      background:#f8f9fa;
+      border:1px solid #e0e0e0;
+      border-radius:10px;
+      padding:36px 30px;
+      text-align:center;
+    }
+    #pinGate h2{ color:#1F4E79; margin-bottom:14px; }
+    #pinGate p{ color:#555; margin-bottom:20px; font-size:0.9em; }
+    #pinInput{
+      width:100%;
+      padding:12px 16px;
+      font-size:20px;
+      text-align:center;
+      letter-spacing:4px;
+      border:2px solid #1F4E79;
+      border-radius:6px;
+      margin-bottom:16px;
+    }
+    #pinBtn{
+      background:#1F4E79;
+      color:white;
+      border:none;
+      padding:12px 28px;
+      border-radius:6px;
+      font-size:16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    #pinBtn:hover{ background:#173d5f; }
+    #pinError{ color:#c0392b; font-size:0.85em; margin-top:10px; display:none; }
+
+    /* ===== Page content ===== */
+    #adminArea{ display:none; }
+    .page-content{ padding:30px 25px; }
+
+    /* ===== Section bar / filters ===== */
+    .section-bar{
+      background:#E7F1FB;
+      border-bottom:2px solid #c5d8ee;
+      padding:10px 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    .filter-btn{
+      color:#1F4E79;
+      font-weight:700;
+      font-size:0.82em;
+      background:white;
+      border:1px solid #c5d8ee;
+      border-radius:6px;
+      padding:7px 14px;
+      cursor:pointer;
+      transition:all 0.15s;
+    }
+    .filter-btn:hover{ background:#d0e8f5; }
+    .filter-btn.active{ background:#1F4E79; color:white; border-color:#1F4E79; }
+    .filter-btn .count{
+      display:inline-block;
+      margin-left:6px;
+      background:rgba(0,0,0,0.12);
+      border-radius:10px;
+      padding:1px 8px;
+      font-size:0.9em;
+    }
+    .filter-btn.active .count{ background:rgba(255,255,255,0.25); }
+
+    .refresh-btn{
+      margin-left:auto;
+      background:white;
+      border:1px solid #c5d8ee;
+      color:#1F4E79;
+      font-weight:700;
+      font-size:0.82em;
+      border-radius:6px;
+      padding:7px 14px;
+      cursor:pointer;
+    }
+    .refresh-btn:hover{ background:#d0e8f5; }
+
+    /* ===== Loading / empty states ===== */
+    .status-msg{
+      text-align:center;
+      color:#777;
+      padding:60px 20px;
+      font-size:1em;
+    }
+
+    /* ===== Submission cards ===== */
+    .story-card{
+      background:#f8f9fa;
+      border:1px solid #e0e0e0;
+      border-left:5px solid #bbb;
+      border-radius:10px;
+      padding:22px 26px;
+      margin:0 25px 20px;
+    }
+    .story-card.pending{ border-left-color:#e0a800; }
+    .story-card.approved{ border-left-color:#2a7a4b; }
+    .story-card.declined{ border-left-color:#999; opacity:0.75; }
+
+    .card-top{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .card-author{
+      font-weight:700;
+      color:#1F4E79;
+      font-size:1.1em;
+    }
+    .card-date{
+      font-size:0.8em;
+      color:#888;
+      margin-top:2px;
+    }
+
+    .badge-row{ display:flex; flex-wrap:wrap; gap:6px; }
+    .badge{
+      display:inline-block;
+      font-size:0.72em;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.04em;
+      padding:4px 10px;
+      border-radius:20px;
+    }
+    .badge.status-pending{ background:#fff3cd; color:#856404; }
+    .badge.status-approved{ background:#d4edda; color:#1e6b3c; }
+    .badge.status-declined{ background:#e2e3e5; color:#555; }
+    .badge.share-yes{ background:#d1e7f7; color:#1F4E79; }
+    .badge.share-no{ background:#f1f1f1; color:#777; }
+    .badge.keepsake{ background:#f8d7da; color:#842029; }
+
+    .card-preview{
+      color:#444;
+      font-size:0.92em;
+      margin:10px 0;
+    }
+
+    .toggle-link{
+      color:#1F4E79;
+      font-weight:700;
+      font-size:0.85em;
+      cursor:pointer;
+      text-decoration:underline;
+      display:inline-block;
+      margin-bottom:8px;
+    }
+
+    .full-text{ display:none; margin-top:10px; }
+    .full-text.open{ display:block; }
+
+    .qa-block{ margin-bottom:14px; }
+    .qa-label{
+      font-size:0.75em;
+      font-weight:700;
+      color:#1F4E79;
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+      margin-bottom:3px;
+    }
+    .qa-answer{
+      color:#333;
+      font-size:0.94em;
+      white-space:pre-wrap;
+      background:white;
+      border:1px solid #e5e5e5;
+      border-radius:6px;
+      padding:10px 14px;
+    }
+
+    .action-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:16px;
+      padding-top:14px;
+      border-top:1px dashed #ddd;
+    }
+    .action-btn{
+      border:none;
+      border-radius:6px;
+      padding:9px 16px;
+      font-size:0.85em;
+      font-weight:700;
+      cursor:pointer;
+      transition:opacity 0.15s;
+    }
+    .action-btn:hover{ opacity:0.85; }
+    .btn-approve{ background:#2a7a4b; color:white; }
+    .btn-decline{ background:#a94442; color:white; }
+    .btn-pending{ background:#e0a800; color:white; }
+    .btn-copy{ background:#1F4E79; color:white; }
+    .btn-copy.copied{ background:#2a7a4b; }
+
+    @media(max-width:768px){
+      .story-card{ margin:0 14px 16px; padding:18px 16px; }
+      .page-content{ padding:20px 10px; }
+    }
+
+  </style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>🗂️ Our Story — Admin Review</span></p>
+  </header>
+
+  <!-- ===== PIN GATE ===== -->
+  <div id="pinGate">
+    <h2>Committee Access Only</h2>
+    <p>Please enter the admin PIN to review submitted stories.</p>
+    <input type="password" id="pinInput" inputmode="numeric" placeholder="••••" maxlength="10">
+    <br>
+    <button id="pinBtn" onclick="checkPin()">Unlock</button>
+    <div id="pinError">Incorrect PIN — please try again.</div>
+  </div>
+
+  <!-- ===== ADMIN AREA ===== -->
+  <div id="adminArea">
+
+    <div class="section-bar">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">All <span class="count" id="count-all">0</span></button>
+      <button class="filter-btn" data-filter="Pending" onclick="setFilter('Pending')">Pending Review <span class="count" id="count-Pending">0</span></button>
+      <button class="filter-btn" data-filter="Approved" onclick="setFilter('Approved')">Approved <span class="count" id="count-Approved">0</span></button>
+      <button class="filter-btn" data-filter="Declined" onclick="setFilter('Declined')">Declined <span class="count" id="count-Declined">0</span></button>
+      <button class="filter-btn" data-filter="Keepsake" onclick="setFilter('Keepsake')">Keepsake Requests <span class="count" id="count-Keepsake">0</span></button>
+      <button class="refresh-btn" onclick="loadStories()">↻ Refresh</button>
+    </div>
+
+    <div class="page-content">
+      <div id="statusMsg" class="status-msg">Loading submissions…</div>
+      <div id="cardsContainer"></div>
+    </div>
+
+  </div><!-- end adminArea -->
+
+</div><!-- end container -->
+
+<script>
+
+  /* ══════════════════════════════════════════════════════
+     SETTINGS — fill these in once you have your Apps Script
+     web app URL from Step 2 of the setup instructions.
+  ══════════════════════════════════════════════════════ */
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkQm8cCTghxhjTnnU3vLbryfM4vjvShXHI2IBoUbOIOTJy3w6iA1W-OdzSCYjewAJ6Qg/exec';
+  var ADMIN_KEY  = 'bdrv-ourstory-2026';   // must match ADMIN_KEY in the Apps Script
+  var ADMIN_PIN  = '1957';                  // change this to whatever PIN you want to use
+
+  var allStories   = [];
+  var currentFilter = 'all';
+
+  /* Question labels, in the order they should appear when expanded */
+  var FIELD_LABELS = [
+    ['movein',      'When did you move in, and what brought you here?'],
+    ['career',      'What did you do for work during your career?'],
+    ['firstlook',   'What did the village look like when you first arrived?'],
+    ['firstpeople', 'Who were some of the first people you met?'],
+    ['surprise',    'Was there anything that surprised you in those early days?'],
+    ['activities',  'What activities, clubs or social events stand out?'],
+    ['spirit',      'How would you describe the spirit of this village?'],
+    ['changes',     'What changes to the village do you remember?'],
+    ['constant',    'What has always stayed the same?'],
+    ['staff',       'Staff or managers who made a difference'],
+    ['suburb',      'What do you remember about the suburb?'],
+    ['items',       'Photos, newsletters or memorabilia offered'],
+    ['mustinclude', 'A story, moment or person that must be included'],
+    ['future',      'A message to future residents'],
+    ['others',      'Other residents suggested as long-memory contacts']
+  ];
+
+  /* ===== PIN CHECK ===== */
+  function checkPin() {
+    var entered = document.getElementById('pinInput').value.trim();
+    if (entered === ADMIN_PIN) {
+      document.getElementById('pinGate').style.display = 'none';
+      document.getElementById('adminArea').style.display = 'block';
+      loadStories();
+    } else {
+      document.getElementById('pinError').style.display = 'block';
+    }
+  }
+  document.getElementById('pinInput').addEventListener('keyup', function(e){
+    if (e.key === 'Enter') checkPin();
+  });
+
+  /* ===== LOAD SUBMISSIONS ===== */
+  function loadStories() {
+    document.getElementById('statusMsg').style.display = 'block';
+    document.getElementById('statusMsg').textContent = 'Loading submissions…';
+    document.getElementById('cardsContainer').innerHTML = '';
+
+    fetch(SCRIPT_URL + '?key=' + encodeURIComponent(ADMIN_KEY))
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (res.result !== 'success') {
+          document.getElementById('statusMsg').textContent = 'Could not load submissions: ' + (res.message || 'unknown error');
+          return;
+        }
+        allStories = res.data.reverse(); // newest first
+        updateCounts();
+        renderCards();
+      })
+      .catch(function(err){
+        document.getElementById('statusMsg').textContent = 'Sorry, there was a problem connecting to the story sheet. Please check the Apps Script web address has been entered correctly.';
+      });
+  }
+
+  /* ===== FILTERING ===== */
+  function setFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-filter') === filter);
+    });
+    renderCards();
+  }
+
+  function updateCounts() {
+    var counts = { all: allStories.length, Pending:0, Approved:0, Declined:0, Keepsake:0 };
+    allStories.forEach(function(s){
+      if (counts[s.Status] !== undefined) counts[s.Status]++;
+      if (s.Keepsake === 'Yes') counts.Keepsake++;
+    });
+    document.getElementById('count-all').textContent = counts.all;
+    document.getElementById('count-Pending').textContent = counts.Pending;
+    document.getElementById('count-Approved').textContent = counts.Approved;
+    document.getElementById('count-Declined').textContent = counts.Declined;
+    document.getElementById('count-Keepsake').textContent = counts.Keepsake;
+  }
+
+  /* ===== RENDER CARDS ===== */
+  function renderCards() {
+    var container = document.getElementById('cardsContainer');
+    container.innerHTML = '';
+
+    var list = allStories.filter(function(s){
+      if (currentFilter === 'all') return true;
+      if (currentFilter === 'Keepsake') return s.Keepsake === 'Yes';
+      return s.Status === currentFilter;
+    });
+
+    document.getElementById('statusMsg').style.display = list.length ? 'none' : 'block';
+    if (!list.length) {
+      document.getElementById('statusMsg').textContent = 'No submissions in this category yet.';
+      return;
+    }
+
+    list.forEach(function(story){
+      container.appendChild(buildCard(story));
+    });
+  }
+
+  function buildCard(story) {
+    var card = document.createElement('div');
+    card.className = 'story-card ' + story.Status.toLowerCase();
+
+    var dateStr = '';
+    try { dateStr = new Date(story.Timestamp).toLocaleString('en-AU', {dateStyle:'medium', timeStyle:'short'}); } catch(e) { dateStr = story.Timestamp; }
+
+    var badges = '<span class="badge status-' + story.Status.toLowerCase() + '">' + story.Status + '</span>';
+    badges += story.Share === 'Yes'
+      ? '<span class="badge share-yes">Happy to share publicly</span>'
+      : '<span class="badge share-no">Private only</span>';
+    if (story.Keepsake === 'Yes') badges += '<span class="badge keepsake">Wants a keepsake copy</span>';
+
+    var firstFilled = '';
+    for (var i=0;i<FIELD_LABELS.length;i++){
+      var val = story[FIELD_LABELS[i][0]];
+      if (val) { firstFilled = val; break; }
+    }
+    var preview = firstFilled ? (firstFilled.length > 160 ? firstFilled.slice(0,160) + '…' : firstFilled) : '(No written content — check full submission)';
+
+    var uid = 'card_' + story.ID;
+
+    var html = '';
+    html += '<div class="card-top">';
+    html += '  <div><div class="card-author">' + escapeHtml(story.Name || 'Anonymous') + '</div>';
+    html += '  <div class="card-date">Submitted ' + escapeHtml(dateStr) + '</div></div>';
+    html += '  <div class="badge-row">' + badges + '</div>';
+    html += '</div>';
+    html += '<div class="card-preview">' + escapeHtml(preview) + '</div>';
+    html += '<span class="toggle-link" onclick="toggleFull(\'' + uid + '\')">Read full submission ▾</span>';
+    html += '<div class="full-text" id="' + uid + '">' + buildFullText(story) + '</div>';
+    html += '<div class="action-row">';
+    html += '  <button class="action-btn btn-approve" onclick="changeStatus(\'' + story.ID + '\',\'Approved\')">✔ Approve</button>';
+    html += '  <button class="action-btn btn-decline" onclick="changeStatus(\'' + story.ID + '\',\'Declined\')">✘ Decline</button>';
+    html += '  <button class="action-btn btn-pending" onclick="changeStatus(\'' + story.ID + '\',\'Pending\')">↺ Reset to Pending</button>';
+    if (story.Share === 'Yes') {
+      html += '  <button class="action-btn btn-copy" id="copybtn_' + uid + '" onclick="copyStoryCard(\'' + story.ID + '\', this)">📋 Copy Story Card HTML</button>';
+    }
+    html += '</div>';
+
+    card.innerHTML = html;
+    return card;
+  }
+
+  function buildFullText(story) {
+    var out = '';
+    FIELD_LABELS.forEach(function(f){
+      var val = story[f[0]];
+      if (val) {
+        out += '<div class="qa-block"><div class="qa-label">' + escapeHtml(f[1]) + '</div>';
+        out += '<div class="qa-answer">' + escapeHtml(val) + '</div></div>';
+      }
+    });
+    if (!out) out = '<p style="color:#888;">No written answers were included with this submission.</p>';
+    return out;
+  }
+
+  function toggleFull(uid) {
+    var el = document.getElementById(uid);
+    el.classList.toggle('open');
+  }
+
+  /* ===== CHANGE STATUS ===== */
+  function changeStatus(id, newStatus) {
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'updateStatus', key: ADMIN_KEY, id: id, status: newStatus })
+    }).then(function(){
+      // Update locally so the page feels instant, then refresh from the sheet
+      allStories.forEach(function(s){ if (s.ID.toString() === id.toString()) s.Status = newStatus; });
+      updateCounts();
+      renderCards();
+    }).catch(function(){
+      alert('Sorry, that could not be saved. Please check your internet connection and try again.');
+    });
+  }
+
+  /* ===== COPY STORY CARD HTML (for pasting into our-story.html) ===== */
+  function copyStoryCard(id, btn) {
+    var story = allStories.filter(function(s){ return s.ID.toString() === id.toString(); })[0];
+    if (!story) return;
+
+    var qas = '';
+    FIELD_LABELS.forEach(function(f){
+      if (f[0] === 'items' || f[0] === 'others' || f[0] === 'mustinclude') return; // logistics fields, not for public display
+      var val = story[f[0]];
+      if (val) {
+        qas += '        <div class="story-prompt-label">' + f[1] + '</div>\n';
+        qas += '        <p>' + val.replace(/\n+/g,' ') + '</p>\n';
+      }
+    });
+
+    var authorLabel = story.Name ? story.Name : 'A village resident';
+
+    var cardHtml =
+'<div class="story-card">\n' +
+'  <div class="story-author">' + authorLabel + '</div>\n' +
+'  <div class="story-era">Shared ' + new Date(story.Timestamp).toLocaleDateString('en-AU', {month:'long', year:'numeric'}) + '</div>\n' +
+'  <div class="story-text">\n' +
+qas +
+'  </div>\n' +
+'</div>';
+
+    navigator.clipboard.writeText(cardHtml).then(function(){
+      btn.textContent = '✔ Copied!';
+      btn.classList.add('copied');
+      setTimeout(function(){ btn.textContent = '📋 Copy Story Card HTML'; btn.classList.remove('copied'); }, 2000);
+    }).catch(function(){
+      alert('Could not copy automatically. Here is the HTML to copy manually:\n\n' + cardHtml);
+    });
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+</script>
+
+</body>
+</html>
