@@ -508,23 +508,37 @@
     if (!story) return;
 
     var qas = '';
+    var searchParts = [story.Name || ''];
     FIELD_LABELS.forEach(function(f){
       if (f[0] === 'items' || f[0] === 'others' || f[0] === 'mustinclude') return; // logistics fields, not for public display
       var val = story[f[0]];
       if (val) {
-        qas += '        <div class="story-prompt-label">' + f[1] + '</div>\n';
-        qas += '        <p>' + val.replace(/\n+/g,' ') + '</p>\n';
+        qas += '          <div class="story-prompt-label">' + f[1] + '</div>\n';
+        qas += '          <p>' + val.replace(/\n+/g,' ') + '</p>\n';
+        searchParts.push(val);
       }
     });
 
     var authorLabel = story.Name ? story.Name : 'A village resident';
+    var dateObj   = new Date(story.Timestamp);
+    var dateISO   = dateObj.toISOString().slice(0,10);
+    var dateLabel = dateObj.toLocaleDateString('en-AU', {month:'long', year:'numeric'});
+    var searchStr = (authorLabel + ' ' + searchParts.join(' ')).toLowerCase().replace(/"/g,'');
 
     var cardHtml =
-'<div class="story-card">\n' +
-'  <div class="story-author">' + authorLabel + '</div>\n' +
-'  <div class="story-era">Shared ' + new Date(story.Timestamp).toLocaleDateString('en-AU', {month:'long', year:'numeric'}) + '</div>\n' +
-'  <div class="story-text">\n' +
+'<div class="story-card" data-date="' + dateISO + '" data-search="' + searchStr + '">\n' +
+'  <button class="accordion-header" onclick="toggleAcc(this)" aria-expanded="false">\n' +
+'    <div class="acc-icon">📖</div>\n' +
+'    <div class="acc-title">\n' +
+'      <h3>' + authorLabel + '</h3>\n' +
+'      <p>Shared ' + dateLabel + '</p>\n' +
+'    </div>\n' +
+'    <div class="acc-chevron">▼</div>\n' +
+'  </button>\n' +
+'  <div class="accordion-body">\n' +
+'    <div class="story-text">\n' +
 qas +
+'    </div>\n' +
 '  </div>\n' +
 '</div>';
 

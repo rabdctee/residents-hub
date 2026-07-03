@@ -425,6 +425,42 @@
     }
     .vault-pdf-link:hover{ background:#163d61; }
 
+    /* ===== Community Stories: search box ===== */
+    .stories-search-box{ margin-bottom:18px; }
+    .story-search-input{
+      width:100%;
+      padding:12px 16px;
+      font-size:0.95em;
+      border:2px solid #c5d8ee;
+      border-radius:8px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .story-search-input:focus{ outline:none; border-color:#1F4E79; }
+
+    /* ===== Community Stories: content inside each opened story ===== */
+    .story-text{ padding:16px 22px 20px; }
+    .story-text .story-prompt-label{
+      font-size:0.78em;
+      font-weight:700;
+      color:#1F4E79;
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+      margin:14px 0 4px;
+    }
+    .story-text .story-prompt-label:first-child{ margin-top:0; }
+    .story-text p{
+      color:#333;
+      font-size:0.94em;
+      margin-bottom:6px;
+    }
+
+    .no-stories-msg{
+      text-align:center;
+      color:#8a96a3;
+      font-style:italic;
+      padding:30px 10px;
+    }
+
     /* ===== Print ===== */
     @media print{
       .section-bar,.how-to-help,.cta-strip,.acc-chevron{ display:none !important; }
@@ -452,6 +488,7 @@
     <a href="#about">About</a>
     <a href="#history">Did You Know?</a>
     <a href="#questions">The Questions</a>
+    <a href="#stories">Community Stories</a>
     <a href="#vault">From the Archives</a>
     <a href="#share">Share Your Story</a>
   </div>
@@ -695,6 +732,31 @@
       </div>
     </div>
 
+    <!-- ===== COMMUNITY STORIES ===== -->
+    <div class="section-divider" id="stories">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">📖 Community Stories — In Their Own Words</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="tip-box">
+      💡 <strong>Tip:</strong> Click on a resident's name below to open and read their story. Use the search box to find a story by name or keyword.
+    </div>
+
+    <div class="stories-search-box">
+      <input type="text" id="storySearch" class="story-search-input" placeholder="🔍 Search stories by name or keyword...">
+    </div>
+
+    <div id="storiesContainer">
+
+      <!-- New approved stories can be pasted anywhere in here.
+           They will automatically be sorted with the newest at the top,
+           so you don't need to find "the right spot". -->
+
+    </div>
+
+    <p id="noStoriesMsg" class="no-stories-msg">No stories have been published here yet — check back soon!</p>
+
     <!-- ===== FROM THE ARCHIVES ===== -->
     <div class="section-divider" id="vault">
       <div class="section-divider-line"></div>
@@ -768,6 +830,53 @@
     btn.classList.toggle('open', !isOpen);
     btn.setAttribute('aria-expanded', String(!isOpen));
   }
+
+  /* ===== Community Stories: newest-first sorting ===== */
+  function sortStories() {
+    var container = document.getElementById('storiesContainer');
+    if (!container) return;
+    var cards = Array.prototype.slice.call(container.querySelectorAll('.story-card'));
+    cards.sort(function(a, b){
+      return new Date(b.getAttribute('data-date')) - new Date(a.getAttribute('data-date'));
+    });
+    cards.forEach(function(c){ container.appendChild(c); });
+    updateNoStoriesMsg();
+  }
+
+  /* ===== Community Stories: show/hide the "no stories" message ===== */
+  function updateNoStoriesMsg() {
+    var container = document.getElementById('storiesContainer');
+    var msg = document.getElementById('noStoriesMsg');
+    if (!container || !msg) return;
+    var totalCards = container.querySelectorAll('.story-card').length;
+    var hiddenCards = container.querySelectorAll('.story-card[style*="display: none"]').length;
+    if (totalCards === 0) {
+      msg.textContent = 'No stories have been published here yet — check back soon!';
+      msg.style.display = 'block';
+    } else if (hiddenCards === totalCards) {
+      msg.textContent = 'No stories match your search.';
+      msg.style.display = 'block';
+    } else {
+      msg.style.display = 'none';
+    }
+  }
+
+  /* ===== Community Stories: search box ===== */
+  document.addEventListener('DOMContentLoaded', function(){
+    sortStories();
+    var searchBox = document.getElementById('storySearch');
+    if (searchBox) {
+      searchBox.addEventListener('input', function(){
+        var q = this.value.toLowerCase();
+        var cards = document.querySelectorAll('#storiesContainer .story-card');
+        cards.forEach(function(card){
+          var text = card.getAttribute('data-search') || '';
+          card.style.display = text.indexOf(q) !== -1 ? '' : 'none';
+        });
+        updateNoStoriesMsg();
+      });
+    }
+  });
 </script>
 
 </body>
