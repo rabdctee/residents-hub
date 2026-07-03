@@ -831,6 +831,29 @@
     btn.setAttribute('aria-expanded', String(!isOpen));
   }
 
+  /* ===== Community Stories: only one story open at a time ===== */
+  function toggleStory(btn) {
+    var body = btn.nextElementSibling;
+    var isOpen = body.classList.contains('open');
+
+    // Close every other open story first
+    var container = document.getElementById('storiesContainer');
+    if (container) {
+      container.querySelectorAll('.accordion-header.open').forEach(function(otherBtn){
+        if (otherBtn !== btn) {
+          otherBtn.classList.remove('open');
+          otherBtn.nextElementSibling.classList.remove('open');
+          otherBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // Now open (or close) the one that was clicked
+    body.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  }
+
   /* ===== Community Stories: newest-first sorting ===== */
   function sortStories() {
     var container = document.getElementById('storiesContainer');
