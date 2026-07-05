@@ -96,6 +96,8 @@
   .issue-left { flex: 1; min-width: 0; }
   .issue-title { font-size: 0.9em; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
   .issue-note-preview { font-size: 0.78em; color: var(--muted); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px; }
+  .issue-rc-reply { font-size: 0.74em; color: var(--amber-text); font-weight: 700; margin-top: 3px; }
+  .cat-new-badge { font-size: 0.68em; font-weight: 700; color: #7a5200; background: #fff3cd; border: 1.5px solid #e0a800; border-radius: 20px; padding: 2px 9px; margin-left: 8px; white-space: nowrap; }
   .issue-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .badge { font-size: 0.72em; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1.5px solid transparent; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
   .edit-hint { font-size: 0.7em; color: var(--muted); font-style: italic; }
@@ -116,6 +118,10 @@
   .btn-update:disabled { background: #aaa; cursor: not-allowed; }
   .btn-discard { padding: 9px 14px; background: white; color: var(--muted); border: 2px solid var(--border); border-radius: 6px; font-family: var(--font); font-size: 0.85em; font-weight: 700; cursor: pointer; }
   .btn-discard:hover { background: var(--surface); color: var(--navy); }
+
+  /* ── RC alert "jump to issue" buttons ── */
+  .rc-alert-link { font-family: var(--font); font-size: 0.82em; font-weight: 700; padding: 6px 12px; background: #fff; color: #7a5200; border: 1.5px solid #e0a800; border-radius: 20px; cursor: pointer; }
+  .rc-alert-link:hover { background: #e0a800; color: #fff; }
 
   /* ── Toast notification ── */
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); padding: 12px 22px; border-radius: 8px; font-size: 0.88em; font-weight: 700; z-index: 8888; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
@@ -201,8 +207,11 @@
 
 <!-- ── RC ALERT BANNER ── -->
 <div id="rc-alert-banner" style="display:none;background:#fff8e1;border-bottom:2px solid #e0a800;padding:10px 1.5rem;font-size:0.85em;color:#7a5200;font-weight:700;">
-  <span id="rc-alert-text"></span>
-  <button onclick="dismissRcAlert()" style="margin-left:12px;background:none;border:none;cursor:pointer;font-size:1.1em;color:#7a5200;font-weight:700;">✕ Dismiss</button>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <span id="rc-alert-text"></span>
+    <button onclick="dismissRcAlert()" style="background:none;border:none;cursor:pointer;font-size:1.1em;color:#7a5200;font-weight:700;">✕ Dismiss</button>
+  </div>
+  <div id="rc-alert-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
 </div>
 
 <!-- ── DASHBOARD CARDS ── -->
@@ -382,12 +391,14 @@ function buildAccordion() {
     const rows = issues.map((issue, idx) => {
       const uid = `issue-${catName.replace(/\s+/g,'-')}-${idx}`;
       const notePreview = issue.notes || "(no notes yet)";
+      const rcDate = lastRcReplyDate(issue.notes);
       return `
-        <div class="issue-row" id="${uid}" data-status="${escHtml(issue.status)}" data-topic="${escHtml(issue.topic).toLowerCase()}" data-issuenum="${escHtml(issue.issueNum).toLowerCase()}">
+        <div class="issue-row" id="${uid}" data-status="${escHtml(issue.status)}" data-topic="${escHtml(issue.topic).toLowerCase()}" data-issuenum="${escHtml(issue.issueNum).toLowerCase()}" data-cat="${escHtml(issue.category)}" data-top="${escHtml(issue.topic)}">
           <div class="issue-summary" onclick="toggleEdit('${uid}')">
             <div class="issue-left">
               <div class="issue-title">${issue.issueNum ? `<span style="font-size:0.78em;color:var(--muted);font-weight:600;margin-right:6px;">${escHtml(issue.issueNum)}</span>` : ""}${escHtml(issue.topic)}</div>
               <div class="issue-note-preview">${escHtml(notePreview)}</div>
+              ${rcDate ? `<div class="issue-rc-reply">📬 RC replied: ${escHtml(rcDate)}</div>` : ""}
             </div>
             <div class="issue-right">
               <span class="badge ${statusClass(issue.status)}">${statusIcon(issue.status)} ${issue.status}</span>
@@ -588,18 +599,86 @@ function checkRcAlerts() {
 
   if (relevant.length === 0) { localStorage.removeItem("bdrv_rc_alerts"); return; }
 
-  const banner = document.getElementById("rc-alert-banner");
-  const text   = document.getElementById("rc-alert-text");
-  text.textContent = `📬 The RC has responded to ${relevant.length} issue${relevant.length !== 1 ? "s" : ""}. Look for [RC - date] entries in the notes.`;
+  const banner   = document.getElementById("rc-alert-banner");
+  const text     = document.getElementById("rc-alert-text");
+  const listWrap = document.getElementById("rc-alert-list");
+
+  text.textContent = `📬 The RC has responded to ${relevant.length} issue${relevant.length !== 1 ? "s" : ""} — tap one to jump straight to it:`;
+
+  listWrap.innerHTML = relevant.map(key => {
+    const [cat, topic] = key.split("||");
+    const issue = issueData.find(i => i.category === cat && i.topic === topic);
+    const label = issue.issueNum ? `${issue.issueNum} — ${issue.topic}` : issue.topic;
+    return `<button type="button" class="rc-alert-link" onclick="goToIssue(${JSON.stringify(cat)}, ${JSON.stringify(topic)})">${escHtml(label)}</button>`;
+  }).join("");
+
   banner.style.display = "block";
+
+  // Put a small "new" badge on each category that contains a fresh reply
+  document.querySelectorAll(".cat-new-badge").forEach(el => el.remove());
+  const countByCat = {};
+  relevant.forEach(key => {
+    const cat = key.split("||")[0];
+    countByCat[cat] = (countByCat[cat] || 0) + 1;
+  });
+  Object.entries(countByCat).forEach(([cat, count]) => {
+    const block = Array.from(document.querySelectorAll(".cat-block")).find(b => b.dataset.cat === cat);
+    if (!block) return;
+    const nameEl = block.querySelector(".cat-name");
+    const badge = document.createElement("span");
+    badge.className = "cat-new-badge";
+    badge.textContent = `🔔 ${count} new`;
+    nameEl.appendChild(badge);
+  });
 }
 
 function dismissRcAlert() {
   document.getElementById("rc-alert-banner").style.display = "none";
+  document.querySelectorAll(".cat-new-badge").forEach(el => el.remove());
   localStorage.removeItem("bdrv_rc_alerts");
 }
 
+// ── JUMP TO A SPECIFIC ISSUE (from the RC alert banner) ──────────────────────
+function goToIssue(cat, topic) {
+  // Find the matching issue row
+  let target = null;
+  document.querySelectorAll(".issue-row").forEach(row => {
+    if (row.dataset.cat === cat && row.dataset.top === topic) target = row;
+  });
+  if (!target) return;
+
+  // Clear any active filter/search so the issue can't be hidden from view
+  activeFilter = "all";
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === "all"));
+  searchTerm = "";
+  const si = document.getElementById("search-input");
+  const sc = document.getElementById("search-clear");
+  if (si) si.value = "";
+  if (sc) sc.style.display = "none";
+  applyFilter();
+
+  // Open the category it belongs to
+  const catBlock = target.closest(".cat-block");
+  if (catBlock) catBlock.classList.add("open");
+
+  // Open its notes panel automatically
+  document.querySelectorAll(".issue-row.editing").forEach(r => r.classList.remove("editing"));
+  target.classList.add("editing");
+
+  // Scroll to it and give it a brief highlight so it's easy to spot
+  target.scrollIntoView({ behavior: "smooth", block: "center" });
+  target.style.transition = "background-color 0.6s";
+  target.style.backgroundColor = "#fff3cd";
+  setTimeout(() => { target.style.backgroundColor = ""; }, 2200);
+}
+
 // ── HELPERS ───────────────────────────────────────────────────────────────────
+function lastRcReplyDate(notes) {
+  if (!notes) return null;
+  const matches = [...notes.matchAll(/\[RC\s*-\s*([^\]]+)\]/g)];
+  if (matches.length === 0) return null;
+  return matches[matches.length - 1][1].trim();
+}
 function escHtml(s) {
   if (!s) return "";
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
