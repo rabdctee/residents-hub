@@ -618,7 +618,21 @@ function esc(str) {
 
 function formatDate(raw) {
   if (!raw) return '';
-  const d = new Date(raw);
+
+  // Google Sheets exports dates the Australian way: DD/MM/YYYY (with an
+  // optional time after it). Read the day and month in that order so a
+  // date like 02/07/2026 is correctly treated as 2 July, not 7 Feb.
+  const ddmmyyyy = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  let d;
+  if (ddmmyyyy) {
+    const day   = parseInt(ddmmyyyy[1], 10);
+    const month = parseInt(ddmmyyyy[2], 10) - 1; // JavaScript counts months from 0
+    const year  = parseInt(ddmmyyyy[3], 10);
+    d = new Date(year, month, day);
+  } else {
+    d = new Date(raw);
+  }
+
   if (isNaN(d)) return raw;
   return d.toLocaleDateString('en-AU', { day:'numeric', month:'long', year:'numeric' });
 }
