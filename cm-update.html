@@ -603,7 +603,7 @@ function checkRcAlerts() {
   const text     = document.getElementById("rc-alert-text");
   const listWrap = document.getElementById("rc-alert-list");
 
-  text.textContent = `📬 The RC has responded to ${relevant.length} issue${relevant.length !== 1 ? "s" : ""} — tap one to jump straight to it:`;
+  text.textContent = `📬 The RC has responded to ${relevant.length} issue${relevant.length !== 1 ? "s" : ""} — tap to jump straight to it:`;
 
   listWrap.innerHTML = relevant.map(key => {
     const [cat, topic] = key.split("||");
