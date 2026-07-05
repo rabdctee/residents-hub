@@ -603,14 +603,20 @@ function checkRcAlerts() {
   const text     = document.getElementById("rc-alert-text");
   const listWrap = document.getElementById("rc-alert-list");
 
-  text.textContent = `📬 The RC has responded to ${relevant.length} issue${relevant.length !== 1 ? "s" : ""} — tap an issue below to jump straight to it:`;
+  text.textContent = `📬 The RC has responded to ${relevant.length} issue${relevant.length !== 1 ? "s" : ""} — tap one to jump straight to it:`;
 
   listWrap.innerHTML = relevant.map(key => {
     const [cat, topic] = key.split("||");
     const issue = issueData.find(i => i.category === cat && i.topic === topic);
     const label = issue.issueNum ? `${issue.issueNum} — ${issue.topic}` : issue.topic;
-    return `<button type="button" class="rc-alert-link" onclick="goToIssue(${JSON.stringify(cat)}, ${JSON.stringify(topic)})">${escHtml(label)}</button>`;
+    return `<button type="button" class="rc-alert-link" data-jump-cat="${escHtml(cat)}" data-jump-top="${escHtml(topic)}">${escHtml(label)}</button>`;
   }).join("");
+
+  // Wire up the click handlers here (safer than putting the issue text inside
+  // an onclick instruction, which can break if the text contains quote marks)
+  listWrap.querySelectorAll(".rc-alert-link").forEach(btn => {
+    btn.addEventListener("click", () => goToIssue(btn.dataset.jumpCat, btn.dataset.jumpTop));
+  });
 
   banner.style.display = "block";
 
