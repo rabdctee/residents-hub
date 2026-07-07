@@ -401,6 +401,119 @@
   .remove-status.ok  { color: #2e7d32; }
   .remove-status.err { color: #c0392b; }
 
+  /* ── Edit listing ── */
+  .edit-toggle {
+    background: none;
+    border: none;
+    color: #999;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.72em;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 10px;
+    text-decoration: underline;
+    display: block;
+  }
+  .edit-toggle:hover { color: #1F4E79; }
+
+  .edit-form {
+    display: none;
+    margin-top: 12px;
+    background: #eef5fc;
+    border: 1px solid #c5d8ee;
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .edit-form.open { display: block; }
+
+  .edit-form p {
+    font-size: 0.78em;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  .edit-form-fields {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .edit-form-fields input {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.82em;
+    border: 2px solid #a8c6e8;
+    border-radius: 5px;
+    padding: 7px 10px;
+    outline: none;
+    flex: 1;
+    min-width: 120px;
+  }
+  .edit-form-fields input:focus { border-color: #1F4E79; }
+
+  .edit-form-details {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .edit-form-details label {
+    font-size: 0.78em;
+    font-weight: 700;
+    color: #1F4E79;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .edit-form-details input,
+  .edit-form-details select,
+  .edit-form-details textarea {
+    width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.85em;
+    border: 2px solid #a8c6e8;
+    border-radius: 5px;
+    padding: 8px 10px;
+    outline: none;
+  }
+  .edit-form-details input:focus,
+  .edit-form-details select:focus,
+  .edit-form-details textarea:focus { border-color: #1F4E79; }
+  .edit-form-details textarea { resize: vertical; min-height: 70px; }
+
+  .edit-form-btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  .btn-confirm-edit {
+    background: #1F4E79;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 7px 18px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.80em;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-confirm-edit:hover { background: #163d60; }
+  .btn-confirm-edit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-cancel-edit {
+    background: white;
+    color: #666;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 6px 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.80em;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-cancel-edit:hover { border-color: #999; color: #333; }
+
+  .edit-status {
+    font-size: 0.78em;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+  .edit-status.ok  { color: #2e7d32; }
+  .edit-status.err { color: #c0392b; }
+
   @media (max-width: 768px) {
     body { font-size: 22px; }
     .form-grid { grid-template-columns: 1fr; }
@@ -595,6 +708,44 @@ function renderListings() {
     ${contact ? `<span>📍 ${esc(contact)}</span>` : ''}
     ${dateStr ? `<span>🗓️ ${dateStr}</span>`      : ''}
   </div>
+  <button class="edit-toggle" onclick="toggleEditForm(${idx})">✏️ Edit my listing</button>
+  <div class="edit-form" id="edit-form-${idx}">
+    <p>To edit this listing, please confirm your name and unit number as they appear on the listing, then update the details below.</p>
+    <div class="edit-form-fields">
+      <input type="text" id="edit-name-${idx}" placeholder="Your name">
+      <input type="text" id="edit-unit-${idx}" placeholder="Unit number">
+    </div>
+    <div class="edit-form-details">
+      <div>
+        <label>Category</label>
+        <select id="edit-category-${idx}">
+          <option>For Sale</option>
+          <option>Wanted</option>
+          <option>Free to Good Home</option>
+          <option>Lost &amp; Found</option>
+          <option>Services</option>
+          <option>General Notice</option>
+        </select>
+      </div>
+      <div>
+        <label>Phone / Contact</label>
+        <input type="text" id="edit-phone-${idx}" maxlength="30">
+      </div>
+      <div>
+        <label>Headline</label>
+        <input type="text" id="edit-headline-${idx}" maxlength="100">
+      </div>
+      <div>
+        <label>Details</label>
+        <textarea id="edit-details-${idx}" maxlength="600"></textarea>
+      </div>
+    </div>
+    <div class="edit-form-btns">
+      <button class="btn-confirm-edit" id="edit-btn-${idx}" onclick="confirmEdit(${idx})">Save Changes</button>
+      <button class="btn-cancel-edit" onclick="toggleEditForm(${idx})">Cancel</button>
+      <span class="edit-status" id="edit-status-${idx}"></span>
+    </div>
+  </div>
   <button class="remove-toggle" onclick="toggleRemoveForm(${idx})">🗑️ Remove my listing</button>
   <div class="remove-form" id="remove-form-${idx}">
     <p>To remove this listing, please confirm your name and unit number as they appear on the listing.</p>
@@ -707,11 +858,100 @@ function resetForm() {
 function toggleRemoveForm(idx) {
   const form = document.getElementById('remove-form-' + idx);
   form.classList.toggle('open');
+  document.getElementById('edit-form-' + idx).classList.remove('open');
   // Clear any previous entries and messages when toggling
   document.getElementById('remove-name-' + idx).value = '';
   document.getElementById('remove-unit-' + idx).value = '';
   document.getElementById('remove-status-' + idx).textContent = '';
   document.getElementById('remove-status-' + idx).className = 'remove-status';
+}
+
+function toggleEditForm(idx) {
+  const form = document.getElementById('edit-form-' + idx);
+  const opening = !form.classList.contains('open');
+  form.classList.toggle('open');
+  document.getElementById('remove-form-' + idx).classList.remove('open');
+  // Clear any previous entries and messages when toggling
+  document.getElementById('edit-name-' + idx).value = '';
+  document.getElementById('edit-unit-' + idx).value = '';
+  document.getElementById('edit-status-' + idx).textContent = '';
+  document.getElementById('edit-status-' + idx).className = 'edit-status';
+  // Pre-fill the editable fields with the listing's current details
+  if (opening) {
+    const l = allListings[idx];
+    document.getElementById('edit-category-' + idx).value = l.category;
+    document.getElementById('edit-phone-' + idx).value    = l.phone;
+    document.getElementById('edit-headline-' + idx).value = l.headline;
+    document.getElementById('edit-details-' + idx).value  = l.details;
+  }
+}
+
+async function confirmEdit(idx) {
+  const listing     = allListings[idx];
+  const enteredName = document.getElementById('edit-name-' + idx).value.trim().toLowerCase();
+  const enteredUnit = document.getElementById('edit-unit-' + idx).value.trim().toLowerCase();
+  const statusEl    = document.getElementById('edit-status-' + idx);
+  const btn         = document.getElementById('edit-btn-' + idx);
+
+  if (!enteredName || !enteredUnit) {
+    statusEl.className = 'edit-status err';
+    statusEl.textContent = '⚠️ Please enter both your name and unit number.';
+    return;
+  }
+
+  if (enteredName !== listing.name.toLowerCase() || enteredUnit !== listing.unit.toLowerCase()) {
+    statusEl.className = 'edit-status err';
+    statusEl.textContent = '❌ Name or unit number didn\'t match. Please check and try again.';
+    return;
+  }
+
+  const newCategory = document.getElementById('edit-category-' + idx).value;
+  const newPhone    = document.getElementById('edit-phone-' + idx).value.trim();
+  const newHeadline = document.getElementById('edit-headline-' + idx).value.trim();
+  const newDetails  = document.getElementById('edit-details-' + idx).value.trim();
+
+  if (!newCategory || !newHeadline || !newDetails) {
+    statusEl.className = 'edit-status err';
+    statusEl.textContent = '⚠️ Please fill in category, headline and details.';
+    return;
+  }
+
+  // Match confirmed — save the changes
+  btn.disabled = true;
+  statusEl.className = 'edit-status';
+  statusEl.textContent = 'Saving…';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method : 'POST',
+      mode   : 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body   : JSON.stringify({
+        action: 'editListing',
+        originalHeadline: listing.headline,
+        name: listing.name,
+        unit: listing.unit,
+        phone: newPhone,
+        category: newCategory,
+        headline: newHeadline,
+        details: newDetails
+      })
+    });
+
+    // Update the local copy so the page reflects the change straight away
+    listing.phone    = newPhone;
+    listing.category = newCategory;
+    listing.headline = newHeadline;
+    listing.details  = newDetails;
+    statusEl.className = 'edit-status ok';
+    statusEl.textContent = 'Saved ✅';
+    setTimeout(function() { renderListings(); }, 900);
+
+  } catch (err) {
+    btn.disabled = false;
+    statusEl.className = 'edit-status err';
+    statusEl.textContent = '❌ Something went wrong. Please try again.';
+  }
 }
 
 async function confirmRemove(idx) {
