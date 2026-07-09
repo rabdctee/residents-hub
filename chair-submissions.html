@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chair — Resident Submissions</title>
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    padding: 0;
+    color: #222;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px 20px; }
+  h1 { color: #1b3a5c; }
+  #pinScreen {
+    max-width: 400px;
+    margin: 80px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+  #pinScreen input {
+    font-size: 20px;
+    padding: 10px;
+    width: 140px;
+    text-align: center;
+    margin-top: 12px;
+  }
+  #pinScreen button {
+    display: block;
+    margin: 16px auto 0 auto;
+    padding: 10px 24px;
+    font-size: 16px;
+    background: #1b6fb8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  #app { display: none; }
+  .filters { margin: 16px 0; }
+  .filters button {
+    padding: 8px 14px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    border: 1px solid #1b6fb8;
+    background: #fff;
+    color: #1b6fb8;
+    cursor: pointer;
+  }
+  .filters button.active {
+    background: #1b6fb8;
+    color: #fff;
+  }
+  .card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    border-left: 6px solid #1b6fb8;
+  }
+  .card.status-New { border-left-color: #b3261e; }
+  .card.status-Under-Review { border-left-color: #b8860b; }
+  .card.status-Responded { border-left-color: #1b6fb8; }
+  .card.status-Listed-for-RC-Meeting { border-left-color: #6a1bb8; }
+  .card.status-Resolved { border-left-color: #2f9e52; }
+  .meta { font-size: 14px; color: #555; margin-bottom: 8px; }
+  .desc { font-size: 16px; margin: 10px 0; white-space: pre-wrap; }
+  label { display: block; font-size: 14px; font-weight: bold; margin-top: 10px; }
+  select, textarea, input[type=text] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    font-size: 15px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    margin-top: 4px;
+  }
+  textarea { min-height: 70px; }
+  .save-btn {
+    margin-top: 12px;
+    padding: 8px 18px;
+    background: #2f9e52;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .saved-msg { color: #2f9e52; font-size: 14px; margin-left: 10px; }
+</style>
+</head>
+<body>
+
+<div id="pinScreen">
+  <h2>Chair Access Only</h2>
+  <p>Please enter your PIN to view resident submissions.</p>
+  <input type="password" id="pinInput" inputmode="numeric">
+  <button onclick="checkPin()">Enter</button>
+  <p id="pinError" style="color:#b3261e; display:none;">Incorrect PIN.</p>
+</div>
+
+<div class="wrap" id="app">
+  <h1>Resident Submissions</h1>
+  <p>Only you can see this page. Update status and add notes as items are actioned.</p>
+
+  <div class="filters" id="filters"></div>
+  <div id="list">Loading...</div>
+</div>
+
+<script>
+  // ============ SETUP: fill these in ============
+  const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  const CHAIR_PIN = "1234";              // Change this to your own PIN (page lock)
+  const CHAIR_SECRET_KEY = "C0ncerns"; // Must match the Apps Script exactly
+  // ================================================
+
+  const STATUS_OPTIONS = ["New", "Under Review", "Responded", "Listed for RC Meeting", "Resolved"];
+  let allRows = [];
+  let activeFilter = "All";
+
+  function checkPin() {
+    const entered = document.getElementById('pinInput').value;
+    if (entered === CHAIR_PIN) {
+      document.getElementById('pinScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadData();
+    } else {
+      document.getElementById('pinError').style.display = 'block';
+    }
+  }
+
+  function loadData() {
+    fetch(`${APPS_SCRIPT_URL}?key=${encodeURIComponent(CHAIR_SECRET_KEY)}`)
+      .then(r => r.json())
+      .then(rows => {
+        // rows[0] is the header row; each following row is a submission
+        allRows = rows.slice(1).map((r, i) => ({
+          rowNum: i + 2, // actual sheet row number (header is row 1)
+          timestamp: r[0],
+          name: r[1],
+          unit: r[2],
+          contact: r[3],
+          category: r[4],
+          description: r[5],
+          status: r[6] || "New",
+          notes: r[7] || "",
+          discussed: r[8] || "",
+          linked: r[9] || ""
+        })).reverse(); // newest first
+        buildFilters();
+        render();
+      })
+      .catch(() => {
+        document.getElementById('list').textContent = "Could not load submissions. Check the Apps Script URL and secret key.";
+      });
+  }
+
+  function buildFilters() {
+    const el = document.getElementById('filters');
+    el.innerHTML = "";
+    ["All", ...STATUS_OPTIONS].forEach(s => {
+      const btn = document.createElement('button');
+      btn.textContent = s;
+      if (s === activeFilter) btn.classList.add('active');
+      btn.onclick = () => { activeFilter = s; buildFilters(); render(); };
+      el.appendChild(btn);
+    });
+  }
+
+  function render() {
+    const list = document.getElementById('list');
+    list.innerHTML = "";
+    const rows = activeFilter === "All" ? allRows : allRows.filter(r => r.status === activeFilter);
+    if (rows.length === 0) {
+      list.textContent = "No submissions in this category.";
+      return;
+    }
+    rows.forEach(r => {
+      const card = document.createElement('div');
+      card.className = `card status-${r.status.replace(/\s+/g,'-')}`;
+      card.innerHTML = `
+        <div class="meta">${r.timestamp} — ${r.category}</div>
+        <strong>${r.name}</strong> ${r.unit ? "(" + r.unit + ")" : ""}
+        ${r.contact ? "<br>Contact: " + r.contact : ""}
+        <div class="desc">${r.description}</div>
+
+        <label>Status</label>
+        <select data-row="${r.rowNum}" class="statusSel">
+          ${STATUS_OPTIONS.map(s => `<option ${s===r.status?"selected":""}>${s}</option>`).join("")}
+        </select>
+
+        <label>Chair Notes / Response</label>
+        <textarea data-row="${r.rowNum}" class="notesTxt">${r.notes}</textarea>
+
+        <label>Date Discussed at RC Meeting</label>
+        <input type="text" data-row="${r.rowNum}" class="discussedTxt" value="${r.discussed}" placeholder="e.g. 12 Aug 2026">
+
+        <label>Linked Issue Tracker Reference (if escalated)</label>
+        <input type="text" data-row="${r.rowNum}" class="linkedTxt" value="${r.linked}" placeholder="e.g. Issue #24">
+
+        <button class="save-btn" data-row="${r.rowNum}">Save</button>
+        <span class="saved-msg" id="saved-${r.rowNum}"></span>
+      `;
+      list.appendChild(card);
+
+      card.querySelector('.save-btn').addEventListener('click', () => saveRow(r.rowNum, card));
+    });
+  }
+
+  function saveRow(rowNum, card) {
+    const status = card.querySelector('.statusSel').value;
+    const notes = card.querySelector('.notesTxt').value;
+    const discussed = card.querySelector('.discussedTxt').value;
+    const linked = card.querySelector('.linkedTxt').value;
+
+    const data = new FormData();
+    data.append('action', 'updateSubmission');
+    data.append('key', CHAIR_SECRET_KEY);
+    data.append('row', rowNum);
+    data.append('status', status);
+    data.append('notes', notes);
+    data.append('discussed', discussed);
+    data.append('linked', linked);
+
+    fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: data })
+      .then(() => {
+        document.getElementById(`saved-${rowNum}`).textContent = "Saved ✓";
+        setTimeout(() => { document.getElementById(`saved-${rowNum}`).textContent = ""; }, 3000);
+      });
+  }
+</script>
+
+</body>
+</html>
