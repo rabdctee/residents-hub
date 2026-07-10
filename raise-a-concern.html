@@ -114,10 +114,46 @@
     margin-top: 20px;
     font-size: 17px;
   }
+  #pinScreen {
+    max-width: 380px;
+    margin: 80px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+    text-align: center;
+  }
+  #pinScreen input {
+    font-size: 20px;
+    padding: 10px;
+    width: 140px;
+    text-align: center;
+    margin-top: 12px;
+  }
+  #pinScreen button {
+    display: block;
+    margin: 16px auto 0 auto;
+    padding: 10px 24px;
+    font-size: 16px;
+    background: #1b6fb8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<div id="pinScreen">
+  <h2>Residents Only</h2>
+  <p>Please enter the Residents Only PIN to continue.</p>
+  <input type="password" id="pinInput" inputmode="numeric" onkeypress="if(event.key==='Enter') checkPin()">
+  <button onclick="checkPin()">Enter</button>
+  <p id="pinError" style="color:#b3261e; display:none;">Incorrect PIN.</p>
+</div>
+
+<div class="wrap" id="mainContent" style="display:none;">
 
   <h1>Raise a Concern or Suggestion</h1>
   <p class="intro">
@@ -184,8 +220,22 @@
 
 <script>
   // ============ SETUP: paste your Apps Script Web App URL here ============
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaoV8H-1vFSQvTdaxdKs00_YcacN3GN6sL-7kOB6R_7ilCq0LVsOj7aUV-35qXrYzv/exec";
+  const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+  // Use the SAME PIN residents already use for your Residents Only page,
+  // so it feels familiar and they don't need to remember a new one.
+  const RESIDENTS_PIN = "4035";
   // ==========================================================================
+
+  function checkPin() {
+    const entered = document.getElementById('pinInput').value;
+    if (entered === RESIDENTS_PIN) {
+      document.getElementById('pinScreen').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+    } else {
+      document.getElementById('pinError').style.display = 'block';
+    }
+  }
 
   const checkbox = document.getElementById('checkedTracker');
   const submitBtn = document.getElementById('submitBtn');
