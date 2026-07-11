@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Action Register — BDRV SC</title>
+<style>
+  /* ── Shared Hub variables (Social Club green theme) ── */
+  :root {
+    --navy: #2e7d32;
+    --mid-blue: #43a047;
+    --surface: #eaf7ea;
+    --border: #b2dfb2;
+    --font: 'Segoe UI', Arial, sans-serif;
+    --fs: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); font-size: var(--fs); background: #f4faf4; color: #1a1a1a; }
+
+  /* ── Layout ── */
+  .page-wrap { display: flex; min-height: 100vh; }
+  .main { flex: 1; padding: 24px 28px; max-width: 1100px; }
+
+  /* ── Header ── */
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+  .page-title { font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--navy); color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.95rem; cursor: pointer; text-decoration: none; }
+  .back-btn:hover { background: var(--mid-blue); }
+
+  /* ── PIN gate ── */
+  #pin-gate { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; gap: 16px; }
+  #pin-gate h2 { color: var(--navy); }
+  #pin-gate input { font-size: 1.2rem; padding: 10px 16px; border: 2px solid var(--border); border-radius: 8px; text-align: center; letter-spacing: 4px; width: 160px; }
+  #pin-gate button { background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 10px 28px; font-size: 1rem; cursor: pointer; }
+  #pin-error { color: #c0392b; font-size: 0.95rem; display: none; }
+  #main-content { display: none; }
+
+  /* ── Filter bar ── */
+  .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .filter-bar label { font-size: 0.9rem; color: #555; }
+  .filter-bar select, .filter-bar input[type=text] { font-size: 0.95rem; border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; background: #f9fbfd; }
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .filter-spacer { flex: 1; }
+  #add-btn { background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  #add-btn:hover { background: var(--mid-blue); }
+
+  /* ── Status pills ── */
+  .pill { display: inline-block; font-size: 0.8rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+  .pill-open        { background: #dbeafe; color: #1e40af; }
+  .pill-inprogress  { background: #fef3c7; color: #92400e; }
+  .pill-done        { background: #dcfce7; color: #166534; }
+  .pill-deferred    { background: #fee2e2; color: #991b1b; }
+
+  /* ── Summary bar ── */
+  .summary-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .summary-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px 18px; display: flex; flex-direction: column; align-items: center; min-width: 90px; cursor: pointer; transition: box-shadow 0.15s, border-color 0.15s; }
+  .summary-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); border-color: var(--mid-blue); }
+  .summary-card.active { border-color: var(--navy); box-shadow: 0 0 0 2px var(--navy); }
+  .summary-card .count { font-size: 1.6rem; font-weight: 700; color: var(--navy); }
+  .summary-card .label { font-size: 0.8rem; color: #666; margin-top: 2px; }
+
+  /* ── Action table ── */
+  .table-wrap { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  thead th { background: var(--navy); color: #fff; font-size: 0.88rem; padding: 10px 8px; text-align: left; font-weight: 600; word-wrap: break-word; }
+  tbody tr { border-bottom: 1px solid #e8f5e9; transition: background 0.15s; }
+  tbody tr:hover { background: #f0faf0; }
+  tbody tr.row-done { opacity: 0.55; }
+  tbody td { padding: 10px 8px; font-size: 0.92rem; vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; }
+  .col-ref     { width: 70px; font-weight: 600; color: var(--navy); }
+  thead th.col-ref { color: #fff; }
+  .col-meet    { width: 85px; }
+  .col-action  { width: 26%; }
+  .col-owner   { width: 90px; }
+  .col-due     { width: 85px; }
+  .col-status  { width: 100px; }
+  .col-notes   { width: 18%; color: #444; font-style: italic; font-size: 0.88rem; }
+  .col-outcome { width: 18%; color: #166534; font-size: 0.88rem; }
+  .col-edit    { width: 45px; text-align: center; }
+  thead th.col-notes, thead th.col-outcome { color: #fff; font-style: normal; }
+
+  .icon-btn { background: none; border: none; cursor: pointer; padding: 4px 6px; border-radius: 5px; color: var(--mid-blue); font-size: 1rem; }
+  .icon-btn:hover { background: var(--surface); }
+
+  /* ── Edit inline row ── */
+  .edit-row { background: #f0faf0 !important; }
+  .edit-row td { padding: 8px 12px; }
+  .edit-row select, .edit-row textarea { font-size: 0.9rem; border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; width: 100%; background: #fff; }
+  .edit-row textarea { resize: vertical; min-height: 60px; }
+  .save-btn { background: #166534; color: #fff; border: none; border-radius: 6px; padding: 5px 12px; cursor: pointer; font-size: 0.88rem; margin-right: 4px; }
+  .cancel-btn { background: #6b7280; color: #fff; border: none; border-radius: 6px; padding: 5px 12px; cursor: pointer; font-size: 0.88rem; }
+
+  /* ── Add action panel ── */
+  #add-panel { display: none; background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 18px; }
+  #add-panel h3 { color: var(--navy); margin-bottom: 14px; font-size: 1.05rem; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-grid label { font-size: 0.88rem; color: #444; display: block; margin-bottom: 4px; font-weight: 600; }
+  .form-grid input, .form-grid select, .form-grid textarea {
+    width: 100%; font-size: 0.95rem; border: 1px solid var(--border); border-radius: 7px;
+    padding: 8px 10px; background: #f9fbfd; font-family: var(--font);
+  }
+  .form-grid textarea { min-height: 70px; resize: vertical; }
+  .form-actions { margin-top: 14px; display: flex; gap: 10px; }
+  .btn-submit { background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 9px 22px; font-size: 0.95rem; cursor: pointer; }
+  .btn-submit:hover { background: var(--mid-blue); }
+  .btn-cancel { background: #e5e7eb; color: #374151; border: none; border-radius: 8px; padding: 9px 22px; font-size: 0.95rem; cursor: pointer; }
+
+  /* ── Loading / error ── */
+  .loading { text-align: center; padding: 40px; color: #666; font-style: italic; }
+  .error-msg { background: #fee2e2; color: #991b1b; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 0.95rem; }
+  .success-msg { background: #dcfce7; color: #166534; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 0.95rem; display: none; }
+
+  /* ── Empty state ── */
+  .empty-state { text-align: center; padding: 48px 20px; color: #888; }
+  .empty-state p { margin-top: 8px; font-size: 0.95rem; }
+
+  /* Outcome required highlight */
+  .outcome-required { border-color: #f59e0b !important; background: #fffbeb !important; }
+  .outcome-label { color: #166534; font-weight: 700; }
+
+  @media(max-width: 700px) {
+    .col-meet, .col-notes, .col-outcome { display: none; }
+    .form-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PIN gate -->
+<div id="pin-gate">
+  <h2>🔒 Committee Access Required</h2>
+  <p style="color:#555;font-size:0.95rem">Enter the committee PIN to view the Action Register.</p>
+  <input type="password" id="pin-input" placeholder="PIN" maxlength="6" onkeydown="if(event.key==='Enter')checkPin()">
+  <button onclick="checkPin()">Enter</button>
+  <span id="pin-error">Incorrect PIN. Please try again.</span>
+</div>
+
+<!-- Main content (hidden until PIN) -->
+<div id="main-content">
+<div class="page-wrap">
+<div class="main">
+
+  <div class="page-header">
+    <div class="page-title">📋 SC Action Register</div>
+    <div style="font-size:0.82em;color:#555;" id="ar-date"></div>
+    <button onclick="history.back()" class="back-btn">← Back</button>
+  </div>
+
+  <div id="msg-success" class="success-msg"></div>
+  <div id="msg-error" class="error-msg" style="display:none"></div>
+
+  <!-- Add new action panel -->
+  <div id="add-panel">
+    <h3>Add New Action</h3>
+    <div class="form-grid">
+      <div class="full">
+        <label>Action description *</label>
+        <textarea id="f-action" placeholder="Describe the action clearly — what needs to be done"></textarea>
+      </div>
+      <div>
+        <label>Owner (who is responsible) *</label>
+        <select id="f-owner">
+          <option value="">— select —</option>
+          <option>Kathy</option>
+          <option>Judy</option>
+          <option>Marie</option>
+          <option>Events Coordinator</option>
+          <option>All Members</option>
+          <option>Community Manager</option>
+        </select>
+      </div>
+      <div>
+        <label>Due date *</label>
+        <input type="date" id="f-due">
+      </div>
+      <div>
+        <label>Meeting date (when action was agreed) *</label>
+        <input type="date" id="f-meeting">
+      </div>
+      <div>
+        <label>Added by</label>
+        <select id="f-addedby">
+          <option>Kathy</option>
+          <option>Judy</option>
+          <option>Marie</option>
+          <option>Events Coordinator</option>
+          <option>All Members</option>
+          <option>Community Manager</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-submit" onclick="submitAdd()">Add Action</button>
+      <button class="btn-cancel" onclick="closeAddPanel()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Summary bar -->
+  <div class="summary-bar" id="summary-bar"></div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>Status:</label>
+      <select id="fil-status" onchange="applyFilters()">
+        <option value="all">All</option>
+        <option value="open">Open</option>
+        <option value="inprogress">In Progress</option>
+        <option value="done">Done</option>
+        <option value="deferred">Deferred</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Owner:</label>
+      <select id="fil-owner" onchange="applyFilters()">
+        <option value="all">All</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Search:</label>
+      <input type="text" id="fil-search" placeholder="Action or notes…" oninput="applyFilters()" style="width:180px">
+    </div>
+    <div class="filter-spacer"></div>
+    <button id="add-btn" onclick="toggleAddPanel()">＋ Add Action</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <div id="table-loading" class="loading">Loading actions…</div>
+    <table id="action-table" style="display:none">
+      <thead>
+        <tr>
+          <th class="col-ref">Ref #</th>
+          <th class="col-meet">Meeting</th>
+          <th class="col-action">Action</th>
+          <th class="col-owner">Owner</th>
+          <th class="col-due">Due</th>
+          <th class="col-status">Status</th>
+          <th class="col-notes">Notes / Update</th>
+          <th class="col-outcome">Outcome / Resolution</th>
+          <th class="col-edit">Edit</th>
+        </tr>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+    <div id="empty-state" class="empty-state" style="display:none">
+      <div style="font-size:2rem">📋</div>
+      <p>No actions found. Add one using the button above.</p>
+    </div>
+  </div>
+
+</div><!-- /.main -->
+</div><!-- /.page-wrap -->
+</div><!-- /#main-content -->
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG6RXWVplDVFen82zZnMmAM5S43HbydythoKcgb87f1gaUT4jnbjOeXKGJGZ752796/exec"; // same script as RC — board=sc tells it which tab to use
+const COMMITTEE_PIN = "5304";
+const SESSION_KEY   = "bdrv_sc_action_register_auth";
+
+// ⚠️ REPLACE THIS with the "Publish to web" CSV link for your new SC-Actions tab
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SRoD_AgQcjrtBrgF95eLDkh2EmZAIusLrw0BaCZi2-U2Q6KWyd9h0Xw8LISjmdW-yWihLLsW/pub?gid=1250803964&single=true&output=csv";
+
+let allActions = [];
+let editingRow = null;
+
+// ── PIN gate ──────────────────────────────────────────────────────────────────
+function checkPin() {
+  const val = document.getElementById("pin-input").value.trim();
+  if (val === COMMITTEE_PIN) {
+    sessionStorage.setItem(SESSION_KEY, "true");
+    showApp();
+  } else {
+    document.getElementById("pin-error").style.display = "block";
+    document.getElementById("pin-input").value = "";
+    document.getElementById("pin-input").focus();
+  }
+}
+
+function showApp() {
+  document.getElementById("pin-gate").style.display = "none";
+  document.getElementById("main-content").style.display = "block";
+  loadActions();
+}
+
+// Check for existing session on load
+window.onload = function() {
+  if (sessionStorage.getItem(SESSION_KEY) === "true") {
+    showApp();
+  }
+};
+
+// ── Data layer ────────────────────────────────────────────────────────────────
+// Robust CSV parser — handles newlines inside quoted fields
+function parseCSVFull(text) {
+  const allRows = [];
+  let cur = "", inQ = false, cols = [];
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      if (inQ && text[i+1] === '"') { cur += '"'; i++; }
+      else { inQ = !inQ; }
+    } else if (ch === ',' && !inQ) {
+      cols.push(cur.trim()); cur = "";
+    } else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQ) {
+      if (ch === '\r') i++;
+      cols.push(cur.trim()); cur = "";
+      allRows.push(cols); cols = [];
+    } else {
+      cur += ch;
+    }
+  }
+  if (cur || cols.length) { cols.push(cur.trim()); allRows.push(cols); }
+  return allRows; // includes header row at index 0
+}
+
+function loadActions() {
+  document.getElementById("table-loading").style.display = "block";
+  document.getElementById("action-table").style.display = "none";
+  document.getElementById("empty-state").style.display = "none";
+
+  fetch(CSV_URL + "&cachebust=" + Date.now())
+    .then(r => r.text())
+    .then(csv => {
+      document.getElementById("table-loading").style.display = "none";
+      const allRows = parseCSVFull(csv).slice(1).filter(r => r.length > 0);
+      // Row 1 is the header — skip it; data starts at row index 1 (sheet row 2)
+      allActions = [];
+      for (let i = 0; i < allRows.length; i++) {
+        const c = allRows[i];
+        if (!c[0]) continue; // skip blank ref
+        allActions.push({
+          row:      i + 1,   // 1-based sheet row: header=row1, i=1 → sheet row 2
+          ref:      c[0] || "",
+          meeting:  c[1] || "",
+          action:   c[2] || "",
+          owner:    c[3] || "",
+          due:      c[4] || "",
+          status:   c[6] || "Open",
+          notes:    c[7] || "",
+          addedBy:   c[8] || "",
+          addedDate: c[9] || "",
+          outcome:   c[10] || "",
+        });
+      }
+      populateOwnerFilter();
+      renderSummary();
+      applyFilters();
+      document.getElementById("action-table").style.display = "table";
+    })
+    .catch(() => {
+      document.getElementById("table-loading").style.display = "none";
+      showError("Network error loading actions. Please try again.");
+    });
+}
+
+// Fire-and-forget POST to Apps Script (no-cors — URL-encoded body)
+function postScript(params) {
+  const body = Object.entries({ ...params, board: "sc" })
+    .map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
+    .join("&");
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+    mode: "no-cors"
+  });
+}
+
+// ── Rendering ─────────────────────────────────────────────────────────────────
+function statusClass(s) {
+  if (s === "Done")        return "pill-done";
+  if (s === "In Progress") return "pill-inprogress";
+  if (s === "Deferred")    return "pill-deferred";
+  return "pill-open";
+}
+
+function formatDate(d) {
+  if (!d) return "";
+  const dt = new Date(d);
+  if (isNaN(dt.getTime())) return String(d); // unrecognised format — return as-is
+  return dt.toLocaleDateString("en-AU", { day:"numeric", month:"short", year:"2-digit" });
+}
+
+function isOverdue(due, status) {
+  if (!due || status === "Done" || status === "Deferred") return false;
+  const d = new Date(due);
+  return !isNaN(d) && d < new Date();
+}
+
+function renderSummary() {
+  const counts = { Open: 0, "In Progress": 0, Done: 0, Deferred: 0 };
+  allActions.forEach(a => { if (counts[a.status] !== undefined) counts[a.status]++; });
+
+  const currentFilter = document.getElementById("fil-status").value;
+
+  document.getElementById("summary-bar").innerHTML = [
+    ["Open",        counts["Open"],         "pill-open",        "open"],
+    ["In Progress", counts["In Progress"],  "pill-inprogress",  "inprogress"],
+    ["Done",        counts["Done"],         "pill-done",        "done"],
+    ["Deferred",    counts["Deferred"],     "pill-deferred",    "deferred"],
+  ].map(([label, count, cls, val]) => `
+    <div class="summary-card${currentFilter === val ? ' active' : ''}" onclick="filterByStatus('${val}')" title="Click to filter by ${label}">
+      <div class="count">${count}</div>
+      <div class="label"><span class="pill ${cls}">${label}</span></div>
+    </div>
+  `).join("") + `
+    <div class="summary-card${currentFilter === 'all' ? ' active' : ''}" onclick="filterByStatus('all')" title="Show all actions">
+      <div class="count">${allActions.length}</div>
+      <div class="label">Total</div>
+    </div>`;
+}
+
+function filterByStatus(val) {
+  document.getElementById("fil-status").value = val;
+  renderSummary();
+  applyFilters();
+}
+
+function populateOwnerFilter() {
+  const owners = [...new Set(allActions.map(a => a.owner).filter(Boolean))].sort();
+  const sel = document.getElementById("fil-owner");
+  sel.innerHTML = '<option value="all">All</option>' +
+    owners.map(o => `<option value="${o}">${o}</option>`).join("");
+}
+
+function applyFilters() {
+  const status = document.getElementById("fil-status").value;
+  const owner  = document.getElementById("fil-owner").value;
+  const search = document.getElementById("fil-search").value.toLowerCase();
+
+  const filtered = allActions.filter(a => {
+    if (status !== "all" && a.status.toLowerCase().replace(" ","") !== status) return false;
+    if (owner  !== "all" && a.owner !== owner) return false;
+    if (search && !a.action.toLowerCase().includes(search) && !a.notes.toLowerCase().includes(search) && !a.outcome.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  renderSummary(); // keeps active card highlight in sync with dropdown
+  renderTable(filtered);
+}
+
+function renderTable(actions) {
+  const tbody = document.getElementById("table-body");
+  const empty = document.getElementById("empty-state");
+
+  if (!actions.length) {
+    tbody.innerHTML = "";
+    empty.style.display = "block";
+    return;
+  }
+  empty.style.display = "none";
+
+  tbody.innerHTML = actions.map(a => {
+    const isDone = a.status === "Done";
+    const over   = isOverdue(a.due, a.status);
+    const dueTxt = over ? `<span style="color:#c0392b;font-weight:600">${formatDate(a.due)} ⚠</span>` : formatDate(a.due);
+
+    return `<tr class="${isDone ? 'row-done' : ''}" data-row="${a.row}">
+      <td class="col-ref">${a.ref}</td>
+      <td class="col-meet">${formatDate(a.meeting)}</td>
+      <td class="col-action">${escHtml(a.action)}</td>
+      <td class="col-owner">${escHtml(a.owner)}</td>
+      <td class="col-due">${dueTxt}</td>
+      <td class="col-status"><span class="pill ${statusClass(a.status)}">${a.status}</span></td>
+      <td class="col-notes">${escHtml(a.notes)}</td>
+      <td class="col-outcome">${a.outcome ? escHtml(a.outcome) : (a.status === 'Done' ? '<span style="color:#f59e0b;font-style:italic;font-size:0.82rem;">⚠ No outcome recorded</span>' : '')}</td>
+      <td class="col-edit"><button class="icon-btn" title="Edit status / note" onclick="startEdit(${a.row})">✏️</button></td>
+    </tr>`;
+  }).join("");
+}
+
+function escHtml(s) {
+  return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+// ── Inline edit ───────────────────────────────────────────────────────────────
+function startEdit(rowNum) {
+  if (editingRow) cancelEdit();
+  editingRow = rowNum;
+
+  const a = allActions.find(x => x.row === rowNum);
+  if (!a) return;
+
+  const tr = document.querySelector(`tr[data-row="${rowNum}"]`);
+  tr.classList.add("edit-row");
+  tr.innerHTML = `
+    <td colspan="9" style="padding:12px 14px;">
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:10px;">
+        <span style="font-weight:700;color:var(--navy);font-size:0.95rem;white-space:nowrap;">${a.ref}</span>
+        <span style="color:#555;font-size:0.88rem;">${escHtml(a.action)}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:160px 1fr 1fr auto;gap:10px;align-items:start;">
+        <div>
+          <label style="font-size:0.8rem;color:#555;font-weight:600;display:block;margin-bottom:4px;">Status</label>
+          <select id="edit-status" style="width:100%;font-size:0.9rem;border:1px solid var(--border);border-radius:6px;padding:6px 8px;background:#fff;" onchange="toggleOutcomeField(this)">
+            ${["Open","In Progress","Done","Deferred"].map(s =>
+              `<option${s===a.status?" selected":""}>${s}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:0.8rem;color:#555;font-weight:600;display:block;margin-bottom:4px;">Notes / Update</label>
+          <textarea id="edit-notes" placeholder="Add a progress note…" style="width:100%;font-size:0.9rem;border:1px solid var(--border);border-radius:6px;padding:6px 8px;background:#fff;resize:vertical;min-height:60px;font-family:var(--font);">${escHtml(a.notes)}</textarea>
+        </div>
+        <div>
+          <label id="outcome-label" class="outcome-label" style="font-size:0.8rem;display:block;margin-bottom:4px;${a.status==='Done'?'':'visibility:hidden'}">What was done? *</label>
+          <textarea id="edit-outcome" placeholder="Describe what was done to resolve this action…" style="width:100%;font-size:0.9rem;border:1px solid var(--border);border-radius:6px;padding:6px 8px;background:#fff;resize:vertical;min-height:60px;font-family:var(--font);${a.status==='Done'?'':'display:none'}">${escHtml(a.outcome)}</textarea>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;padding-top:22px;">
+          <button class="save-btn" onclick="saveEdit(${rowNum})">Save</button>
+          <button class="cancel-btn" onclick="cancelEdit()">✕ Cancel</button>
+        </div>
+      </div>
+    </td>`;
+}
+
+function cancelEdit() {
+  editingRow = null;
+  applyFilters(); // re-render
+}
+
+function toggleOutcomeField(sel) {
+  const isDone = sel.value === "Done";
+  const outcomeBox = document.getElementById("edit-outcome");
+  const outcomeLabel = document.getElementById("outcome-label");
+  if (outcomeBox) {
+    outcomeBox.style.display = isDone ? "block" : "none";
+    if (outcomeLabel) outcomeLabel.style.display = isDone ? "block" : "none";
+    if (isDone) { outcomeBox.classList.add("outcome-required"); outcomeBox.focus(); }
+    else { outcomeBox.classList.remove("outcome-required"); }
+  }
+}
+
+function saveEdit(rowNum) {
+  const newStatus  = document.getElementById("edit-status").value;
+  const newNotes   = document.getElementById("edit-notes").value.trim();
+  const outcomeEl  = document.getElementById("edit-outcome");
+  const newOutcome = outcomeEl ? outcomeEl.value.trim() : "";
+
+  // If marking Done, outcome is required
+  if (newStatus === "Done" && !newOutcome) {
+    if (outcomeEl) { outcomeEl.classList.add("outcome-required"); outcomeEl.focus(); }
+    showError("Please describe what was done to resolve this action before marking it Done.");
+    return;
+  }
+
+  // Update local cache immediately (optimistic — no-cors gives no response)
+  const a = allActions.find(x => x.row === rowNum);
+  if (a) { a.status = newStatus; a.notes = newNotes; if (newOutcome) a.outcome = newOutcome; }
+  editingRow = null;
+  renderSummary();
+  applyFilters();
+  showSuccess("Saved ✓ — changes visible now. Sheet syncs within ~30 seconds.");
+
+  // Post single combined update to Apps Script (fire-and-forget)
+  postScript({ action: "updateAction", row: rowNum, status: newStatus, notes: newNotes, outcome: newOutcome });
+
+  // Re-fetch from sheet after 30 seconds to confirm sync
+  setTimeout(function() {
+    loadActions();
+  }, 30000);
+}
+
+// ── Add action ────────────────────────────────────────────────────────────────
+function toggleAddPanel() {
+  const p = document.getElementById("add-panel");
+  p.style.display = p.style.display === "block" ? "none" : "block";
+  if (p.style.display === "block") {
+    document.getElementById("f-action").focus();
+  }
+}
+
+function closeAddPanel() {
+  document.getElementById("add-panel").style.display = "none";
+}
+
+function submitAdd() {
+  const action  = document.getElementById("f-action").value.trim();
+  const owner   = document.getElementById("f-owner").value;
+  const dueRaw  = document.getElementById("f-due").value;
+  const meeting = document.getElementById("f-meeting").value.trim();
+  const addedBy = document.getElementById("f-addedby").value;
+
+  if (!action)  { showError("Please describe the action."); return; }
+  if (!owner)   { showError("Please select an owner."); return; }
+  if (!dueRaw)  { showError("Please set a due date."); return; }
+
+  const dueDate = new Date(dueRaw);
+  const due = dueDate.toLocaleDateString("en-AU", { day:"numeric", month:"short", year:"2-digit" });
+
+  // Fire-and-forget POST — Apps Script will assign the ref number and add the row
+  postScript({ action:"addAction", actionText: action, owner, due, meeting, addedBy });
+
+  // Clear and close form
+  closeAddPanel();
+  ["f-action","f-meeting"].forEach(id => document.getElementById(id).value = "");
+  document.getElementById("f-due").value = "";
+  document.getElementById("f-owner").value = "";
+
+  showSuccess("Action submitted. Reload in a few seconds to see it appear.");
+}
+
+// ── Feedback helpers ──────────────────────────────────────────────────────────
+function showSuccess(msg) {
+  const el = document.getElementById("msg-success");
+  el.textContent = "✓ " + msg;
+  el.style.display = "block";
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.style.display = "none", 4000);
+  document.getElementById("msg-error").style.display = "none";
+}
+function showError(msg) {
+  const el = document.getElementById("msg-error");
+  el.textContent = "⚠ " + msg;
+  el.style.display = "block";
+  document.getElementById("msg-success").style.display = "none";
+}
+</script>
+<script>
+(function(){
+  var now = new Date();
+  var el = document.getElementById('ar-date');
+  if (el) el.textContent =
+    now.toLocaleDateString('en-AU',{weekday:'long'}) + ' ' +
+    now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+})();
+</script>
+</body>
+</html>
