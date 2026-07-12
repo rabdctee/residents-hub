@@ -5,221 +5,308 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Raise a Concern or Suggestion — BDRV Residents' Hub</title>
 <style>
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f4f6f8;
-    margin: 0;
-    padding: 0;
-    color: #222;
-  }
-  .wrap {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 24px 20px 60px 20px;
-  }
-  h1 {
-    font-size: 26px;
-    color: #1b3a5c;
-    margin-bottom: 4px;
-  }
-  .intro {
-    font-size: 17px;
-    line-height: 1.5;
-    color: #333;
-  }
-  .tracker-box {
-    background: #eef5ff;
-    border: 2px solid #1b6fb8;
-    border-radius: 10px;
-    padding: 18px;
-    margin: 20px 0;
-  }
-  .tracker-box a {
-    display: inline-block;
-    margin-top: 8px;
-    background: #1b6fb8;
-    color: #fff;
-    padding: 10px 18px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 16px;
-  }
-  .check-row {
-    margin-top: 14px;
-    font-size: 16px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  .check-row input {
-    width: 20px;
-    height: 20px;
-    margin-top: 3px;
-  }
-  form {
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  }
-  label {
-    display: block;
-    font-weight: bold;
-    margin-top: 16px;
-    margin-bottom: 6px;
-    font-size: 16px;
-  }
-  input[type=text], input[type=email], select, textarea {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #bbb;
-    border-radius: 6px;
-  }
-  textarea {
-    min-height: 120px;
-    resize: vertical;
-  }
-  .required {
-    color: #b3261e;
-  }
-  button[type=submit] {
-    margin-top: 24px;
-    width: 100%;
-    padding: 14px;
-    font-size: 18px;
-    background: #1b6fb8;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  button[type=submit]:disabled {
-    background: #aab7c2;
-    cursor: not-allowed;
-  }
-  .note {
-    font-size: 14px;
-    color: #555;
-    margin-top: 10px;
-  }
-  #thankyou {
-    display: none;
-    background: #e8f7ee;
-    border: 2px solid #2f9e52;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-    font-size: 17px;
-  }
-  #pinScreen {
-    max-width: 380px;
-    margin: 80px auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.15);
-    text-align: center;
-  }
-  #pinScreen input {
-    font-size: 20px;
-    padding: 10px;
-    width: 140px;
-    text-align: center;
-    margin-top: 12px;
-  }
-  #pinScreen button {
-    display: block;
-    margin: 16px auto 0 auto;
-    padding: 10px 24px;
-    font-size: 16px;
-    background: #1b6fb8;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-  }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:#f5f5f5;
+  font-size:20px;
+  line-height:1.7;
+  color:#222;
+}
+
+.container{
+  max-width:800px;
+  margin:auto;
+  background:white;
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  min-height:100vh;
+}
+
+header{
+  background:#1F4E79;
+  color:white;
+  padding:30px 20px;
+  text-align:center;
+}
+header h1{ font-size:1.7em; }
+
+.hub-footer{
+  background:#f8f9fa;
+  padding:16px 30px;
+  text-align:center;
+  color:#5f6368;
+  border-top:1px solid #e0e0e0;
+  font-size:0.85em;
+}
+
+/* ===== Page content ===== */
+.page-content{ padding:30px 25px 50px 25px; }
+
+.back-home{
+  display:inline-block;
+  margin-bottom:20px;
+  color:#1F4E79;
+  font-weight:600;
+  text-decoration:none;
+}
+.back-home:hover{ text-decoration:underline; }
+
+.intro{
+  font-size:0.9em;
+  line-height:1.6;
+  color:#333;
+  margin-bottom:20px;
+}
+
+/* Tracker box — matches the site's info-box style */
+.tracker-box{
+  background:#e8f4f8;
+  border-left:4px solid #1F4E79;
+  padding:20px;
+  border-radius:4px;
+  margin:20px 0;
+}
+.tracker-box strong{ color:#1F4E79; }
+.tracker-box p{ margin:8px 0 12px 0; font-size:0.85em; }
+
+.btn{
+  display:inline-block;
+  padding:10px 20px;
+  background:#1F4E79;
+  color:white;
+  text-decoration:none;
+  border-radius:5px;
+  font-size:0.85em;
+  font-weight:600;
+  cursor:pointer;
+  border:none;
+  transition:background 0.3s;
+}
+.btn:hover{ background:#1e4178; }
+
+.check-row{
+  margin-top:14px;
+  font-size:0.85em;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+}
+.check-row input{
+  width:20px;
+  height:20px;
+  margin-top:3px;
+  accent-color:#1F4E79;
+}
+
+/* Form — styled like the "Share Your Thoughts" ask-section, in light mode */
+form{
+  background:#fafbfc;
+  border:1px solid #e0e0e0;
+  border-radius:8px;
+  padding:20px;
+  margin-top:20px;
+}
+label{
+  display:block;
+  font-weight:600;
+  color:#1F4E79;
+  margin-top:16px;
+  margin-bottom:6px;
+  font-size:0.8em;
+}
+input[type=text], select, textarea{
+  width:100%;
+  box-sizing:border-box;
+  padding:12px 15px;
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  font-size:0.85em;
+  border:2px solid #e0e0e0;
+  border-radius:5px;
+  background:white;
+  color:#222;
+  transition:border-color 0.3s ease;
+}
+input[type=text]:focus, select:focus, textarea:focus{
+  outline:none;
+  border-color:#1F4E79;
+}
+textarea{ min-height:120px; resize:vertical; }
+.required{ color:#b3261e; }
+
+button[type=submit]{
+  margin-top:24px;
+  width:100%;
+  padding:14px;
+  font-size:0.95em;
+  background:#1F4E79;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  font-weight:700;
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  transition:background 0.3s;
+}
+button[type=submit]:hover{ background:#1e4178; }
+button[type=submit]:disabled{
+  background:#aab7c2;
+  cursor:not-allowed;
+}
+
+.note{
+  font-size:0.7em;
+  color:#5f6368;
+  margin-top:10px;
+}
+
+#thankyou{
+  display:none;
+  background:#e8f4f8;
+  border-left:4px solid #2f9e52;
+  border-radius:4px;
+  padding:20px;
+  margin-top:20px;
+  font-size:0.9em;
+}
+#thankyou strong{ color:#1F4E79; }
+
+/* ===== PIN screen ===== */
+#pinScreen{
+  max-width:380px;
+  margin:80px auto;
+  background:white;
+  padding:30px;
+  border-radius:8px;
+  border:1px solid #c5d8ee;
+  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  text-align:center;
+}
+#pinScreen h2{ color:#1F4E79; font-size:1.2em; margin-bottom:10px; }
+#pinScreen p{ font-size:0.75em; color:#5f6368; }
+#pinScreen input{
+  font-size:1.1em;
+  padding:10px;
+  width:140px;
+  text-align:center;
+  margin-top:14px;
+  border:2px solid #e0e0e0;
+  border-radius:5px;
+}
+#pinScreen input:focus{ outline:none; border-color:#1F4E79; }
+#pinScreen button{
+  display:block;
+  margin:16px auto 0 auto;
+  padding:10px 26px;
+  font-size:0.85em;
+  background:#1F4E79;
+  color:white;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  font-weight:600;
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+}
+#pinScreen button:hover{ background:#1e4178; }
+#pinError{ color:#b3261e; font-size:0.75em; margin-top:10px; }
+
+@media(max-width:768px){
+  header h1{ font-size:1.4em; }
+  .page-content{ padding:20px 16px 40px 16px; }
+}
 </style>
 </head>
 <body>
 
 <div id="pinScreen">
-  <h2>Residents Only</h2>
+  <h2>🔒 Residents Only</h2>
   <p>Please enter the Residents Only PIN to continue.</p>
   <input type="password" id="pinInput" inputmode="numeric" onkeypress="if(event.key==='Enter') checkPin()">
   <button onclick="checkPin()">Enter</button>
-  <p id="pinError" style="color:#b3261e; display:none;">Incorrect PIN.</p>
+  <p id="pinError" style="display:none;">Incorrect PIN.</p>
 </div>
 
-<div class="wrap" id="mainContent" style="display:none;">
+<div class="container" id="mainContent" style="display:none;">
 
-  <h1>Raise a Concern or Suggestion</h1>
-  <p class="intro">
-    This page lets you privately raise a concern, issue, or suggestion so it can be looked at
-    by the Chair of the Residents Committee. It is <strong>not</strong> posted publicly like the
-    "Share your Thoughts" page.
-  </p>
+  <header>
+    <h1>Raise a Concern or Suggestion</h1>
+  </header>
 
-  <div class="tracker-box">
-    <strong>Before you submit — please check first:</strong>
-    <p style="margin-top:8px;">
-      Many issues are already known about and being worked on. Please take a look at the
-      current Village Issues Tracker to see if your concern is already listed.
+  <div class="page-content">
+
+    <a href="index.html" class="back-home">← Back to Home</a>
+
+    <p class="intro">
+      This page lets you privately raise a concern, issue, or suggestion so it can be looked at
+      by the Residents Committee. It is <strong>not</strong> posted publicly.
     </p>
-    <!-- UPDATE THIS LINK to the exact filename of your Issues Tracker page -->
-    <a href="progress-tracker.html" target="_blank" rel="noopener">View the Village Issues Tracker</a>
 
-    <div class="check-row">
-      <input type="checkbox" id="checkedTracker">
-      <label for="checkedTracker" style="font-weight:normal; margin:0;">
-        I have checked the Village Issues Tracker and my concern is not already listed
-        (or it is listed, but I'd still like to add something).
-      </label>
+    <div class="tracker-box">
+      <strong>Before you submit — please check first:</strong>
+      <p>
+        Many issues are already known about and being worked on. Please take a look at the
+        current Village Issues Tracker to see if your concern is already listed.
+      </p>
+      <!-- UPDATE THIS LINK to the exact filename of your Issues Tracker page -->
+      <a href="progress-tracker.html" target="_blank" rel="noopener" class="btn">📊 View the Village Issues Tracker</a>
+
+      <div class="check-row">
+        <input type="checkbox" id="checkedTracker">
+        <label for="checkedTracker" style="font-weight:normal; margin:0; color:#222;">
+          I have checked the Village Issues Tracker and my concern is not already listed
+          (or it is listed, but I'd still like to add something).
+        </label>
+      </div>
     </div>
+
+    <form id="concernForm">
+      <label for="name">Your Name <span class="required">*</span></label>
+      <input type="text" id="name" required>
+
+      <label for="unit">Unit / Villa Number</label>
+      <input type="text" id="unit" placeholder="Optional">
+
+      <label for="contact">Best way to contact you (phone or email)</label>
+      <input type="text" id="contact" placeholder="Optional — helpful if the Chair needs to follow up">
+
+      <label for="category">Category <span class="required">*</span></label>
+      <select id="category" required>
+        <option value="">-- Please choose --</option>
+        <option>Maintenance</option>
+        <option>Safety / Security</option>
+        <option>Village Management</option>
+        <option>Social / Community</option>
+        <option>Gardens / Grounds</option>
+        <option>Other</option>
+      </select>
+
+      <label for="description">Please describe your concern or suggestion <span class="required">*</span></label>
+      <textarea id="description" required placeholder="Please give as much detail as you can."></textarea>
+
+      <button type="submit" id="submitBtn" disabled>Please tick the box above first</button>
+      <p class="note">
+        Your submission goes only to the Residents Committee. The Chair may respond
+        to you directly and/or bring the matter to the next Residents Committee meeting.
+      </p>
+    </form>
+
+    <div id="thankyou">
+      <strong>Thank you.</strong> Your submission has been sent to the Chair of the Residents Committee.
+      You do not need to do anything further right now.
+    </div>
+
   </div>
 
-  <form id="concernForm">
-    <label for="name">Your Name <span class="required">*</span></label>
-    <input type="text" id="name" required>
-
-    <label for="unit">Unit / Villa Number</label>
-    <input type="text" id="unit" placeholder="Optional">
-
-    <label for="contact">Best way to contact you (phone or email)</label>
-    <input type="text" id="contact" placeholder="Optional — helpful if the Chair needs to follow up">
-
-    <label for="category">Category <span class="required">*</span></label>
-    <select id="category" required>
-      <option value="">-- Please choose --</option>
-      <option>Maintenance</option>
-      <option>Safety / Security</option>
-      <option>Village Management</option>
-      <option>Social / Community</option>
-      <option>Gardens / Grounds</option>
-      <option>Other</option>
-    </select>
-
-    <label for="description">Please describe your concern or suggestion <span class="required">*</span></label>
-    <textarea id="description" required placeholder="Please give as much detail as you can."></textarea>
-
-    <button type="submit" id="submitBtn" disabled>Please tick the box above first</button>
-    <p class="note">
-      Your submission goes only to the Chair of the Residents Committee. The Chair may respond
-      to you directly and/or bring the matter to the next Residents Committee meeting.
-    </p>
-  </form>
-
-  <div id="thankyou">
-    <strong>Thank you.</strong> Your submission has been sent to the Chair of the Residents Committee.
-    You do not need to do anything further right now.
+  <div class="hub-footer">
+    Bridgeman Downs Retirement Village Residents' Information Hub &nbsp;|&nbsp;
+    Contact: rabd.ctee@gmail.com | Emergency: 000
   </div>
 
 </div>
 
 <script>
-  // ============ SETUP: paste your Apps Script Web App URL here ============
+  // ============ SETUP: fill these in ============
   const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 
   // Use the SAME PIN residents already use for your Residents Only page,
