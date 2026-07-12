@@ -348,6 +348,7 @@
           <ul class="sb-links">
             <li><a href="index.html" onclick="if(window.showPage){showPage('newsletter');return false;}else{window.location.href='index.html#newsletter';return false;}">📰 Social Club News</a></li>
             <li><a href="index.html" onclick="if(window.showPage){showPage('events');return false;}else{window.location.href='index.html#events';return false;}">🎉 Events</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('activity-contacts');return false;}else{window.location.href='index.html#activity-contacts';return false;}">🚶 Activities &amp; Contacts</a></li>
           </ul>
         </div>
 
@@ -357,7 +358,6 @@
         </div>
         <div class="sb-acc-body${openCommunity}" id="sba-community">
           <ul class="sb-links">
-            <li><a href="index.html" onclick="if(window.showPage){showPage('activity-contacts');return false;}else{window.location.href='index.html#activity-contacts';return false;}">🚶 Activities &amp; Contacts</a></li>
             <li><a href="concerts.html"${isActive('concerts.html') ? ' class="sb-active"' : ''}>🎵 City Hall Concerts</a></li>
             <li><a href="sports-hub.html"${isActive('sports-hub.html') ? ' class="sb-active"' : ''}>🏆 Sports Hub</a></li>
             <li><a href="savings.html"${isActive('savings.html') ? ' class="sb-active"' : ''}>🛒 Best Buys</a></li>
