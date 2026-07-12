@@ -155,6 +155,19 @@
   }
   .info-card:hover { box-shadow: 0 4px 16px rgba(31,78,121,0.12); }
   .info-card.sc-card { border-left-color: #2e7d32; }
+
+  /* ── Sub-section labels & category accents (matches hub-admin.html layout) ── */
+  .section-sublabel {
+    font-size: 0.72em; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #2e7d32;
+    margin: 22px 0 10px; padding-left: 10px; border-left: 3px solid #C9A44A;
+  }
+  .info-card.cat-events    { border-left-color: #2e7d32; }
+  .info-card.cat-committee { border-left-color: #00838f; }
+  .info-card.cat-resident  { border-left-color: #1F4E79; }
+  .info-card.cat-finance   { border-left-color: #C9A44A; }
+  .btn-gold { background: #C9A44A; color: white; }
+  .btn-teal { background: #00838f; color: white; }
   .card-top { display: flex; align-items: flex-start; gap: 14px; }
   .card-icon { font-size: 1.6em; line-height: 1; flex-shrink: 0; }
   .card-title { font-weight: 700; color: #1F4E79; font-size: 1em; }
@@ -543,9 +556,12 @@
   <!-- Convenor-only box — a separate, clearly-labelled area, shown only when the SC Convenor is signed in -->
   <div id="sc-convenor-section" style="display:none;">
     <div class="section-label" style="color:#2e7d32;border-bottom-color:#b2dfb2;margin-top:0;">⭐ Convenor — Social Club Management</div>
+
+    <!-- ── Events & Notices ── -->
+    <div class="section-sublabel">Events &amp; Notices</div>
     <div class="card-grid">
 
-      <div class="info-card sc-card">
+      <div class="info-card cat-events">
         <div class="card-top">
           <div class="card-icon">🎉</div>
           <div>
@@ -558,7 +574,7 @@
         </div>
       </div>
 
-      <div class="info-card sc-card">
+      <div class="info-card cat-events">
         <div class="card-top">
           <div class="card-icon">🎟️</div>
           <div>
@@ -573,7 +589,7 @@
         </div>
       </div>
 
-      <div class="info-card sc-card">
+      <div class="info-card cat-events">
         <div class="card-top">
           <div class="card-icon">📢</div>
           <div>
@@ -586,7 +602,7 @@
         </div>
       </div>
 
-      <div class="info-card sc-card">
+      <div class="info-card cat-events">
         <div class="card-top">
           <div class="card-icon">📣</div>
           <div>
@@ -600,7 +616,7 @@
         </div>
       </div>
 
-      <div class="info-card sc-card">
+      <div class="info-card cat-events">
         <div class="card-top">
           <div class="card-icon">📊</div>
           <div>
@@ -614,7 +630,7 @@
         </div>
       </div>
 
-      <div class="info-card sc-card">
+      <div class="info-card cat-events">
         <div class="card-top">
           <div class="card-icon">🎼</div>
           <div>
@@ -628,7 +644,13 @@
         </div>
       </div>
 
-      <div class="info-card sc-card">
+    </div><!-- /.card-grid (events & notices) -->
+
+    <!-- ── Committee ── -->
+    <div class="section-sublabel">Committee</div>
+    <div class="card-grid">
+
+      <div class="info-card cat-committee">
         <div class="card-top">
           <div class="card-icon">📤</div>
           <div>
@@ -637,11 +659,11 @@
           </div>
         </div>
         <div class="card-actions">
-          <a href="upload-document.html" class="btn-action btn-green">📤 Upload Document</a>
+          <a href="upload-document.html" class="btn-action btn-teal">📤 Upload Document</a>
         </div>
       </div>
 
-      <div class="info-card sc-card">
+      <div class="info-card cat-committee">
         <div class="card-top">
           <div class="card-icon">✅</div>
           <div>
@@ -650,25 +672,31 @@
           </div>
         </div>
         <div class="card-actions">
-          <a href="sc-action-register.html" class="btn-action btn-green">✅ Manage SC Actions</a>
+          <a href="sc-action-register.html" class="btn-action btn-teal">✅ Manage SC Actions</a>
         </div>
       </div>
 
-      <div class="info-card sc-card">
+    </div><!-- /.card-grid (committee) -->
+
+    <!-- ── Resident-Facing Content ── -->
+    <div class="section-sublabel">Resident-Facing Content</div>
+    <div class="card-grid">
+
+      <div class="info-card cat-resident">
         <div class="card-top">
           <div class="card-icon">📇</div>
           <div>
             <div class="card-title">Contact List</div>
-            <div class="card-desc">Manage the list directly in the Google Sheet, or view the live page.</div>
+            <div class="card-desc">Review &amp; update the list, or view the live page.</div>
           </div>
         </div>
         <div class="card-actions">
-          <a href="https://docs.google.com/spreadsheets/d/12uqsx6iI91piCj_x7zqYmEW26kxQFTsCTr292ZqycJ0" target="_blank" class="btn-action btn-green">📊 Manage in Sheet</a>
-          <a href="contact-list.html" class="btn-action btn-outline" style="color:#2e7d32;border-color:#2e7d32;">👁 View Live Page</a>
+          <a href="https://docs.google.com/spreadsheets/d/1npGgVH6QhJwFXN96RpG3byEmxea5r5HhKPsfNABTH7M/edit?gid=1397639661#gid=1397639661" target="_blank" class="btn-action btn-navy">⚙️ Manage List</a>
+          <a href="residents-contact-list.html" class="btn-action btn-outline">👁 View Live Page</a>
         </div>
       </div>
 
-      <div class="info-card sc-card">
+      <div class="info-card cat-resident">
         <div class="card-top">
           <div class="card-icon">🏷️</div>
           <div>
@@ -677,12 +705,18 @@
           </div>
         </div>
         <div class="card-actions">
-          <a href="classifieds-admin.html" class="btn-action btn-green">⚙️ Manage Classifieds</a>
-          <a href="classifieds.html" class="btn-action btn-outline" style="color:#2e7d32;border-color:#2e7d32;">👁 View Live Page</a>
+          <a href="classifieds-admin.html" class="btn-action btn-navy">⚙️ Manage Classifieds</a>
+          <a href="classifieds.html" class="btn-action btn-outline">👁 View Live Page</a>
         </div>
       </div>
 
-      <div class="info-card sc-card">
+    </div><!-- /.card-grid (resident-facing content) -->
+
+    <!-- ── Finance ── -->
+    <div class="section-sublabel">Finance</div>
+    <div class="card-grid">
+
+      <div class="info-card cat-finance">
         <div class="card-top">
           <div class="card-icon">💰</div>
           <div>
@@ -691,11 +725,12 @@
           </div>
         </div>
         <div class="card-actions">
-          <a href="community-info.html" class="btn-action btn-green">💰 View Reports</a>
+          <a href="community-info.html" class="btn-action btn-gold">💰 View Reports</a>
         </div>
       </div>
 
-    </div><!-- /.card-grid (convenor items) -->
+    </div><!-- /.card-grid (finance) -->
+
   </div><!-- /#sc-convenor-section -->
 
   <!-- General SC items — hidden for the Treasurer and the Convenor so their own dedicated areas stay the focus -->
