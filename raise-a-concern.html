@@ -242,7 +242,7 @@ button[type=submit]:disabled{
       by the Residents Committee. It is <strong>not</strong> posted publicly.
     </p>
 
-    <div class="tracker-box">
+    <div class="tracker-box" id="trackerBox">
       <strong>Before you submit — please check first:</strong>
       <p>
         Many issues are already known about and being worked on. Please take a look at the
@@ -348,6 +348,7 @@ button[type=submit]:disabled{
       mode: 'no-cors',
       body: data
     }).then(() => {
+      document.getElementById('trackerBox').style.display = 'none';
       document.getElementById('concernForm').style.display = 'none';
       document.getElementById('thankyou').style.display = 'block';
       window.scrollTo(0, 0);
