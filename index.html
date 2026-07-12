@@ -610,6 +610,29 @@ font-size:0.9em;
 color:#666;
 }
 
+.activity-toggle{
+cursor:pointer;
+}
+
+.activity-arrow{
+display:inline-block;
+width:14px;
+font-size:0.75em;
+color:#1F4E79;
+}
+
+.activity-desc-row td{
+background-color:#F5F9FF;
+padding:12px 15px 12px 35px;
+font-size:0.95em;
+color:#333;
+border-bottom:1px solid #e0e0e0;
+}
+
+.activity-desc-row em{
+color:#888;
+}
+
 @media(max-width:768px){
 .activities-table thead{
 display:none;
@@ -634,6 +657,11 @@ content:attr(data-label);
 float:left;
 font-weight:bold;
 color:#1F4E79;
+}
+
+.activity-desc-row td{
+text-align:left;
+padding:12px 15px;
 }
 }
 
@@ -1440,7 +1468,7 @@ For Manor events use the sign-up sheets in the Manor.
 <h2 style="margin-bottom:20px;">Activities & Contacts</h2>
 
 <div class="note-box">
-💡 <strong>Tip:</strong> Use the search box to quickly find an activity. Phone numbers are clickable on mobile devices.
+💡 <strong>Tip:</strong> Click an activity's name to see a short description. Phone numbers are clickable on mobile devices.
 </div>
 
 <div class="search-box">
@@ -1457,189 +1485,8 @@ For Manor events use the sign-up sheets in the Manor.
 <th>Contact</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td data-label="Activity" class="activity-name">Art Class</td>
-<td data-label="Day"><span class="day-badge">Wednesday</span></td>
-<td data-label="Time">2:00 pm</td>
-<td data-label="Location">MRC</td>
-<td data-label="Contact"><a href="tel:0402450676" class="contact-link">Claire 0402 450 676</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Bingo</td>
-<td data-label="Day"><span class="day-badge">Wednesday</span></td>
-<td data-label="Time">10:00 am</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel: 38629020" class="contact-link">Staff 3862 9020</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Book Club</td>
-<td data-label="Day"><span class="day-badge">Every 2nd Friday</span></td>
-<td data-label="Time">2:00 pm</td>
-<td data-label="Location">MRC</td>
-<td data-label="Contact"><a href="tel:0407677723" class="contact-link">Carol 0407 677 723</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Canasta</td>
-<td data-label="Day"><span class="day-badge">Tuesday</span></td>
-<td data-label="Time">10:00 am</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel:0404243417" class="contact-link">Elva 0404 243 417</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Craft</td>
-<td data-label="Day"><span class="day-badge">Saturday</span></td>
-<td data-label="Time">10:00 am</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel:0494343006" class="contact-link">Beryl 0494 343 006</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Craft Group - 3 C's</td>
-<td data-label="Day"><span class="day-badge">Thursday</span></td>
-<td data-label="Time">1:00 pm</td>
-<td data-label="Location">MRC</td>
-<td data-label="Contact">---</td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Games</td>
-<td data-label="Day"><span class="day-badge">Sunday</span></td>
-<td data-label="Time">2:45 pm</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel: 38629020" class="contact-link">Staff 3862 9020</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Gentle Exercises</td>
-<td data-label="Day"><span class="day-badge">Tuesday</span></td>
-<td data-label="Time">9:30 am</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel: 38629020" class="contact-link">Staff 3862 9020</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Gentle Exercises</td>
-<td data-label="Day"><span class="day-badge">Friday</span></td>
-<td data-label="Time">9:30 am</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel: 38629020" class="contact-link">Staff 3862 9020</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Happy Hour</td>
-<td data-label="Day"><span class="day-badge">Alternate Fridays</span></td>
-<td data-label="Time">3:30 pm</td>
-<td data-label="Location">MRC</td>
-<td data-label="Contact">Social Committee</td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Indoor Carpet Bowls</td>
-<td data-label="Day"><span class="day-badge">Wednesday</span></td>
-<td data-label="Time">9:30 am</td>
-<td data-label="Location">MRC</td>
-<td data-label="Contact">---</td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">IT/Phone Help</td>
-<td data-label="Day"><span class="day-badge">Tuesday</span></td>
-<td data-label="Time">10:30 am</td>
-<td data-label="Location">Manor PDR</td>
-<td data-label="Contact"><a href="tel:0405325926" class="contact-link">Rick 0405 325 926</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Kelly Pool</td>
-<td data-label="Day"><span class="day-badge">Friday</span></td>
-<td data-label="Time">3:00 pm</td>
-<td data-label="Location">MRC</td>
-<td data-label="Contact">---</td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Line Dancing</td>
-<td data-label="Day"><span class="day-badge">Monday</span></td>
-<td data-label="Time">10:30 am</td>
-<td data-label="Location">MRC</td>
-<td data-label="Contact">---</td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Morning Tea</td>
-<td data-label="Day"><span class="day-badge">Thursday</span></td>
-<td data-label="Time">9:45 am</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel: 38629020" class="contact-link">Staff 3862 9020</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Movies</td>
-<td data-label="Day"><span class="day-badge">Wednesday</span></td>
-<td data-label="Time">12:45 pm</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel: 38629020" class="contact-link">Staff 3862 9020</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Movies</td>
-<td data-label="Day"><span class="day-badge">Saturday</span></td>
-<td data-label="Time">12:45 pm</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel: 38629020" class="contact-link">Staff 3862 9020</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Opera / Ballet (DVDs)</td>
-<td data-label="Day"><span class="day-badge">Every 3rd Sunday</span></td>
-<td data-label="Time">1:30 pm</td>
-<td data-label="Location">MRC</td>
-<td data-label="Contact"><a href="tel:0407677723" class="contact-link">Carol 0407 677 723</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Poetry</td>
-<td data-label="Day"><span class="day-badge">Every 2nd Sunday</span></td>
-<td data-label="Time">2:00 pm</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel:0421498654" class="contact-link">Lorraine 0421 498 654</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">RummyKub</td>
-<td data-label="Day"><span class="day-badge">Daily</span></td>
-<td data-label="Time">10:00 am+</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel: 38629020" class="contact-link">Staff 3862 9020</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Scrabble</td>
-<td data-label="Day"><span class="day-badge">Saturday</span></td>
-<td data-label="Time">1:30 pm</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact">---</td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Shuffleboard / Games</td>
-<td data-label="Day"><span class="day-badge">Saturday</span></td>
-<td data-label="Time">2:45 pm</td>
-<td data-label="Location">Manor</td>
-<td data-label="Contact"><a href="tel: 38629020" class="contact-link">Staff 3862 9020</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Singing Group</td>
-<td data-label="Day"><span class="day-badge">1st & 3rd Thursday</span></td>
-<td data-label="Time">6:00 pm</td>
-<td data-label="Location">MRC</td>
-<td data-label="Contact">---</td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Trivia</td>
-<td data-label="Day"><span class="day-badge">Tuesday</span></td>
-<td data-label="Time">1:30 pm</td>
-<td data-label="Location">Manor/MRC</td>
-<td data-label="Contact">---</td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Walking Group</td>
-<td data-label="Day"><span class="day-badge">Monday</span></td>
-<td data-label="Time">4:30 pm</td>
-<td data-label="Location">Leaves from MRC</td>
-<td data-label="Contact"><a href="tel:0430649655" class="contact-link">Dianne 0430 649 655</a></td>
-</tr>
-<tr>
-<td data-label="Activity" class="activity-name">Walking Group</td>
-<td data-label="Day"><span class="day-badge">Friday</span></td>
-<td data-label="Time">4:30 pm</td>
-<td data-label="Location">Leaves from MRC</td>
-<td data-label="Contact"><a href="tel:0417983977" class="contact-link">Jan 0417 983 977</a></td>
-</tr>
+<tbody id="activitiesTableBody">
+<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;padding:20px;">Loading activities…</td></tr>
 </tbody>
 </table>
 
@@ -2661,28 +2508,153 @@ function toggleSection(id) {
     }
 }
 
-// Search function for activities
+// ===== Activities & Contacts: loaded from Google Sheet =====
+// The Sheet is expected to have these column headings (any order):
+// Activity, Day, Time, Location, Contact, Description
+const ACTIVITIES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vReqImAWr3v0lqY5krzob7cfKkYteYBjmWsiAS93tJjAIDrkGwNGEJ0Df1cUyFO-8fthkEfU7PkEDws/pub?gid=109317270&single=true&output=csv';
+
+// Simple RFC-4180 style CSV parser (handles quoted fields containing commas or line breaks)
+function parseActivitiesCSV(text) {
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (inQuotes) {
+            if (c === '"') {
+                if (text[i + 1] === '"') { field += '"'; i++; }
+                else { inQuotes = false; }
+            } else {
+                field += c;
+            }
+        } else {
+            if (c === '"') { inQuotes = true; }
+            else if (c === ',') { row.push(field); field = ''; }
+            else if (c === '\r') { /* ignore, \n handles the line break */ }
+            else if (c === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+            else { field += c; }
+        }
+    }
+    if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+    return rows.filter(function(r) { return r.length > 1 || (r.length === 1 && r[0].trim() !== ''); });
+}
+
+function activitiesEscapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function activitiesPhoneHref(contact) {
+    const match = contact.match(/(\d[\d\s]{6,})/);
+    if (!match) return null;
+    return 'tel:' + match[1].replace(/\s+/g, '');
+}
+
+function renderActivities(rows) {
+    const tbody = document.getElementById('activitiesTableBody');
+    if (!rows || rows.length < 2) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;padding:20px;">No activities found.</td></tr>';
+        return;
+    }
+
+    const header = rows[0].map(function(h) { return h.trim().toLowerCase(); });
+    const idx = {
+        activity: header.indexOf('activity'),
+        day: header.indexOf('day'),
+        time: header.indexOf('time'),
+        location: header.indexOf('location'),
+        contact: header.indexOf('contact'),
+        description: header.indexOf('description')
+    };
+
+    let html = '';
+    for (let i = 1; i < rows.length; i++) {
+        const r = rows[i];
+        if (!r || r.every(function(c) { return !c || !c.trim(); })) continue;
+
+        const activity = idx.activity > -1 ? (r[idx.activity] || '').trim() : '';
+        if (!activity) continue;
+        const day = idx.day > -1 ? (r[idx.day] || '').trim() : '';
+        const time = idx.time > -1 ? (r[idx.time] || '').trim() : '';
+        const location = idx.location > -1 ? (r[idx.location] || '').trim() : '';
+        const contact = idx.contact > -1 ? (r[idx.contact] || '').trim() : '';
+        const description = idx.description > -1 ? (r[idx.description] || '').trim() : '';
+
+        const rowId = 'activity-desc-' + i;
+        const phoneHref = contact ? activitiesPhoneHref(contact) : null;
+        const contactHtml = contact
+            ? (phoneHref ? '<a href="' + phoneHref + '" class="contact-link">' + activitiesEscapeHtml(contact) + '</a>' : activitiesEscapeHtml(contact))
+            : '---';
+
+        html += '<tr class="activity-row">';
+        html += '<td data-label="Activity" class="activity-name activity-toggle" onclick="toggleActivityDesc(\'' + rowId + '\', this)">';
+        html += '<span class="activity-arrow">\u25B6</span> ' + activitiesEscapeHtml(activity);
+        html += '</td>';
+        html += '<td data-label="Day">' + (day ? '<span class="day-badge">' + activitiesEscapeHtml(day) + '</span>' : '') + '</td>';
+        html += '<td data-label="Time">' + activitiesEscapeHtml(time) + '</td>';
+        html += '<td data-label="Location">' + activitiesEscapeHtml(location) + '</td>';
+        html += '<td data-label="Contact">' + contactHtml + '</td>';
+        html += '</tr>';
+        html += '<tr class="activity-desc-row" id="' + rowId + '" style="display:none;">';
+        html += '<td colspan="5" class="activity-desc-cell">' + (description ? activitiesEscapeHtml(description) : '<em>No description yet \u2014 check back soon.</em>') + '</td>';
+        html += '</tr>';
+    }
+
+    tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;padding:20px;">No activities found.</td></tr>';
+}
+
+function toggleActivityDesc(rowId, cell) {
+    const descRow = document.getElementById(rowId);
+    if (!descRow) return;
+    const arrow = cell.querySelector('.activity-arrow');
+    const isOpen = descRow.style.display !== 'none';
+    descRow.style.display = isOpen ? 'none' : 'table-row';
+    if (arrow) arrow.textContent = isOpen ? '\u25B6' : '\u25BC';
+}
+
+function loadActivities() {
+    fetch(ACTIVITIES_CSV_URL)
+        .then(function(res) { return res.text(); })
+        .then(function(text) {
+            const rows = parseActivitiesCSV(text);
+            renderActivities(rows);
+        })
+        .catch(function() {
+            const tbody = document.getElementById('activitiesTableBody');
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;padding:20px;">Activities are temporarily unavailable. Please try again later.</td></tr>';
+        });
+}
+
+document.addEventListener('DOMContentLoaded', loadActivities);
+
+// Search function for activities (works with the two-row-per-activity layout)
 function searchActivities() {
     const input = document.getElementById('searchInput');
     const filter = input.value.toUpperCase();
-    const table = document.getElementById('activitiesTable');
-    const tr = table.getElementsByTagName('tr');
+    const tbody = document.getElementById('activitiesTableBody');
+    if (!tbody) return;
+    const rows = tbody.getElementsByClassName('activity-row');
 
-    for (let i = 1; i < tr.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const td = row.getElementsByTagName('td');
         let found = false;
-        const td = tr[i].getElementsByTagName('td');
-        
+
         for (let j = 0; j < td.length; j++) {
-            if (td[j]) {
-                const txtValue = td[j].textContent || td[j].innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    found = true;
-                    break;
-                }
+            const txtValue = td[j].textContent || td[j].innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                found = true;
+                break;
             }
         }
-        
-        tr[i].style.display = found ? '' : 'none';
+
+        row.style.display = found ? '' : 'none';
+
+        // Collapse the description row whenever a search runs, so results start tidy
+        const descRow = row.nextElementSibling;
+        if (descRow && descRow.classList.contains('activity-desc-row')) {
+            descRow.style.display = 'none';
+            const arrow = row.querySelector('.activity-arrow');
+            if (arrow) arrow.textContent = '\u25B6';
+        }
     }
 }
 
