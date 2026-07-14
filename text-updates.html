@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Updates – BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef3f8;
+    color: #222;
+    font-size: 17px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── PIN OVERLAY ── */
+  #pin-overlay {
+    position: fixed;
+    inset: 0;
+    background: #1F4E79;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px;
+  }
+  #pin-overlay h2 { color: white; font-size: 1.4em; text-align: center; }
+  #pin-overlay p { color: rgba(255,255,255,0.75); font-size: 0.9em; text-align: center; max-width: 340px; }
+  #pin-input {
+    font-size: 1.6em;
+    letter-spacing: 0.4em;
+    text-align: center;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    width: 180px;
+    outline: none;
+  }
+  #pin-error { color: #ffcccc; font-size: 0.85em; min-height: 1.2em; text-align: center; }
+  #pin-overlay.hidden { display: none; }
+
+  /* ── WHO IS SENDING OVERLAY ── */
+  #who-overlay {
+    position: fixed;
+    inset: 0;
+    background: #1F4E79;
+    z-index: 9998;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 18px;
+    padding: 30px;
+  }
+  #who-overlay.visible { display: flex; }
+  #who-overlay h2 { color: white; font-size: 1.4em; text-align: center; }
+  .who-btn {
+    background: white;
+    color: #1F4E79;
+    border: none;
+    border-radius: 10px;
+    padding: 16px 40px;
+    font-size: 1.1em;
+    font-weight: 700;
+    cursor: pointer;
+    width: 220px;
+  }
+  .who-btn:hover { background: #C9A44A; color: white; }
+
+  /* ── BACK BAR ── */
+  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee; display: none; justify-content: space-between; align-items: center; }
+  .back-bar a { color: #1F4E79; background: white; border: 2px solid #c5d8ee; border-radius: 10px; padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 15px; }
+  .back-bar a:hover { background: #E7F1FB; border-color: #1F4E79; }
+  .back-bar .sender-tag { font-size: 14px; color: #1F4E79; font-weight: 700; }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 640px; margin: 0 auto; padding: 30px 20px 60px; display: none; }
+
+  .panel {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #d0e2f2;
+    padding: 26px 30px;
+  }
+  h1 { color: #1F4E79; font-size: 1.5em; margin-bottom: 4px; }
+  .subtitle { color: #5f6368; font-size: 0.85em; margin-bottom: 22px; }
+
+  .stat-row { display: flex; gap: 14px; margin-bottom: 22px; }
+  .stat { flex: 1; background: #f5f8fc; border-radius: 8px; padding: 14px; text-align: center; }
+  .stat .num { font-size: 1.5em; font-weight: 700; color: #1F4E79; }
+  .stat .lbl { font-size: 0.75em; color: #5f6368; }
+
+  label { display: block; font-size: 0.85em; font-weight: 700; color: #1F4E79; margin-bottom: 6px; }
+
+  textarea {
+    width: 100%;
+    height: 110px;
+    padding: 12px;
+    font-size: 0.95em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid #c5d8ee;
+    border-radius: 8px;
+    resize: vertical;
+  }
+  textarea:focus { outline: 2px solid #C9A44A; }
+
+  .char-count { text-align: right; font-size: 0.75em; color: #999; margin-top: 4px; }
+  .char-count.warn { color: #c9010b; font-weight: 700; }
+
+  .preview {
+    margin-top: 18px;
+    background: #f5f8fc;
+    border-left: 4px solid #C9A44A;
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  .preview .label { font-size: 0.72em; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .send-row { margin-top: 24px; display: flex; justify-content: flex-end; gap: 10px; }
+
+  .btn-action { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 6px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 0.85em; font-weight: 700; cursor: pointer; border: none; }
+  .btn-secondary { background: white; color: #1F4E79; border: 2px solid #c5d8ee; }
+  .btn-secondary:hover { background: #E7F1FB; }
+  .btn-primary { background: #C9A44A; color: white; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-primary:disabled { background: #ddd; color: #999; cursor: not-allowed; }
+
+  .note { font-size: 0.75em; color: #999; margin-top: 16px; text-align: center; }
+
+  /* ── CONFIRM MODAL ── */
+  #confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #confirm-overlay.visible { display: flex; }
+  .confirm-box {
+    background: white;
+    border-radius: 12px;
+    padding: 26px 28px;
+    max-width: 420px;
+    width: 100%;
+  }
+  .confirm-box h3 { color: #1F4E79; font-size: 1.15em; margin-bottom: 12px; }
+  .confirm-box .cbody { font-size: 0.9em; color: #333; margin-bottom: 8px; }
+  .confirm-preview {
+    background: #f5f8fc;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.85em;
+    margin: 14px 0;
+    border-left: 3px solid #C9A44A;
+  }
+  .confirm-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+
+  /* ── SENT BANNER ── */
+  #sent-banner {
+    display: none;
+    background: #eaf6ea;
+    border: 1px solid #b2dfb2;
+    color: #2e7d32;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    font-size: 0.9em;
+    font-weight: 700;
+  }
+  #error-banner {
+    display: none;
+    background: #fdeaea;
+    border: 1px solid #f0b8b8;
+    color: #c9010b;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    font-size: 0.9em;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<!-- PIN OVERLAY -->
+<div id="pin-overlay">
+  <h2>Text Updates</h2>
+  <p>This page is restricted to authorised committee members. Enter the PIN to continue.</p>
+  <input type="password" id="pin-input" maxlength="4" placeholder="••••" autocomplete="off">
+  <div id="pin-error"></div>
+</div>
+
+<!-- WHO IS SENDING OVERLAY -->
+<div id="who-overlay">
+  <h2>Who's sending this update?</h2>
+  <button class="who-btn" onclick="selectSender('Rick')">Rick</button>
+  <button class="who-btn" onclick="selectSender('Kathy')">Kathy</button>
+</div>
+
+<!-- BACK BAR -->
+<div class="back-bar" id="back-bar">
+  <a href="hub-admin.html">&larr; Back to Committee Area</a>
+  <span class="sender-tag" id="sender-tag"></span>
+</div>
+
+<div class="page-wrap" id="page-wrap">
+  <div class="panel">
+    <h1>Text Updates</h1>
+    <div class="subtitle">Send a short text message to residents who have opted in</div>
+
+    <div id="sent-banner"></div>
+    <div id="error-banner"></div>
+
+    <div class="stat-row">
+      <div class="stat">
+        <div class="num" id="signup-count">–</div>
+        <div class="lbl">residents opted in</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="sent-count">–</div>
+        <div class="lbl">updates sent this month</div>
+      </div>
+    </div>
+
+    <label for="msg">Your message</label>
+    <textarea id="msg" maxlength="160" placeholder="e.g. Reminder: water will be shut off in the Manor tomorrow 9-11am for maintenance." oninput="updateMessage()"></textarea>
+    <div class="char-count" id="char-count">160 characters remaining</div>
+
+    <div class="preview">
+      <div class="label">Preview — how it will appear on a resident's phone</div>
+      <div id="preview-text">(message preview appears here)</div>
+    </div>
+
+    <div class="send-row">
+      <button class="btn-action btn-secondary" onclick="clearMessage()">Clear</button>
+      <button class="btn-action btn-primary" id="send-btn" onclick="openConfirm()" disabled>Review &amp; Send</button>
+    </div>
+
+    <div class="note">Every update includes "— BDRV Committee" automatically, so residents know it's official.</div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirm-overlay">
+  <div class="confirm-box">
+    <h3>Send this update?</h3>
+    <div class="cbody">This will send a text message to <strong id="confirm-count">–</strong> residents. This cannot be undone once sent.</div>
+    <div class="confirm-preview" id="confirm-preview"></div>
+    <div class="cbody">Sending as: <strong id="confirm-sender"></strong></div>
+    <div class="confirm-actions">
+      <button class="btn-action btn-secondary" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-action btn-primary" id="confirm-send-btn" onclick="doSend()">Yes, Send Now</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// SETUP NEEDED — fill these in once the SMS gateway account is ready:
+//
+// 1. SIGNUPS_CSV_URL — published CSV link for the Google Sheet tracking which
+//    residents have opted in to Text Updates (used to show the count above,
+//    and by the Apps Script backend to know who to text).
+//
+// 2. TEXT_UPDATES_SCRIPT_URL — the Apps Script Web App URL that will receive
+//    the message and sender, log it, and trigger the actual SMS send through
+//    your chosen gateway (e.g. Mobile Message / ClickSend).
+//
+// Until both are filled in, this page runs fully except for the very last
+// step — the on-screen confirmation and preview all work, but "Send" will
+// show a friendly error rather than actually texting anyone.
+// ═══════════════════════════════════════════════════════════════════════════
+const SIGNUPS_CSV_URL = "";        // e.g. "https://docs.google.com/.../pub?gid=0&single=true&output=csv"
+const TEXT_UPDATES_SCRIPT_URL = ""; // e.g. "https://script.google.com/macros/s/AKfycb.../exec"
+
+const CORRECT_PIN = '8420';   // ← change this to your own PIN for this page
+
+let currentSender = null;
+
+// ── PIN ──────────────────────────────────────────────────────────────────
+const pinInput = document.getElementById('pin-input');
+const pinError = document.getElementById('pin-error');
+const pinOverlay = document.getElementById('pin-overlay');
+
+pinInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPin(); });
+pinInput.addEventListener('input', function() { if (this.value.length >= 4) checkPin(); });
+
+function checkPin() {
+  if (pinInput.value === CORRECT_PIN) {
+    pinOverlay.classList.add('hidden');
+    const savedSender = sessionStorage.getItem('bdrv_text_updates_sender');
+    if (savedSender) {
+      selectSender(savedSender);
+    } else {
+      document.getElementById('who-overlay').classList.add('visible');
+    }
+  } else if (pinInput.value.length >= CORRECT_PIN.length) {
+    pinError.textContent = '⚠️ Incorrect PIN — please try again.';
+    pinInput.value = '';
+    setTimeout(() => { pinError.textContent = ''; }, 2500);
+  }
+}
+
+// ── WHO IS SENDING ───────────────────────────────────────────────────────
+function selectSender(name) {
+  currentSender = name;
+  sessionStorage.setItem('bdrv_text_updates_sender', name);
+  document.getElementById('who-overlay').classList.remove('visible');
+  document.getElementById('back-bar').style.display = 'flex';
+  document.getElementById('sender-tag').textContent = 'Signed in as ' + name;
+  document.getElementById('page-wrap').style.display = 'block';
+  loadStats();
+}
+
+// ── MESSAGE COMPOSE ──────────────────────────────────────────────────────
+function updateMessage() {
+  const val = document.getElementById('msg').value;
+  const remaining = 160 - val.length;
+  const countEl = document.getElementById('char-count');
+  countEl.textContent = remaining + ' characters remaining';
+  countEl.classList.toggle('warn', remaining <= 15);
+  document.getElementById('preview-text').textContent = val ? (val + ' — BDRV Committee') : '(message preview appears here)';
+  document.getElementById('send-btn').disabled = val.trim().length === 0;
+}
+
+function clearMessage() {
+  document.getElementById('msg').value = '';
+  updateMessage();
+}
+
+// ── STATS ────────────────────────────────────────────────────────────────
+async function loadStats() {
+  if (!SIGNUPS_CSV_URL) {
+    document.getElementById('signup-count').textContent = '—';
+    document.getElementById('sent-count').textContent = '—';
+    return;
+  }
+  try {
+    const res = await fetch(SIGNUPS_CSV_URL);
+    const text = await res.text();
+    const rows = text.trim().split('\n').slice(1).filter(r => r.trim().length > 0);
+    document.getElementById('signup-count').textContent = rows.length;
+  } catch (e) {
+    document.getElementById('signup-count').textContent = '—';
+  }
+}
+
+// ── CONFIRM & SEND ───────────────────────────────────────────────────────
+function openConfirm() {
+  const msg = document.getElementById('msg').value.trim();
+  if (!msg) return;
+  const count = document.getElementById('signup-count').textContent;
+  document.getElementById('confirm-count').textContent = (count === '—' ? 'all opted-in' : count);
+  document.getElementById('confirm-preview').textContent = msg + ' — BDRV Committee';
+  document.getElementById('confirm-sender').textContent = currentSender;
+  document.getElementById('confirm-overlay').classList.add('visible');
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-overlay').classList.remove('visible');
+}
+
+async function doSend() {
+  const msg = document.getElementById('msg').value.trim();
+  const btn = document.getElementById('confirm-send-btn');
+  const errorBanner = document.getElementById('error-banner');
+  const sentBanner = document.getElementById('sent-banner');
+  errorBanner.style.display = 'none';
+
+  if (!TEXT_UPDATES_SCRIPT_URL) {
+    closeConfirm();
+    errorBanner.textContent = "⚠️ This page isn't connected to the SMS service yet — no message has been sent. Once the SMS gateway account and Apps Script backend are set up, this button will work.";
+    errorBanner.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    await fetch(TEXT_UPDATES_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify({ action: 'send', message: msg, sender: currentSender, timestamp: new Date().toISOString() })
+    });
+    closeConfirm();
+    clearMessage();
+    sentBanner.textContent = '✅ Update sent by ' + currentSender + '.';
+    sentBanner.style.display = 'block';
+    setTimeout(() => { sentBanner.style.display = 'none'; }, 6000);
+  } catch (e) {
+    closeConfirm();
+    errorBanner.textContent = '❌ Something went wrong sending this update. Please try again.';
+    errorBanner.style.display = 'block';
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Yes, Send Now';
+}
+</script>
+</body>
+</html>
