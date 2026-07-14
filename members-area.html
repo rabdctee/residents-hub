@@ -434,6 +434,19 @@
       </div>
     </div>
 
+    <div class="info-card" id="rc-chair-textupdates-card" style="display:none;">
+      <div class="card-top">
+        <div class="card-icon">💬</div>
+        <div>
+          <div class="card-title">Text Updates</div>
+          <div class="card-desc">Send a short text message update to residents who have opted in.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="text-updates.html" class="btn-action btn-navy">💬 Send Text Update</a>
+      </div>
+    </div>
+
   </div>
   </div><!-- /.section-body-rc -->
   </div><!-- /#rc-section -->
@@ -659,6 +672,19 @@
         <div class="card-actions">
           <a href="info-sessions.html" class="btn-action btn-green">🎓 Info Sessions</a>
           <a href="concerts.html" class="btn-action btn-outline" style="color:#2e7d32;border-color:#2e7d32;">🎵 Concerts</a>
+        </div>
+      </div>
+
+      <div class="info-card cat-events">
+        <div class="card-top">
+          <div class="card-icon">💬</div>
+          <div>
+            <div class="card-title">Text Updates</div>
+            <div class="card-desc">Send a short text message update to residents who have opted in.</div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <a href="text-updates.html" class="btn-action btn-green">💬 Send Text Update</a>
         </div>
       </div>
 
@@ -959,6 +985,10 @@ function showApp() {
   // Show Manor Issues card only for Manor Advisor
   const manorCard = document.getElementById("manor-card");
   if (manorCard) manorCard.style.display = (currentMember.role === "Manor Advisor") ? "" : "none";
+
+  // Show Text Updates card only for the RC Chair (Rick)
+  const textUpdatesCard = document.getElementById("rc-chair-textupdates-card");
+  if (textUpdatesCard) textUpdatesCard.style.display = (currentMember.role === "RC") ? "" : "none";
 
   // Show the Treasurer box only for the SC Treasurer, and the Convenor box
   // only for the SC Convenor — hide the general Social Club tiles for both,
