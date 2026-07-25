@@ -801,12 +801,17 @@
       { name: 'Feb 2026 — Minutes', id: '16RC0QJ_nNZ76PbsMdm0C2kc_b_DzpJhD' }
     ]
   },
-  {
+ {
     quarter: 'Q2 2026',
     registryFolder: 'RC Quarterly - Q2 2026',
     files: [
       { name: 'May 2026 — Minutes', id: '1DnO6I2MPUZhB3XFCr9CrxNEBU5JyT_7A' }
     ]
+  },
+  {
+    quarter: 'Q3 2026',
+    registryFolder: 'RC Quarterly - Q3 2026',
+    files: []
   }
 ],
     'sc-monthly': [
@@ -916,11 +921,14 @@
         for (var i = 1; i < lines.length; i++) {
           var line = lines[i].trim();
           if (!line) continue;
-          var cols      = parseCSVLine(line);
-          var fileName  = cols[1] ? cols[1].trim() : null;
-          var fileId    = cols[2] ? cols[2].trim() : null;
-          var rowFolder = cols[3] ? cols[3].trim() : null;
-          if (rowFolder === qData.registryFolder && fileId && existingIds.indexOf(fileId) === -1) {
+          var cols = parseCSVLine(line);
+          var fileName     = cols[1] ? cols[1].trim() : null;
+          var fileId       = cols[2] ? cols[2].trim() : null;
+          var rowFolder    = cols[3] ? cols[3].trim() : null;
+          var rowSubfolder = cols[4] ? cols[4].trim() : null;
+          if (rowFolder === FOLDER_KEY_TO_NAME['rc-quarterly'] &&
+              rowSubfolder === qData.quarter &&
+              fileId && existingIds.indexOf(fileId) === -1) {
             var href = 'view-document.html?id=' + encodeURIComponent(fileId) +
                        '&title=' + encodeURIComponent(fileName) + '&back=community-info.html';
             extraHtml += '<li><a href="' + href + '" target="_blank">📄 ' + fileName + '</a></li>';
