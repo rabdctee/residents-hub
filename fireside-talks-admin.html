@@ -493,7 +493,7 @@
       speaker:     document.getElementById('tf-speaker').value.trim(),
       title:       document.getElementById('tf-title').value.trim(),
       description: document.getElementById('tf-description').value.trim(),
-      driveId:     document.getElementById('tf-driveid').value.trim(),
+      driveId:     extractDriveId(document.getElementById('tf-driveid').value.trim()),
       status:      document.getElementById('tf-status').value
     };
     payload.action = id ? 'updateTalk' : 'addTalk';
@@ -588,6 +588,19 @@
   function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* Pulls the bare Google Drive file ID out of whatever was pasted in —
+     works whether it's already just the ID, a Drive share link, or a
+     view-document.html link that happens to contain the ID. */
+  function extractDriveId(raw) {
+    if (!raw) return '';
+    raw = String(raw).trim();
+    var idParam = raw.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idParam) return idParam[1];
+    var drivePath = raw.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (drivePath) return drivePath[1];
+    return raw; // assume it's already a bare ID
   }
 
 </script>

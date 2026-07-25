@@ -375,8 +375,9 @@
       var dateLabel = isNaN(d) ? '' : d.toLocaleDateString('en-AU', {day:'numeric', month:'long', year:'numeric'});
       var searchStr = ((t.Speaker||'') + ' ' + (t.Title||'') + ' ' + (t.Description||'')).toLowerCase();
 
-      var videoHtml = t.DriveFileID
-        ? '<div class="talk-video-wrap"><iframe src="https://drive.google.com/file/d/' + encodeURIComponent(t.DriveFileID) + '/preview" allow="autoplay" allowfullscreen></iframe></div>'
+      var driveId = extractDriveId(t.DriveFileID);
+      var videoHtml = driveId
+        ? '<div class="talk-video-wrap"><iframe src="https://drive.google.com/file/d/' + encodeURIComponent(driveId) + '/preview" allow="autoplay" allowfullscreen></iframe></div>'
         : '<p class="no-video-msg">No recording is available for this talk.</p>';
 
       card.setAttribute('data-search', searchStr);
@@ -451,6 +452,19 @@
   function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* Pulls the bare Google Drive file ID out of whatever was pasted in —
+     works whether it's already just the ID, a Drive share link, or a
+     view-document.html link that happens to contain the ID. */
+  function extractDriveId(raw) {
+    if (!raw) return '';
+    raw = String(raw).trim();
+    var idParam = raw.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idParam) return idParam[1];
+    var drivePath = raw.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (drivePath) return drivePath[1];
+    return raw; // assume it's already a bare ID
   }
 
 </script>
