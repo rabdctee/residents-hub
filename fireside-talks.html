@@ -283,21 +283,23 @@
 <body>
 <script src="sidebar.js"></script>
 
-<div id="pinScreen">
-  <h2>🔒 Residents Only</h2>
-  <p>Please enter the Residents Only PIN to continue.</p>
-  <input type="password" id="pinInput" inputmode="numeric" onkeypress="if(event.key==='Enter') checkPin()">
-  <button onclick="checkPin()">Enter</button>
-  <p id="pinError">Incorrect PIN.</p>
-</div>
-
-<div class="container" id="mainContent" style="display:none;">
+<div class="container">
 
   <header>
     <h1>Bridgeman Downs Retirement Village</h1>
     <p>Residents' Information Hub</p>
     <p class="page-tagline"><span>🔥 Fireside Talks</span></p>
   </header>
+
+  <div id="pinScreen">
+    <h2>🔒 Residents Only</h2>
+    <p>Please enter the Residents Only PIN to continue.</p>
+    <input type="password" id="pinInput" inputmode="numeric" onkeypress="if(event.key==='Enter') checkPin()">
+    <button onclick="checkPin()">Enter</button>
+    <p id="pinError">Incorrect PIN.</p>
+  </div>
+
+  <div id="mainContent" style="display:none;">
 
   <div class="section-bar">
     <a href="#upcoming">🗓️ Upcoming Talks</a>
@@ -340,9 +342,11 @@
     <div id="pastTalksContainer"></div>
     <p id="noPastMsg" class="no-stories-msg">No past talks have been published here yet — check back soon!</p>
 
-  </div>
+  </div><!-- /.page-content -->
 
-</div>
+  </div><!-- /#mainContent -->
+
+</div><!-- /.container -->
 
 <script>
 
