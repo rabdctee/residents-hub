@@ -479,6 +479,11 @@
   }
 
   function saveTalk() {
+    var saveBtn = document.querySelector('.btn-save');
+    if (saveBtn.disabled) return; // already saving — ignore extra clicks
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving…';
+
     var id = document.getElementById('tf-id').value;
     var payload = {
       key:         ADMIN_KEY,
@@ -500,9 +505,15 @@
       body: JSON.stringify(payload)
     }).then(function(){
       clearTalkForm();
-      setTimeout(loadAll, 800); // brief pause so the sheet write has landed
+      setTimeout(function(){
+        loadAll();
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 Save Talk';
+      }, 800); // brief pause so the sheet write has landed
     }).catch(function(){
       alert('Sorry, that could not be saved. Please check your internet connection and try again.');
+      saveBtn.disabled = false;
+      saveBtn.textContent = '💾 Save Talk';
     });
   }
 
