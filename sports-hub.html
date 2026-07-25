@@ -238,6 +238,100 @@ header p  { margin-top: 8px; font-size: 0.95em; opacity: 0.88; }
   content: "⚽ ";
 }
 
+/* ===== Quick jump nav ===== */
+.quick-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 26px;
+}
+.quick-nav a {
+  display: block;
+  text-align: center;
+  background: #E7F1FB;
+  border: 1px solid #c5d8ee;
+  border-radius: 20px;
+  padding: 8px 10px;
+  font-size: 0.78em;
+  font-weight: 700;
+  color: #1F4E79;
+  transition: background 0.15s;
+}
+.quick-nav a:hover { background: #C9A44A; color: #1F4E79; }
+
+/* ===== Compact competition item (sits inside a category's sport-body) ===== */
+.comp-list { margin-top: 6px; margin-bottom: 6px; }
+.comp-list-title {
+  font-size: 0.85em;
+  font-weight: 700;
+  color: #1F4E79;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 18px 0 10px;
+  padding-top: 12px;
+  border-top: 1px solid #e5edf6;
+}
+.comp-list-title:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+.comp-item {
+  border: 1px solid #e0e6ef;
+  border-left: 3px solid #C9A44A;
+  border-radius: 8px;
+  padding: 11px 14px;
+  margin-bottom: 10px;
+  background: #fafcff;
+}
+.comp-item-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.comp-name { font-weight: 700; color: #1F4E79; font-size: 0.92em; }
+.comp-status {
+  font-size: 0.65em;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #fff;
+}
+.comp-status.season   { background: #27ae60; }
+.comp-status.offseason{ background: #95a5a6; }
+.comp-status.upcoming { background: #C9A44A; color: #1F4E79; }
+.comp-status.live     { background: #e74c3c; }
+.comp-desc { font-size: 0.8em; color: #555; line-height: 1.5; margin-bottom: 8px; }
+.comp-links { display: flex; flex-wrap: wrap; gap: 8px; }
+.comp-link {
+  font-size: 0.76em;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #c5d8ee;
+  background: #fff;
+  color: #1F4E79;
+  display: inline-block;
+}
+.comp-link.free { border-color: #27ae60; color: #1a6e38; }
+.comp-link.paid { border-color: #e67e22; color: #9a4a00; }
+.comp-link.info { border-color: #8e44ad; color: #5c1f9a; }
+
+/* ===== Reusable major-event highlight (same styling as former World Cup box) ===== */
+.event-highlight {
+  background: linear-gradient(135deg, #fff8e6 0%, #fff3d0 100%);
+  border: 2px solid #C9A44A;
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  font-size: 0.88em;
+  line-height: 1.65;
+}
+.event-highlight .eh-title { font-weight: 700; color: #7a4f00; font-size: 1em; margin-bottom: 6px; }
+.event-highlight ul { list-style: none; padding: 0; margin-bottom: 6px; }
+.event-highlight ul li { padding: 2px 0; color: #5a3800; }
+.event-highlight ul li::before { content: "🏅 "; }
+
 /* ===== Footer ===== */
 footer {
   background: #1F4E79;
@@ -281,88 +375,56 @@ footer {
   <div class="info-box">
     📺 &nbsp;Click on any sport below to expand it and find fixtures, live scores, and where to watch —
     on TV or online. Links marked <strong style="color:#1a6e38;">FREE</strong> cost nothing to use.
-    Links marked <strong style="color:#9a4a00;">PAID</strong> require a subscription.
+    Links marked <strong style="color:#9a4a00;">PAID</strong> require a subscription. Bigger categories
+    also list the related competitions underneath — just click through to jump straight to a sport below.
   </div>
 
-  <!-- ══════════════════════════════════════════
-       🏉  NRL
-  ══════════════════════════════════════════ -->
-  <div class="sport-section" id="sec-nrl">
-    <div class="sport-header" onclick="toggleSection('sec-nrl')">
-      <span class="sport-icon">🏉</span>
-      <div class="sport-title">
-        <h2>NRL — National Rugby League</h2>
-        <div class="sport-subtitle">2026 Telstra Premiership · Grand Final: Sun 4 October</div>
-      </div>
-      <span class="sport-badge season">IN SEASON</span>
-      <span class="sport-toggle">▼</span>
+  <!-- Quick jump navigation -->
+  <div class="quick-nav">
+    <a href="#sec-ausfooty">🏈 Aus Football</a>
+    <a href="#sec-nrl">🏉 Rugby League</a>
+    <a href="#sec-football">⚽ Football</a>
+    <a href="#sec-basketball">🏀 Basketball</a>
+    <a href="#sec-cricket">🏏 Cricket</a>
+    <a href="#sec-rugbyunion">🎽 Rugby Union</a>
+    <a href="#sec-motorsport">🏎️ Motorsport</a>
+    <a href="#sec-netball">🏐 Netball</a>
+    <a href="#sec-golf">⛳ Golf</a>
+    <a href="#sec-tennis">🎾 Tennis</a>
+    <a href="#sec-racing">🐎 Horse Racing</a>
+    <a href="#sec-athletics">🏃 Athletics</a>
+    <a href="#sec-cycling">🚴 Cycling</a>
+    <a href="#sec-swimming">🏊 Swimming</a>
+    <a href="#sec-baseball">⚾ Baseball</a>
+    <a href="#sec-hockey">🏑 Hockey</a>
+    <a href="#sec-other">🎯 Other Sports</a>
+    <a href="#sec-usasports">🇺🇸 USA Sports</a>
+  </div>
+
+  <!-- Commonwealth Games highlight -->
+  <div class="event-highlight">
+    <div class="eh-title">🏆 Glasgow 2026 Commonwealth Games — on right now!</div>
+    <div style="color:#5a3800;">
+      23 July – 2 August 2026. A smaller-format Games this time — just 10 sports: 3x3 basketball,
+      artistic gymnastics, athletics, lawn bowls, boxing, judo, netball, swimming, track cycling and
+      weightlifting. <strong>Completely free to watch in Australia</strong> on Channel 7 and 7plus,
+      with live coverage of every sport. Look out for the Diamonds (netball), the Dolphins (swimming)
+      and our track and field stars.
     </div>
-    <div class="sport-body">
-
-      <p class="sport-summary">
-        The NRL season runs from March to October, with three free-to-air games per week on
-        <strong>Channel 9</strong>. Every game of every round is on <strong>Fox League / Kayo</strong>.
-        State of Origin is exclusively live on <strong>Channel 9 / 9Now</strong> (free).
-        The Brisbane Broncos enter 2026 as defending premiers.
-      </p>
-
-      <div class="link-grid">
-
-        <a class="sport-link-card free-card" href="https://www.nrl.com/draw/" target="_blank">
-          <span class="slc-icon">📋</span>
-          <div class="slc-text">
-            <div class="slc-label">NRL Official Draw &amp; Fixtures</div>
-            <div class="slc-desc">This week's fixtures, results and the full season draw from the official NRL website.</div>
-            <span class="slc-tag tag-free">FREE</span>
-          </div>
-        </a>
-
-        <a class="sport-link-card free-card" href="https://www.nrl.com/live-updates/" target="_blank">
-          <span class="slc-icon">⚡</span>
-          <div class="slc-text">
-            <div class="slc-label">NRL Live Scores</div>
-            <div class="slc-desc">Live match scores, try scorers and match stats updated in real time during games.</div>
-            <span class="slc-tag tag-free">FREE</span>
-          </div>
-        </a>
-
-        <a class="sport-link-card free-card" href="https://www.9now.com.au/live/channel-9" target="_blank">
-          <span class="slc-icon">📺</span>
-          <div class="slc-text">
-            <div class="slc-label">9Now — Watch Live (Free)</div>
-            <div class="slc-desc">Stream Channel 9's free-to-air NRL coverage live online. Thursday, Friday &amp; Sunday selected games plus all State of Origin.</div>
-            <span class="slc-tag tag-free">FREE</span>
-          </div>
-        </a>
-
-        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
-          <span class="slc-icon">🎬</span>
-          <div class="slc-text">
-            <div class="slc-label">Kayo Sports — Every Game Live</div>
-            <div class="slc-desc">Every match of every round, live and on demand. Replays, highlights and analysis. Subscription required.</div>
-            <span class="slc-tag tag-paid">PAID</span>
-          </div>
-        </a>
-
-      </div>
-
-      <div class="broadcast-note">
-        📡 <strong>Free to air:</strong> Channel 9 — Thu, Fri &amp; Sun games plus all State of Origin matches.<br>
-        💻 <strong>Free stream:</strong> 9Now (9now.com.au) — same games as Channel 9, stream online for free.<br>
-        🎬 <strong>Every game:</strong> Kayo Sports or Foxtel — subscription required.
-      </div>
-
+    <div class="comp-links" style="margin-top:10px;">
+      <a class="comp-link free" href="https://www.7plus.com.au/sport" target="_blank">📺 Watch Free on 7plus</a>
+      <a class="comp-link info" href="https://www.glasgow2026.com/schedule/day-by-day" target="_blank">🗓️ Full Schedule</a>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════
-       🏈  AFL
+       🏈  AUS FOOTBALL  (AFL, AFLW, VFL, SANFL, WAFLW)
   ══════════════════════════════════════════ -->
-  <div class="sport-section" id="sec-afl">
-    <div class="sport-header" onclick="toggleSection('sec-afl')">
+  <div class="sport-section" id="sec-ausfooty">
+    <div class="sport-header" onclick="toggleSection('sec-ausfooty')">
       <span class="sport-icon">🏈</span>
       <div class="sport-title">
-        <h2>AFL — Australian Football League</h2>
+        <h2>Aus Football — AFL &amp; AFLW</h2>
         <div class="sport-subtitle">2026 AFL Premiership · Grand Final: late September</div>
       </div>
       <span class="sport-badge season">IN SEASON</span>
@@ -423,6 +485,434 @@ footer {
         🎬 <strong>Every game:</strong> Kayo Sports or Foxtel Fox Footy — subscription required.
       </div>
 
+      <div class="comp-list">
+        <div class="comp-list-title">Related competitions</div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">AFLW — AFL Women's</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Played August–November each year. Free on Channel 7 / 7plus, every game also on Kayo.</div>
+          <div class="comp-links">
+            <a class="comp-link free" href="https://www.afl.com.au/aflw" target="_blank">📋 AFLW Fixtures</a>
+          </div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">VFL — Victorian Football League</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">AFL's main state-level competition and reserves pathway. Season runs alongside the AFL, March–September.</div>
+          <div class="comp-links">
+            <a class="comp-link free" href="https://www.afl.com.au/vfl" target="_blank">📋 VFL Fixtures &amp; Ladder</a>
+          </div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">SANFL — South Australian National Football League</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">South Australia's top state Aussie Rules competition, March–September, with a Grand Final in September.</div>
+          <div class="comp-links">
+            <a class="comp-link free" href="https://sanfl.com.au" target="_blank">📋 SANFL Fixtures &amp; Ladder</a>
+          </div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">WAFLW — WA Football League Women's</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Western Australia's top women's Aussie Rules competition, played April–September.</div>
+          <div class="comp-links">
+            <a class="comp-link free" href="https://wafl.com.au" target="_blank">📋 WAFL / WAFLW Fixtures</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏉  NRL / RUGBY LEAGUE
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-nrl">
+    <div class="sport-header" onclick="toggleSection('sec-nrl')">
+      <span class="sport-icon">🏉</span>
+      <div class="sport-title">
+        <h2>Rugby League — NRL</h2>
+        <div class="sport-subtitle">2026 Telstra Premiership · Grand Final: Sun 4 October</div>
+      </div>
+      <span class="sport-badge season">IN SEASON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        The NRL season runs from March to October, with three free-to-air games per week on
+        <strong>Channel 9</strong>. Every game of every round is on <strong>Fox League / Kayo</strong>.
+        State of Origin is exclusively live on <strong>Channel 9 / 9Now</strong> (free).
+        The Brisbane Broncos enter 2026 as defending premiers.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.nrl.com/draw/" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">NRL Official Draw &amp; Fixtures</div>
+            <div class="slc-desc">This week's fixtures, results and the full season draw from the official NRL website.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.nrl.com/live-updates/" target="_blank">
+          <span class="slc-icon">⚡</span>
+          <div class="slc-text">
+            <div class="slc-label">NRL Live Scores</div>
+            <div class="slc-desc">Live match scores, try scorers and match stats updated in real time during games.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.9now.com.au/live/channel-9" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">9Now — Watch Live (Free)</div>
+            <div class="slc-desc">Stream Channel 9's free-to-air NRL coverage live online. Thursday, Friday &amp; Sunday selected games plus all State of Origin.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo Sports — Every Game Live</div>
+            <div class="slc-desc">Every match of every round, live and on demand. Replays, highlights and analysis. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        📡 <strong>Free to air:</strong> Channel 9 — Thu, Fri &amp; Sun games plus all State of Origin matches.<br>
+        💻 <strong>Free stream:</strong> 9Now (9now.com.au) — same games as Channel 9, stream online for free.<br>
+        🎬 <strong>Every game:</strong> Kayo Sports or Foxtel — subscription required.
+      </div>
+
+      <div class="comp-list">
+        <div class="comp-list-title">Related competitions</div>
+
+        <div class="comp-item" style="border-left-color:#e74c3c;">
+          <div class="comp-item-head">
+            <span class="comp-name">🏆 Rugby League World Cup 2026</span>
+            <span class="comp-status upcoming">15 OCT – 15 NOV</span>
+          </div>
+          <div class="comp-desc">Hosted across Australia, New Zealand and Papua New Guinea — Men's, Women's and Wheelchair tournaments together. Both finals are at <strong>Suncorp Stadium, Brisbane, on 15 November</strong> — right on our doorstep!</div>
+          <div class="comp-links">
+            <a class="comp-link free" href="https://www.nrl.com/rlwc2026/" target="_blank">📋 RLWC2026 Info</a>
+          </div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">NRLW — NRL Women's Premiership</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Played July–September each year. Free on Channel 9 / 9Now, every game also on Kayo.</div>
+          <div class="comp-links">
+            <a class="comp-link free" href="https://www.nrl.com/nrlw/draw/" target="_blank">📋 NRLW Fixtures</a>
+          </div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">Queensland Cup</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Queensland's premier state rugby league competition and NRL pathway, played March–September.</div>
+          <div class="comp-links">
+            <a class="comp-link free" href="https://www.qrl.com.au/queensland-cup" target="_blank">📋 Qld Cup Fixtures &amp; Ladder</a>
+          </div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">NRL Trials</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Pre-season trial matches played in February, ahead of the NRL season proper.</div>
+          <div class="comp-links">
+            <a class="comp-link free" href="https://www.nrl.com/draw/" target="_blank">📋 NRL Official Site</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ⚽  FOOTBALL (SOCCER) — A-League, Australia Cup, AFC Asian Cup
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-football">
+    <div class="sport-header" onclick="toggleSection('sec-football')">
+      <span class="sport-icon">⚽</span>
+      <div class="sport-title">
+        <h2>Football — A-League &amp; Socceroos</h2>
+        <div class="sport-subtitle">A-League off-season · 2026/27 season starts 16 October</div>
+      </div>
+      <span class="sport-badge offseason">OFF-SEASON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        The <strong>A-League Men</strong> and <strong>Women's A-League</strong> both kick off their
+        2026/27 seasons on <strong>16 October 2026</strong>, opening with a Sydney derby. Coverage in
+        Australia is on <strong>Network 10 / 10 Play</strong> (free) and <strong>Paramount+</strong>
+        (subscription). The Socceroos' next big assignment is the <strong>AFC Asian Cup</strong> in
+        Saudi Arabia, January–February 2027.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.aleagues.com.au" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">A-Leagues — Official Site</div>
+            <div class="slc-desc">Fixtures, results and news for the A-League Men, Women's A-League and Australian Championship.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://10play.com.au/football" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">10 Play — Watch Free</div>
+            <div class="slc-desc">Free-to-air and free streaming coverage of the A-Leagues via Network 10 and 10 Play.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://www.paramountplus.com/au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Paramount+ — Every Match</div>
+            <div class="slc-desc">Every A-Leagues match live and on demand. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card info-card" href="https://www.footballaustralia.com.au" target="_blank">
+          <span class="slc-icon">🇦🇺</span>
+          <div class="slc-text">
+            <div class="slc-label">Football Australia — Socceroos &amp; Matildas</div>
+            <div class="slc-desc">News, squads and fixtures for the national teams, including AFC Asian Cup buildup.</div>
+            <span class="slc-tag tag-info">INFO</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        📡 <strong>A-Leagues:</strong> Network 10 / 10 Play (free) and Paramount+ (subscription) from 16 October 2026.<br>
+        🌏 <strong>Socceroos / Matildas internationals:</strong> Coverage varies by tournament — check Football Australia for details.
+      </div>
+
+      <div class="comp-list">
+        <div class="comp-list-title">Related competitions</div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">Women's A-League</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Starts 16 October 2026, same weekend as the men's competition. Network 10 / 10 Play (free) and Paramount+.</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.aleagues.com.au/aleaguewomen" target="_blank">📋 Fixtures</a></div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">Australia Cup</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Australia's national knockout cup, open to clubs from every level. Runs mid-year ahead of the A-League season.</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.footballaustralia.com.au/competition/australia-cup" target="_blank">📋 Australia Cup Info</a></div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">Australian Championship</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">National second-tier competition between state league clubs. Starts 16 October, wraps up mid-December 2026.</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.footballaustralia.com.au/competition/australian-championship" target="_blank">📋 Competition Info</a></div>
+        </div>
+
+        <div class="comp-item" style="border-left-color:#e74c3c;">
+          <div class="comp-item-head">
+            <span class="comp-name">🏆 AFC Asian Cup</span>
+            <span class="comp-status upcoming">JAN–FEB 2027</span>
+          </div>
+          <div class="comp-desc">The Socceroos' next major tournament, held in Saudi Arabia from 7 January to 5 February 2027. A-League play will pause for a national team window around this time.</div>
+          <div class="comp-links"><a class="comp-link info" href="https://www.the-afc.com" target="_blank">🌏 AFC — Official Site</a></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🎽  RUGBY UNION — Super Rugby, Wallabies, Rugby World Cup
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-rugbyunion">
+    <div class="sport-header" onclick="toggleSection('sec-rugbyunion')">
+      <span class="sport-icon">🎽</span>
+      <div class="sport-title">
+        <h2>Rugby Union — Super Rugby &amp; Wallabies</h2>
+        <div class="sport-subtitle">Super Rugby season complete · Wallabies Test season from August</div>
+      </div>
+      <span class="sport-badge offseason">BETWEEN SEASONS</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        The <strong>Super Rugby Pacific</strong> season (February–June) has just finished for
+        2026. Next up for the <strong>Wallabies</strong> is the Test match season from August,
+        including the Bledisloe Cup against New Zealand and The Rugby Championship. Super Rugby
+        is broadcast live on <strong>Stan Sport</strong> (subscription); Wallabies Tests are
+        typically on Stan Sport with some free-to-air coverage.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://super.rugby/superrugby/fixtures/" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">Super Rugby Pacific — Fixtures &amp; Results</div>
+            <div class="slc-desc">Full draw, results and ladder for Super Rugby Pacific from the official site.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://www.stan.com.au/sport" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Stan Sport — Super Rugby &amp; Wallabies</div>
+            <div class="slc-desc">Every Super Rugby Pacific match and Wallabies Tests live in Australia. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card info-card" href="https://www.rugby.com.au" target="_blank">
+          <span class="slc-icon">🇦🇺</span>
+          <div class="slc-text">
+            <div class="slc-label">Rugby Australia — News &amp; Wallabies</div>
+            <div class="slc-desc">Wallabies squad news, Test match schedule and Rugby World Cup 2027 buildup.</div>
+            <span class="slc-tag tag-info">INFO</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🎽 <strong>Super Rugby Pacific:</strong> Stan Sport — subscription. Season runs February–June.<br>
+        🇦🇺 <strong>Wallabies Tests:</strong> Stan Sport — subscription, some free-to-air coverage. Test season from August.
+      </div>
+
+      <div class="comp-list">
+        <div class="comp-list-title">Related competitions</div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">Rugby Internationals (Wallabies Tests)</span>
+            <span class="comp-status offseason">FROM AUGUST</span>
+          </div>
+          <div class="comp-desc">Bledisloe Cup and The Rugby Championship (vs New Zealand, South Africa, Argentina) run August–October each year.</div>
+          <div class="comp-links"><a class="comp-link info" href="https://www.rugby.com.au/wallabies" target="_blank">📋 Wallabies Schedule</a></div>
+        </div>
+
+        <div class="comp-item" style="border-left-color:#e74c3c;">
+          <div class="comp-item-head">
+            <span class="comp-name">🏆 Rugby World Cup 2027</span>
+            <span class="comp-status upcoming">1 OCT – 13 NOV 2027</span>
+          </div>
+          <div class="comp-desc">Australia hosts the Men's Rugby World Cup in 2027 — the first with 24 teams. Still over a year away, but ticket sales and buildup are already underway.</div>
+          <div class="comp-links"><a class="comp-link info" href="https://www.rugbyworldcup.com" target="_blank">🌏 Official Site</a></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏎️  MOTORSPORT — Supercars &amp; Formula 1
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-motorsport">
+    <div class="sport-header" onclick="toggleSection('sec-motorsport')">
+      <span class="sport-icon">🏎️</span>
+      <div class="sport-title">
+        <h2>Motorsport — Supercars &amp; Formula 1</h2>
+        <div class="sport-subtitle">Both championships in season</div>
+      </div>
+      <span class="sport-badge season">IN SEASON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        The <strong>Supercars Championship</strong> (Australia's premier touring car series) runs
+        March to November, with most rounds live on <strong>Kayo Sports / Fox Sports</strong>
+        and some free-to-air coverage on Channel 7. <strong>Formula 1</strong> runs March to
+        December; the Australian Grand Prix was held in Melbourne earlier in the year. F1 in
+        Australia is on <strong>Kayo Sports / Fox Sports</strong> (subscription).
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.supercars.com/championship" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">Supercars — Championship &amp; Results</div>
+            <div class="slc-desc">Full Supercars calendar, results and points standings from the official site.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.formula1.com/en/results" target="_blank">
+          <span class="slc-icon">🏁</span>
+          <div class="slc-text">
+            <div class="slc-label">Formula 1 — Results &amp; Standings</div>
+            <div class="slc-desc">Race results, driver and constructor standings from the official F1 site.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo Sports — Supercars &amp; F1 Live</div>
+            <div class="slc-desc">Every Supercars round and every F1 race live in Australia. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🏎️ <strong>Supercars:</strong> Kayo Sports / Fox Sports (paid), some rounds free-to-air on Channel 7.<br>
+        🏁 <strong>Formula 1:</strong> Kayo Sports / Fox Sports — subscription required for full race coverage.
+      </div>
+
     </div>
   </div>
 
@@ -434,9 +924,9 @@ footer {
       <span class="sport-icon">🎾</span>
       <div class="sport-title">
         <h2>Tennis — Grand Slams &amp; Major Events</h2>
-        <div class="sport-subtitle">Wimbledon: 30 June – 13 July 2026</div>
+        <div class="sport-subtitle">Wimbledon complete · US Open: 24 Aug – 6 Sept 2026</div>
       </div>
-      <span class="sport-badge upcoming">WIMBLEDON NEXT</span>
+      <span class="sport-badge upcoming">US OPEN NEXT</span>
       <span class="sport-toggle">▼</span>
     </div>
     <div class="sport-body">
@@ -516,34 +1006,47 @@ footer {
       <span class="sport-icon">🏏</span>
       <div class="sport-title">
         <h2>Cricket</h2>
-        <div class="sport-subtitle">ICC Women's T20 World Cup 2026 (England &amp; Wales)</div>
+        <div class="sport-subtitle">Off-season for Australian domestic cricket · Season resumes October</div>
       </div>
-      <span class="sport-badge live">Women's T20 WORLD CUP ON</span>
+      <span class="sport-badge offseason">OFF-SEASON</span>
       <span class="sport-toggle">▼</span>
     </div>
     <div class="sport-body">
 
+      <div class="event-highlight" style="margin-bottom:14px;">
+        <div class="eh-title">🏆 Congratulations to the Australian Women!</div>
+        <div style="color:#5a3800;">
+          Australia won the <strong>ICC Women's T20 World Cup 2026</strong>, beating England by
+          7 wickets in the final at Lord's on 5 July. Beth Mooney was Player of the Match and
+          Player of the Series.
+        </div>
+      </div>
+
       <p class="sport-summary">
-        The <strong>ICC Women's T20 World Cup 2026</strong> is currently underway in England and Wales.
-        The marquee tournament will take place across 24 days with 33 matches set to be played across seven different venues in England, including Old Trafford Cricket Ground in Manchester, Headingley in Leeds, Edgbaston in Birmingham, The Hampshire Bowl in Southampton, Bristol County Ground in Bristol and The Oval and Lord’s in London.
+        Australian domestic and international cricket is between seasons — the next home summer
+        of cricket (Sheffield Shield, Big Bash League and international Tests) begins in
+        <strong>October</strong>. <strong>Cricket Australia</strong>'s website has fixtures and
+        results year-round; live coverage of most cricket in Australia is on
+        <strong>Fox Cricket / Kayo</strong> (subscription), with the Big Bash League also free
+        on <strong>Channel 7 / 7plus</strong>.
       </p>
 
       <div class="link-grid">
-
-        <a class="sport-link-card free-card" href="https://www.icc-cricket.com/tournaments/womens-t20-worldcup-2026/matches" target="_blank">
-          <span class="slc-icon">🌍</span>
-          <div class="slc-text">
-            <div class="slc-label">ICC — T20 World Cup Scores &amp; Tables</div>
-            <div class="slc-desc">Live scores, standings, fixtures and results for the current T20 World Cup from the official ICC site.</div>
-            <span class="slc-tag tag-free">FREE</span>
-          </div>
-        </a>
 
         <a class="sport-link-card free-card" href="https://www.cricket.com.au/matches" target="_blank">
           <span class="slc-icon">📋</span>
           <div class="slc-text">
             <div class="slc-label">Cricket Australia — Fixtures &amp; Results</div>
             <div class="slc-desc">Australian cricket schedule, match results and live scores from Cricket Australia's official site.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.icc-cricket.com/fixtures" target="_blank">
+          <span class="slc-icon">🌍</span>
+          <div class="slc-text">
+            <div class="slc-label">ICC — International Fixtures &amp; Results</div>
+            <div class="slc-desc">Live scores, standings, fixtures and results for all international cricket from the official ICC site.</div>
             <span class="slc-tag tag-free">FREE</span>
           </div>
         </a>
@@ -561,7 +1064,7 @@ footer {
           <span class="slc-icon">🎬</span>
           <div class="slc-text">
             <div class="slc-label">Kayo — Fox Cricket (All Matches)</div>
-            <div class="slc-desc">Every Test, ODI and T20I live plus the full BBL. Fox Cricket available via Kayo subscription.</div>
+            <div class="slc-desc">Every Test, ODI and T20I live plus the full BBL and Sheffield Shield. Fox Cricket available via Kayo subscription.</div>
             <span class="slc-tag tag-paid">PAID</span>
           </div>
         </a>
@@ -569,9 +1072,76 @@ footer {
       </div>
 
       <div class="broadcast-note">
-        🌍 <strong>T20 World Cup 2026 (now on):</strong> Fox Cricket / Kayo (paid). ICC.tv has some free coverage.<br>
         🏏 <strong>Big Bash League:</strong> Channel 7 / 7plus (free) from December 2026.<br>
-        🏏 <strong>International cricket:</strong> Mostly Fox Cricket / Kayo (paid); some Tests on Channel 7 (free).
+        🏏 <strong>International &amp; Sheffield Shield cricket:</strong> Mostly Fox Cricket / Kayo (paid); some Tests on Channel 7 (free).
+      </div>
+
+      <div class="comp-list">
+        <div class="comp-list-title">Formats &amp; competitions</div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">Test Cricket</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Australia's home Tests are played November–January each summer. Fox Cricket / Kayo, some free on Channel 7.</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.cricket.com.au/tests" target="_blank">📋 Test Schedule</a></div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">ODI Cricket (One Day Internationals)</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Played across the Australian summer alongside Tests and T20s. Fox Cricket / Kayo (paid).</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.cricket.com.au/odis" target="_blank">📋 ODI Schedule</a></div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">T20 Internationals</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">Short-format internationals, usually played either side of the Test summer. Fox Cricket / Kayo (paid).</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.cricket.com.au/t20is" target="_blank">📋 T20I Schedule</a></div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">Women's International Cricket</span>
+            <span class="comp-status offseason">OFF-SEASON</span>
+          </div>
+          <div class="comp-desc">The Australian women's team play Tests, ODIs and T20Is year-round — fresh off their T20 World Cup win. Fox Cricket / Kayo, some free on Channel 7.</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.cricket.com.au/teams/australia/women" target="_blank">📋 Fixtures</a></div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">BBL — Big Bash League</span>
+            <span class="comp-status offseason">FROM DECEMBER</span>
+          </div>
+          <div class="comp-desc">Australia's Twenty20 competition, December–January. Free on Channel 7 / 7plus, every match also on Kayo.</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.bigbash.com.au/draw" target="_blank">📋 BBL Fixtures</a></div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">Sheffield Shield</span>
+            <span class="comp-status offseason">FROM OCTOBER</span>
+          </div>
+          <div class="comp-desc">Australia's first-class domestic competition between the states, October–March. Streamed on Kayo Freebies (free) and Kayo Sports.</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.cricket.com.au/sheffield-shield" target="_blank">📋 Sheffield Shield Fixtures</a></div>
+        </div>
+
+        <div class="comp-item">
+          <div class="comp-item-head">
+            <span class="comp-name">One-Day Cup</span>
+            <span class="comp-status offseason">FROM OCTOBER</span>
+          </div>
+          <div class="comp-desc">Australia's domestic one-day competition between the states, played alongside the Sheffield Shield season.</div>
+          <div class="comp-links"><a class="comp-link free" href="https://www.cricket.com.au/one-day-cup" target="_blank">📋 One-Day Cup Fixtures</a></div>
+        </div>
+
       </div>
 
     </div>
@@ -596,8 +1166,9 @@ footer {
         Australia's top netball competition features eight teams. Selected matches are broadcast
         free via <strong>Kayo Freebies</strong> — a no-subscription section of Kayo available
         to everyone. The full season is on <strong>Kayo Sports</strong> (subscription) and
-        <strong>Fox Sports</strong>. The Australian Diamonds (national team) play international
-        events throughout the year.
+        <strong>Fox Sports</strong>. Right now, the <strong>Australian Diamonds</strong> (national
+        team) are also competing at the <strong>Glasgow 2026 Commonwealth Games</strong> —
+        free to watch on Channel 7 / 7plus.
       </p>
 
       <div class="link-grid">
@@ -656,21 +1227,19 @@ footer {
       <span class="sport-icon">⛳</span>
       <div class="sport-title">
         <h2>Golf — PGA Tour &amp; Majors</h2>
-        <div class="sport-subtitle">US Open: 18–21 June · The Open Championship: 16–19 July · Royal Birkdale</div>
+        <div class="sport-subtitle">All four 2026 majors complete · FedEx Cup Playoffs in August</div>
       </div>
-      <span class="sport-badge live">US OPEN THIS WEEK</span>
+      <span class="sport-badge offseason">MAJORS COMPLETE</span>
       <span class="sport-toggle">▼</span>
     </div>
     <div class="sport-body">
 
       <p class="sport-summary">
-        Two of golf's four majors are still to come in 2026. The <strong>US Open</strong> is being
-        played right now (18–21 June) at Shinnecock Hills, New York. Then <strong>The Open
-        Championship</strong> heads to Royal Birkdale in England in July. Earlier this year,
-        <strong>Rory McIlroy</strong> won the Masters for the second consecutive year, and
-        <strong>Aaron Rai</strong> (England) claimed the PGA Championship at Aronimink. All
-        four Australian Aussie stars — Adam Scott, Cam Smith, Jason Day and Min Woo Lee —
-        competed at Augusta. In Australia, all PGA Tour and major golf is on
+        All four of golf's majors for 2026 have now been played. <strong>Rory McIlroy</strong> won
+        the Masters for the second consecutive year, <strong>Aaron Rai</strong> (England) claimed
+        the PGA Championship, and The Open Championship wrapped up at Royal Birkdale in July.
+        Next up is the <strong>FedEx Cup Playoffs</strong> in August, then the tour heads into
+        its off-season events. In Australia, all PGA Tour and major golf is on
         <strong>Fox Sports / Kayo</strong> (subscription) — there is no free-to-air coverage.
       </p>
 
@@ -715,10 +1284,9 @@ footer {
       </div>
 
       <div class="broadcast-note">
-        ⛳ <strong>US Open 2026 (NOW ON):</strong> 18–21 June · Shinnecock Hills, New York · Fox Sports / Kayo (paid).<br>
-        🌿 <strong>The Open Championship 2026:</strong> 16–19 July · Royal Birkdale, England · Fox Sports / Kayo (paid).<br>
+        🏆 <strong>FedEx Cup Playoffs:</strong> August 2026 · Fox Sports / Kayo (paid).<br>
         📺 <strong>All golf in Australia:</strong> Fox Sports (Ch 503) / Kayo Sports — subscription required. No free-to-air coverage.<br>
-        🆓 <strong>Free scores:</strong> pgatour.com, usopen.com and theopen.com are free for scores and standings.
+        🆓 <strong>Free scores:</strong> pgatour.com is free for scores and standings.
       </div>
 
     </div>
@@ -731,20 +1299,22 @@ footer {
     <div class="sport-header" onclick="toggleSection('sec-basketball')">
       <span class="sport-icon">🏀</span>
       <div class="sport-title">
-        <h2>Basketball — NBL &amp; NBA</h2>
-        <div class="sport-subtitle">NBL Season from October · NBA Playoffs on now</div>
+        <h2>Basketball — NBL &amp; WNBL</h2>
+        <div class="sport-subtitle">Both leagues off-season · Season starts October</div>
       </div>
-      <span class="sport-badge live">NBA FINALS</span>
+      <span class="sport-badge offseason">OFF-SEASON</span>
       <span class="sport-toggle">▼</span>
     </div>
     <div class="sport-body">
 
       <p class="sport-summary">
-        Two competitions to follow: the <strong>NBL</strong> (Australia's national league, season
-        starts October) and the <strong>NBA</strong> (the American league, currently in the
-        Finals). The NBL is on Kayo / ESPN. The NBA is on ESPN / Kayo. Both the
+        Australia's two national basketball leagues — the <strong>NBL</strong> (men) and
+        <strong>WNBL</strong> (women) — both begin their new seasons in October. The
         <strong>Boomers</strong> (men) and <strong>Opals</strong> (women) represent Australia
-        internationally.
+        internationally throughout the year. (Looking for the NBA? That's under
+        <a href="#sec-usasports" style="color:#1F4E79;font-weight:700;">USA Sports</a> below.)
+        Right now, keep an eye on <strong>3x3 basketball at the Commonwealth Games</strong> —
+        free on Channel 7 / 7plus.
       </p>
 
       <div class="link-grid">
@@ -758,29 +1328,20 @@ footer {
           </div>
         </a>
 
-        <a class="sport-link-card free-card" href="https://www.nba.com/scores" target="_blank">
-          <span class="slc-icon">⚡</span>
-          <div class="slc-text">
-            <div class="slc-label">NBA Live Scores</div>
-            <div class="slc-desc">Live scores, box scores and results for every NBA game — directly from the official NBA website.</div>
-            <span class="slc-tag tag-free">FREE</span>
-          </div>
-        </a>
-
         <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
           <span class="slc-icon">🎬</span>
           <div class="slc-text">
-            <div class="slc-label">Kayo Sports — NBL &amp; NBA Live</div>
-            <div class="slc-desc">Watch NBL and NBA games live and on demand in Australia. Subscription required.</div>
+            <div class="slc-label">Kayo Sports — NBL &amp; WNBL Live</div>
+            <div class="slc-desc">Watch NBL and WNBL games live and on demand in Australia. Subscription required.</div>
             <span class="slc-tag tag-paid">PAID</span>
           </div>
         </a>
 
-        <a class="sport-link-card info-card" href="https://www.nba.com/standings" target="_blank">
+        <a class="sport-link-card info-card" href="https://wnbl.basketball" target="_blank">
           <span class="slc-icon">🏆</span>
           <div class="slc-text">
-            <div class="slc-label">NBA Standings</div>
-            <div class="slc-desc">Current NBA standings — Eastern and Western Conference ladder from the official NBA site.</div>
+            <div class="slc-label">WNBL — Official Site</div>
+            <div class="slc-desc">WNBL fixtures, ladder and news. Season begins October 2026.</div>
             <span class="slc-tag tag-info">INFO</span>
           </div>
         </a>
@@ -788,9 +1349,538 @@ footer {
       </div>
 
       <div class="broadcast-note">
-        🏀 <strong>NBL (Australia):</strong> Kayo Sports / ESPN — subscription. Season starts October 2026.<br>
-        🏀 <strong>NBA (America):</strong> NBA League Pass / Kayo — subscription. Finals on now.<br>
-        🆓 <strong>Free scores:</strong> nba.com/scores and nbl.com.au are free for scores and standings.
+        🏀 <strong>NBL (men):</strong> Kayo Sports / ESPN — subscription. Season starts October 2026.<br>
+        🏀 <strong>WNBL (women):</strong> Kayo Sports — subscription, some free-to-air games. Season starts October 2026.<br>
+        🆓 <strong>Free scores:</strong> nbl.com.au and wnbl.basketball are free for scores and standings.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🐎  HORSE RACING
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-racing">
+    <div class="sport-header" onclick="toggleSection('sec-racing')">
+      <span class="sport-icon">🐎</span>
+      <div class="sport-title">
+        <h2>Horse Racing</h2>
+        <div class="sport-subtitle">Winter racing on now · Spring Racing Carnival from September</div>
+      </div>
+      <span class="sport-badge season">RACING YEAR-ROUND</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        Racing runs year-round in Australia, with winter carnivals (like the Brisbane Winter
+        Carnival) on now and the big <strong>Spring Racing Carnival</strong> — including the
+        Melbourne Cup — building from September through November. Free-to-air coverage of major
+        race days is on <strong>Channel 7 / 7plus</strong> and <strong>Network 10</strong>, with
+        <strong>Sky Racing</strong> (via Foxtel/Kayo, or free through TAB accounts) showing every
+        race, every day.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.racing.com" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">Racing.com — Fields, Form &amp; Replays</div>
+            <div class="slc-desc">Free race fields, form guides, results and replays for Victorian and major Australian racing.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.racingaustralia.horse" target="_blank">
+          <span class="slc-icon">🇦🇺</span>
+          <div class="slc-text">
+            <div class="slc-label">Racing Australia — Official Site</div>
+            <div class="slc-desc">National racing news, results, and the calendar of feature race days across the country.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.tab.com.au" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">TAB — Free Race Streaming</div>
+            <div class="slc-desc">Free live streaming of every race in Australia with a (free) TAB account.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo / Foxtel — Sky Racing</div>
+            <div class="slc-desc">Every race meeting nationally via Sky Racing, included with Foxtel or selected Kayo tiers.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        📡 <strong>Feature race days (Melbourne Cup, spring carnival):</strong> Channel 7 / 7plus and Network 10 — free.<br>
+        📺 <strong>Every race, every day:</strong> Sky Racing via Foxtel/Kayo (paid), or free live streaming via a TAB account.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏃  ATHLETICS
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-athletics">
+    <div class="sport-header" onclick="toggleSection('sec-athletics')">
+      <span class="sport-icon">🏃</span>
+      <div class="sport-title">
+        <h2>Athletics</h2>
+        <div class="sport-subtitle">Commonwealth Games athletics: 27 July – 1 August</div>
+      </div>
+      <span class="sport-badge live">COMMONWEALTH GAMES ON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <div class="event-highlight">
+        <div class="eh-title">🏆 Commonwealth Games Athletics</div>
+        <div style="color:#5a3800;">
+          Track and field at Glasgow 2026 runs 27 July – 1 August at Scotstoun Stadium. Free and
+          live on Channel 7 / 7plus.
+        </div>
+      </div>
+
+      <p class="sport-summary">
+        Outside of major Games, Australian athletes also compete on the international
+        <strong>Diamond League</strong> circuit through the (northern) summer, and domestically
+        in the Australian Athletics Championships each April. Coverage in Australia is mostly on
+        <strong>Kayo Sports / ESPN</strong>, with free scores and results always available from
+        World Athletics.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.glasgow2026.com/schedule/day-by-day" target="_blank">
+          <span class="slc-icon">🏆</span>
+          <div class="slc-text">
+            <div class="slc-label">Commonwealth Games — Athletics Schedule</div>
+            <div class="slc-desc">Day-by-day schedule for athletics and all sports at Glasgow 2026.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://7plus.com.au/sport" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">7plus — Watch Free</div>
+            <div class="slc-desc">Free live streaming of the Commonwealth Games, including all athletics sessions.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://worldathletics.org/competitions/diamond-league" target="_blank">
+          <span class="slc-icon">💎</span>
+          <div class="slc-text">
+            <div class="slc-label">Diamond League — Results</div>
+            <div class="slc-desc">Results and standings from the international Diamond League athletics circuit.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🏆 <strong>Commonwealth Games athletics:</strong> Channel 7 / 7plus — free, 27 July – 1 August.<br>
+        💎 <strong>Diamond League:</strong> Kayo Sports / ESPN — subscription.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🚴  CYCLING
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-cycling">
+    <div class="sport-header" onclick="toggleSection('sec-cycling')">
+      <span class="sport-icon">🚴</span>
+      <div class="sport-title">
+        <h2>Cycling</h2>
+        <div class="sport-subtitle">Commonwealth Games track cycling: 30 July – 2 August</div>
+      </div>
+      <span class="sport-badge live">COMMONWEALTH GAMES ON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <div class="event-highlight">
+        <div class="eh-title">🏆 Commonwealth Games Track Cycling</div>
+        <div style="color:#5a3800;">
+          Track cycling at Glasgow 2026 is held 30 July – 2 August at the Sir Chris Hoy Velodrome
+          — this edition features track events only. Free and live on Channel 7 / 7plus.
+        </div>
+      </div>
+
+      <p class="sport-summary">
+        The <strong>Tour de France</strong> — cycling's biggest annual event — is held every July
+        and is shown free-to-air and live in Australia on <strong>SBS</strong>, a long-standing
+        tradition for Australian cycling fans. Road cycling classics and other Grand Tours
+        (Giro d'Italia, Vuelta a España) are mostly on subscription services.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.glasgow2026.com/schedule/day-by-day" target="_blank">
+          <span class="slc-icon">🏆</span>
+          <div class="slc-text">
+            <div class="slc-label">Commonwealth Games — Cycling Schedule</div>
+            <div class="slc-desc">Day-by-day schedule for track cycling at Glasgow 2026.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.sbs.com.au/cyclingcentral" target="_blank">
+          <span class="slc-icon">🚴</span>
+          <div class="slc-text">
+            <div class="slc-label">SBS Cycling Central</div>
+            <div class="slc-desc">Free coverage and news of the Tour de France and other major cycling events.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://7plus.com.au/sport" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">7plus — Watch Free</div>
+            <div class="slc-desc">Free live streaming of the Commonwealth Games track cycling.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🏆 <strong>Commonwealth Games track cycling:</strong> Channel 7 / 7plus — free, 30 July – 2 August.<br>
+        🚴 <strong>Tour de France:</strong> SBS — free, every July.<br>
+        🚴 <strong>Giro d'Italia &amp; Vuelta a España:</strong> Kayo Sports / GCN+ — subscription.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏊  SWIMMING
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-swimming">
+    <div class="sport-header" onclick="toggleSection('sec-swimming')">
+      <span class="sport-icon">🏊</span>
+      <div class="sport-title">
+        <h2>Swimming</h2>
+        <div class="sport-subtitle">Commonwealth Games swimming: 23 July – 2 August</div>
+      </div>
+      <span class="sport-badge live">COMMONWEALTH GAMES ON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <div class="event-highlight">
+        <div class="eh-title">🏆 Commonwealth Games Swimming</div>
+        <div style="color:#5a3800;">
+          Swimming (and Para swimming) at Glasgow 2026 runs across the Games at Tollcross
+          International Swimming Centre. Watch the Australian Dolphins free and live on
+          Channel 7 / 7plus.
+        </div>
+      </div>
+
+      <p class="sport-summary">
+        Outside of the Commonwealth Games, the Australian <strong>Dolphins</strong> compete
+        domestically at the Australian Swimming Championships (usually April/May, doubling as
+        major-event trials) and internationally throughout the year. Coverage of most swimming
+        outside marquee events is limited in Australia — check Swimming Australia for the latest
+        broadcast details.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.glasgow2026.com/schedule/day-by-day" target="_blank">
+          <span class="slc-icon">🏆</span>
+          <div class="slc-text">
+            <div class="slc-label">Commonwealth Games — Swimming Schedule</div>
+            <div class="slc-desc">Day-by-day schedule for swimming and para swimming at Glasgow 2026.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://7plus.com.au/sport" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">7plus — Watch Free</div>
+            <div class="slc-desc">Free live streaming of the Commonwealth Games, including every swimming session.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card info-card" href="https://www.swimming.org.au" target="_blank">
+          <span class="slc-icon">🇦🇺</span>
+          <div class="slc-text">
+            <div class="slc-label">Swimming Australia — News &amp; Results</div>
+            <div class="slc-desc">News, results and the Dolphins' competition calendar throughout the year.</div>
+            <span class="slc-tag tag-info">INFO</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🏆 <strong>Commonwealth Games swimming:</strong> Channel 7 / 7plus — free, 23 July – 2 August.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ⚾  BASEBALL
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-baseball">
+    <div class="sport-header" onclick="toggleSection('sec-baseball')">
+      <span class="sport-icon">⚾</span>
+      <div class="sport-title">
+        <h2>Baseball — MLB &amp; ABL</h2>
+        <div class="sport-subtitle">MLB in season · Australian Baseball League from November</div>
+      </div>
+      <span class="sport-badge season">MLB IN SEASON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        Major League Baseball's regular season runs March/April to September/October, building
+        to the World Series. Coverage in Australia is on <strong>ESPN / Kayo</strong>
+        (subscription). The <strong>Australian Baseball League</strong> (ABL) runs
+        November–February each summer, with some free coverage.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.mlb.com/scores" target="_blank">
+          <span class="slc-icon">⚡</span>
+          <div class="slc-text">
+            <div class="slc-label">MLB — Live Scores</div>
+            <div class="slc-desc">Live scores, box scores and standings from the official MLB website.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo / ESPN — MLB Live</div>
+            <div class="slc-desc">Live MLB games throughout the season, via ESPN on Kayo Sports. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://theabl.com.au" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">Australian Baseball League</div>
+            <div class="slc-desc">Fixtures, results and news for the ABL, Australia's summer baseball competition.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        ⚾ <strong>MLB:</strong> ESPN via Kayo Sports — subscription.<br>
+        ⚾ <strong>ABL:</strong> Some free streaming — check theabl.com.au. Season runs November–February.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🏑  HOCKEY
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-hockey">
+    <div class="sport-header" onclick="toggleSection('sec-hockey')">
+      <span class="sport-icon">🏑</span>
+      <div class="sport-title">
+        <h2>Hockey (Field)</h2>
+        <div class="sport-subtitle">Kookaburras &amp; Hockeyroos · Hockey One League from September</div>
+      </div>
+      <span class="sport-badge offseason">OFF-SEASON</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        Australia's national teams, the <strong>Kookaburras</strong> (men) and
+        <strong>Hockeyroos</strong> (women), compete internationally throughout the year,
+        including the FIH Pro League. Domestically, the <strong>Hockey One League</strong> runs
+        September–October. Note: hockey is <strong>not</strong> part of the 2026 Commonwealth
+        Games program this time around.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card info-card" href="https://www.hockey.org.au" target="_blank">
+          <span class="slc-icon">🇦🇺</span>
+          <div class="slc-text">
+            <div class="slc-label">Hockey Australia — News &amp; Fixtures</div>
+            <div class="slc-desc">Kookaburras and Hockeyroos schedules, results and Hockey One League information.</div>
+            <span class="slc-tag tag-info">INFO</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.hockeyone.com.au" target="_blank">
+          <span class="slc-icon">📋</span>
+          <div class="slc-text">
+            <div class="slc-label">Hockey One League</div>
+            <div class="slc-desc">Fixtures, results and streaming information for Australia's domestic hockey league.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🏑 <strong>Hockey One League:</strong> Free streaming — check hockeyone.com.au. Season runs September–October.<br>
+        🏑 <strong>Kookaburras / Hockeyroos internationals:</strong> Coverage varies by tournament.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🎯  OTHER SPORTS
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-other">
+    <div class="sport-header" onclick="toggleSection('sec-other')">
+      <span class="sport-icon">🎯</span>
+      <div class="sport-title">
+        <h2>Other Sports</h2>
+        <div class="sport-subtitle">Surfing, boxing, combat sports &amp; more</div>
+      </div>
+      <span class="sport-badge upcoming">YEAR-ROUND</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        A catch-all for sports that don't need their own section but residents may still want to
+        follow — surfing, boxing, mixed martial arts, sailing, squash and more. The
+        Commonwealth Games (23 July – 2 August) also includes boxing and judo, both free on
+        Channel 7 / 7plus.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.worldsurfleague.com" target="_blank">
+          <span class="slc-icon">🏄</span>
+          <div class="slc-text">
+            <div class="slc-label">World Surf League</div>
+            <div class="slc-desc">Free live streaming and results for the World Surf League Championship Tour.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🥊</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo Sports — Boxing, UFC &amp; More</div>
+            <div class="slc-desc">Boxing, UFC/MMA and a wide range of other sports coverage. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://7plus.com.au/sport" target="_blank">
+          <span class="slc-icon">📺</span>
+          <div class="slc-text">
+            <div class="slc-label">7plus — Commonwealth Games Boxing &amp; Judo</div>
+            <div class="slc-desc">Free live streaming of boxing and judo at Glasgow 2026.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🎯 Coverage varies widely by sport — Kayo Sports/Fox Sports carries the broadest range on subscription, while Channel 7/7plus and SBS occasionally pick up free coverage of major events.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       🇺🇸  USA SPORTS
+  ══════════════════════════════════════════ -->
+  <div class="sport-section" id="sec-usasports">
+    <div class="sport-header" onclick="toggleSection('sec-usasports')">
+      <span class="sport-icon">🇺🇸</span>
+      <div class="sport-title">
+        <h2>USA Sports — NFL, MLB, NBA &amp; NHL</h2>
+        <div class="sport-subtitle">NFL preseason from August · MLB in season · NBA &amp; NHL off-season</div>
+      </div>
+      <span class="sport-badge upcoming">NFL SEASON COMING</span>
+      <span class="sport-toggle">▼</span>
+    </div>
+    <div class="sport-body">
+
+      <p class="sport-summary">
+        American sports have a growing following in Australia, mostly via <strong>ESPN on Kayo
+        Sports</strong> (subscription). The <strong>NFL</strong> preseason begins in August with
+        the regular season from September; <strong>MLB</strong> is currently in its regular
+        season; the <strong>NBA</strong> and <strong>NHL</strong> are both in their off-seasons,
+        returning in October. <strong>MLS</strong> (soccer) is also in season.
+      </p>
+
+      <div class="link-grid">
+
+        <a class="sport-link-card free-card" href="https://www.nfl.com/scores" target="_blank">
+          <span class="slc-icon">🏈</span>
+          <div class="slc-text">
+            <div class="slc-label">NFL — Scores &amp; Schedule</div>
+            <div class="slc-desc">Live scores and the full schedule from the official NFL website. Season starts September.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.nba.com/scores" target="_blank">
+          <span class="slc-icon">🏀</span>
+          <div class="slc-text">
+            <div class="slc-label">NBA — Scores &amp; Standings</div>
+            <div class="slc-desc">Live scores and standings from the official NBA website. Season resumes October.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card free-card" href="https://www.nhl.com/scores" target="_blank">
+          <span class="slc-icon">🏒</span>
+          <div class="slc-text">
+            <div class="slc-label">NHL — Scores &amp; Standings</div>
+            <div class="slc-desc">Live scores and standings from the official NHL website. Season resumes October.</div>
+            <span class="slc-tag tag-free">FREE</span>
+          </div>
+        </a>
+
+        <a class="sport-link-card paid-card" href="https://kayosports.com.au" target="_blank">
+          <span class="slc-icon">🎬</span>
+          <div class="slc-text">
+            <div class="slc-label">Kayo / ESPN — All US Sports</div>
+            <div class="slc-desc">NFL, NBA, NHL and MLB coverage via ESPN on Kayo Sports. Subscription required.</div>
+            <span class="slc-tag tag-paid">PAID</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="broadcast-note">
+        🏈 <strong>NFL:</strong> ESPN via Kayo Sports — subscription. Preseason from August, regular season from September.<br>
+        ⚾ <strong>MLB:</strong> ESPN via Kayo Sports — subscription. In season now.<br>
+        🏀 <strong>NBA</strong> &amp; 🏒 <strong>NHL:</strong> ESPN via Kayo Sports — subscription. Both resume in October.<br>
+        ⚽ <strong>MLS:</strong> Coverage varies — check Kayo Sports for current arrangements.
       </div>
 
     </div>
@@ -801,7 +1891,7 @@ footer {
 <!-- ===== FOOTER ===== -->
 <footer>
   Bridgeman Downs Residents' Hub &nbsp;|&nbsp; Managed by the Residents Committee &nbsp;|&nbsp;
-  Broadcast information correct as of 10 July 2026 — subject to change
+  Broadcast information correct as of 26 July 2026 — subject to change
 </footer>
 
 <script>
