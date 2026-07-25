@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer to Speak | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:18px;
+      line-height:1.6;
+      color:#222;
+    }
+
+    .container{
+      max-width:900px;
+      margin:auto;
+      background:white;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    header{
+      background:#1F4E79;
+      color:white;
+      padding:36px 20px 30px;
+      text-align:center;
+    }
+    header h1{ font-size:1.8em; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.1em;
+      font-weight:600;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(255,255,255,0.18);
+      border-radius:6px;
+      padding:6px 20px;
+    }
+
+    .page-content{ padding:34px 25px; }
+
+    .intro-box{
+      background:#f0f6fc;
+      border-left:4px solid #1F4E79;
+      border-radius:6px;
+      padding:16px 20px;
+      margin-bottom:26px;
+      font-size:0.95em;
+      color:#333;
+    }
+
+    form label{
+      display:block;
+      font-weight:700;
+      color:#1F4E79;
+      margin:20px 0 6px;
+      font-size:0.95em;
+    }
+    form label .req{ color:#a94442; }
+    form label .hint{
+      display:block;
+      font-weight:400;
+      color:#777;
+      font-size:0.85em;
+      margin-top:2px;
+    }
+    form input[type="text"],
+    form textarea{
+      width:100%;
+      padding:12px 14px;
+      font-size:1em;
+      border:2px solid #c5d8ee;
+      border-radius:8px;
+      font-family:inherit;
+    }
+    form input[type="text"]:focus,
+    form textarea:focus{ outline:none; border-color:#1F4E79; }
+    form textarea{ min-height:110px; resize:vertical; }
+
+    .submit-btn{
+      display:inline-block;
+      background:#1F4E79;
+      color:white;
+      font-weight:700;
+      font-size:1.05em;
+      border:none;
+      padding:14px 32px;
+      border-radius:8px;
+      cursor:pointer;
+      margin-top:28px;
+      transition:background 0.15s;
+    }
+    .submit-btn:hover{ background:#173d5f; }
+
+    #successMsg{
+      display:none;
+      background:#d4edda;
+      color:#1e6b3c;
+      border-radius:8px;
+      padding:20px;
+      margin-top:20px;
+      font-weight:600;
+      text-align:center;
+    }
+
+  </style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="container">
+
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>🔥 Volunteer to Give a Talk</span></p>
+  </header>
+
+  <div class="page-content">
+
+    <div class="intro-box">
+      Have a story worth telling — a place you've lived, a career you had, an adventure you
+      went on? We'd love to have you share it as a Fireside Talk. Fill in a few details below
+      and the committee will be in touch to arrange a date.
+    </div>
+
+    <form id="volunteerForm" onsubmit="submitVolunteer(event)">
+
+      <label for="fs-name">Your Name <span class="req">*</span></label>
+      <input type="text" id="fs-name" required>
+
+      <label for="fs-contact">Best Way to Contact You
+        <span class="hint">Phone number or unit number — so the committee can follow up with you</span>
+      </label>
+      <input type="text" id="fs-contact">
+
+      <label for="fs-topic">What's Your Talk About? <span class="req">*</span>
+        <span class="hint">A short title, e.g. "My Ten Years in the Merchant Navy"</span>
+      </label>
+      <input type="text" id="fs-topic" required>
+
+      <label for="fs-description">Tell Us a Bit More <span class="req">*</span>
+        <span class="hint">A few sentences about what you'd like to share with everyone</span>
+      </label>
+      <textarea id="fs-description" required></textarea>
+
+      <label for="fs-availability">Any Preferred Timing?
+        <span class="hint">Optional — days or months that suit you, if you have a preference</span>
+      </label>
+      <input type="text" id="fs-availability">
+
+      <button type="submit" class="submit-btn">Send My Details</button>
+
+    </form>
+
+    <div id="successMsg">✔ Thank you! Your details have been sent to the committee — we'll be in touch soon.</div>
+
+  </div>
+
+</div>
+
+<script>
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4Zic9NSdiK80nkHPwX7feo7c7jGTkrwpWhsy7Q194HnEg7KhrwNaKIQsJqPFAclGeXQ/exec';
+
+  function submitVolunteer(event) {
+    event.preventDefault();
+
+    var data = {
+      name:         document.getElementById('fs-name').value.trim(),
+      contact:      document.getElementById('fs-contact').value.trim(),
+      topic:        document.getElementById('fs-topic').value.trim(),
+      description:  document.getElementById('fs-description').value.trim(),
+      availability: document.getElementById('fs-availability').value.trim()
+    };
+
+    fetch(SCRIPT_URL, {
+      method : 'POST',
+      mode   : 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body   : JSON.stringify(data)
+    })
+    .then(function(){
+      document.getElementById('volunteerForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    })
+    .catch(function(){
+      alert('Sorry, there was a problem sending your details. Please try again later.');
+    });
+  }
+</script>
+
+</body>
+</html>

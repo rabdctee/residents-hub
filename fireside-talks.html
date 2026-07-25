@@ -20,8 +20,8 @@
     body{
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
       background:#f5f5f5;
-      font-size:20px;
-      line-height:1.7;
+      font-size:18px;
+      line-height:1.6;
       color:#222;
     }
 
@@ -32,17 +32,18 @@
       box-shadow:0 2px 10px rgba(0,0,0,0.1);
     }
 
+    /* ===== Header ===== */
     header{
       background:#1F4E79;
       color:white;
       padding:36px 20px 30px;
       text-align:center;
     }
-    header h1{ font-size:2em; }
+    header h1{ font-size:1.8em; }
     header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
     header .page-tagline{
       margin-top:14px;
-      font-size:1.15em;
+      font-size:1.1em;
       font-weight:600;
     }
     header .page-tagline span{
@@ -52,19 +53,191 @@
       padding:6px 20px;
     }
 
-    .page-content{ padding:60px 25px; text-align:center; }
-
-    .coming-soon-box{
-      max-width:600px;
-      margin:0 auto;
-      background:#fff9e6;
-      border-left:4px solid #fbbc04;
-      border-radius:8px;
-      padding:34px 30px;
+    /* ===== Section nav bar ===== */
+    .section-bar{
+      background:#E7F1FB;
+      border-bottom:2px solid #c5d8ee;
+      padding:10px 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      justify-content:center;
     }
-    .coming-soon-box .icon{ font-size:2.4em; margin-bottom:12px; }
-    .coming-soon-box h2{ color:#1F4E79; margin-bottom:14px; }
-    .coming-soon-box p{ color:#444; font-size:0.95em; }
+    .section-bar a{
+      color:#1F4E79;
+      font-weight:700;
+      font-size:0.85em;
+      text-decoration:none;
+      background:white;
+      border:1px solid #c5d8ee;
+      border-radius:6px;
+      padding:7px 14px;
+    }
+    .section-bar a:hover{ background:#d0e8f5; }
+
+    .page-content{ padding:30px 25px; }
+
+    /* ===== Section dividers ===== */
+    .section-divider{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin:34px 0 18px;
+    }
+    .section-divider:first-child{ margin-top:0; }
+    .section-divider-line{ flex:1; height:2px; background:#c5d8ee; }
+    .section-divider-text{
+      color:#1F4E79;
+      font-weight:700;
+      font-size:1.05em;
+      white-space:nowrap;
+    }
+
+    .intro-box{
+      background:#f0f6fc;
+      border-left:4px solid #1F4E79;
+      border-radius:6px;
+      padding:16px 20px;
+      margin-bottom:22px;
+      font-size:0.95em;
+      color:#333;
+    }
+
+    /* ===== Volunteer CTA ===== */
+    .volunteer-cta{
+      text-align:center;
+      margin:24px 0 8px;
+    }
+    .volunteer-btn{
+      display:inline-block;
+      background:#1F4E79;
+      color:white;
+      font-weight:700;
+      font-size:1em;
+      text-decoration:none;
+      padding:14px 30px;
+      border-radius:8px;
+      transition:background 0.15s;
+    }
+    .volunteer-btn:hover{ background:#173d5f; }
+
+    /* ===== Upcoming talk cards ===== */
+    #upcomingContainer{ margin-bottom:6px; }
+    .upcoming-card{
+      display:flex;
+      gap:18px;
+      background:#f8f9fa;
+      border:1px solid #e0e0e0;
+      border-left:5px solid #2a7a4b;
+      border-radius:10px;
+      padding:18px 22px;
+      margin-bottom:14px;
+    }
+    .upcoming-date{
+      flex-shrink:0;
+      width:80px;
+      text-align:center;
+      background:#2a7a4b;
+      color:white;
+      border-radius:8px;
+      padding:10px 6px;
+    }
+    .upcoming-date .day{ font-size:1.6em; font-weight:700; line-height:1; }
+    .upcoming-date .month{ font-size:0.78em; text-transform:uppercase; letter-spacing:0.04em; }
+    .upcoming-body h3{ color:#1F4E79; font-size:1.1em; margin-bottom:3px; }
+    .upcoming-meta{ font-size:0.82em; color:#666; margin-bottom:8px; }
+    .upcoming-desc{ font-size:0.92em; color:#333; }
+
+    .empty-msg{
+      text-align:center;
+      color:#8a96a3;
+      font-style:italic;
+      padding:24px 10px;
+    }
+
+    /* ===== Past talks: search + accordion ===== */
+    .talks-search-box{ margin-bottom:18px; }
+    .talk-search-input{
+      width:100%;
+      padding:12px 16px;
+      font-size:0.95em;
+      border:2px solid #c5d8ee;
+      border-radius:8px;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .talk-search-input:focus{ outline:none; border-color:#1F4E79; }
+
+    .talk-card{
+      background:white;
+      border:1px solid #c5d8ee;
+      border-radius:10px;
+      margin-bottom:12px;
+      overflow:hidden;
+    }
+    .accordion-header{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      width:100%;
+      background:white;
+      border:none;
+      padding:16px 20px;
+      cursor:pointer;
+      text-align:left;
+      font-family:inherit;
+    }
+    .accordion-header:hover{ background:#f0f6fc; }
+    .accordion-header .acc-icon{ font-size:1.5em; flex-shrink:0; }
+    .accordion-header .acc-title{ flex:1; }
+    .accordion-header .acc-title h3{ color:#1F4E79; font-size:1.05em; margin-bottom:2px; }
+    .accordion-header .acc-title p{ font-size:0.8em; color:#888; }
+    .accordion-header .acc-chevron{
+      font-size:0.8em;
+      color:#aaa;
+      transition:transform 0.2s;
+      flex-shrink:0;
+    }
+    .accordion-header.open .acc-chevron{ transform:rotate(180deg); }
+    .accordion-header.open{ background:#E7F1FB; }
+
+    .accordion-body{ display:none; }
+    .accordion-body.open{ display:block; }
+
+    .talk-text{ padding:0 22px 20px; }
+    .talk-text p{ color:#333; font-size:0.94em; margin-bottom:14px; }
+
+    .talk-video-wrap{
+      position:relative;
+      width:100%;
+      padding-top:56.25%;
+      border-radius:8px;
+      overflow:hidden;
+      background:#000;
+    }
+    .talk-video-wrap iframe{
+      position:absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      border:0;
+    }
+    .no-video-msg{
+      color:#8a96a3;
+      font-style:italic;
+      font-size:0.88em;
+    }
+
+    .no-stories-msg{
+      text-align:center;
+      color:#8a96a3;
+      font-style:italic;
+      padding:30px 10px;
+    }
+
+    @media(max-width:600px){
+      .upcoming-card{ flex-direction:column; }
+      .upcoming-date{ width:auto; display:flex; align-items:center; gap:8px; justify-content:center; }
+      .upcoming-date .day, .upcoming-date .month{ display:inline; }
+    }
 
   </style>
 </head>
@@ -79,19 +252,208 @@
     <p class="page-tagline"><span>🔥 Fireside Talks</span></p>
   </header>
 
+  <div class="section-bar">
+    <a href="#upcoming">📅 Upcoming Talks</a>
+    <a href="#archive">🎥 Past Talks</a>
+  </div>
+
   <div class="page-content">
-    <div class="coming-soon-box">
-      <div class="icon">🚧</div>
-      <h2>This page is coming soon</h2>
-      <p>
-        Fireside Talks will be the home for our residents' own life and adventure talks —
-        stories like Pam Cranny's presentation on her time in Nigeria. Details of upcoming
-        talks, and write-ups of past ones, will appear here soon.
-      </p>
+
+    <div class="intro-box">
+      Fireside Talks is our home for residents' own life stories and adventures, shared in
+      person — things like Pam Cranny's talk on her time in Nigeria. Below you'll find what's
+      coming up, and a growing archive of past talks to revisit any time.
     </div>
+
+    <div class="volunteer-cta">
+      <a href="fireside-talks-submit.html" class="volunteer-btn">🔥 Volunteer to Give a Talk</a>
+    </div>
+
+    <!-- ===== UPCOMING TALKS ===== -->
+    <div class="section-divider" id="upcoming">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">📅 Upcoming Talks</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div id="upcomingContainer"></div>
+    <p id="noUpcomingMsg" class="empty-msg">No talks are currently scheduled — check back soon!</p>
+
+    <!-- ===== PAST TALKS ARCHIVE ===== -->
+    <div class="section-divider" id="archive">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">🎥 Past Talks Archive</div>
+      <div class="section-divider-line"></div>
+    </div>
+
+    <div class="talks-search-box">
+      <input type="text" id="talkSearch" class="talk-search-input" placeholder="🔍 Search past talks by speaker or topic...">
+    </div>
+
+    <div id="pastTalksContainer"></div>
+    <p id="noPastMsg" class="no-stories-msg">No past talks have been published here yet — check back soon!</p>
+
   </div>
 
 </div>
+
+<script>
+
+  /* ══════════════════════════════════════════════════════
+     Fill this in once you have your Apps Script web app URL.
+  ══════════════════════════════════════════════════════ */
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4Zic9NSdiK80nkHPwX7feo7c7jGTkrwpWhsy7Q194HnEg7KhrwNaKIQsJqPFAclGeXQ/exec';
+
+  var allTalks = [];
+
+  /* ===== Load talks from the sheet ===== */
+  function loadTalks() {
+    if (!SCRIPT_URL || SCRIPT_URL.indexOf('YOUR_APPS_SCRIPT') === 0) return;
+
+    fetch(SCRIPT_URL)
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (res.result !== 'success') return;
+        allTalks = res.talks || [];
+        renderUpcoming();
+        renderPast();
+      })
+      .catch(function(){ /* fail quietly — the friendly placeholder messages stay visible */ });
+  }
+
+  /* ===== Upcoming talks ===== */
+  function renderUpcoming() {
+    var container = document.getElementById('upcomingContainer');
+    var msg = document.getElementById('noUpcomingMsg');
+    container.innerHTML = '';
+
+    var upcoming = allTalks.filter(function(t){
+      return t.Status === 'Upcoming';
+    }).sort(function(a,b){
+      return new Date(a.TalkDate) - new Date(b.TalkDate);
+    });
+
+    if (!upcoming.length) { msg.style.display = 'block'; return; }
+    msg.style.display = 'none';
+
+    upcoming.forEach(function(t){
+      var d = new Date(t.TalkDate);
+      var dayNum = isNaN(d) ? '' : d.getDate();
+      var monthName = isNaN(d) ? '' : d.toLocaleDateString('en-AU', {month:'short'});
+
+      var card = document.createElement('div');
+      card.className = 'upcoming-card';
+      card.innerHTML =
+        '<div class="upcoming-date"><div class="day">' + dayNum + '</div><div class="month">' + monthName + '</div></div>' +
+        '<div class="upcoming-body">' +
+        '  <h3>' + escapeHtml(t.Title || 'Untitled Talk') + '</h3>' +
+        '  <div class="upcoming-meta">' + escapeHtml(t.Speaker || '') +
+             (t.TalkTime ? ' &middot; ' + escapeHtml(t.TalkTime) : '') +
+             (t.Location ? ' &middot; ' + escapeHtml(t.Location) : '') + '</div>' +
+        '  <div class="upcoming-desc">' + escapeHtml(t.Description || '') + '</div>' +
+        '</div>';
+      container.appendChild(card);
+    });
+  }
+
+  /* ===== Past talks archive ===== */
+  function renderPast() {
+    var container = document.getElementById('pastTalksContainer');
+    container.innerHTML = '';
+
+    var past = allTalks.filter(function(t){
+      return t.Status === 'Past';
+    }).sort(function(a,b){
+      return new Date(b.TalkDate) - new Date(a.TalkDate);
+    });
+
+    past.forEach(function(t){
+      var card = document.createElement('div');
+      card.className = 'talk-card';
+
+      var d = new Date(t.TalkDate);
+      var dateLabel = isNaN(d) ? '' : d.toLocaleDateString('en-AU', {day:'numeric', month:'long', year:'numeric'});
+      var searchStr = ((t.Speaker||'') + ' ' + (t.Title||'') + ' ' + (t.Description||'')).toLowerCase();
+
+      var videoHtml = t.DriveFileID
+        ? '<div class="talk-video-wrap"><iframe src="https://drive.google.com/file/d/' + encodeURIComponent(t.DriveFileID) + '/preview" allow="autoplay" allowfullscreen></iframe></div>'
+        : '<p class="no-video-msg">No recording is available for this talk.</p>';
+
+      card.setAttribute('data-search', searchStr);
+      card.innerHTML =
+        '<button class="accordion-header" onclick="singleOpenToggle(this,\'pastTalksContainer\')" aria-expanded="false">' +
+        '  <div class="acc-icon">🎤</div>' +
+        '  <div class="acc-title"><h3>' + escapeHtml(t.Title || 'Untitled Talk') + '</h3>' +
+        '  <p>' + escapeHtml(t.Speaker || '') + ' &middot; ' + dateLabel + '</p></div>' +
+        '  <div class="acc-chevron">▼</div>' +
+        '</button>' +
+        '<div class="accordion-body"><div class="talk-text">' +
+        '  <p>' + escapeHtml(t.Description || '') + '</p>' +
+        videoHtml +
+        '</div></div>';
+
+      container.appendChild(card);
+    });
+
+    updateNoPastMsg();
+  }
+
+  function updateNoPastMsg() {
+    var container = document.getElementById('pastTalksContainer');
+    var msg = document.getElementById('noPastMsg');
+    var totalCards = container.querySelectorAll('.talk-card').length;
+    var hiddenCards = container.querySelectorAll('.talk-card[style*="display: none"]').length;
+    if (totalCards === 0) {
+      msg.textContent = 'No past talks have been published here yet — check back soon!';
+      msg.style.display = 'block';
+    } else if (hiddenCards === totalCards) {
+      msg.textContent = 'No past talks match your search.';
+      msg.style.display = 'block';
+    } else {
+      msg.style.display = 'none';
+    }
+  }
+
+  /* ===== Shared single-open accordion toggle ===== */
+  function singleOpenToggle(btn, containerId) {
+    var body = btn.nextElementSibling;
+    var isOpen = body.classList.contains('open');
+    var container = document.getElementById(containerId);
+    if (container) {
+      container.querySelectorAll('.accordion-header.open').forEach(function(otherBtn){
+        if (otherBtn !== btn) {
+          otherBtn.classList.remove('open');
+          otherBtn.nextElementSibling.classList.remove('open');
+          otherBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+    body.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.setAttribute('aria-expanded', String(!isOpen));
+  }
+
+  /* ===== Search box ===== */
+  document.addEventListener('DOMContentLoaded', function(){
+    loadTalks();
+    var searchBox = document.getElementById('talkSearch');
+    searchBox.addEventListener('input', function(){
+      var q = this.value.toLowerCase();
+      var cards = document.querySelectorAll('#pastTalksContainer .talk-card');
+      cards.forEach(function(card){
+        var text = card.getAttribute('data-search') || '';
+        card.style.display = text.indexOf(q) !== -1 ? '' : 'none';
+      });
+      updateNoPastMsg();
+    });
+  });
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+</script>
 
 </body>
 </html>
