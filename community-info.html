@@ -855,27 +855,94 @@
     }
   }
 
-  // ── Quarterly sub-folder builder ──────────────────────────────────────
+  // ── Quarterly sub-folder builder (fully automatic) ─────────────────────
+  var quarterlyCsvCache = null; // documents grouped by quarter, loaded once per visit
+
+  function parseQuarterLabel(label) {
+    var m = /^Q([1-4])\s+(\d{4})$/.exec(label || '');
+    return m ? { num: parseInt(m[1]), year: parseInt(m[2]) } : null;
+  }
+
   function buildQuarterlySubfolders() {
     var container = document.getElementById('rc-quarterly-subfolders');
     if (container.children.length > 0) return; // already built
-    var quarters = MEETING_FILES['rc-quarterly'] || [];
-    // Show most recent quarter first
-    var reversed = quarters.slice().reverse();
-    reversed.forEach(function(q, idx) {
-      var sfId = 'sf-' + q.quarter.replace(/\s/g, '-');
-      var div = document.createElement('div');
-      div.className = 'subfolder-section';
-      div.innerHTML =
-        '<button class="subfolder-toggle" onclick="toggleSubfolder(\'' + sfId + '\', this)">' +
-          '<span>📁 ' + q.quarter + ' Documents</span>' +
-          '<span class="subfolder-arrow" id="' + sfId + '-arrow">▼</span>' +
-        '</button>' +
-        '<div class="subfolder-contents" id="' + sfId + '">' +
-          '<ul class="doc-list" id="' + sfId + '-files"><li style="color:#888;font-style:italic;">Loading…</li></ul>' +
-        '</div>';
-      container.appendChild(div);
+
+    var legacyFiles = {}; // quarter -> [{name,id}], for documents added before the registry existed
+    (MEETING_FILES['rc-quarterly'] || []).forEach(function(q) {
+      legacyFiles[q.quarter] = (q.files || []).slice();
     });
+
+    container.innerHTML = '<p style="color:#888;font-style:italic;">Loading quarters…</p>';
+
+    var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
+
+    fetch(csvUrl)
+      .then(function(r) { return r.text(); })
+      .then(function(csvText) {
+        var lines = csvText.split('\n');
+        var byQuarter = {}; // quarter -> [{name,id}]
+
+        for (var i = 1; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (!line) continue;
+          var cols         = parseCSVLine(line);
+          var fileName     = cols[1] ? cols[1].trim() : null;
+          var fileId       = cols[2] ? cols[2].trim() : null;
+          var rowFolder    = cols[3] ? cols[3].trim() : null;
+          var rowSubfolder = cols[4] ? cols[4].trim() : null;
+          var isQuarterlyFolder =
+            rowFolder === 'Residents Quarterly Meetings' ||
+            rowFolder === 'Residents Committee - Quarterly Meetings'; // older naming, kept for older rows
+          if (isQuarterlyFolder && rowSubfolder && fileId) {
+            if (!byQuarter[rowSubfolder]) byQuarter[rowSubfolder] = [];
+            byQuarter[rowSubfolder].push({ name: fileName, id: fileId });
+          }
+        }
+
+        // Fold in any older hand-added documents not already covered by the registry
+        Object.keys(legacyFiles).forEach(function(q) {
+          if (!byQuarter[q]) byQuarter[q] = [];
+          var existingIds = byQuarter[q].map(function(f) { return f.id; });
+          legacyFiles[q].forEach(function(f) {
+            if (existingIds.indexOf(f.id) === -1) byQuarter[q].push(f);
+          });
+        });
+
+        quarterlyCsvCache = byQuarter;
+
+        var quarterLabels = Object.keys(byQuarter).filter(function(q) {
+          return parseQuarterLabel(q) !== null;
+        });
+        quarterLabels.sort(function(a, b) {
+          var pa = parseQuarterLabel(a), pb = parseQuarterLabel(b);
+          if (pb.year !== pa.year) return pb.year - pa.year;
+          return pb.num - pa.num;
+        });
+
+        container.innerHTML = '';
+        if (quarterLabels.length === 0) {
+          container.innerHTML = '<p style="color:#888;font-style:italic;">No quarterly documents yet.</p>';
+          return;
+        }
+
+        quarterLabels.forEach(function(quarter) {
+          var sfId = 'sf-' + quarter.replace(/\s/g, '-');
+          var div = document.createElement('div');
+          div.className = 'subfolder-section';
+          div.innerHTML =
+            '<button class="subfolder-toggle" onclick="toggleSubfolder(\'' + sfId + '\', this)">' +
+              '<span>📁 ' + quarter + ' Documents</span>' +
+              '<span class="subfolder-arrow" id="' + sfId + '-arrow">▼</span>' +
+            '</button>' +
+            '<div class="subfolder-contents" id="' + sfId + '">' +
+              '<ul class="doc-list" id="' + sfId + '-files"><li style="color:#888;font-style:italic;">Loading…</li></ul>' +
+            '</div>';
+          container.appendChild(div);
+        });
+      })
+      .catch(function() {
+        container.innerHTML = '<p style="color:#888;font-style:italic;">Could not load quarterly documents right now.</p>';
+      });
   }
 
   function toggleSubfolder(sfId, btn) {
@@ -892,52 +959,24 @@
 
   function buildSubfolderFiles(sfId) {
     var ul = document.getElementById(sfId + '-files');
-    // Find matching quarter data
-    var quarters = MEETING_FILES['rc-quarterly'] || [];
-    var qData = null;
-    quarters.forEach(function(q) {
-      if ('sf-' + q.quarter.replace(/\s/g, '-') === sfId) qData = q;
+    if (!quarterlyCsvCache) {
+      ul.innerHTML = '<li style="color:#888;font-style:italic;">Still loading…</li>';
+      return;
+    }
+    var quarter = null;
+    Object.keys(quarterlyCsvCache).forEach(function(q) {
+      if ('sf-' + q.replace(/\s/g, '-') === sfId) quarter = q;
     });
-    if (!qData) return;
-    // Build hardcoded files first
-    var baseHtml = '';
-    (qData.files || []).forEach(function(f) {
+    var files = quarter ? (quarterlyCsvCache[quarter] || []) : [];
+    var html = '';
+    files.forEach(function(f) {
       if (f.id) {
         var href = 'view-document.html?id=' + encodeURIComponent(f.id) +
                    '&title=' + encodeURIComponent(f.name) + '&back=community-info.html';
-        baseHtml += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+        html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
       }
     });
-    ul.innerHTML = baseHtml || '<li style="color:#888;font-style:italic;">No documents yet.</li>';
-    // Then fetch Registry Sheet for any additional files for this quarter
-    if (!qData.registryFolder) return;
-    var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
-    var existingIds = (qData.files || []).map(function(f) { return f.id; });
-    fetch(csvUrl)
-      .then(function(r) { return r.text(); })
-      .then(function(csvText) {
-        var lines = csvText.split('\n');
-        var extraHtml = '';
-        for (var i = 1; i < lines.length; i++) {
-          var line = lines[i].trim();
-          if (!line) continue;
-          var cols = parseCSVLine(line);
-          var fileName     = cols[1] ? cols[1].trim() : null;
-          var fileId       = cols[2] ? cols[2].trim() : null;
-          var rowFolder    = cols[3] ? cols[3].trim() : null;
-          var rowSubfolder = cols[4] ? cols[4].trim() : null;
-          if (rowFolder === FOLDER_KEY_TO_NAME['rc-quarterly'] &&
-              rowSubfolder === qData.quarter &&
-              fileId && existingIds.indexOf(fileId) === -1) {
-            var href = 'view-document.html?id=' + encodeURIComponent(fileId) +
-                       '&title=' + encodeURIComponent(fileName) + '&back=community-info.html';
-            extraHtml += '<li><a href="' + href + '" target="_blank">📄 ' + fileName + '</a></li>';
-          }
-        }
-        ul.innerHTML = baseHtml + extraHtml ||
-          '<li style="color:#888;font-style:italic;">No documents yet.</li>';
-      })
-      .catch(function() { /* keep baseHtml already shown */ });
+    ul.innerHTML = html || '<li style="color:#888;font-style:italic;">No documents yet.</li>';
   }
 
   function buildFileList(key) {
