@@ -339,9 +339,9 @@
         <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>🌏 World News</a></li>
       </ul>
 
-      <!-- Social Club Happenings -->
+      <!-- Social Happenings -->
         <div class="sb-acc-header${openNews}" onclick="sbToggle('sba-news')">
-          🎉 Social Club Happenings <span class="sb-acc-arrow">▼</span>
+          🎉 Social Happenings <span class="sb-acc-arrow">▼</span>
         </div>
         <div class="sb-acc-body${openNews}" id="sba-news">
           <ul class="sb-links">
