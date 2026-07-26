@@ -552,28 +552,32 @@
       return cols;
     }
 
+    console.log('[Badge] lastVisit =', lastVisit, lastVisit ? new Date(lastVisit).toString() : 'never');
     fetch(RC_BADGE_CSV + '&t=' + Date.now())
       .then(function(r) { return r.text(); })
       .then(function(csv) {
+        console.log('[Badge] CSV first 200 chars:', csv.substring(0, 200));
         var lines = csv.trim().split('\n');
         var count = 0;
         for (var i = 1; i < lines.length; i++) {
-          var cols   = parseCSVLineForBadge(lines[i]);
-          var ts     = cols[0] ? cols[0].trim() : '';
-          var status = cols[5] ? cols[5].trim() : '';
-          if (status === 'Active' && parseTimestamp(ts) > lastVisit) {
+          var cols      = parseCSVLineForBadge(lines[i]);
+          var ts        = cols[0] ? cols[0].trim() : '';
+          var status    = cols[5] ? cols[5].trim() : '';
+          var noticetime = parseTimestamp(ts);
+          console.log('[Badge] row', i, '| ts:', ts, '| status:', status, '| newer than lastVisit?', noticetime > lastVisit);
+          if (status === 'Active' && noticetime > lastVisit) {
             count++;
           }
         }
-        if (count > 0) {
-          var badge = document.getElementById('sb-rc-badge');
-          if (badge) {
-            badge.textContent   = count;
-            badge.style.display = 'inline-flex';
-          }
+        console.log('[Badge] total count =', count);
+        var badge = document.getElementById('sb-rc-badge');
+        console.log('[Badge] badge element found?', !!badge);
+        if (count > 0 && badge) {
+          badge.textContent   = count;
+          badge.style.display = 'inline-flex';
         }
       })
-      .catch(function() { /* silently fail — badge just won't show */ });
+      .catch(function(err) { console.warn('[Badge] fetch failed:', err); });
   }
 
   // ── FONT SIZE CONTROL ─────────────────────────────────────
