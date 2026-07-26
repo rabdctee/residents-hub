@@ -514,6 +514,35 @@
   .edit-status.ok  { color: #2e7d32; }
   .edit-status.err { color: #c0392b; }
 
+  .listing-photo { margin: 8px 0 12px; }
+  .listing-photo img {
+    max-width: 100%;
+    max-height: 320px;
+    border-radius: 8px;
+    display: block;
+    object-fit: cover;
+  }
+
+  .edit-photo-current img {
+    max-width: 160px;
+    max-height: 120px;
+    border-radius: 6px;
+    display: block;
+    margin-bottom: 8px;
+    object-fit: cover;
+  }
+  .edit-photo-current em { font-size: 0.8em; color: #999; }
+  .edit-remove-photo-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 0.8em;
+    color: #444;
+    font-weight: 400;
+  }
+  .edit-remove-photo-row input { width: auto; }
+
   @media (max-width: 768px) {
     body { font-size: 22px; }
     .form-grid { grid-template-columns: 1fr; }
@@ -604,6 +633,12 @@
       <div class="char-hint" id="details-hint">0 / 600</div>
     </div>
 
+    <div class="form-group full-width">
+      <label for="f-photo">Photo (optional)</label>
+      <input type="file" id="f-photo" accept="image/*">
+      <div class="char-hint" style="text-align:left;">A photo of your item — large photos are resized automatically.</div>
+    </div>
+
   </div>
 
   <div class="submit-row">
@@ -644,8 +679,8 @@ function parseCSV(text) {
   const cols  = splitCSV(text);   // returns array of rows, each an array of fields
   for (let i = 1; i < cols.length; i++) {
     const row = cols[i];
-    if (row.length < 6) continue;
-    const status = row[row.length - 1].trim().toLowerCase();
+    if (row.length < 7) continue;
+    const status = row[row.length - 2].trim().toLowerCase();
     if (status !== 'published') continue;
     const timestamp = row[0].trim();
     const name      = row[1].trim();
@@ -653,8 +688,9 @@ function parseCSV(text) {
     const phone     = row[3].trim();
     const category  = row[4].trim();
     const headline  = row[5].trim();
-    const details   = row.slice(6, row.length - 1).join(',').trim();
-    rows.push({ timestamp, name, unit, phone, category, headline, details });
+    const details   = row.slice(6, row.length - 2).join(',').trim();
+    const photo     = row[row.length - 1].trim();
+    rows.push({ timestamp, name, unit, phone, category, headline, details, photo });
   }
   return rows.reverse();
 }
@@ -702,6 +738,7 @@ function renderListings() {
     return `<div class="listing-card" data-cat="${esc(l.category)}">
   <div class="listing-cat">${esc(l.category)}</div>
   <div class="listing-headline">${esc(l.headline)}</div>
+  ${l.photo ? `<div class="listing-photo"><img src="${esc(l.photo)}" alt="${esc(l.headline)}" loading="lazy"></div>` : ''}
   <div class="listing-details">${esc(l.details)}</div>
   <div class="listing-meta">
     <span>👤 ${esc(l.name)}</span>
@@ -739,6 +776,15 @@ function renderListings() {
         <label>Details</label>
         <textarea id="edit-details-${idx}" maxlength="600"></textarea>
       </div>
+      <div>
+        <label>Photo</label>
+        <div class="edit-photo-current" id="edit-photo-current-${idx}"></div>
+        <input type="file" id="edit-photo-${idx}" accept="image/*">
+        <div class="edit-remove-photo-row">
+          <input type="checkbox" id="edit-remove-photo-${idx}">
+          <label for="edit-remove-photo-${idx}">Remove current photo</label>
+        </div>
+      </div>
     </div>
     <div class="edit-form-btns">
       <button class="btn-confirm-edit" id="edit-btn-${idx}" onclick="confirmEdit(${idx})">Save Changes</button>
@@ -765,6 +811,38 @@ function renderListings() {
 
 function esc(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Shrinks a chosen photo down to a sensible size before it's sent, so a
+// large phone-camera photo doesn't take forever to upload. Returns the
+// resized photo as base64 text, ready to send to the server.
+function resizeImageToBase64(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else       { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve({
+          data: dataUrl.split(',')[1],
+          mimeType: 'image/jpeg',
+          name: (file.name || 'photo').replace(/\.[^.]+$/, '') + '.jpg'
+        });
+      };
+      img.onerror = function() { reject(new Error('Could not read that image.')); };
+      img.src = e.target.result;
+    };
+    reader.onerror = function() { reject(new Error('Could not read that image.')); };
+    reader.readAsDataURL(file);
+  });
 }
 
 function formatDate(raw) {
@@ -809,6 +887,7 @@ async function submitListing() {
   const category = document.getElementById('f-category').value;
   const headline = document.getElementById('f-headline').value.trim();
   const details  = document.getElementById('f-details').value.trim();
+  const photoFile= document.getElementById('f-photo').files[0];
   const statusEl = document.getElementById('form-status');
   const btn      = document.getElementById('submit-btn');
 
@@ -818,17 +897,34 @@ async function submitListing() {
     return;
   }
 
+  if (photoFile && photoFile.size > 15 * 1024 * 1024) {
+    statusEl.className = 'error';
+    statusEl.textContent = '⚠️ That photo is too large. Please choose one under 15MB.';
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Submitting…';
   statusEl.className = '';
   statusEl.style.display = 'none';
 
   try {
+    const payload = { action: 'submit', name, unit, phone, category, headline, details };
+
+    if (photoFile) {
+      btn.textContent = 'Preparing photo…';
+      const photo = await resizeImageToBase64(photoFile, 1400, 0.82);
+      payload.photoData     = photo.data;
+      payload.photoMimeType = photo.mimeType;
+      payload.photoName     = photo.name;
+      btn.textContent = 'Submitting…';
+    }
+
     await fetch(SCRIPT_URL, {
       method : 'POST',
       mode   : 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body   : JSON.stringify({ action: 'submit', name, unit, phone, category, headline, details })
+      body   : JSON.stringify(payload)
     });
 
     // Show confirmation overlay
@@ -847,6 +943,7 @@ function resetForm() {
     document.getElementById(id).value = '';
   });
   document.getElementById('f-category').value = '';
+  document.getElementById('f-photo').value = '';
   document.getElementById('headline-hint').textContent = '0 / 100';
   document.getElementById('details-hint').textContent  = '0 / 600';
   document.getElementById('confirm-overlay').classList.remove('show');
@@ -883,6 +980,11 @@ function toggleEditForm(idx) {
     document.getElementById('edit-phone-' + idx).value    = l.phone;
     document.getElementById('edit-headline-' + idx).value = l.headline;
     document.getElementById('edit-details-' + idx).value  = l.details;
+    document.getElementById('edit-photo-' + idx).value    = '';
+    document.getElementById('edit-remove-photo-' + idx).checked = false;
+    document.getElementById('edit-photo-current-' + idx).innerHTML = l.photo
+      ? `<img src="${esc(l.photo)}" alt="Current photo">`
+      : '<em>No photo currently attached.</em>';
   }
 }
 
@@ -909,10 +1011,18 @@ async function confirmEdit(idx) {
   const newPhone    = document.getElementById('edit-phone-' + idx).value.trim();
   const newHeadline = document.getElementById('edit-headline-' + idx).value.trim();
   const newDetails  = document.getElementById('edit-details-' + idx).value.trim();
+  const photoFile   = document.getElementById('edit-photo-' + idx).files[0];
+  const removePhoto = document.getElementById('edit-remove-photo-' + idx).checked;
 
   if (!newCategory || !newHeadline || !newDetails) {
     statusEl.className = 'edit-status err';
     statusEl.textContent = '⚠️ Please fill in category, headline and details.';
+    return;
+  }
+
+  if (photoFile && photoFile.size > 15 * 1024 * 1024) {
+    statusEl.className = 'edit-status err';
+    statusEl.textContent = '⚠️ That photo is too large. Please choose one under 15MB.';
     return;
   }
 
@@ -922,20 +1032,33 @@ async function confirmEdit(idx) {
   statusEl.textContent = 'Saving…';
 
   try {
+    const payload = {
+      action: 'editListing',
+      originalHeadline: listing.headline,
+      name: listing.name,
+      unit: listing.unit,
+      phone: newPhone,
+      category: newCategory,
+      headline: newHeadline,
+      details: newDetails
+    };
+
+    if (removePhoto) {
+      payload.removePhoto = true;
+    } else if (photoFile) {
+      statusEl.textContent = 'Preparing photo…';
+      const photo = await resizeImageToBase64(photoFile, 1400, 0.82);
+      payload.photoData     = photo.data;
+      payload.photoMimeType = photo.mimeType;
+      payload.photoName     = photo.name;
+      statusEl.textContent = 'Saving…';
+    }
+
     await fetch(SCRIPT_URL, {
       method : 'POST',
       mode   : 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body   : JSON.stringify({
-        action: 'editListing',
-        originalHeadline: listing.headline,
-        name: listing.name,
-        unit: listing.unit,
-        phone: newPhone,
-        category: newCategory,
-        headline: newHeadline,
-        details: newDetails
-      })
+      body   : JSON.stringify(payload)
     });
 
     // Update the local copy so the page reflects the change straight away
@@ -943,6 +1066,8 @@ async function confirmEdit(idx) {
     listing.category = newCategory;
     listing.headline = newHeadline;
     listing.details  = newDetails;
+    if (removePhoto)     listing.photo = '';
+    else if (photoFile)  listing.photo = URL.createObjectURL(photoFile); // instant local preview
     statusEl.className = 'edit-status ok';
     statusEl.textContent = 'Saved ✅';
     setTimeout(function() { renderListings(); }, 900);

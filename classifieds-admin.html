@@ -367,6 +367,35 @@
   }
   .btn-cancel-edit-admin:hover { border-color: #999; color: #333; }
 
+  .card-photo img {
+    max-width: 220px;
+    max-height: 160px;
+    border-radius: 6px;
+    display: block;
+    margin-bottom: 10px;
+    object-fit: cover;
+  }
+
+  .edit-photo-current img {
+    max-width: 160px;
+    max-height: 120px;
+    border-radius: 6px;
+    display: block;
+    margin-bottom: 8px;
+    object-fit: cover;
+  }
+  .edit-photo-current em { font-size: 0.8em; color: #999; }
+  .edit-remove-photo-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 0.8em;
+    color: #444;
+    font-weight: 400;
+  }
+  .edit-remove-photo-row input { width: auto; }
+
   @media (max-width: 600px) {
     .content-wrap { padding: 20px 14px 50px; }
     .tab-btn { padding: 8px 14px; font-size: 14px; }
@@ -384,7 +413,7 @@
 </header>
 
 <div class="back-bar">
-  <a href="#" onclick="history.back(); return false;">← Back</a>
+  <a href="hub-admin.html">🛠️ Back to Admin Dashboard</a>
 </div>
 
 <div class="content-wrap">
@@ -457,16 +486,17 @@ function parseCSV(text) {
   const cols  = splitCSV(text);
   for (let i = 1; i < cols.length; i++) {
     const row = cols[i];
-    if (row.length < 6) continue;
+    if (row.length < 7) continue;
     const timestamp = row[0].trim();
     const name      = row[1].trim();
     const unit      = row[2].trim();
     const phone     = row[3].trim();
     const category  = row[4].trim();
     const headline  = row[5].trim();
-    const details   = row.slice(6, row.length - 1).join(',').trim();
-    const status    = row[row.length - 1].trim().toLowerCase();
-    rows.push({ timestamp, name, unit, phone, category, headline, details, status });
+    const details   = row.slice(6, row.length - 2).join(',').trim();
+    const status    = row[row.length - 2].trim().toLowerCase();
+    const photo     = row[row.length - 1].trim();
+    rows.push({ timestamp, name, unit, phone, category, headline, details, status, photo });
   }
   return rows.reverse(); // newest first
 }
@@ -554,6 +584,7 @@ function renderTab() {
     return `<div class="admin-card" id="${cardId}" data-cat="${esc(r.category)}">
   <div class="card-cat">${esc(r.category)}</div>
   <div class="card-headline">${esc(r.headline)}</div>
+  ${r.photo ? `<div class="card-photo"><img src="${esc(r.photo)}" alt="${esc(r.headline)}" loading="lazy"></div>` : ''}
   <div class="card-details">${esc(r.details)}</div>
   <div class="card-meta">
     <span>👤 ${esc(r.name)}</span>
@@ -585,6 +616,15 @@ function renderTab() {
       <div class="full-width">
         <label>Details</label>
         <textarea id="edit-details-${cardId}" maxlength="600"></textarea>
+      </div>
+      <div class="full-width">
+        <label>Photo</label>
+        <div class="edit-photo-current" id="edit-photo-current-${cardId}"></div>
+        <input type="file" id="edit-photo-${cardId}" accept="image/*">
+        <div class="edit-remove-photo-row">
+          <input type="checkbox" id="edit-remove-photo-${cardId}">
+          <label for="edit-remove-photo-${cardId}">Remove current photo</label>
+        </div>
       </div>
     </div>
     <div class="edit-panel-btns">
@@ -667,6 +707,11 @@ function toggleAdminEdit(cardId, timestamp, headline) {
       document.getElementById('edit-phone-' + cardId).value    = row.phone;
       document.getElementById('edit-headline-' + cardId).value = row.headline;
       document.getElementById('edit-details-' + cardId).value  = row.details;
+      document.getElementById('edit-photo-' + cardId).value    = '';
+      document.getElementById('edit-remove-photo-' + cardId).checked = false;
+      document.getElementById('edit-photo-current-' + cardId).innerHTML = row.photo
+        ? `<img src="${esc(row.photo)}" alt="Current photo">`
+        : '<em>No photo currently attached.</em>';
     }
   }
 }
@@ -682,10 +727,18 @@ async function saveAdminEdit(cardId, timestamp, headline) {
   const newPhone    = document.getElementById('edit-phone-' + cardId).value.trim();
   const newHeadline = document.getElementById('edit-headline-' + cardId).value.trim();
   const newDetails  = document.getElementById('edit-details-' + cardId).value.trim();
+  const photoFile   = document.getElementById('edit-photo-' + cardId).files[0];
+  const removePhoto = document.getElementById('edit-remove-photo-' + cardId).checked;
 
   if (!newCategory || !newHeadline || !newDetails) {
     msgEl.className = 'card-status-msg err';
     msgEl.textContent = '⚠️ Category, headline and details can\'t be empty.';
+    return;
+  }
+
+  if (photoFile && photoFile.size > 15 * 1024 * 1024) {
+    msgEl.className = 'card-status-msg err';
+    msgEl.textContent = '⚠️ That photo is too large. Please choose one under 15MB.';
     return;
   }
 
@@ -694,20 +747,33 @@ async function saveAdminEdit(cardId, timestamp, headline) {
   msgEl.textContent = 'Saving…';
 
   try {
+    const payload = {
+      action: 'editListing',
+      originalHeadline: row.headline,
+      name: row.name,
+      unit: row.unit,
+      phone: newPhone,
+      category: newCategory,
+      headline: newHeadline,
+      details: newDetails
+    };
+
+    if (removePhoto) {
+      payload.removePhoto = true;
+    } else if (photoFile) {
+      msgEl.textContent = 'Preparing photo…';
+      const photo = await resizeImageToBase64(photoFile, 1400, 0.82);
+      payload.photoData     = photo.data;
+      payload.photoMimeType = photo.mimeType;
+      payload.photoName     = photo.name;
+      msgEl.textContent = 'Saving…';
+    }
+
     await fetch(SCRIPT_URL, {
       method : 'POST',
       mode   : 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body   : JSON.stringify({
-        action: 'editListing',
-        originalHeadline: row.headline,
-        name: row.name,
-        unit: row.unit,
-        phone: newPhone,
-        category: newCategory,
-        headline: newHeadline,
-        details: newDetails
-      })
+      body   : JSON.stringify(payload)
     });
 
     // Update our local copy so the page reflects the change straight away
@@ -715,6 +781,8 @@ async function saveAdminEdit(cardId, timestamp, headline) {
     row.category = newCategory;
     row.headline = newHeadline;
     row.details  = newDetails;
+    if (removePhoto)     row.photo = '';
+    else if (photoFile)  row.photo = URL.createObjectURL(photoFile); // instant local preview
 
     msgEl.className = 'card-status-msg ok';
     msgEl.textContent = 'Saved ✅';
@@ -739,6 +807,38 @@ function formatDate(raw) {
   const d = new Date(raw);
   if (isNaN(d)) return raw;
   return d.toLocaleDateString('en-AU', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+}
+
+// Shrinks a chosen photo down to a sensible size before it's sent, so a
+// large phone-camera photo doesn't take forever to upload. Returns the
+// resized photo as base64 text, ready to send to the server.
+function resizeImageToBase64(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else       { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve({
+          data: dataUrl.split(',')[1],
+          mimeType: 'image/jpeg',
+          name: (file.name || 'photo').replace(/\.[^.]+$/, '') + '.jpg'
+        });
+      };
+      img.onerror = function() { reject(new Error('Could not read that image.')); };
+      img.src = e.target.result;
+    };
+    reader.onerror = function() { reject(new Error('Could not read that image.')); };
+    reader.readAsDataURL(file);
+  });
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
