@@ -421,63 +421,16 @@
   // Fetches the notices CSV, counts Active notices newer than the
   // resident's last visit to rc-notices.html, and shows a red
   // numbered badge on the sidebar link.
-  (function() {
-    var CSV_URL   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
-    var LS_KEY    = 'rcNoticesLastVisit';
-    var lastVisit = localStorage.getItem(LS_KEY) ? parseInt(localStorage.getItem(LS_KEY)) : 0;
+  // NOTE: the actual fetch is deferred to DOMContentLoaded (below)
+  // so that the sidebar span exists in the page before we try to
+  // update it.
+  var RC_BADGE_CSV   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
+  var RC_BADGE_LS_KEY = 'rcNoticesLastVisit';
 
-    // If currently on rc-notices.html, record visit and don't show badge
-    if (window.location.pathname.indexOf('rc-notices.html') !== -1) {
-      localStorage.setItem(LS_KEY, Date.now().toString());
-      return;
-    }
-
-    // Parse DD/MM/YYYY HH:MM timestamp into JS milliseconds
-    function parseTimestamp(ts) {
-      try {
-        var parts = ts.trim().split(' ');
-        var d = parts[0].split('/');
-        var t = parts[1] ? parts[1].split(':') : ['0','0'];
-        return new Date(parseInt(d[2]), parseInt(d[1])-1, parseInt(d[0]),
-                        parseInt(t[0]), parseInt(t[1])).getTime();
-      } catch(e) { return 0; }
-    }
-
-    function parseCSVLine(line) {
-      var cols = [], cur = '', inQ = false;
-      for (var i = 0; i < line.length; i++) {
-        var ch = line[i];
-        if (ch === '"')              { inQ = !inQ; }
-        else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
-        else                         { cur += ch; }
-      }
-      cols.push(cur);
-      return cols;
-    }
-
-    fetch(CSV_URL + '&t=' + Date.now())
-      .then(function(r) { return r.text(); })
-      .then(function(csv) {
-        var lines = csv.trim().split('\n');
-        var count = 0;
-        for (var i = 1; i < lines.length; i++) {
-          var cols   = parseCSVLine(lines[i]);
-          var ts     = cols[0] ? cols[0].trim() : '';
-          var status = cols[5] ? cols[5].trim() : '';
-          if (status === 'Active' && parseTimestamp(ts) > lastVisit) {
-            count++;
-          }
-        }
-        if (count > 0) {
-          var badge = document.getElementById('sb-rc-badge');
-          if (badge) {
-            badge.textContent   = count;
-            badge.style.display = 'inline-flex';
-          }
-        }
-      })
-      .catch(function() { /* silently fail — badge just won't show */ });
-  })();
+  // If currently on rc-notices.html, record visit now (before fetch runs)
+  if (window.location.pathname.indexOf('rc-notices.html') !== -1) {
+    localStorage.setItem(RC_BADGE_LS_KEY, Date.now().toString());
+  }
 
 
   // Find the body's first meaningful child after header/breadcrumbs
@@ -571,6 +524,57 @@
       header.appendChild(dateDiv);
     }
   })();
+
+  // ── RC NOTICES BADGE FETCH ────────────────────────────────
+  // Runs here so the sidebar span is guaranteed to exist in the DOM.
+  if (window.location.pathname.indexOf('rc-notices.html') === -1) {
+    var lastVisit = localStorage.getItem(RC_BADGE_LS_KEY) ? parseInt(localStorage.getItem(RC_BADGE_LS_KEY)) : 0;
+
+    function parseTimestamp(ts) {
+      try {
+        var parts = ts.trim().split(' ');
+        var d = parts[0].split('/');
+        var t = parts[1] ? parts[1].split(':') : ['0','0'];
+        return new Date(parseInt(d[2]), parseInt(d[1])-1, parseInt(d[0]),
+                        parseInt(t[0]), parseInt(t[1])).getTime();
+      } catch(e) { return 0; }
+    }
+
+    function parseCSVLineForBadge(line) {
+      var cols = [], cur = '', inQ = false;
+      for (var i = 0; i < line.length; i++) {
+        var ch = line[i];
+        if (ch === '"')              { inQ = !inQ; }
+        else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+        else                         { cur += ch; }
+      }
+      cols.push(cur);
+      return cols;
+    }
+
+    fetch(RC_BADGE_CSV + '&t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var lines = csv.trim().split('\n');
+        var count = 0;
+        for (var i = 1; i < lines.length; i++) {
+          var cols   = parseCSVLineForBadge(lines[i]);
+          var ts     = cols[0] ? cols[0].trim() : '';
+          var status = cols[5] ? cols[5].trim() : '';
+          if (status === 'Active' && parseTimestamp(ts) > lastVisit) {
+            count++;
+          }
+        }
+        if (count > 0) {
+          var badge = document.getElementById('sb-rc-badge');
+          if (badge) {
+            badge.textContent   = count;
+            badge.style.display = 'inline-flex';
+          }
+        }
+      })
+      .catch(function() { /* silently fail — badge just won't show */ });
+  }
 
   // ── FONT SIZE CONTROL ─────────────────────────────────────
     var savedSize = localStorage.getItem('hubFontSize') || '18';
