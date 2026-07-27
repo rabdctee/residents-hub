@@ -1184,41 +1184,25 @@ if (month === 2 && day === 17) {
 (function() {
   var RC_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';
   var lastVisit = parseInt(localStorage.getItem('rcNoticesLastVisit') || '0', 10);
-
-  function parseCSVRows(text) {
-    var rows = [], row = [], cur = '', inQ = false;
-    for (var i = 0; i < text.length; i++) {
-      var c = text[i], n = text[i+1];
-      if (inQ) {
-        if (c==='"' && n==='"') { cur+='"'; i++; }
-        else if (c==='"') { inQ=false; }
-        else { cur+=c; }
-      } else {
-        if (c==='"') { inQ=true; }
-        else if (c===',') { row.push(cur); cur=''; }
-        else if (c==='\r' && n==='\n') { row.push(cur); rows.push(row); row=[]; cur=''; i++; }
-        else if (c==='\n'||c==='\r') { row.push(cur); rows.push(row); row=[]; cur=''; }
-        else { cur+=c; }
-      }
-    }
-    if (cur||row.length) { row.push(cur); rows.push(row); }
-    return rows;
+  function parseTimestamp(ts) {
+    try {
+      var parts = ts.trim().split(' ');
+      var d = parts[0].split('/');
+      var t = parts[1] ? parts[1].split(':') : ['0','0'];
+      return new Date(parseInt(d[2]), parseInt(d[1])-1, parseInt(d[0]),
+                      parseInt(t[0]), parseInt(t[1])).getTime();
+    } catch(e) { return 0; }
   }
-
   fetch(RC_CSV + '&t=' + Date.now())
     .then(function(r) { return r.text(); })
     .then(function(csv) {
-      var rows = parseCSVRows(csv);
+      var lines = csv.trim().replace(/\r/g, '').split('\n');
       var newCount = 0;
-      for (var i = 1; i < rows.length; i++) {
-        var cols = rows[i];
+      for (var i = 1; i < lines.length; i++) {
+        var cols = lines[i].split(',');
+        var ts     = cols[0] ? cols[0].trim() : '';
         var status = cols[5] ? cols[5].trim() : '';
-        var type   = cols[4] ? cols[4].trim() : '';
-        var dateStr = cols[1] ? cols[1].trim() : '';
-        if (status === 'Active' && type === 'Public' && dateStr) {
-          var noticeTime = new Date(dateStr).getTime();
-          if (!isNaN(noticeTime) && noticeTime > lastVisit) newCount++;
-        }
+        if (status === 'Active' && parseTimestamp(ts) > lastVisit) newCount++;
       }
       if (newCount > 0) {
         var badge = document.getElementById('rcNoticesBadge');
@@ -1228,10 +1212,9 @@ if (month === 2 && day === 17) {
         }
       }
     })
-    .catch(function() {}); // Fail silently — banner still works without the badge
+    .catch(function() {});
 })();
 </script>
-
 <!-- MANUAL FALLBACK ANNOUNCEMENTS -->
 <div class="announcement">
 <div class="announcement-text">
