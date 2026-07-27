@@ -540,44 +540,48 @@
       } catch(e) { return 0; }
     }
 
-    function parseCSVLineForBadge(line) {
-      var cols = [], cur = '', inQ = false;
-      for (var i = 0; i < line.length; i++) {
-        var ch = line[i];
-        if (ch === '"')              { inQ = !inQ; }
-        else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
-        else                         { cur += ch; }
+    function parseCSVRowsForBadge(text) {
+      var rows = [], row = [], cur = '', inQ = false;
+      for (var i = 0; i < text.length; i++) {
+        var c = text[i], n = text[i+1];
+        if (inQ) {
+          if (c==='"' && n==='"') { cur+='"'; i++; }
+          else if (c==='"') { inQ=false; }
+          else { cur+=c; }
+        } else {
+          if (c==='"') { inQ=true; }
+          else if (c===',') { row.push(cur); cur=''; }
+          else if (c==='\r' && n==='\n') { row.push(cur); rows.push(row); row=[]; cur=''; i++; }
+          else if (c==='\n'||c==='\r') { row.push(cur); rows.push(row); row=[]; cur=''; }
+          else { cur+=c; }
+        }
       }
-      cols.push(cur);
-      return cols;
+      if (cur||row.length) { row.push(cur); rows.push(row); }
+      return rows;
     }
 
-    console.log('[Badge] lastVisit =', lastVisit, lastVisit ? new Date(lastVisit).toString() : 'never');
     fetch(RC_BADGE_CSV + '&t=' + Date.now())
       .then(function(r) { return r.text(); })
       .then(function(csv) {
-        console.log('[Badge] CSV first 200 chars:', csv.substring(0, 200));
-        var lines = csv.trim().replace(/\r/g, '').split('\n');
+        var rows  = parseCSVRowsForBadge(csv);
         var count = 0;
-        for (var i = 1; i < lines.length; i++) {
-          var cols      = parseCSVLineForBadge(lines[i]);
-          var ts        = cols[0] ? cols[0].trim() : '';
-          var status    = cols[5] ? cols[5].trim() : '';
-          var noticetime = parseTimestamp(ts);
-          console.log('[Badge] row', i, '| ts:', ts, '| status:', status, '| newer than lastVisit?', noticetime > lastVisit);
-          if (status === 'Active' && noticetime > lastVisit) {
-            count++;
+        for (var i = 1; i < rows.length; i++) {
+          var cols   = rows[i];
+          var ts     = cols[0] ? cols[0].trim() : '';
+          var status = cols[5] ? cols[5].trim() : '';
+          if (status === 'Active' && parseTimestamp(ts) > lastVisit) count++;
+        }
+        if (count > 0) {
+          var badge = document.getElementById('sb-rc-badge');
+          if (badge) {
+            badge.textContent   = count;
+            badge.style.display = 'inline-flex';
           }
         }
-        console.log('[Badge] total count =', count);
-        var badge = document.getElementById('sb-rc-badge');
-        console.log('[Badge] badge element found?', !!badge);
-        if (count > 0 && badge) {
-          badge.textContent   = count;
-          badge.style.display = 'inline-flex';
-        }
       })
-      .catch(function(err) { console.warn('[Badge] fetch failed:', err); });
+      .catch(function() {});
+
+
   }
 
   // ── FONT SIZE CONTROL ─────────────────────────────────────
