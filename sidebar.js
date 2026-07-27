@@ -557,7 +557,7 @@
       .then(function(r) { return r.text(); })
       .then(function(csv) {
         console.log('[Badge] CSV first 200 chars:', csv.substring(0, 200));
-        var lines = csv.trim().split('\n');
+        var lines = csv.trim().replace(/\r/g, '').split('\n');
         var count = 0;
         for (var i = 1; i < lines.length; i++) {
           var cols      = parseCSVLineForBadge(lines[i]);
