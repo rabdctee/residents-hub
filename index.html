@@ -1488,52 +1488,46 @@ For Manor events use the sign-up sheets in the Manor.
 
 <script>
 (function() {
-  function parseDateStr(str) {
+  var EVENTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUcetKOKOyNwn1SSqI54xBIGTHV2YVTXcD1o2UTFo7uKGoqCts-nUqFSMEhLxXanK0CA/exec';
+
+  // Stored date format is dd/mm/yyyy (matches the Manage Events tool)
+  function parseDdMmYyyy(str) {
     if (!str) return null;
-    if (str.includes('-')) {
-      var p = str.split('-');
-      return new Date(p[0], p[1]-1, p[2]);
-    }
-    if (str.includes('/')) {
       var p = str.split('/');
+    if (p.length !== 3) return null;
       return new Date(p[2], p[1]-1, p[0]);
     }
-    var d = new Date(str);
-    return isNaN(d) ? null : d;
+  // Stored time is 24-hour "HH:MM" — show it as e.g. "9:00 am"
+  function fmtTimeDisplay(t) {
+    if (!t) return '';
+    var parts = t.split(':');
+    var h = parseInt(parts[0], 10), m = parts[1];
+    var ampm = h >= 12 ? 'pm' : 'am';
+    h = h % 12 || 12;
+    return h + ':' + m + ' ' + ampm;
   }
 
   function loadFullEventsList() {
     var container = document.getElementById('eventsListFull');
     if (!container) return;
-    var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/Events!A2:F100?key=' + API_KEY;
 
-    fetch(url)
+    fetch(EVENTS_SCRIPT_URL + '?action=getEvents')
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        if (!data.values) {
-          container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
-          return;
-        }
         var today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        var events = data.values
-          .map(function(row) {
-            // Same column order used on the Home page: Timestamp | Event Name | Date | Display From | Event Time | Location
+        var events = (data.events || [])
+          .map(function(ev) {
             return {
-              eventName:   row[1] || '',
-              eventDate:   parseDateStr(row[2]),
-              displayFrom: parseDateStr(row[3]),
-              eventTime:   row[4] || '',
-              location:    row[5] || ''
+              name:     ev.name || '',
+              dateObj:  parseDdMmYyyy(ev.date),
+              time:     ev.time || '',
+              location: ev.location || ''
             };
           })
-          .filter(function(e) {
-            if (!e.eventDate || e.eventDate < today) return false;
-            if (e.displayFrom && e.displayFrom > today) return false;
-            return true;
-          })
-          .sort(function(a, b) { return a.eventDate - b.eventDate; });
+          .filter(function(e) { return e.dateObj && e.dateObj >= today; })
+          .sort(function(a, b) { return a.dateObj - b.dateObj; });
 
         if (events.length === 0) {
           container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
@@ -1543,10 +1537,10 @@ For Manor events use the sign-up sheets in the Manor.
         var dateOpts = { weekday: 'short', month: 'short', day: 'numeric' };
         var html = '';
         events.forEach(function(ev) {
-          var when = ev.eventDate.toLocaleDateString('en-AU', dateOpts) + (ev.eventTime ? ' · ' + ev.eventTime : '');
+          var when = ev.dateObj.toLocaleDateString('en-AU', dateOpts) + (ev.time ? ' · ' + fmtTimeDisplay(ev.time) : '');
           html += '<div class="event-item">';
           html += '<div class="event-date">' + when + '</div>';
-          html += '<div class="event-name">' + ev.eventName + '</div>';
+          html += '<div class="event-name">' + ev.name + '</div>';
           if (ev.location) {
             html += '<div style="color:#5f6368;font-size:0.85em;margin-top:2px;">📍 ' + ev.location + '</div>';
           }
@@ -3286,7 +3280,7 @@ function loadEvents() {
 
             const events = data.values
                 .map(row => {
-                    // New column order: Timestamp | Event Name | Date | Display From | Event Time | Location
+                    // Actual sheet column order: Timestamp | Your Name | Event Name | Date | Event Time | Location
                     const parseDateStr = (str) => {
                         if (!str) return null;
                         if (str.includes('-')) {
@@ -3304,18 +3298,13 @@ function loadEvents() {
                     };
                     return {
                         timestamp:   row[0],
-                        eventName:   row[1] || '',
-                        eventDate:   parseDateStr(row[2]),
-                        displayFrom: parseDateStr(row[3]),
+                        eventName:   row[2] || '',
+                        eventDate:   parseDateStr(row[3]),
                         eventTime:   row[4] || '',
                         location:    row[5] || ''
                     };
                 })
-                .filter(e => {
-                    if (!e.eventDate || e.eventDate < today) return false;
-                    if (e.displayFrom && e.displayFrom > today) return false;
-                    return true;
-                })
+                .filter(e => e.eventDate && e.eventDate >= today)
                 .sort((a, b) => a.eventDate - b.eventDate)
                 .slice(0, 4);
 
