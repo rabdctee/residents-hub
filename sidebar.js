@@ -347,7 +347,7 @@
         </div>
         <div class="sb-acc-body${openWhatsOn}" id="sba-whatson">
           <ul class="sb-links">
-            <li><a href="index.html" onclick="if(window.showPage){showPage('newsletter');return false;}else{window.location.href='index.html#newsletter';return false;}">📰 News</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('newsletter');return false;}else{window.location.href='index.html#newsletter';return false;}">📰 Newsletter</a></li>
             <li><a href="index.html" onclick="if(window.showPage){showPage('events');return false;}else{window.location.href='index.html#events';return false;}">🗓️ Calendar</a></li>
             <li><a href="fireside-talks.html"${isActive('fireside-talks.html') ? ' class="sb-active"' : ''}>☕ Fireside Talks</a></li>
             <li><a href="concerts.html"${isActive('concerts.html') ? ' class="sb-active"' : ''}>🎵 City Hall Concerts</a></li>
