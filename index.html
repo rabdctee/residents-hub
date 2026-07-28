@@ -1438,7 +1438,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof MEETING_FILES !== 'undefined') {
     MEETING_FILES['nl-2026'] = [
       { name: 'March 2026 - Social Club Newsletter', id: '1I8cSXJYkDq3MUvHYAK0otJ5Z-VV9n8Nj' },
-      { name: 'April 2026 - Social Club Newsletter',  id: '1nihFNB856-teO_fmpnn24IbUAJYIeFl2' }
+      { name: 'April 2026 - Social Club Newsletter',  id: '1nihFNB856-teO_fmpnn24IbUAJYIeFl2' },
+      { name: 'August 2026 - Bridgeman Times', url: 'https://bdrv.au/newsletters/bridgeman-times-2026-08.html' }
     ];
     FOLDER_IDS['nl-2026'] = '1is6DyI9YmeVKcmKbxjPcBIeY8WC1zqXT';
   }
@@ -1726,13 +1727,18 @@ function buildFileList(key) {
   var folderId = FOLDER_IDS[key];
   var html = '';
 
-  files.forEach(function(f) {
-    if (f.id) {
-      var href = 'view-document.html?id=' + encodeURIComponent(f.id) +
+files.forEach(function(f) {
+    var href;
+    if (f.url) {
+      href = f.url;                      // direct link, e.g. a GitHub-hosted HTML newsletter
+    } else if (f.id) {
+      href = 'view-document.html?id=' + encodeURIComponent(f.id) +
         '&title=' + encodeURIComponent(f.name) +
         '&back=community-info';
-      html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+    } else {
+      return;
     }
+    html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
   });
 
   ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
