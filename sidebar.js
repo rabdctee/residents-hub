@@ -309,12 +309,14 @@
 
   // ── BUILD SIDEBAR HTML ─────────────────────────────────────
   // Determine which accordion group should auto-open
-  var communityPages = ['info-sessions.html','classifieds.html','memories.html','community-life.html','village-map.html'];
-  var socialPages    = ['index.html','news.html','fireside-talks.html','concerts.html','sports-hub.html','savings.html'];
-  var infoPages      = ['useful-links.html','how-to.html','contacts.html']; // Guides & Links
+  var whatsOnPages  = ['fireside-talks.html','concerts.html','sports-hub.html'];
+  var communityPages = ['classifieds.html','community-life.html','savings.html'];
+  var villagePages  = ['our-story.html','memories.html','village-map.html'];
+  var infoPages      = ['info-sessions.html','useful-links.html','how-to.html','contacts.html'];
 
-  var openNews      = socialPages.some(isActive)     ? ' open' : '';
+  var openWhatsOn   = whatsOnPages.some(isActive)    ? ' open' : '';
   var openCommunity = communityPages.some(isActive)  ? ' open' : '';
+  var openVillage   = villagePages.some(isActive)    ? ' open' : '';
   var openInfo      = infoPages.some(isActive)       ? ' open' : '';
 
   var sidebarHTML = `
@@ -339,43 +341,52 @@
         <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>🌏 World News</a></li>
       </ul>
 
-      <!-- Social Happenings -->
-        <div class="sb-acc-header${openNews}" onclick="sbToggle('sba-news')">
-          🎉 Social Happenings <span class="sb-acc-arrow">▼</span>
+      <!-- What's On -->
+        <div class="sb-acc-header${openWhatsOn}" onclick="sbToggle('sba-whatson')">
+          🎉 What's On <span class="sb-acc-arrow">▼</span>
         </div>
-        <div class="sb-acc-body${openNews}" id="sba-news">
+        <div class="sb-acc-body${openWhatsOn}" id="sba-whatson">
           <ul class="sb-links">
             <li><a href="index.html" onclick="if(window.showPage){showPage('newsletter');return false;}else{window.location.href='index.html#newsletter';return false;}">📰 News</a></li>
-            <li><a href="index.html" onclick="if(window.showPage){showPage('events');return false;}else{window.location.href='index.html#events';return false;}">🎉 Events</a></li>
-            <li><a href="fireside-talks.html"${isActive('fireside-talks.html') ? ' class="sb-active"' : ''}>🔥 Fireside Talks</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('events');return false;}else{window.location.href='index.html#events';return false;}">🗓️ Calendar</a></li>
+            <li><a href="fireside-talks.html"${isActive('fireside-talks.html') ? ' class="sb-active"' : ''}>☕ Fireside Talks</a></li>
             <li><a href="concerts.html"${isActive('concerts.html') ? ' class="sb-active"' : ''}>🎵 City Hall Concerts</a></li>
             <li><a href="sports-hub.html"${isActive('sports-hub.html') ? ' class="sb-active"' : ''}>🏆 Sports Hub</a></li>
+          </ul>
+        </div>
+
+        <!-- Community -->
+        <div class="sb-acc-header${openCommunity}" onclick="sbToggle('sba-community')">
+          👥 Community <span class="sb-acc-arrow">▼</span>
+        </div>
+        <div class="sb-acc-body${openCommunity}" id="sba-community">
+          <ul class="sb-links">
             <li><a href="index.html" onclick="if(window.showPage){showPage('activity-contacts');return false;}else{window.location.href='index.html#activity-contacts';return false;}">🚶 Activities &amp; Contacts</a></li>
-            <li><a href="savings.html"${isActive('savings.html') ? ' class="sb-active"' : ''}>🛒 Best Buys</a></li>
+            <li><a href="community-life.html"${isActive('community-life.html') ? ' class="sb-active"' : ''}>🎨 Artists &amp; Creators</a></li>
+            <li><a href="classifieds.html"${isActive('classifieds.html') ? ' class="sb-active"' : ''}>📌 Classifieds</a></li>
+            <li><a href="savings.html"${isActive('savings.html') ? ' class="sb-active"' : ''}>💲 Price Checker</a></li>
           </ul>
         </div>
 
         <!-- Our Village -->
-        <div class="sb-acc-header${openCommunity}" onclick="sbToggle('sba-community')">
-          🏘️ Our Village <span class="sb-acc-arrow">▼</span>
+        <div class="sb-acc-header${openVillage}" onclick="sbToggle('sba-village')">
+          🏡 Our Village <span class="sb-acc-arrow">▼</span>
         </div>
-        <div class="sb-acc-body${openCommunity}" id="sba-community">
+        <div class="sb-acc-body${openVillage}" id="sba-village">
           <ul class="sb-links">
             <li><a href="our-story.html"${isActive('our-story.html') ? ' class="sb-active"' : ''}>📜 History</a></li>
             <li><a href="memories.html"${isActive('memories.html') ? ' class="sb-active"' : ''}>🕰️ Down Memory Lane</a></li>
-            <li><a href="community-life.html"${isActive('community-life.html') ? ' class="sb-active"' : ''}>🎨 Artists &amp; Creators</a></li>
-            <li><a href="info-sessions.html"${isActive('info-sessions.html') ? ' class="sb-active"' : ''}>🎓 Information Sessions</a></li>
-            <li><a href="classifieds.html"${isActive('classifieds.html') ? ' class="sb-active"' : ''}>📌 Classifieds</a></li>
             <li><a href="village-map.html"${isActive('village-map.html') ? ' class="sb-active"' : ''}>🗺️ Village Map</a></li>
           </ul>
         </div>
 
-        <!-- Information -->
+        <!-- Helpful Information -->
         <div class="sb-acc-header${openInfo}" onclick="sbToggle('sba-info')">
-          📚 Guides &amp; Links <span class="sb-acc-arrow">▼</span>
+          📚 Helpful Information <span class="sb-acc-arrow">▼</span>
         </div>
         <div class="sb-acc-body${openInfo}" id="sba-info">
           <ul class="sb-links">
+            <li><a href="info-sessions.html"${isActive('info-sessions.html') ? ' class="sb-active"' : ''}>🎤 Information Sessions</a></li>
             <li><a href="useful-links.html"${isActive('useful-links.html') ? ' class="sb-active"' : ''}>🔗 Useful Links</a></li>
             <li><a href="how-to.html"${isActive('how-to.html') ? ' class="sb-active"' : ''}>❓ Help &amp; How To</a></li>
             ${isActive('how-to.html') ? `
@@ -387,7 +398,7 @@
             <li style="background:#f0f6fc;"><a href="#group-new-tech"        style="padding-left:30px;font-size:0.8em;color:#555;">🤖 New Technology</a></li>
             ` : ''}
             <li><a href="index.html" onclick="if(window.showPage){showPage('contact');return false;}else{window.location.href='index.html?page=contact';return false;}"${isActive('contacts.html') ? ' class="sb-active"' : ''}>📞 Contacts</a></li>
-            <li><a href="index.html" onclick="if(window.showPage){showPage('about');return false;}else{window.location.href='index.html?page=about';return false;}">📖 About This Website</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('about');return false;}else{window.location.href='index.html?page=about';return false;}">ℹ️ About This Website</a></li>
           </ul>
         </div>
 
