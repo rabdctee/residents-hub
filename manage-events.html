@@ -364,6 +364,27 @@
           <input class="form-input" type="text" id="evtLocation" placeholder="e.g. MRC, Manor, PDR">
         </div>
 
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="evtCategory">Event Type *</label>
+            <select class="form-input" id="evtCategory">
+              <option value="Social Club">🎉 Social Club Event</option>
+              <option value="Manor">🏢 Manor Event (run by Aveo)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="evtRegistration">Registration *</label>
+            <select class="form-input" id="evtRegistration">
+              <option value="Required">📝 Registration required</option>
+              <option value="Free">🆓 Free — no registration needed</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="evtCost">Cost <span style="font-weight:400;color:var(--grey);">(optional — leave blank if free)</span></label>
+          <input class="form-input" type="text" id="evtCost" placeholder="e.g. $10 per person">
+        </div>
+
         <div class="form-group">
           <label class="form-label" for="evtEmail">Coordinator Email *</label>
           <input class="form-input" type="email" id="evtEmail" placeholder="e.g. bdsc.convenor@gmail.com" value="bdsc.convenor@gmail.com">
@@ -385,6 +406,7 @@
 
         <div class="btn-row" id="formBtns">
           <button class="btn-primary" id="submitBtn" onclick="submitForm()">✓ Add Event</button>
+          <button class="btn-primary" id="addAnotherBtn" onclick="cancelEdit()" style="display:none;">➕ Add Another Event</button>
           <button class="btn-secondary" id="cancelBtn" onclick="cancelEdit()" style="display:none;">✕ Cancel</button>
         </div>
       </div>
@@ -486,6 +508,26 @@
     <div class="form-group">
       <label class="form-label">Location *</label>
       <input class="form-input" type="text" id="editEvtLocation">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Event Type *</label>
+        <select class="form-input" id="editEvtCategory">
+          <option value="Social Club">🎉 Social Club Event</option>
+          <option value="Manor">🏢 Manor Event (run by Aveo)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Registration *</label>
+        <select class="form-input" id="editEvtRegistration">
+          <option value="Required">📝 Registration required</option>
+          <option value="Free">🆓 Free — no registration needed</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cost <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
+      <input class="form-input" type="text" id="editEvtCost" placeholder="e.g. $10 per person">
     </div>
     <div class="form-group">
       <label class="form-label">Coordinator Email *</label>
@@ -699,17 +741,39 @@
       });
   }
 
+  function parseDdMmYyyy(str) {
+    if (!str) return null;
+    var p = str.split('/');
+    if (p.length !== 3) return null;
+    return new Date(p[2], p[1]-1, p[0]);
+  }
+
   function renderEventList() {
     if (allEvents.length === 0) {
       document.getElementById('eventList').innerHTML =
         '<div class="no-events">No events yet. Use the form below to add one.</div>';
       return;
     }
+    var sorted = allEvents.slice().sort(function(a, b) {
+      var da = parseDdMmYyyy(a.date), db = parseDdMmYyyy(b.date);
+      if (!da && !db) return 0;
+      if (!da) return 1;
+      if (!db) return -1;
+      return da - db;
+    });
     var html = '';
-    allEvents.forEach(function(ev) {
+    sorted.forEach(function(ev) {
+      var isManor = (ev.category === 'Manor');
+      var badge = isManor
+        ? '<span style="background:#eee;color:#555;padding:2px 8px;border-radius:10px;font-size:0.78em;">🏢 Manor</span>'
+        : '<span style="background:#e8f0fe;color:#1a56b0;padding:2px 8px;border-radius:10px;font-size:0.78em;">🎉 Social Club</span>';
+      var regBadge = isManor ? '' :
+        (ev.registration === 'Free'
+          ? ' &nbsp;<span style="color:#2e7d32;font-size:0.78em;">🆓 Free' + (ev.cost ? '' : ' — no registration') + '</span>'
+          : ' &nbsp;<span style="color:#555;font-size:0.78em;">📝 Registration required' + (ev.cost ? ' · ' + esc(ev.cost) : '') + '</span>');
       html += '<div class="event-row">' +
         '<div class="event-row-info">' +
-          '<div class="event-row-name">' + esc(ev.name) + '</div>' +
+          '<div class="event-row-name">' + esc(ev.name) + ' &nbsp;' + badge + regBadge + '</div>' +
           '<div class="event-row-meta">' +
             '📅 ' + fmtDate(ev.date) +
             (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
@@ -730,12 +794,15 @@
 
   // ── Add form ──
   function submitForm() {
-    var name     = document.getElementById('evtName').value.trim();
-    var date     = document.getElementById('evtDate').value;
-    var time     = document.getElementById('evtTime').value;
-    var location = document.getElementById('evtLocation').value.trim();
-    var email    = document.getElementById('evtEmail').value.trim();
-    var link     = document.getElementById('evtLink').value.trim();
+    var name         = document.getElementById('evtName').value.trim();
+    var date         = document.getElementById('evtDate').value;
+    var time         = document.getElementById('evtTime').value;
+    var location     = document.getElementById('evtLocation').value.trim();
+    var email        = document.getElementById('evtEmail').value.trim();
+    var link         = document.getElementById('evtLink').value.trim();
+    var category     = document.getElementById('evtCategory').value;
+    var registration = document.getElementById('evtRegistration').value;
+    var cost         = document.getElementById('evtCost').value.trim();
     var row      = document.getElementById('editRow').value;
 
     if (!name || !date || !time || !location || !email) {
@@ -749,7 +816,8 @@
       action: row ? 'editEvent' : 'addEvent',
       row: row, name: name,
       date: fmtDate(date), time: time,
-      location: location, email: email, link: link
+      location: location, email: email, link: link,
+      category: category, registration: registration, cost: cost
     };
 
     fetch(EVENTS_URL, { method:'POST', body:JSON.stringify(payload) })
@@ -763,19 +831,17 @@
             cancelEdit();
             loadEvents();
           } else {
-            // Event saved — reload list then go straight to upload page
-            showAlert('alertForm','success','Event added! Taking you to the upload page…');
+            // Event saved — reveal the optional "Upload Doc" button instead of forcing the upload page.
+            // Keep the saved details in the form (Upload Doc needs them); "Add Another Event" clears it.
+            showAlert('alertForm','success','Event added! Upload a flyer below if you have one, or add another event.');
             loadEvents(function(newEvents) {
               var match = (newEvents || allEvents).filter(function(e){ return e.name === name; });
               if (match.length) {
-                var saved = match[match.length - 1];
-                var params = new URLSearchParams({ event: saved.name, date: saved.date, row: saved.row });
-                window.location.href = 'upload-event-document.html?' + params.toString();
-              } else {
-                // Fallback — just reset if row not found
-                showAlert('alertForm','success','Event added successfully.');
-                cancelEdit();
+                document.getElementById('editRow').value = match[match.length - 1].row;
+                document.getElementById('uploadDocGroup').style.display = 'block';
               }
+              document.getElementById('submitBtn').style.display = 'none';
+              document.getElementById('addAnotherBtn').style.display = 'inline-block';
             });
           }
         } else {
@@ -797,7 +863,12 @@
     document.getElementById('evtLocation').value = '';
     document.getElementById('evtEmail').value    = 'bdsc.convenor@gmail.com';
     document.getElementById('evtLink').value     = '';
+    document.getElementById('evtCategory').value     = 'Social Club';
+    document.getElementById('evtRegistration').value = 'Required';
+    document.getElementById('evtCost').value          = '';
     document.getElementById('submitBtn').textContent = '✓ Add Event';
+    document.getElementById('submitBtn').style.display = 'inline-block';
+    document.getElementById('addAnotherBtn').style.display = 'none';
     document.getElementById('cancelBtn').style.display = 'none';
     document.getElementById('uploadDocGroup').style.display = 'none';
     document.getElementById('uploadDocLinkDisplay').style.display = 'none';
@@ -828,6 +899,9 @@
     document.getElementById('editEvtLocation').value = ev.location || '';
     document.getElementById('editEvtEmail').value    = ev.email    || '';
     document.getElementById('editEvtLink').value     = ev.link     || '';
+    document.getElementById('editEvtCategory').value     = ev.category     || 'Social Club';
+    document.getElementById('editEvtRegistration').value = ev.registration || 'Required';
+    document.getElementById('editEvtCost').value          = ev.cost         || '';
     document.getElementById('editModal').classList.add('open');
   }
 
@@ -843,6 +917,9 @@
     var location = document.getElementById('editEvtLocation').value.trim();
     var email    = document.getElementById('editEvtEmail').value.trim();
     var link     = document.getElementById('editEvtLink').value.trim();
+    var category     = document.getElementById('editEvtCategory').value;
+    var registration = document.getElementById('editEvtRegistration').value;
+    var cost         = document.getElementById('editEvtCost').value.trim();
 
     if (!name || !date || !time || !location || !email) {
       showToast('Please fill in all required fields.', true); return;
@@ -853,7 +930,8 @@
     fetch(EVENTS_URL, { method:'POST', body:JSON.stringify({
       action:'editEvent', row:row, name:name,
       date:fmtDate(date), time:time,
-      location:location, email:email, link:link
+      location:location, email:email, link:link,
+      category:category, registration:registration, cost:cost
     })})
     .then(function(r){ return r.json(); })
     .then(function(data){

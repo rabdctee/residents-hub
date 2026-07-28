@@ -1493,10 +1493,10 @@ For Manor events use the sign-up sheets in the Manor.
   // Stored date format is dd/mm/yyyy (matches the Manage Events tool)
   function parseDdMmYyyy(str) {
     if (!str) return null;
-      var p = str.split('/');
+    var p = str.split('/');
     if (p.length !== 3) return null;
-      return new Date(p[2], p[1]-1, p[0]);
-    }
+    return new Date(p[2], p[1]-1, p[0]);
+  }
   // Stored time is 24-hour "HH:MM" — show it as e.g. "9:00 am"
   function fmtTimeDisplay(t) {
     if (!t) return '';
@@ -1520,10 +1520,13 @@ For Manor events use the sign-up sheets in the Manor.
         var events = (data.events || [])
           .map(function(ev) {
             return {
-              name:     ev.name || '',
-              dateObj:  parseDdMmYyyy(ev.date),
-              time:     ev.time || '',
-              location: ev.location || ''
+              name:         ev.name || '',
+              dateObj:      parseDdMmYyyy(ev.date),
+              time:         ev.time || '',
+              location:     ev.location || '',
+              category:     ev.category     || 'Social Club',
+              registration: ev.registration || 'Required',
+              cost:         ev.cost || ''
             };
           })
           .filter(function(e) { return e.dateObj && e.dateObj >= today; })
@@ -1538,12 +1541,28 @@ For Manor events use the sign-up sheets in the Manor.
         var html = '';
         events.forEach(function(ev) {
           var when = ev.dateObj.toLocaleDateString('en-AU', dateOpts) + (ev.time ? ' · ' + fmtTimeDisplay(ev.time) : '');
+          var isManor = (ev.category === 'Manor');
+
+          var categoryBadge = isManor
+            ? '<span style="background:#eee;color:#555;padding:2px 9px;border-radius:10px;font-size:0.78em;font-weight:600;">🏢 Manor Event</span>'
+            : '<span style="background:#e8f0fe;color:#1a56b0;padding:2px 9px;border-radius:10px;font-size:0.78em;font-weight:600;">🎉 Social Club</span>';
+
+          var regBadge = '';
+          if (isManor) {
+            regBadge = '<span style="color:#5f6368;font-size:0.82em;">See sign-up sheets in the Manor</span>';
+          } else if (ev.registration === 'Free') {
+            regBadge = '<span style="color:#2e7d32;font-size:0.82em;">🆓 Free — just turn up' + (ev.cost ? ' · ' + ev.cost : '') + '</span>';
+          } else {
+            regBadge = '<span style="color:#5f6368;font-size:0.82em;">📝 Registration required' + (ev.cost ? ' · ' + ev.cost : ' · Free') + '</span>';
+          }
+
           html += '<div class="event-item">';
           html += '<div class="event-date">' + when + '</div>';
           html += '<div class="event-name">' + ev.name + '</div>';
           if (ev.location) {
             html += '<div style="color:#5f6368;font-size:0.85em;margin-top:2px;">📍 ' + ev.location + '</div>';
           }
+          html += '<div style="margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">' + categoryBadge + regBadge + '</div>';
           html += '</div>';
         });
         container.innerHTML = html;
