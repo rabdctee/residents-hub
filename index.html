@@ -1785,15 +1785,20 @@ files.forEach(function(f) {
           '&back=community-info" target="_blank">📄 ' + f.name + '</a></li>';
       });
 
-      // Rebuild the list with registry files (newest first) + hardcoded files at bottom
+// Rebuild the list with registry files (newest first) + hardcoded files at bottom
       var baseHtml = '';
       files.forEach(function(f) {
-        if (f.id) {
-          var href = 'view-document.html?id=' + encodeURIComponent(f.id) +
+        var href;
+        if (f.url) {
+          href = f.url;
+        } else if (f.id) {
+          href = 'view-document.html?id=' + encodeURIComponent(f.id) +
             '&title=' + encodeURIComponent(f.name) +
             '&back=community-info';
-          baseHtml += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+        } else {
+          return;
         }
+        baseHtml += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
       });
 
       ul.innerHTML = newHtml + baseHtml ||
