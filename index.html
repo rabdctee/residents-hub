@@ -1078,6 +1078,7 @@ border-bottom:2px solid #000;
       <ul class="sb-links">
         <li><a href="#" onclick="showPage('newsletter',this);return false;">📰 Newsletters</a></li>
         <li><a href="#" onclick="showPage('events',this);return false;">🗓️ Calendar</a></li>
+        <li><a href="#" onclick="showPage('events-list',this);return false;">🎉 Events</a></li>
         <li><a href="fireside-talks.html">☕ Fireside Talks</a></li>
         <li><a href="concerts.html">🎵 City Hall Concerts</a></li>
         <li><a href="sports-hub.html">🏆 Sports Hub</a></li>
@@ -1327,7 +1328,7 @@ setInterval(loadWeather, 1800000);
             html += '<div class="event-date" style="cursor:pointer;">' + ev.date + '</div>';
             html += '</a>';
           } else {
-            html += '<a href="#" onclick="showPage(\'events\'); return false;" style="text-decoration:none;color:inherit;">';
+            html += '<a href="#" onclick="showPage(\'events-list\'); return false;" style="text-decoration:none;color:inherit;">';
             html += '<div class="event-date" style="cursor:pointer;">' + ev.date + '</div>';
             html += '</a>';
           }
@@ -1447,8 +1448,24 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </div>
 
-<!-- EVENTS -->
+<!-- CALENDAR -->
 <div id="events" class="page-content">
+
+<h2 style="margin-bottom:15px;">🗓️ Village Calendar</h2>
+
+<div class="note-box">
+📌 Looking for the full list of events, or want to <strong>register for one</strong>? Visit the
+<a href="#" onclick="showPage('events-list');return false;" style="color:#2c5aa0;font-weight:bold;">Events page</a>.
+</div>
+
+<div style="margin:20px 0;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;">
+<iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" style="border:0" width="100%" height="600" frameborder="0" scrolling="yes"></iframe>
+</div>
+
+</div>
+
+<!-- EVENTS LIST -->
+<div id="events-list" class="page-content">
 
 <!-- STICKY REGISTER BUTTON -->
 <div class="sticky-action-bar">
@@ -1459,17 +1476,91 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 </div>
 
-
 <div class="note-box">
 📌 <strong>Please note:</strong><br>
 Registrations are for <strong>Social Club events only</strong>.
 For Manor events use the sign-up sheets in the Manor.
 </div>
-<h2 style="margin-bottom:15px;">🗓️ Village Calendar</h2>
 
-<div style="margin:20px 0;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;">
-<iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" style="border:0" width="100%" height="600" frameborder="0" scrolling="yes"></iframe>
-</div>
+<h2 style="margin-bottom:15px;">🎉 Events</h2>
+
+<div id="eventsListFull"><div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">Loading events…</div></div>
+
+<script>
+(function() {
+  function parseDateStr(str) {
+    if (!str) return null;
+    if (str.includes('-')) {
+      var p = str.split('-');
+      return new Date(p[0], p[1]-1, p[2]);
+    }
+    if (str.includes('/')) {
+      var p = str.split('/');
+      return new Date(p[2], p[1]-1, p[0]);
+    }
+    var d = new Date(str);
+    return isNaN(d) ? null : d;
+  }
+
+  function loadFullEventsList() {
+    var container = document.getElementById('eventsListFull');
+    if (!container) return;
+    var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/Events!A2:F100?key=' + API_KEY;
+
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!data.values) {
+          container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
+          return;
+        }
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        var events = data.values
+          .map(function(row) {
+            // Same column order used on the Home page: Timestamp | Event Name | Date | Display From | Event Time | Location
+            return {
+              eventName:   row[1] || '',
+              eventDate:   parseDateStr(row[2]),
+              displayFrom: parseDateStr(row[3]),
+              eventTime:   row[4] || '',
+              location:    row[5] || ''
+            };
+          })
+          .filter(function(e) {
+            if (!e.eventDate || e.eventDate < today) return false;
+            if (e.displayFrom && e.displayFrom > today) return false;
+            return true;
+          })
+          .sort(function(a, b) { return a.eventDate - b.eventDate; });
+
+        if (events.length === 0) {
+          container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
+          return;
+        }
+
+        var dateOpts = { weekday: 'short', month: 'short', day: 'numeric' };
+        var html = '';
+        events.forEach(function(ev) {
+          var when = ev.eventDate.toLocaleDateString('en-AU', dateOpts) + (ev.eventTime ? ' · ' + ev.eventTime : '');
+          html += '<div class="event-item">';
+          html += '<div class="event-date">' + when + '</div>';
+          html += '<div class="event-name">' + ev.eventName + '</div>';
+          if (ev.location) {
+            html += '<div style="color:#5f6368;font-size:0.85em;margin-top:2px;">📍 ' + ev.location + '</div>';
+          }
+          html += '</div>';
+        });
+        container.innerHTML = html;
+      })
+      .catch(function() {
+        container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">Events unavailable.</div>';
+      });
+  }
+  document.addEventListener('DOMContentLoaded', loadFullEventsList);
+})();
+</script>
 
 </div>
 
@@ -2285,8 +2376,9 @@ var pageHistory = [];  // stack of page IDs visited
 var PAGE_TITLES = {
     'home':             '🏠 Home',
     'about':            '📖 About',
-    'newsletters':      '📰 News',
-    'events':           '🎉 Events',
+    'newsletter':       '📰 Newsletters',
+    'events':           '🗓️ Calendar',
+    'events-list':      '🎉 Events',
     'activity-contacts':'🚶 Activities',
     'noticeboard':      '📌 Notice Board',
     'village-info':     '🔒 Resident-Only',
@@ -2426,7 +2518,8 @@ function performSearch() {
     
 var searchableContent = [
     // ── Top-level pages ──────────────────────────────────────
-    {page: 'events',            section: null, title: '🗓️ Events Calendar',           keywords: 'events calendar activities schedule social what on anzac day gunfire breakfast singalong opera ballet show upcoming'},
+    {page: 'events',            section: null, title: '🗓️ Village Calendar',           keywords: 'calendar dates schedule when is'},
+    {page: 'events-list',       section: null, title: '🎉 Events',                     keywords: 'events register registration activities schedule social what on anzac day gunfire breakfast singalong opera ballet show upcoming sign up'},
     {page: 'activity-contacts', section: null, title: '🎉 Activities & Groups',        keywords: 'activities groups clubs fitness walking art craft rummykub rumikub cards games social bridge mahjong swimming pool exercise bingo canasta bowls carpet bowls kelly pool scrabble trivia poetry singing line dancing book club morning tea movies'},
     {page: 'contact',           section: null, title: '📞 Emergency Services & Community Contacts',         keywords: 'emergency ambulance fire police doctor medical urgent help 000 energex maintenance after hours'},
     {page: 'contact',           section: null, title: '📞 Committee Contacts',         keywords: 'office reception manager maintenance admin phone call committee email rick fay jocelyn kathy marie judy chairperson treasurer secretary convenor feedback'},

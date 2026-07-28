@@ -349,6 +349,7 @@
           <ul class="sb-links">
             <li><a href="index.html" onclick="if(window.showPage){showPage('newsletter');return false;}else{window.location.href='index.html#newsletter';return false;}">📰 Newsletters</a></li>
             <li><a href="index.html" onclick="if(window.showPage){showPage('events');return false;}else{window.location.href='index.html#events';return false;}">🗓️ Calendar</a></li>
+            <li><a href="index.html" onclick="if(window.showPage){showPage('events-list');return false;}else{window.location.href='index.html#events-list';return false;}">🎉 Events</a></li>
             <li><a href="fireside-talks.html"${isActive('fireside-talks.html') ? ' class="sb-active"' : ''}>☕ Fireside Talks</a></li>
             <li><a href="concerts.html"${isActive('concerts.html') ? ' class="sb-active"' : ''}>🎵 City Hall Concerts</a></li>
             <li><a href="sports-hub.html"${isActive('sports-hub.html') ? ' class="sb-active"' : ''}>🏆 Sports Hub</a></li>
