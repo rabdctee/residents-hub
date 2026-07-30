@@ -568,6 +568,18 @@ padding:12px 15px;
 border-bottom:1px solid #e0e0e0;
 }
 
+/* Column widths */
+.activities-table th:nth-child(1),
+.activities-table td:nth-child(1){
+    width:28%;
+}
+
+.activities-table th:nth-child(5),
+.activities-table td:nth-child(5){
+    width:240px;
+    white-space:nowrap;
+}
+    
 .activities-table tbody tr:nth-child(even){
 background-color:#f9f9f9;
 }
@@ -585,6 +597,8 @@ color:#1F4E79;
 .contact-link{
 color:#1F4E79;
 text-decoration:none;
+white-space:nowrap;
+display:inline-block;
 }
 
 .contact-link:hover{
@@ -2711,8 +2725,18 @@ function renderActivities(rows) {
 
         const rowId = 'activity-desc-' + i;
         const phoneHref = contact ? activitiesPhoneHref(contact) : null;
+        let contactText = activitiesEscapeHtml(contact);
+
+        // Replace the first space with a middle dot
+        contactText = contactText.replace(/^(.+?)\s+(\d)/, '$1&nbsp;&middot;&nbsp;$2');
+        
+        // Keep the whole contact together
+        contactText = contactText.replace(/ /g, '&nbsp;');
+        
         const contactHtml = contact
-            ? (phoneHref ? '<a href="' + phoneHref + '" class="contact-link">' + activitiesEscapeHtml(contact) + '</a>' : activitiesEscapeHtml(contact))
+            ? (phoneHref
+                ? '<a href="' + phoneHref + '" class="contact-link">' + contactText + '</a>'
+                : contactText)
             : '---';
 
         html += '<tr class="activity-row">';
