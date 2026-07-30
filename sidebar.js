@@ -387,10 +387,10 @@
         </div>
         <div class="sb-acc-body${openInfo}" id="sba-info">
           <ul class="sb-links">
-            <li><a href="info-sessions.html"${isActive('info-sessions.html') ? ' class="sb-active"' : ''}>🎤 Information Sessions</a></li>
-            <li><a href="useful-links.html"${isActive('useful-links.html') ? ' class="sb-active"' : ''}>🔗 Useful Links</a></li>
             <li><a href="getting-around.html"${isActive('getting-around.html') ? ' class="sb-active"' : ''}>🚌 Getting Around</a></li>
             <li><a href="how-to.html"${isActive('how-to.html') ? ' class="sb-active"' : ''}>❓ Help &amp; How To</a></li>
+            <li><a href="info-sessions.html"${isActive('info-sessions.html') ? ' class="sb-active"' : ''}>🎤 Information Sessions</a></li>
+            <li><a href="useful-links.html"${isActive('useful-links.html') ? ' class="sb-active"' : ''}>🔗 Useful Links</a></li>
             ${isActive('how-to.html') ? `
             <li style="background:#f0f6fc;"><a href="#group-getting-started" style="padding-left:30px;font-size:0.8em;color:#555;">🚀 Getting Started</a></li>
             <li style="background:#f0f6fc;"><a href="#group-apps-services"   style="padding-left:30px;font-size:0.8em;color:#555;">📱 Phones, TV &amp; Email</a></li>
