@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Around | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+
+    /* ===== Base ===== */
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:#f5f5f5;
+      font-size:18px;
+      line-height:1.7;
+      color:#1a1a1a;
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      background:#ffffff;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background:#1F4E79;
+      color:white;
+      padding:36px 20px 30px;
+      text-align:center;
+    }
+    header h1{ font-size:2em; font-weight:700; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.15em;
+      font-weight:700;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(255,255,255,0.18);
+      border-radius:6px;
+      padding:6px 22px;
+    }
+
+    /* Navigation handled by sidebar.js */
+
+    /* ===== Page content ===== */
+    .page-content{ padding:36px 25px 50px; }
+
+    /* ===== Info box ===== */
+    .info-box{
+      background:#E7F1FB;
+      border-left:4px solid #1F4E79;
+      padding:16px 20px;
+      margin:0 0 28px;
+      border-radius:0 4px 4px 0;
+      font-size:0.95em;
+    }
+
+    .last-checked{
+      color:#555;
+      font-size:0.85em;
+      font-style:italic;
+      margin:-18px 0 28px;
+    }
+
+    /* ===== Collapsible sections ===== */
+    .collapsible-header{
+      background:#E7F1FB;
+      border:1px solid #c5d8ee;
+      border-radius:6px;
+      padding:16px 18px;
+      cursor:pointer;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      transition:background 0.2s;
+      margin-bottom:8px;
+    }
+    .collapsible-header:hover{ background:#cfe0f5; }
+
+    .collapsible-title{
+      color:#1F4E79;
+      font-size:1.05em;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .collapsible-arrow{
+      color:#1F4E79;
+      font-size:1.1em;
+      transition:transform 0.3s ease;
+      font-weight:700;
+    }
+    .collapsible-arrow.open{ transform:rotate(180deg); }
+
+    .collapsible-content{
+      display:none;
+      padding:16px 18px;
+      background:#ffffff;
+      border:1px solid #c5d8ee;
+      border-top:none;
+      border-radius:0 0 6px 6px;
+      margin-top:-8px;
+      margin-bottom:12px;
+    }
+    .collapsible-content.open{ display:block; }
+
+    /* ===== Document / link items ===== */
+    .doc-link{
+      display:block;
+      padding:11px 14px;
+      background:#f8fbff;
+      border:1px solid #c5d8ee;
+      border-radius:5px;
+      color:#1F4E79;
+      text-decoration:none;
+      margin-bottom:8px;
+      transition:all 0.2s;
+      font-size:0.92em;
+      font-weight:600;
+    }
+    .doc-link:hover{ background:#E7F1FB; border-color:#1F4E79; }
+
+    .section-note{
+      color:#555;
+      font-size:0.88em;
+      margin-top:8px;
+      font-style:italic;
+    }
+
+    /* ===== Quick contacts table ===== */
+    .contact-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:0.92em;
+    }
+    .contact-table th{
+      background:#1F4E79;
+      color:white;
+      text-align:left;
+      padding:10px 12px;
+    }
+    .contact-table td{
+      padding:10px 12px;
+      border-bottom:1px solid #E7F1FB;
+      vertical-align:top;
+    }
+    .contact-table tr:nth-child(even) td{ background:#f8fbff; }
+    .contact-table a{ color:#1F4E79; font-weight:700; text-decoration:none; }
+    .contact-table a:hover{ text-decoration:underline; }
+
+    /* ===== Responsive ===== */
+    @media(max-width:768px){
+      header h1{ font-size:1.6em; }
+      .page-content{ padding:24px 16px 40px; }
+      .contact-table{ font-size:0.85em; }
+    }
+
+  </style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>🚌 Getting Around</span></p>
+  </header>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <div class="info-box">
+      A guide to public transport, shopping shuttles, taxi subsidies and community transport
+      available to eligible residents in Brisbane. Click any section below to expand it.
+      All links open in a new tab.
+    </div>
+    <p class="last-checked">Last checked: 30 July 2026</p>
+
+    <!-- ══════════════════
+         PUBLIC TRANSPORT
+    ══════════════════════ -->
+    <div id="sec-public"></div>
+    <div class="collapsible-header" onclick="toggleSection('public-transport')">
+      <span class="collapsible-title">🚌 Public Transport (Translink)</span>
+      <span id="public-transport-arrow" class="collapsible-arrow">▼</span>
+    </div>
+    <div id="public-transport" class="collapsible-content">
+      <p style="color:#444;font-size:0.88em;margin-bottom:12px;">
+        Buses, trains, ferries and trams across Brisbane and South East Queensland.
+      </p>
+
+      <p><strong>50-cent flat fare</strong></p>
+      <p style="margin-bottom:10px;">
+        Every trip on the Translink network costs just <strong>50 cents</strong>, no matter how far you travel
+        or how you pay (go card, tap-and-go debit/credit card, or paper ticket). This is a permanent
+        Queensland Government scheme, not a trial. It does <strong>not</strong> apply to the Airtrain.
+      </p>
+
+      <p><strong>Free off-peak travel for seniors</strong></p>
+      <p style="margin-bottom:10px;">
+        If you hold a <strong>Senior go card</strong> or <strong>Seniors Card + go</strong>, you can travel free
+        on Brisbane City Council buses during off-peak times, and on CityCats and ferries on weekdays
+        (normal fares apply on weekends). You must tap on and tap off every trip to receive this — if you
+        forget, you'll be charged a fixed fare. Free travel is not available on Queensland Rail trains.
+      </p>
+
+      <p><strong>Getting a Senior go card or Seniors Card + go</strong></p>
+      <ul style="margin:8px 0 12px 20px;">
+        <li>Senior go card: available from any go card retailer or Queensland Rail station ticket office, or by calling 13 12 30</li>
+        <li>Seniors Card + go: apply online or call 13 74 68 — no $5 refundable deposit required</li>
+        <li>Either way, you'll need to add at least $5 credit before you can travel</li>
+      </ul>
+
+      <a href="https://translink.com.au/tickets-and-fares/concessions/seniors" target="_blank" class="doc-link">🔗 Translink — Seniors fares and concessions</a>
+      <a href="https://www.brisbane.qld.gov.au/transport-and-parking/public-transport/free-off-peak-travel-for-seniors" target="_blank" class="doc-link">🔗 Brisbane City Council — Free off-peak travel for seniors</a>
+      <a href="https://www.queenslandrailtravel.com.au/Planyourtrip/concession-fares" target="_blank" class="doc-link">🔗 Queensland Rail — Concession fares</a>
+      <p class="section-note">Includes free long-distance QR travel for Seniors Card holders (up to 4 trips per financial year).</p>
+    </div>
+
+
+    <!-- ══════════════════
+         COUNCIL CABS & SHOPPING TRANSPORT
+    ══════════════════════ -->
+    <div id="sec-cabs"></div>
+    <div class="collapsible-header" onclick="toggleSection('council-cabs')">
+      <span class="collapsible-title">🚕 Council Cabs &amp; Shopping Transport</span>
+      <span id="council-cabs-arrow" class="collapsible-arrow">▼</span>
+    </div>
+    <div id="council-cabs" class="collapsible-content">
+      <p style="color:#444;font-size:0.88em;margin-bottom:12px;">
+        A subsidised, shared-taxi service that collects you from home and takes you to your local
+        shopping centre and back, on set days and times.
+      </p>
+
+      <p><strong>Who can use it</strong></p>
+      <ul style="margin:8px 0 12px 20px;">
+        <li>You are 60 years or older, or</li>
+        <li>You have a mobility impairment, or</li>
+        <li>You hold a Pensioner Concession Card or Commonwealth Seniors Health Card</li>
+      </ul>
+
+      <p><strong>Cost</strong></p>
+      <p style="margin-bottom:10px;">
+        Each one-way trip costs between <strong>$1 and $2.50</strong>, paid to the driver before you set off.
+      </p>
+
+      <p><strong>Good to know</strong></p>
+      <ul style="margin:8px 0 12px 20px;">
+        <li>Mobility aid and wheelchair-accessible vehicles are available on request</li>
+        <li>A child in your care can travel free, and the Companion Card is honoured for carers</li>
+        <li>You're limited to 3 reusable bags or 5 plastic bags of shopping per trip</li>
+        <li>The service does not run on public holidays</li>
+        <li>Ask to make your booking permanent so you don't need to call every week</li>
+      </ul>
+
+      <p><strong>How to book</strong></p>
+      <p style="margin-bottom:10px;">
+        Phone <strong><a href="tel:0734032227" style="color:#1F4E79;">07 3403 2227</a></strong> by 12 noon the day
+        before you want to travel, and ask for Council Cabs. As Bridgeman Downs is within the Brisbane
+        City Council area, residents here are covered — the operator can confirm your day, pick-up time
+        and drop-off shopping centre.
+      </p>
+
+      <a href="https://www.brisbane.qld.gov.au/transport-and-parking/public-transport/council-cabs" target="_blank" class="doc-link">🔗 Brisbane City Council — Council Cabs</a>
+      <a href="https://www.brisbane.qld.gov.au/transport-and-parking/public-transport/personalised-public-transport" target="_blank" class="doc-link">🔗 Brisbane City Council — Personalised Public Transport</a>
+      <p class="section-note">A related door-to-door maxi-cab service connecting residents to local hubs and Translink services.</p>
+    </div>
+
+
+    <!-- ══════════════════
+         TAXI & SUBSIDY SCHEMES
+    ══════════════════════ -->
+    <div id="sec-taxi"></div>
+    <div class="collapsible-header" onclick="toggleSection('taxi-subsidy')">
+      <span class="collapsible-title">🚗 Taxi &amp; Subsidy Schemes</span>
+      <span id="taxi-subsidy-arrow" class="collapsible-arrow">▼</span>
+    </div>
+    <div id="taxi-subsidy" class="collapsible-content">
+      <p style="margin-bottom:10px;">
+        The <strong>Taxi Subsidy Scheme</strong> helps eligible Queenslanders with a disability cover the
+        cost of regular taxi travel, subsidising around half the fare up to a set maximum per trip.
+      </p>
+      <a href="https://www.qld.gov.au/disability/out-and-about/subsidies-concessions-passes/taxi-subsidy" target="_blank" class="doc-link">🔗 QLD Government — Taxi Subsidy Scheme</a>
+      <p class="section-note">Check eligibility criteria and how to apply on the Queensland Government website.</p>
+    </div>
+
+
+    <!-- ══════════════════
+         COMMUNITY & MEDICAL TRANSPORT
+    ══════════════════════ -->
+    <div id="sec-community"></div>
+    <div class="collapsible-header" onclick="toggleSection('community-transport')">
+      <span class="collapsible-title">🚐 Community &amp; Medical Transport</span>
+      <span id="community-transport-arrow" class="collapsible-arrow">▼</span>
+    </div>
+    <div id="community-transport" class="collapsible-content">
+      <p><strong>Over 65 (or 50+ for Aboriginal and Torres Strait Islander people)</strong></p>
+      <p style="margin-bottom:10px;">
+        My Aged Care provides subsidised, door-to-door transport for medical appointments, shopping and
+        social activities. Local providers include Burnie Brae, Communify, Footprints Community Care,
+        St John's Ambulance and Transitcare.
+      </p>
+      <a href="https://www.myagedcare.gov.au/" target="_blank" class="doc-link">🔗 My Aged Care</a>
+
+      <p style="margin-top:14px;"><strong>Under 65</strong></p>
+      <p style="margin-bottom:10px;">
+        The Queensland Government's Community Transport Program supports people under 65 who have
+        trouble accessing transport and aren't already receiving help through another government program.
+      </p>
+      <a href="https://www.qld.gov.au/community/getting-support-health-social-issue/community-home-care-services/community-transport-program" target="_blank" class="doc-link">🔗 QLD Government — Community Transport Program</a>
+    </div>
+
+
+    <!-- ══════════════════
+         QUICK CONTACTS
+    ══════════════════════ -->
+    <div id="sec-contacts"></div>
+    <div class="collapsible-header" onclick="toggleSection('quick-contacts')">
+      <span class="collapsible-title">📞 Quick Contacts</span>
+      <span id="quick-contacts-arrow" class="collapsible-arrow">▼</span>
+    </div>
+    <div id="quick-contacts" class="collapsible-content">
+      <table class="contact-table">
+        <tr><th>Service</th><th>Phone</th></tr>
+        <tr><td>Council Cabs bookings</td><td><a href="tel:0734032227">07 3403 2227</a></td></tr>
+        <tr><td>Translink (fares &amp; trip planning)</td><td><a href="tel:131230">13 12 30</a></td></tr>
+        <tr><td>Seniors Card + go application</td><td><a href="tel:137468">13 74 68</a></td></tr>
+        <tr><td>Seniors Enquiry Line</td><td><a href="tel:1300135500">1300 135 500</a></td></tr>
+        <tr><td>My Aged Care</td><td><a href="tel:1800200422">1800 200 422</a></td></tr>
+        <tr><td>QGOV (Community Transport Program)</td><td><a href="tel:137468">13 74 68</a></td></tr>
+        <tr><td>Brisbane City Council (general)</td><td><a href="tel:0734038888">07 3403 8888</a></td></tr>
+      </table>
+    </div>
+
+    <div class="info-box" style="margin-top:32px;">
+      💡 <strong>Tip:</strong> All links open in a new tab so you never lose your place on this page.
+      Fares, schedules and phone numbers can change — if something here looks out of date, please let
+      us know using the <strong>Have a Question?</strong> form on the
+      <a href="how-to.html" style="color:#1F4E79;font-weight:700;">Help &amp; How To</a> page.
+    </div>
+
+  </div><!-- end page-content -->
+</div><!-- end container -->
+
+<script>
+
+  function toggleSection(id) {
+    var content = document.getElementById(id);
+    var arrow   = document.getElementById(id + '-arrow');
+    if (content.classList.contains('open')) {
+      content.classList.remove('open');
+      if (arrow) arrow.classList.remove('open');
+    } else {
+      content.classList.add('open');
+      if (arrow) arrow.classList.add('open');
+    }
+  }
+
+  function jumpToSection(sectionId, anchorId) {
+    var allSections = ['public-transport','council-cabs','taxi-subsidy','community-transport','quick-contacts'];
+    allSections.forEach(function(id) {
+      var el  = document.getElementById(id);
+      var arr = document.getElementById(id + '-arrow');
+      if (el)  el.classList.remove('open');
+      if (arr) arr.classList.remove('open');
+    });
+    var content = document.getElementById(sectionId);
+    var arrow   = document.getElementById(sectionId + '-arrow');
+    if (content) content.classList.add('open');
+    if (arrow)   arrow.classList.add('open');
+    setTimeout(function() {
+      var anchor = document.getElementById(anchorId);
+      if (anchor) anchor.scrollIntoView({ behavior:'smooth', block:'start' });
+    }, 100);
+  }
+
+</script>
+
+</body>
+</html>
