@@ -312,7 +312,7 @@
   var whatsOnPages  = ['fireside-talks.html','concerts.html','sports-hub.html'];
   var communityPages = ['classifieds.html','community-life.html','savings.html'];
   var villagePages  = ['our-story.html','memories.html','village-map.html'];
-  var infoPages      = ['info-sessions.html','useful-links.html','how-to.html','contacts.html'];
+  var infoPages      = ['info-sessions.html','useful-links.html','getting-around.html','how-to.html','contacts.html'];
 
   var openWhatsOn   = whatsOnPages.some(isActive)    ? ' open' : '';
   var openCommunity = communityPages.some(isActive)  ? ' open' : '';
@@ -389,6 +389,7 @@
           <ul class="sb-links">
             <li><a href="info-sessions.html"${isActive('info-sessions.html') ? ' class="sb-active"' : ''}>🎤 Information Sessions</a></li>
             <li><a href="useful-links.html"${isActive('useful-links.html') ? ' class="sb-active"' : ''}>🔗 Useful Links</a></li>
+            <li><a href="getting-around.html"${isActive('getting-around.html') ? ' class="sb-active"' : ''}>🚌 Getting Around</a></li>
             <li><a href="how-to.html"${isActive('how-to.html') ? ' class="sb-active"' : ''}>❓ Help &amp; How To</a></li>
             ${isActive('how-to.html') ? `
             <li style="background:#f0f6fc;"><a href="#group-getting-started" style="padding-left:30px;font-size:0.8em;color:#555;">🚀 Getting Started</a></li>
