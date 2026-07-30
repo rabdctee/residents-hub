@@ -1550,10 +1550,13 @@ For Manor events use the sign-up sheets in the Manor.
           var regBadge = '';
           if (isManor) {
             regBadge = '<span style="color:#5f6368;font-size:0.82em;">See sign-up sheets in the Manor</span>';
-          } else if (ev.registration === 'Free') {
-            regBadge = '<span style="color:#2e7d32;font-size:0.82em;">🆓 Free — just turn up' + (ev.cost ? ' · ' + ev.cost : '') + '</span>';
           } else {
-            regBadge = '<span style="color:#5f6368;font-size:0.82em;">📝 Registration required' + (ev.cost ? ' · ' + ev.cost : ' · Free') + '</span>';
+            var regText = ev.registration === 'Not required'
+              ? 'Registration not required'
+              : '📝 Registration required';
+            var costText = ev.cost ? ev.cost : 'Free to attend';
+            regBadge = '<span style="color:#5f6368;font-size:0.82em;">' + regText + '</span>' +
+                       '<span style="color:#2e7d32;font-size:0.82em;">' + costText + '</span>';
           }
 
           html += '<div class="event-item">';
