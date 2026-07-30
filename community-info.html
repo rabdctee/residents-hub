@@ -783,14 +783,14 @@
       { name: 'Social Club AGM Report — 3 Feb 2026',       id: '12bW5PfKkAIW6jG6abx4GXBMgk7I8Y4s3' }
     ],
     'rc-monthly': [
-      { name: 'Jan 2026 — Agenda',                         id: '15es-OAJ7psn5ZQYdveRqLhq317RN0oSq' },
-      { name: 'Jan 2026 — Minutes',                        id: '1WrWpQBImHLLprOeQI2wrWvUeE0vBut59' },
-      { name: 'Feb 2026 — Agenda',                         id: '1qjkOmvGreavw9spxfCwhoCZuCYNJKFk2' },
-      { name: 'Feb 2026 — Minutes',                        id: '1Ikv33wkMqHY69F3x-yKwPse4WMw00u37' },
-      { name: 'Feb 2026 — Proposal (Management of Funds)', id: '15kBLTU1Tj82Fx6JOCInn0jaoAEBqKEIn' },
-      { name: 'Mar 2026 — Agenda',                         id: '1XR4f_qobQoYIDeBjgVtlf9xJ1zyvycY-' },
+      { name: 'Apr 2026 — Agenda',                         id: '1HEWm0DjTNpk4R0wrd2wxvF-baNT-xhMh' },
       { name: 'Mar 2026 — Minutes',                        id: '1Da6IDrsaAYlY_1rGw0Jyok1oGjhPVIrr' },
-      { name: 'Apr 2026 — Agenda',                         id: '1HEWm0DjTNpk4R0wrd2wxvF-baNT-xhMh' }
+      { name: 'Mar 2026 — Agenda',                         id: '1XR4f_qobQoYIDeBjgVtlf9xJ1zyvycY-' },
+      { name: 'Feb 2026 — Proposal (Management of Funds)', id: '15kBLTU1Tj82Fx6JOCInn0jaoAEBqKEIn' },
+      { name: 'Feb 2026 — Minutes',                        id: '1Ikv33wkMqHY69F3x-yKwPse4WMw00u37' },
+      { name: 'Feb 2026 — Agenda',                         id: '1qjkOmvGreavw9spxfCwhoCZuCYNJKFk2' },
+      { name: 'Jan 2026 — Minutes',                        id: '1WrWpQBImHLLprOeQI2wrWvUeE0vBut59' },
+      { name: 'Jan 2026 — Agenda',                         id: '15es-OAJ7psn5ZQYdveRqLhq317RN0oSq' }
     ],
 'rc-quarterly': [
   {
@@ -815,10 +815,10 @@
   }
 ],
     'sc-monthly': [
-      { name: 'Jan 2026 — Minutes',                        id: '1e7tqN541For2m1li68wZVGdhcJb1fRIO' },
-      { name: 'Feb 2026 — Minutes (2 Feb)',                id: '1Lh2lOoFNAmFd8JcmsQiwEfHXwVdmlWKy' },
-      { name: 'Feb 2026 — Minutes (20 Feb)',               id: '1-kQtnECmPGM3rEiR4SPL81PayVcVqpwm' },
       { name: 'Mar 2026 — Agenda',                         id: '1IsZMzMJEkY0emFeG1k_Czg5U7HSp6BxH' },
+      { name: 'Feb 2026 — Minutes (20 Feb)',               id: '1-kQtnECmPGM3rEiR4SPL81PayVcVqpwm' },
+      { name: 'Feb 2026 — Minutes (2 Feb)',                id: '1Lh2lOoFNAmFd8JcmsQiwEfHXwVdmlWKy' },
+      { name: 'Jan 2026 — Minutes',                        id: '1e7tqN541For2m1li68wZVGdhcJb1fRIO' }
     ]
   };
 
@@ -999,7 +999,7 @@
       .then(function(csvText) {
         var lines = csvText.split('\n');
         var existingIds = (MEETING_FILES[key] || []).map(function(f) { return f.id; });
-        var newHtml = '';
+        var newItems = [];
         for (var i = 1; i < lines.length; i++) {
           var line = lines[i].trim();
           if (!line) continue;
@@ -1008,10 +1008,17 @@
           var fileId    = cols[2] ? cols[2].trim() : null;
           var rowFolder = cols[3] ? cols[3].trim() : null;
           if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
-            newHtml += '<li><a href="view-document.html?id=' + encodeURIComponent(fileId) +
-              '&title=' + encodeURIComponent(fileName) + '&back=community-info.html" target="_blank">📄 ' + fileName + '</a></li>';
+            newItems.push({ name: fileName, id: fileId });
           }
         }
+        // Rows in the sheet are added oldest-first (as they're uploaded), so
+        // reverse them here to show the newest upload at the top.
+        newItems.reverse();
+        var newHtml = '';
+        newItems.forEach(function(f) {
+          newHtml += '<li><a href="view-document.html?id=' + encodeURIComponent(f.id) +
+            '&title=' + encodeURIComponent(f.name) + '&back=community-info.html" target="_blank">📄 ' + f.name + '</a></li>';
+        });
         var baseHtml = '';
         files.forEach(function(f) {
           if (f.id) {
@@ -1019,7 +1026,9 @@
           baseHtml += '<li><a href="' + wrapBase + '" target="_blank">📄 ' + f.name + '</a></li>';
         }
         });
-        ul.innerHTML = baseHtml + newHtml ||
+        // New sheet uploads are always more recent than the fixed list above,
+        // so they go on top.
+        ul.innerHTML = newHtml + baseHtml ||
           '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
       })
       .catch(function() {
