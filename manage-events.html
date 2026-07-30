@@ -767,13 +767,16 @@
       var badge = isManor
         ? '<span style="background:#eee;color:#555;padding:2px 8px;border-radius:10px;font-size:0.78em;">🏢 Manor</span>'
         : '<span style="background:#e8f0fe;color:#1a56b0;padding:2px 8px;border-radius:10px;font-size:0.78em;">🎉 Social Club</span>';
-      var regBadge = isManor ? '' :
-        (ev.registration === 'Not required'
-          ? ' &nbsp;<span style="color:#2e7d32;font-size:0.78em;">Not required' + (ev.cost ? '' : ' — no registration') + '</span>'
-          : ' &nbsp;<span style="color:#555;font-size:0.78em;">📝 Registration required' + (ev.cost ? ' · ' + esc(ev.cost) : '') + '</span>');
+      var regBadge = '', costBadge = '';
+      if (!isManor) {
+        regBadge = ev.registration === 'Not required'
+          ? ' &nbsp;<span style="color:#555;font-size:0.78em;">Registration not required</span>'
+          : ' &nbsp;<span style="color:#555;font-size:0.78em;">📝 Registration required</span>';
+        costBadge = ' &nbsp;<span style="color:#2e7d32;font-size:0.78em;">' + (ev.cost ? esc(ev.cost) : 'Free to attend') + '</span>';
+      }
       html += '<div class="event-row">' +
         '<div class="event-row-info">' +
-          '<div class="event-row-name">' + esc(ev.name) + ' &nbsp;' + badge + regBadge + '</div>' +
+          '<div class="event-row-name">' + esc(ev.name) + ' &nbsp;' + badge + regBadge + costBadge + '</div>' +
           '<div class="event-row-meta">' +
             '📅 ' + fmtDate(ev.date) +
             (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
