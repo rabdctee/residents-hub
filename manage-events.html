@@ -376,7 +376,7 @@
             <label class="form-label" for="evtRegistration">Registration *</label>
             <select class="form-input" id="evtRegistration">
               <option value="Required">📝 Registration required</option>
-              <option value="No Registration needed">No registration needed</option>
+              <option value="Not required">Not required</option>
             </select>
           </div>
         </div>
@@ -521,7 +521,7 @@
         <label class="form-label">Registration *</label>
         <select class="form-input" id="editEvtRegistration">
           <option value="Required">📝 Registration required</option>
-          <option value="No Registration Needed">No registration needed</option>
+          <option value="Not required">Not required</option>
         </select>
       </div>
     </div>
@@ -768,8 +768,8 @@
         ? '<span style="background:#eee;color:#555;padding:2px 8px;border-radius:10px;font-size:0.78em;">🏢 Manor</span>'
         : '<span style="background:#e8f0fe;color:#1a56b0;padding:2px 8px;border-radius:10px;font-size:0.78em;">🎉 Social Club</span>';
       var regBadge = isManor ? '' :
-        (ev.registration === 'Free'
-          ? ' &nbsp;<span style="color:#2e7d32;font-size:0.78em;">🆓 Free' + (ev.cost ? '' : ' — no registration') + '</span>'
+        (ev.registration === 'Not required'
+          ? ' &nbsp;<span style="color:#2e7d32;font-size:0.78em;">Not required' + (ev.cost ? '' : ' — no registration') + '</span>'
           : ' &nbsp;<span style="color:#555;font-size:0.78em;">📝 Registration required' + (ev.cost ? ' · ' + esc(ev.cost) : '') + '</span>');
       html += '<div class="event-row">' +
         '<div class="event-row-info">' +
