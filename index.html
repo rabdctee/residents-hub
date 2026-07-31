@@ -1536,6 +1536,17 @@ For Manor events use the sign-up sheets in the Manor.
     h = h % 12 || 12;
     return h + ':' + m + ' ' + ampm;
   }
+  // If the link is a Google Drive file, wrap it in view-document.html so
+  // residents get a "Back" button to return to the Hub instead of being
+  // left stranded in Drive. Other links (e.g. an outside website) open as-is.
+  function toViewerUrl(link, title) {
+    if (!link) return '';
+    var match = link.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (match) {
+      return 'view-document.html?id=' + match[1] + '&title=' + encodeURIComponent(title || '') + '&back=events-list';
+    }
+    return link;
+  }
 
   function loadFullEventsList() {
     var container = document.getElementById('eventsListFull');
@@ -1621,7 +1632,7 @@ For Manor events use the sign-up sheets in the Manor.
           }
           html += '<div style="margin-top:6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">' + categoryBadge + regBadge + '</div>';
           if (ev.link) {
-            html += '<div style="margin-top:6px;"><a href="' + ev.link + '" target="_blank" style="color:#1F4E79;font-weight:600;font-size:0.85em;text-decoration:none;">🔗 More information</a></div>';
+            html += '<div style="margin-top:6px;"><a href="' + toViewerUrl(ev.link, ev.name) + '" target="_blank" style="color:#1F4E79;font-weight:600;font-size:0.85em;text-decoration:none;">🔗 More information</a></div>';
           }
           html += '</div>';
         });
