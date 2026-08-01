@@ -1722,8 +1722,8 @@ For Manor events use the sign-up sheets in the Manor.
             regBadge = '<span style="color:#5f6368;font-size:0.82em;">📝 Use sign-up sheets in the Manor</span>';
           } else {
             var regText = ev.registration === 'Not required'
-              ? 'Registration not required:'
-              : '📝 Registration required:';
+              ? 'Registration not required'
+              : '📝 Registration required';
             var secondPart;
             if (ev.registration === 'Not required') {
               secondPart = ev.cost ? ev.cost : 'Free to attend';
@@ -1739,7 +1739,7 @@ For Manor events use the sign-up sheets in the Manor.
           }
 
           var paymentLine = '';
-          if (!isManor) {
+          if (!isManor && ev.cost) {
             var paymentByDateObj = parseDdMmYyyy(ev.paymentByDate);
             var paymentText = (ev.paymentType === 'Cash by date')
               ? '💵 Pay with cash by ' + (paymentByDateObj ? paymentByDateObj.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }) : 'the date shown above')
