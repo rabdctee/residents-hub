@@ -386,6 +386,25 @@
         </div>
 
         <div class="form-group">
+          <label class="form-label" for="evtRegisterBy">Register By <span style="font-weight:400;color:var(--grey);">(deadline to register, optional)</span></label>
+          <input class="form-input" type="date" id="evtRegisterBy">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="evtPaymentType">Payment</label>
+            <select class="form-input" id="evtPaymentType" onchange="togglePaymentDate('evtPaymentType','evtPaymentByDateGroup')">
+              <option value="On the day">On the day</option>
+              <option value="Cash by date">Pay with cash by a date</option>
+            </select>
+          </div>
+          <div class="form-group" id="evtPaymentByDateGroup" style="display:none;">
+            <label class="form-label" for="evtPaymentByDate">Pay By</label>
+            <input class="form-input" type="date" id="evtPaymentByDate">
+          </div>
+        </div>
+
+        <div class="form-group">
           <label class="form-label" for="evtEmail">Coordinator Email *</label>
           <input class="form-input" type="email" id="evtEmail" placeholder="e.g. bdsc.convenor@gmail.com" value="bdsc.convenor@gmail.com">
         </div>
@@ -530,6 +549,23 @@
       <input class="form-input" type="text" id="editEvtCost" placeholder="e.g. $10 per person">
     </div>
     <div class="form-group">
+      <label class="form-label">Register By <span style="font-weight:400;color:var(--grey);">(deadline to register, optional)</span></label>
+      <input class="form-input" type="date" id="editEvtRegisterBy">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Payment</label>
+        <select class="form-input" id="editEvtPaymentType" onchange="togglePaymentDate('editEvtPaymentType','editEvtPaymentByDateGroup')">
+          <option value="On the day">On the day</option>
+          <option value="Cash by date">Pay with cash by a date</option>
+        </select>
+      </div>
+      <div class="form-group" id="editEvtPaymentByDateGroup" style="display:none;">
+        <label class="form-label">Pay By</label>
+        <input class="form-input" type="date" id="editEvtPaymentByDate">
+      </div>
+    </div>
+    <div class="form-group">
       <label class="form-label">Coordinator Email *</label>
       <input class="form-input" type="email" id="editEvtEmail">
     </div>
@@ -636,6 +672,10 @@
     t.className = 'toast' + (isError ? ' error' : '');
     setTimeout(function(){ t.classList.add('show'); }, 10);
     setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  }
+  function togglePaymentDate(selectId, groupId) {
+    var val = document.getElementById(selectId).value;
+    document.getElementById(groupId).style.display = (val === 'Cash by date') ? 'block' : 'none';
   }
   function fmtDate(dateStr) {
     if (!dateStr) return '';
@@ -806,6 +846,9 @@
     var category     = document.getElementById('evtCategory').value;
     var registration = document.getElementById('evtRegistration').value;
     var cost         = document.getElementById('evtCost').value.trim();
+    var registerBy    = document.getElementById('evtRegisterBy').value;
+    var paymentType   = document.getElementById('evtPaymentType').value;
+    var paymentByDate = document.getElementById('evtPaymentByDate').value;
     var row      = document.getElementById('editRow').value;
 
     if (!name || !date || !time || !location || !email) {
@@ -820,7 +863,10 @@
       row: row, name: name,
       date: fmtDate(date), time: time,
       location: location, email: email, link: link,
-      category: category, registration: registration, cost: cost
+      category: category, registration: registration, cost: cost,
+      registerBy: registerBy ? fmtDate(registerBy) : '',
+      paymentType: paymentType,
+      paymentByDate: paymentByDate ? fmtDate(paymentByDate) : ''
     };
 
     fetch(EVENTS_URL, { method:'POST', body:JSON.stringify(payload) })
@@ -869,6 +915,10 @@
     document.getElementById('evtCategory').value     = 'Social Club';
     document.getElementById('evtRegistration').value = 'Required';
     document.getElementById('evtCost').value          = '';
+    document.getElementById('evtRegisterBy').value     = '';
+    document.getElementById('evtPaymentType').value    = 'On the day';
+    document.getElementById('evtPaymentByDate').value  = '';
+    document.getElementById('evtPaymentByDateGroup').style.display = 'none';
     document.getElementById('submitBtn').textContent = '✓ Add Event';
     document.getElementById('submitBtn').style.display = 'inline-block';
     document.getElementById('addAnotherBtn').style.display = 'none';
@@ -905,6 +955,10 @@
     document.getElementById('editEvtCategory').value     = ev.category     || 'Social Club';
     document.getElementById('editEvtRegistration').value = ev.registration || 'Required';
     document.getElementById('editEvtCost').value          = ev.cost         || '';
+    document.getElementById('editEvtRegisterBy').value    = toInputDate(ev.registerBy || '');
+    document.getElementById('editEvtPaymentType').value   = ev.paymentType   || 'On the day';
+    document.getElementById('editEvtPaymentByDate').value = toInputDate(ev.paymentByDate || '');
+    togglePaymentDate('editEvtPaymentType','editEvtPaymentByDateGroup');
     document.getElementById('editModal').classList.add('open');
   }
 
@@ -923,6 +977,9 @@
     var category     = document.getElementById('editEvtCategory').value;
     var registration = document.getElementById('editEvtRegistration').value;
     var cost         = document.getElementById('editEvtCost').value.trim();
+    var registerBy    = document.getElementById('editEvtRegisterBy').value;
+    var paymentType   = document.getElementById('editEvtPaymentType').value;
+    var paymentByDate = document.getElementById('editEvtPaymentByDate').value;
 
     if (!name || !date || !time || !location || !email) {
       showToast('Please fill in all required fields.', true); return;
@@ -934,7 +991,10 @@
       action:'editEvent', row:row, name:name,
       date:fmtDate(date), time:time,
       location:location, email:email, link:link,
-      category:category, registration:registration, cost:cost
+      category:category, registration:registration, cost:cost,
+      registerBy: registerBy ? fmtDate(registerBy) : '',
+      paymentType: paymentType,
+      paymentByDate: paymentByDate ? fmtDate(paymentByDate) : ''
     })})
     .then(function(r){ return r.json(); })
     .then(function(data){

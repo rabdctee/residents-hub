@@ -1663,7 +1663,10 @@ For Manor events use the sign-up sheets in the Manor.
               category:     ev.category     || 'Social Club',
               registration: ev.registration || 'Required',
               cost:         ev.cost || '',
-              link:         ev.link || ''
+              link:         ev.link || '',
+              registerBy:    ev.registerBy    || '',
+              paymentType:   ev.paymentType   || 'On the day',
+              paymentByDate: ev.paymentByDate || ''
             };
           })
           .filter(function(e) { return e.dateObj && e.dateObj >= today; })
@@ -1721,9 +1724,27 @@ For Manor events use the sign-up sheets in the Manor.
             var regText = ev.registration === 'Not required'
               ? 'Registration not required'
               : '📝 Registration required';
-            var costText = ev.cost ? ev.cost : 'Free to attend';
+            var secondPart;
+            if (ev.registration === 'Not required') {
+              secondPart = ev.cost ? ev.cost : 'Free to attend';
+            } else {
+              var registerByDateObj = parseDdMmYyyy(ev.registerBy);
+              var registerByBit = registerByDateObj
+                ? 'Register by ' + registerByDateObj.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }) + ' '
+                : 'Register ';
+              secondPart = registerByBit + "on the Residents' Hub or sign-up sheets in the MRC and Manor noticeboard.";
+            }
             regBadge = '<span style="color:#5f6368;font-size:0.82em;">' + regText + '</span>' +
-                       '<span style="color:#2e7d32;font-size:0.82em;">' + costText + '</span>';
+                       '<span style="color:#2e7d32;font-size:0.82em;">' + secondPart + '</span>';
+          }
+
+          var paymentLine = '';
+          if (!isManor) {
+            var paymentByDateObj = parseDdMmYyyy(ev.paymentByDate);
+            var paymentText = (ev.paymentType === 'Cash by date')
+              ? '💵 Pay with cash by ' + (paymentByDateObj ? paymentByDateObj.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }) : 'the date shown above')
+              : '💵 Pay on the day';
+            paymentLine = '<p class="evc-field">' + paymentText + '</p>';
           }
 
           var dayNum   = ev.dateObj.getDate();
@@ -1744,6 +1765,7 @@ For Manor events use the sign-up sheets in the Manor.
           html += '<p class="evc-field"><strong>🕛 Time:</strong> ' + (ev.time ? fmtTimeDisplay(ev.time) : 'To be advised') + '</p>';
           html += '<p class="evc-field"><strong>🎟️ Entry:</strong> ' + entryText + '</p>';
           html += '<div class="evc-badges">' + regBadge + '</div>';
+          html += paymentLine;
           if (ev.link) {
             html += '<a class="evc-link-btn" href="' + toViewerUrl(ev.link, ev.name) + '" target="_blank">🔗 More Information</a>';
           }
