@@ -1712,7 +1712,7 @@ For Manor events use the sign-up sheets in the Manor.
 
           var entryText;
           if (isManor) {
-            entryText = 'Registation required';
+            entryText = 'Registation required:';
           } else {
             entryText = ev.cost ? ev.cost : 'Free to attend';
           }
@@ -1722,8 +1722,8 @@ For Manor events use the sign-up sheets in the Manor.
             regBadge = '<span style="color:#5f6368;font-size:0.82em;">📝 Use sign-up sheets in the Manor</span>';
           } else {
             var regText = ev.registration === 'Not required'
-              ? 'Registration not required'
-              : '📝 Registration required';
+              ? 'Registration not required:'
+              : '📝 Registration required:';
             var secondPart;
             if (ev.registration === 'Not required') {
               secondPart = ev.cost ? ev.cost : 'Free to attend';
