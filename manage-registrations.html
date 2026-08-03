@@ -361,8 +361,15 @@
       .then(function(data) {
         var sel = document.getElementById('eventSelect');
         sel.innerHTML = '<option value="">— Select an event —</option>';
-        if (data.events && data.events.length > 0) {
-          data.events.forEach(function(ev) {
+        // Only events residents can actually register for: Social Club events
+        // with Registration Required. Matches the filter used on
+        // register-for-event.html, so nothing shows up here that has no
+        // registrations to manage.
+        var regEvents = (data.events || []).filter(function(ev) {
+          return ev.category !== 'Manor' && ev.registration === 'Required';
+        });
+        if (regEvents.length > 0) {
+          regEvents.forEach(function(ev) {
             var opt = document.createElement('option');
             opt.value = ev.name;
             opt.textContent = ev.name + (ev.date ? ' (' + ev.date + ')' : '');
