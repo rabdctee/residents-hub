@@ -172,6 +172,11 @@
       object-fit:cover;
       display:block;
     }
+    /* Portrait (tall) photos are shown in full, letterboxed, instead of cropped */
+    .photo-card img.is-portrait{
+      object-fit:contain;
+      background:#e7edf5;
+    }
 
     .photo-card-caption{
       padding:10px 14px;
@@ -697,6 +702,26 @@ Its shade a borrowed room.</div>
 </div><!-- end container -->
 
 <script>
+
+  /* ══════════════════════════════════════════
+     PHOTO ORIENTATION — show tall (portrait) photos
+     in full instead of cropping them
+  ══════════════════════════════════════════ */
+  (function() {
+    var photos = document.querySelectorAll('.photo-card img');
+    photos.forEach(function(img) {
+      function checkOrientation() {
+        if (img.naturalHeight > img.naturalWidth) {
+          img.classList.add('is-portrait');
+        }
+      }
+      if (img.complete && img.naturalWidth) {
+        checkOrientation();
+      } else {
+        img.addEventListener('load', checkOrientation);
+      }
+    });
+  })();
 
   /* ══════════════════════════════════════════
      ACCORDION SECTIONS — expand/collapse
