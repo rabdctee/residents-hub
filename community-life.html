@@ -91,6 +91,45 @@
       white-space:nowrap;
     }
 
+    /* ===== Accordion sections ===== */
+    .accordion-item{
+      border-bottom:1px solid #E7F1FB;
+      margin-bottom:4px;
+    }
+    .accordion-header{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:18px 4px;
+      cursor:pointer;
+      user-select:none;
+      background:none;
+      border:none;
+      width:100%;
+      text-align:left;
+      font-family:inherit;
+    }
+    .accordion-header:hover .accordion-header-text{ color:#163d60; }
+    .accordion-header-text{
+      font-size:1.1em;
+      font-weight:700;
+      color:#1F4E79;
+      flex:1;
+    }
+    .accordion-arrow{
+      color:#1F4E79;
+      font-weight:700;
+      font-size:0.85em;
+      transition:transform 0.3s;
+      flex-shrink:0;
+    }
+    .accordion-arrow.open{ transform:rotate(180deg); }
+    .accordion-body{
+      display:none;
+      padding:0 4px 28px;
+    }
+    .accordion-body.open{ display:block; }
+
     /* ===== Contribute button ===== */
     .contribute-btn{
       display:inline-flex;
@@ -366,11 +405,13 @@
     <!-- ══════════════════════════════════════════
          ARTS & CRAFTS
     ══════════════════════════════════════════ -->
-    <div class="section-divider" id="arts">
-      <div class="section-divider-line"></div>
-      <div class="section-divider-text">🎨 Arts &amp; Crafts</div>
-      <div class="section-divider-line"></div>
-    </div>
+      <div class="accordion-item" id="arts">
+    <button class="accordion-header" onclick="toggleAccordion(this)" type="button">
+      <span class="accordion-header-text">🎨 Arts &amp; Crafts</span>
+      <span class="accordion-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+
 
     <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
       Paintings, drawings, textile work, pottery, woodwork and more — created by the talented
@@ -414,11 +455,16 @@
     <!-- ══════════════════════════════════════════
          POETRY & WRITING
     ══════════════════════════════════════════ -->
-    <div class="section-divider" id="poetry">
-      <div class="section-divider-line"></div>
-      <div class="section-divider-text">✍️ Poetry &amp; Writing</div>
-      <div class="section-divider-line"></div>
-    </div>
+        </div><!-- /accordion-body -->
+  </div><!-- /accordion-item -->
+
+  <div class="accordion-item" id="poetry">
+    <button class="accordion-header" onclick="toggleAccordion(this)" type="button">
+      <span class="accordion-header-text">✍️ Poetry &amp; Writing</span>
+      <span class="accordion-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+
 
     <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
       Poems, short stories, reflections and other written pieces from our residents.
@@ -452,11 +498,16 @@ Its shade a borrowed room.</div>
     <!-- ══════════════════════════════════════════
          MUSIC & DANCE
     ══════════════════════════════════════════ -->
-    <div class="section-divider" id="music">
-      <div class="section-divider-line"></div>
-      <div class="section-divider-text">🎵 Music &amp; Dance</div>
-      <div class="section-divider-line"></div>
-    </div>
+        </div><!-- /accordion-body -->
+  </div><!-- /accordion-item -->
+
+  <div class="accordion-item" id="music">
+    <button class="accordion-header" onclick="toggleAccordion(this)" type="button">
+      <span class="accordion-header-text">🎵 Music &amp; Dance</span>
+      <span class="accordion-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+
 
     <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
       Line dancing, choir, musical performances and other events that bring our community together
@@ -479,11 +530,16 @@ Its shade a borrowed room.</div>
     <!-- ══════════════════════════════════════════
          TRIVIA & QUIZZES
     ══════════════════════════════════════════ -->
-    <div class="section-divider" id="trivia">
-      <div class="section-divider-line"></div>
-      <div class="section-divider-text">🧠 Trivia &amp; Quizzes</div>
-      <div class="section-divider-line"></div>
-    </div>
+        </div><!-- /accordion-body -->
+  </div><!-- /accordion-item -->
+
+  <div class="accordion-item" id="trivia">
+    <button class="accordion-header" onclick="toggleAccordion(this)" type="button">
+      <span class="accordion-header-text">🧠 Trivia &amp; Quizzes</span>
+      <span class="accordion-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+
 
     <p style="color:#444;font-size:0.92em;margin-bottom:18px;">
       A new question each week — just for fun. Can you get it right without peeking?
@@ -515,11 +571,16 @@ Its shade a borrowed room.</div>
     <!-- ══════════════════════════════════════════
          RECIPES
     ══════════════════════════════════════════ -->
-    <div class="section-divider" id="recipes">
-      <div class="section-divider-line"></div>
-      <div class="section-divider-text">🍽️ Recipes</div>
-      <div class="section-divider-line"></div>
-    </div>
+        </div><!-- /accordion-body -->
+  </div><!-- /accordion-item -->
+
+  <div class="accordion-item" id="recipes">
+    <button class="accordion-header" onclick="toggleAccordion(this)" type="button">
+      <span class="accordion-header-text">🍽️ Recipes</span>
+      <span class="accordion-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+
 
     <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
       Favourite recipes from Bridgeman Downs residents — tried, tested and delicious.
@@ -579,11 +640,16 @@ Its shade a borrowed room.</div>
     <!-- ══════════════════════════════════════════
          VILLAGE LIFE
     ══════════════════════════════════════════ -->
-    <div class="section-divider" id="village-life">
-      <div class="section-divider-line"></div>
-      <div class="section-divider-text">📸 Village Life</div>
-      <div class="section-divider-line"></div>
-    </div>
+        </div><!-- /accordion-body -->
+  </div><!-- /accordion-item -->
+
+  <div class="accordion-item" id="village-life">
+    <button class="accordion-header" onclick="toggleAccordion(this)" type="button">
+      <span class="accordion-header-text">📸 Village Life</span>
+      <span class="accordion-arrow">▼</span>
+    </button>
+    <div class="accordion-body">
+
 
     <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
       Photos from events, outings, celebrations and everyday moments that capture life at
@@ -624,10 +690,24 @@ Its shade a borrowed room.</div>
       Email it to <strong>rabd.chair@gmail.com</strong> with "Village Life" in the subject line.
     </div>
 
+    </div><!-- /accordion-body -->
+  </div><!-- /accordion-item -->
+
   </div><!-- end page-content -->
 </div><!-- end container -->
 
 <script>
+
+  /* ══════════════════════════════════════════
+     ACCORDION SECTIONS — expand/collapse
+  ══════════════════════════════════════════ */
+  function toggleAccordion(header) {
+    var body = header.nextElementSibling;
+    var arrow = header.querySelector('.accordion-arrow');
+    var isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (arrow) arrow.classList.toggle('open', !isOpen);
+  }
 
   /* ══════════════════════════════════════════
      TRIVIA — UPDATE THIS SECTION EACH WEEK
