@@ -192,8 +192,8 @@
   <span>Show me:</span>
   <button class="filter-btn active" data-filter="all">Everything</button>
   <button class="filter-btn" data-filter="Completed">✅ Done</button>
-  <button class="filter-btn" data-filter="In Progress">🔄 In progress</button>
-  <button class="filter-btn" data-filter="Not Started">📋 Not started</button>
+  <button class="filter-btn" data-filter="In Progress">🔄 Being worked on</button>
+  <button class="filter-btn" data-filter="Not Started">📋 Waiting to start</button>
   <button class="filter-btn" data-filter="On Hold">⏸ On hold</button>
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -243,10 +243,10 @@ function statusClass(s) {
   return "s-notstarted";
 }
 function statusLabel(s) {
-  if (s === "Completed")   return "Completed";
-  if (s === "In Progress") return "In progress";
+  if (s === "Completed")   return "Done";
+  if (s === "In Progress") return "Being worked on";
   if (s === "On Hold")     return "On hold";
-  return "Not started";
+  return "Waiting to start";
 }
 function statusIcon(s) {
   if (s === "Completed")   return "✓";
@@ -282,16 +282,47 @@ function parseCSV(text) {
     const c = rows[i];
     const issueNum = c[0], category = c[1], topic = c[2], cmNotes = c[3], status = c[4], lastUpdated = c[6] || "";
     if (category && topic && status) {
-      data.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), lastUpdated: lastUpdated.trim() });
+      data.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), lastUpdated: lastUpdated.trim(), origCategory: category.trim() });
     }
   }
   return data;
 }
 
+// ── Category remapping for resident-friendly display ─────────────────────────
+const CAT_MAP = {
+  "Safety & Emergency":       "Safety, Security & Emergency",
+  "Security":                 "Safety, Security & Emergency",
+  "Infrastructure & Maintenance": "Village Maintenance",
+  "Staffing & Management":    "Village Maintenance",
+  "Facilities & Amenities":   "Village Maintenance",
+  "Environment & Grounds":    "Village Maintenance",
+  "Administration & Finance": "Administration & Finance",
+  "Initiatives":              "Initiatives",
+  "Manor":                    "Manor",
+  "Access":                   "Manor",
+};
+
+// Desired display order for the groups
+const CAT_ORDER = [
+  "Safety, Security & Emergency",
+  "Village Maintenance",
+  "Administration & Finance",
+  "Initiatives",
+  "Manor",
+];
+
 function groupByCategory(rows) {
   const map = {};
-  rows.forEach(r => { if (!map[r.category]) map[r.category] = []; map[r.category].push(r); });
-  return map;
+  rows.forEach(r => {
+    const group = CAT_MAP[r.category] || r.category;
+    if (!map[group]) map[group] = [];
+    map[group].push(r);
+  });
+  // Return in defined order, then any unmapped categories alphabetically
+  const ordered = {};
+  CAT_ORDER.forEach(g => { if (map[g]) ordered[g] = map[g]; });
+  Object.keys(map).sort().forEach(g => { if (!ordered[g]) ordered[g] = map[g]; });
+  return ordered;
 }
 
 function buildDashboard(rows) {
@@ -338,6 +369,7 @@ function buildAccordion(grouped) {
           <div class="issue-name">
             ${i.issueNum ? `<span id="issue-${i.issueNum}" style="font-size:0.75em;background:#e8f0fb;color:#1F4E79;border:1px solid #c5d8ee;border-radius:4px;padding:1px 6px;margin-right:6px;font-weight:700;">${escHtml(i.issueNum)}</span>` : ""}${escHtml(i.topic)}
           </div>
+          ${(i.origCategory && (CAT_MAP[i.origCategory] !== i.origCategory)) ? `<div style="font-size:0.72em;color:#888;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;">${escHtml(i.origCategory)}</div>` : ""}
           ${i.notes ? `<div class="issue-note">${escHtml(i.notes)}</div>` : ""}
           ${i.lastUpdated ? `<div style="font-size:0.72em;color:#999;margin-top:3px;">Last updated: ${escHtml(i.lastUpdated)}</div>` : ""}
         </div>
