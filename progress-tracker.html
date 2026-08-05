@@ -259,9 +259,9 @@ function parseCSV(text) {
   const data = [];
   for (let i = 1; i < rows.length; i++) {
     const c = rows[i];
-    const issueNum = c[0], category = c[1], topic = c[2], cmNotes = c[3], status = c[4];
+    const issueNum = c[0], category = c[1], topic = c[2], cmNotes = c[3], status = c[4], lastUpdated = c[6] || "";
     if (category && topic && status) {
-      data.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim() });
+      data.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), lastUpdated: lastUpdated.trim() });
     }
   }
   return data;
@@ -318,6 +318,7 @@ function buildAccordion(grouped) {
             ${i.issueNum ? `<span id="issue-${i.issueNum}" style="font-size:0.75em;background:#e8f0fb;color:#1F4E79;border:1px solid #c5d8ee;border-radius:4px;padding:1px 6px;margin-right:6px;font-weight:700;">${escHtml(i.issueNum)}</span>` : ""}${escHtml(i.topic)}
           </div>
           ${i.notes ? `<div class="issue-note">${escHtml(i.notes)}</div>` : ""}
+          ${i.lastUpdated ? `<div style="font-size:0.72em;color:#999;margin-top:3px;">Last updated: ${escHtml(i.lastUpdated)}</div>` : ""}
         </div>
         <span class="badge ${statusClass(i.status)}">${statusIcon(i.status)} ${statusLabel(i.status)}</span>
       </div>`

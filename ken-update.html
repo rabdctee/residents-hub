@@ -550,14 +550,15 @@ function parseCSV(text) {
   const rows = [];
   for (let i = 1; i < allRows.length; i++) {
     const c = allRows[i];
-    const issueNum = (c[0] || "").trim();
-    const category = (c[1] || "").trim();
-    const topic    = (c[2] || "").trim();
-    const notes    = (c[3] || "").trim();
-    const status   = (c[4] || "Not Started").trim();
-    const source   = (c[5] || "General").trim();
+    const issueNum    = (c[0] || "").trim();
+    const category    = (c[1] || "").trim();
+    const topic       = (c[2] || "").trim();
+    const notes       = (c[3] || "").trim();
+    const status      = (c[4] || "Not Started").trim();
+    const source      = (c[5] || "General").trim();
+    const lastUpdated = (c[6] || "").trim();
     if (category && topic) {
-      rows.push({ issueNum, category, topic, notes, status, source });
+      rows.push({ issueNum, category, topic, notes, status, source, lastUpdated });
     }
   }
   return rows;
@@ -598,6 +599,7 @@ function renderManorList() {
     <div class="issue-card" data-status="${esc(i.status)}">
       <div class="issue-card-header">
         <div class="issue-card-topic">${esc(i.topic)}</div>
+        ${i.lastUpdated ? `<div style="font-size:0.72em;color:#888;margin-top:2px;">Last updated: ${esc(i.lastUpdated)}</div>` : ""}
         <span class="status-badge ${statusClass(i.status)}">${i.status}</span>
       </div>
       ${i.notes ? `<div class="issue-card-notes">${esc(i.notes)}</div>` : '<div class="issue-card-notes" style="font-style:italic">No notes yet.</div>'}

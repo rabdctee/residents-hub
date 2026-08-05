@@ -341,9 +341,9 @@ function parseCSV(text) {
   for (let i = 1; i < allRows.length; i++) {
     const c = allRows[i];
     // Col A=IssueNum, B=Category, C=Topic, D=Notes, E=Status, F=Source
-    const issueNum = c[0], category = c[1], topic = c[2], cmNotes = c[3], status = c[4] || "Not Started", source = c[5] || "General";
+    const issueNum = c[0], category = c[1], topic = c[2], cmNotes = c[3], status = c[4] || "Not Started", source = c[5] || "General", lastUpdated = c[6] || "";
     if (category && topic) {
-      rows.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), source: source.trim() });
+      rows.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), source: source.trim(), lastUpdated: lastUpdated.trim() });
     }
   }
   return rows;
@@ -387,6 +387,7 @@ function buildAccordion() {
           <div class="issue-summary" onclick="toggleEdit('${uid}')">
             <div class="issue-left">
               <div class="issue-title">${issue.issueNum ? `<span style="font-size:0.78em;color:var(--muted);font-weight:600;margin-right:6px;">${escHtml(issue.issueNum)}</span>` : ""}${escHtml(issue.topic)}</div>
+              ${issue.lastUpdated ? `<div style="font-size:0.72em;color:#888;margin-top:2px;">Last updated: ${escHtml(issue.lastUpdated)}</div>` : ""}
               <div class="issue-note-preview">${escHtml(notePreview)}</div>
             </div>
             <div class="issue-right">
