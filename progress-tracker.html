@@ -18,7 +18,7 @@
     --hub-blue: #1F4E79;
     --radius:   6px;
     --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    --base-size: 18px;
+    --base-size: 20px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: var(--font); background: var(--page-bg); color: var(--text); font-size: var(--base-size); line-height: 1.7; }
@@ -93,7 +93,7 @@
   .issue-text { flex: 1; min-width: 0; }
   .issue-name { font-size: 0.92em; font-weight: 700; color: var(--hub-blue); line-height: 1.4; margin-bottom: 4px; }
   .issue-note { font-size: 0.8em; color: var(--text-muted); line-height: 1.5; }
-  .badge { font-size: 0.75em; font-weight: 700; padding: 5px 11px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; border: 1.5px solid transparent; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+  .badge { font-size: 0.78em; font-weight: 700; padding: 7px 14px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; border: 1.5px solid transparent; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
 
   /* ── Status colours ── */
   .s-completed  { background: var(--green-bg); color: var(--green-text); border-color: var(--green-border); }
@@ -111,6 +111,14 @@
   .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: #1F4E79; border: 2px solid #1F4E79; border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
   .print-btn:hover { background: #1F4E79; color: #fff; }
   .print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  /* ── Explainer panel ── */
+  .explainer { background: #e8f4fd; border-left: 4px solid #1F4E79; margin: 0; padding: 14px 1.5rem; font-size: 0.88em; color: #1a3a5c; line-height: 1.7; display: flex; align-items: flex-start; gap: 12px; }
+  .explainer-icon { font-size: 1.6em; flex-shrink: 0; margin-top: 2px; }
+  .explainer-text { flex: 1; }
+  .explainer-text strong { display: block; margin-bottom: 4px; font-size: 1.05em; color: #1F4E79; }
+  .explainer-dismiss { background: none; border: 1.5px solid #1F4E79; color: #1F4E79; border-radius: 20px; padding: 4px 12px; font-size: 0.82em; font-weight: 700; cursor: pointer; white-space: nowrap; margin-top: 6px; font-family: var(--font); }
+  .explainer-dismiss:hover { background: #1F4E79; color: white; }
+
   @media print { .print-btn, .filter-row, .font-ctrl, .expand-row, .page-header p, .dashboard, .progress-section, .last-updated { display: none !important; } }
 
   .expand-row { display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 0.75rem; }
@@ -134,46 +142,59 @@
 </div>
 
 <div class="page-header">
-  <h1>Issues Progress Tracker</h1>
+  <h1>What We're Working On</h1>
   <p>Bridgeman Downs Retirement Village — Residents Committee</p>
+  <p style="font-size:0.82em;opacity:0.8;margin-top:2px;">A summary of issues and requests raised by residents, and the progress being made on each one.</p>
   <p id="pt-date" style="font-size:0.8em;opacity:0.75;margin-top:4px;"></p>
+</div>
+
+<div class="explainer" id="explainer-panel">
+  <div class="explainer-icon">ℹ️</div>
+  <div class="explainer-text">
+    <strong>How to use this page</strong>
+    This page shows all the issues and requests that residents have raised with the committee.
+    You can see what's been done, what's being worked on, and what's coming up.
+    Tap any topic heading to read the latest update from the Community Manager.
+    Use the coloured buttons below to show only certain types of issues, or use the search box to find a specific topic.
+    <br><button class="explainer-dismiss" onclick="dismissExplainer()">Got it — don't show this again</button>
+  </div>
 </div>
 
 <div class="dashboard" id="dashboard">
   <div class="dash-card" style="background:#E7F1FB;border-color:#c5d8ee;" data-filter="all">
     <div class="dash-num" style="color:#1F4E79;" id="d-total">–</div>
-    <div class="dash-lbl" style="color:#1F4E79;">Total</div>
+    <div class="dash-lbl" style="color:#1F4E79;">Total issues</div>
   </div>
   <div class="dash-card" style="background:#d4edda;border-color:#28a745;" data-filter="Completed">
     <div class="dash-num" style="color:#155724;" id="d-done">–</div>
-    <div class="dash-lbl" style="color:#155724;">Completed</div>
+    <div class="dash-lbl" style="color:#155724;">✅ Done</div>
   </div>
   <div class="dash-card" style="background:#ddeeff;border-color:#1F4E79;" data-filter="In Progress">
     <div class="dash-num" style="color:#1F4E79;" id="d-prog">–</div>
-    <div class="dash-lbl" style="color:#1F4E79;">In progress</div>
+    <div class="dash-lbl" style="color:#1F4E79;">🔄 Being worked on</div>
   </div>
   <div class="dash-card" style="background:#f0f0f0;border-color:#888;" data-filter="Not Started">
     <div class="dash-num" style="color:#3a3a3a;" id="d-new">–</div>
-    <div class="dash-lbl" style="color:#3a3a3a;">Not started</div>
+    <div class="dash-lbl" style="color:#3a3a3a;">📋 Waiting to start</div>
   </div>
   <div class="dash-card" style="background:#fff3cd;border-color:#e0a800;" data-filter="On Hold">
     <div class="dash-num" style="color:#7a5200;" id="d-hold">–</div>
-    <div class="dash-lbl" style="color:#7a5200;">On hold</div>
+    <div class="dash-lbl" style="color:#7a5200;">⏸ On hold</div>
   </div>
 </div>
 
 <div class="progress-section" id="progress-section" style="display:none">
-  <div class="progress-title" id="progress-title">Overall progress</div>
+  <div class="progress-title" id="progress-title">How we're tracking</div>
   <div id="progress-bars"></div>
 </div>
 
 <div class="filter-row">
-  <span>Filter:</span>
-  <button class="filter-btn active" data-filter="all">All</button>
-  <button class="filter-btn" data-filter="Completed">Completed</button>
-  <button class="filter-btn" data-filter="In Progress">In progress</button>
-  <button class="filter-btn" data-filter="Not Started">Not started</button>
-  <button class="filter-btn" data-filter="On Hold">On hold</button>
+  <span>Show me:</span>
+  <button class="filter-btn active" data-filter="all">Everything</button>
+  <button class="filter-btn" data-filter="Completed">✅ Done</button>
+  <button class="filter-btn" data-filter="In Progress">🔄 In progress</button>
+  <button class="filter-btn" data-filter="Not Started">📋 Not started</button>
+  <button class="filter-btn" data-filter="On Hold">⏸ On hold</button>
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="6.5" cy="6.5" r="4.5" stroke="#1F4E79" stroke-width="1.5"/>
@@ -199,8 +220,8 @@
   <div id="error" class="state-msg" style="display:none"><div class="icon">⚠️</div><div id="error-msg">Unable to load data. Please try refreshing the page.</div></div>
   <div id="content" style="display:none">
     <div class="expand-row">
-      <button class="expand-btn" id="expand-all">Expand all ▼</button>
-      <button class="expand-btn" id="collapse-all">Collapse all ▲</button>
+      <button class="expand-btn" id="expand-all">Show all details ▼</button>
+      <button class="expand-btn" id="collapse-all">Hide all details ▲</button>
     </div>
     <div id="accordion"></div>
     <div class="no-results" id="no-results">No issues match this filter or search.</div>
@@ -470,6 +491,21 @@ document.getElementById("collapse-all").addEventListener("click", () => {
 
 loadData();
 setInterval(loadData, REFRESH_INTERVAL);
+
+// ── EXPLAINER DISMISS ─────────────────────────────────────────────────────────
+function dismissExplainer() {
+  document.getElementById("explainer-panel").style.display = "none";
+  try { localStorage.setItem("bdrv_tracker_explainer_dismissed", "1"); } catch(e) {}
+}
+// Hide immediately if previously dismissed
+(function() {
+  try {
+    if (localStorage.getItem("bdrv_tracker_explainer_dismissed") === "1") {
+      var el = document.getElementById("explainer-panel");
+      if (el) el.style.display = "none";
+    }
+  } catch(e) {}
+})();
 </script>
 <script>
 (function(){
