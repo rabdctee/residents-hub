@@ -490,6 +490,12 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
     const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
     if (issue) { issue.category = category; issue.notes = notes; issue.status = status; }
 
+    // Record CM alert for RC to see on next login
+    const cmAlerts = JSON.parse(localStorage.getItem("bdrv_cm_alerts") || "[]");
+    const alertKey = `${originalCategory}||${originalTopic}`;
+    if (!cmAlerts.includes(alertKey)) cmAlerts.push(alertKey);
+    localStorage.setItem("bdrv_cm_alerts", JSON.stringify(cmAlerts));
+
     row.classList.remove("editing");
     showToast("success");
     // Reload after short delay so CM can see the toast, then confirm changes are live

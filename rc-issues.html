@@ -644,19 +644,37 @@ ${existingNotes}` : prefix;
   btn.textContent = "💬 Send RC Response";
 }
 
-// ── RC UNREAD RESPONSE ALERT (shown to CM on her page) ───────────────────────
+// ── ALERTS ───────────────────────────────────────────────────────────────────
 function checkRcAlerts() {
-  // On rc-issues.html this shows a summary of responses sent today
-  const alerts = JSON.parse(localStorage.getItem("bdrv_rc_alerts") || "[]");
-  if (alerts.length === 0) return;
   const banner = document.getElementById("rc-alert-banner");
   const text   = document.getElementById("rc-alert-text");
-  text.textContent = `📬 You have sent RC responses on ${alerts.length} issue${alerts.length !== 1 ? "s" : ""} this session. The CM will be alerted on her next login.`;
+  const msgs   = [];
+
+  // 1. CM has updated issues since RC last checked
+  const cmAlerts = JSON.parse(localStorage.getItem("bdrv_cm_alerts") || "[]");
+  const cmRelevant = cmAlerts.filter(key => {
+    const [cat, topic] = key.split("||");
+    return issueData.some(i => i.category === cat && i.topic === topic);
+  });
+  if (cmRelevant.length > 0) {
+    msgs.push(`📋 The CM has updated ${cmRelevant.length} issue${cmRelevant.length !== 1 ? "s" : ""} since you last checked — review the notes below.`);
+  }
+
+  // 2. Summary of RC responses sent this session
+  const rcAlerts = JSON.parse(localStorage.getItem("bdrv_rc_alerts") || "[]");
+  if (rcAlerts.length > 0) {
+    msgs.push(`📬 You have sent RC responses on ${rcAlerts.length} issue${rcAlerts.length !== 1 ? "s" : ""} this session. The CM will be alerted on her next login.`);
+  }
+
+  if (msgs.length === 0) return;
+  text.innerHTML = msgs.join("<br>");
   banner.style.display = "block";
 }
 
 function dismissRcAlert() {
   document.getElementById("rc-alert-banner").style.display = "none";
+  // Clear CM alerts once RC has seen them
+  localStorage.removeItem("bdrv_cm_alerts");
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
