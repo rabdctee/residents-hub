@@ -352,7 +352,7 @@ function parseCSV(text) {
     // Col A=IssueNum, B=Category, C=Topic, D=Notes, E=Status, F=Source
     const issueNum = c[0], category = c[1], topic = c[2], cmNotes = c[3], status = c[4] || "Not Started", source = c[5] || "General", lastUpdated = c[6] || "";
     if (category && topic) {
-      rows.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), source: source.trim(), lastUpdated: lastUpdated.trim() });
+      rows.push({ issueNum: (issueNum||"").trim(), category: category.trim(), topic: topic.trim(), notes: (cmNotes||"").trim(), status: status.trim(), source: source.trim(), lastUpdated: lastUpdated.trim(), origCategory: category.trim() });
     }
   }
   return rows;
@@ -376,12 +376,41 @@ async function loadIssues() {
 }
 
 // ── BUILD ACCORDION ───────────────────────────────────────────────────────────
+// ── Category remapping for resident-friendly display ─────────────────────────
+const CAT_MAP = {
+  "Safety & Emergency":           "Safety, Security & Emergency",
+  "Security":                     "Safety, Security & Emergency",
+  "Infrastructure & Maintenance": "Village Maintenance",
+  "Staffing & Management":        "Village Maintenance",
+  "Facilities & Amenities":       "Village Maintenance",
+  "Environment & Grounds":        "Village Maintenance",
+  "Administration & Finance":     "Administration & Finance",
+  "Initiatives":                  "Initiatives",
+  "Manor":                        "Manor",
+  "Access":                       "Manor",
+};
+const CAT_ORDER = [
+  "Safety, Security & Emergency",
+  "Village Maintenance",
+  "Administration & Finance",
+  "Initiatives",
+  "Manor",
+];
 function buildAccordion() {
   const acc = document.getElementById("accordion");
   acc.innerHTML = "";
 
+  // Build grouped map using friendly category names
+  const _rawGrouped = {};
+  issueData.forEach(i => {
+    const grp = CAT_MAP[i.category] || i.category;
+    if (!_rawGrouped[grp]) _rawGrouped[grp] = [];
+    _rawGrouped[grp].push(i);
+  });
+  // Order by CAT_ORDER then alphabetically
   const grouped = {};
-  issueData.forEach(i => { if (!grouped[i.category]) grouped[i.category] = []; grouped[i.category].push(i); });
+  CAT_ORDER.forEach(g => { if (_rawGrouped[g]) grouped[g] = _rawGrouped[g]; });
+  Object.keys(_rawGrouped).sort().forEach(g => { if (!grouped[g]) grouped[g] = _rawGrouped[g]; });
 
   Object.entries(grouped).forEach(([catName, issues]) => {
     const block = document.createElement("div");
@@ -397,6 +426,7 @@ function buildAccordion() {
           <div class="issue-summary" onclick="toggleEdit('${uid}')">
             <div class="issue-left">
               <div class="issue-title">${issue.issueNum ? `<span style="font-size:0.78em;color:var(--muted);font-weight:600;margin-right:6px;">${escHtml(issue.issueNum)}</span>` : ""}${escHtml(issue.topic)}</div>
+              ${(i.origCategory && (CAT_MAP[i.origCategory] !== i.origCategory)) ? `<div style="font-size:0.72em;color:#888;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;">${escHtml(i.origCategory)}</div>` : ""}
               ${issue.lastUpdated ? `<div style="font-size:0.72em;color:#888;margin-top:2px;">Last updated: ${escHtml(issue.lastUpdated)}</div>` : ""}
               <div class="issue-note-preview">${escHtml(notePreview)}</div>
               ${rcDate ? `<div class="issue-rc-reply">📬 RC replied: ${escHtml(rcDate)}</div>` : ""}
