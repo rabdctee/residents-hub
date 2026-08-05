@@ -218,23 +218,23 @@
 <div class="dashboard" id="dashboard">
   <div class="dash-card" style="background:#E7F1FB;border-color:#c5d8ee;">
     <div class="dash-num" style="color:#1F4E79;" id="d-total">–</div>
-    <div class="dash-lbl" style="color:#1F4E79;">Total</div>
+    <div class="dash-lbl" style="color:#1F4E79;">Total issues</div>
   </div>
   <div class="dash-card" style="background:#d4edda;border-color:#28a745;">
     <div class="dash-num" style="color:#155724;" id="d-done">–</div>
-    <div class="dash-lbl" style="color:#155724;">Completed</div>
+    <div class="dash-lbl" style="color:#155724;">✅ Done</div>
   </div>
   <div class="dash-card" style="background:#ddeeff;border-color:#1F4E79;">
     <div class="dash-num" style="color:#1F4E79;" id="d-prog">–</div>
-    <div class="dash-lbl" style="color:#1F4E79;">In progress</div>
+    <div class="dash-lbl" style="color:#1F4E79;">🔄 Being worked on</div>
   </div>
   <div class="dash-card" style="background:#f0f0f0;border-color:#888;">
     <div class="dash-num" style="color:#3a3a3a;" id="d-new">–</div>
-    <div class="dash-lbl" style="color:#3a3a3a;">Not started</div>
+    <div class="dash-lbl" style="color:#3a3a3a;">📋 Waiting to start</div>
   </div>
   <div class="dash-card" style="background:#fff3cd;border-color:#e0a800;">
     <div class="dash-num" style="color:#7a5200;" id="d-hold">–</div>
-    <div class="dash-lbl" style="color:#7a5200;">On hold</div>
+    <div class="dash-lbl" style="color:#7a5200;">⏸ On hold</div>
   </div>
 </div>
 
@@ -247,11 +247,11 @@
 <!-- ── FILTER PILLS ── -->
 <div class="filter-row">
   <span>Filter:</span>
-  <button class="filter-btn active" data-filter="all">All</button>
-  <button class="filter-btn" data-filter="Completed">Completed</button>
-  <button class="filter-btn" data-filter="In Progress">In progress</button>
-  <button class="filter-btn" data-filter="Not Started">Not started</button>
-  <button class="filter-btn" data-filter="On Hold">On hold</button>
+  <button class="filter-btn active" data-filter="all">Everything</button>
+  <button class="filter-btn" data-filter="Completed">✅ Done</button>
+  <button class="filter-btn" data-filter="In Progress">🔄 Being worked on</button>
+  <button class="filter-btn" data-filter="Not Started">📋 Waiting to start</button>
+  <button class="filter-btn" data-filter="On Hold">⏸ On hold</button>
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
       <circle cx="6.5" cy="6.5" r="4.5" stroke="#1F4E79" stroke-width="1.5"/>
@@ -415,8 +415,8 @@ function buildAccordion() {
               <div>
                 <label class="field-label">Status</label>
                 <select class="edit-status">
-                  ${["Not Started","In Progress","On Hold","Completed"].map(s =>
-                    `<option${s === issue.status ? " selected" : ""}>${s}</option>`
+                  ${[["Not Started","📋 Waiting to start"],["In Progress","🔄 Being worked on"],["On Hold","⏸ On hold"],["Completed","✅ Done"]].map(([val,lbl]) =>
+                    `<option value="${val}"${val === issue.status ? " selected" : ""}>${lbl}</option>`
                   ).join("")}
                 </select>
               </div>
@@ -531,10 +531,10 @@ function buildDashboard() {
 
   const bars = document.getElementById("progress-bars");
   bars.innerHTML = [
-    { label: "Completed",   n: counts["Completed"],   col: "#28a745", tc: "#155724" },
-    { label: "In progress", n: counts["In Progress"], col: "#1F4E79", tc: "#1F4E79" },
-    { label: "Not started", n: counts["Not Started"], col: "#888",    tc: "#3a3a3a" },
-    { label: "On hold",     n: counts["On Hold"],     col: "#e0a800", tc: "#7a5200" },
+    { label: "✅ Done",      n: counts["Completed"],   col: "#28a745", tc: "#155724" },
+    { label: "🔄 Being worked on", n: counts["In Progress"], col: "#1F4E79", tc: "#1F4E79" },
+    { label: "📋 Waiting to start", n: counts["Not Started"], col: "#888",    tc: "#3a3a3a" },
+    { label: "⏸ On hold",   n: counts["On Hold"],     col: "#e0a800", tc: "#7a5200" },
   ].map(b => {
     const pct = total > 0 ? Math.round((b.n / total) * 100) : 0;
     return `<div class="prog-row">
