@@ -151,6 +151,9 @@
   .search-wrap { display: flex; align-items: center; gap: 6px; background: #fff; border: 2px solid var(--navy); border-radius: 8px; padding: 5px 12px; margin-left: auto; }
   .search-wrap input { border: none; outline: none; font-size: 0.8em; font-family: var(--font); color: var(--text); background: transparent; width: 160px; }
   .search-clear { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 1em; padding: 0 2px; line-height: 1; display: none; }
+  .cat-new-badge { font-size: 0.68em; font-weight: 700; color: #7a5200; background: #fff3cd; border: 1.5px solid #e0a800; border-radius: 20px; padding: 2px 9px; margin-left: 8px; white-space: nowrap; }
+  .cm-alert-link { font-family: var(--font); font-size: 0.82em; font-weight: 700; padding: 6px 12px; background: #fff; color: #7a5200; border: 1.5px solid #e0a800; border-radius: 20px; cursor: pointer; }
+  .cm-alert-link:hover { background: #e0a800; color: #fff; }
 
     /* ── Print button ── */
   .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: var(--navy); border: 2px solid var(--navy); border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
@@ -201,8 +204,11 @@
 
 <!-- ── RC ALERT BANNER ── -->
 <div id="rc-alert-banner" style="display:none;background:#fff8e1;border-bottom:2px solid #e0a800;padding:10px 1.5rem;font-size:0.85em;color:#7a5200;font-weight:700;">
-  <span id="rc-alert-text"></span>
-  <button onclick="dismissRcAlert()" style="margin-left:12px;background:none;border:none;cursor:pointer;font-size:1.1em;color:#7a5200;font-weight:700;">✕ Dismiss</button>
+  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+    <span id="rc-alert-text"></span>
+    <button onclick="dismissRcAlert()" style="background:none;border:none;cursor:pointer;font-size:1.1em;color:#7a5200;font-weight:700;white-space:nowrap;">✕ Dismiss</button>
+  </div>
+  <div id="cm-alert-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
 </div>
 
 <!-- ── DASHBOARD CARDS ── -->
@@ -383,7 +389,7 @@ function buildAccordion() {
       const uid = `issue-${catName.replace(/\s+/g,'-')}-${idx}`;
       const notePreview = issue.notes || "(no notes yet)";
       return `
-        <div class="issue-row" id="${uid}" data-status="${escHtml(issue.status)}" data-topic="${escHtml(issue.topic).toLowerCase()}" data-issuenum="${escHtml(issue.issueNum).toLowerCase()}">
+        <div class="issue-row" id="${uid}" data-status="${escHtml(issue.status)}" data-topic="${escHtml(issue.topic).toLowerCase()}" data-issuenum="${escHtml(issue.issueNum).toLowerCase()}" data-cat="${escHtml(issue.category)}" data-top="${escHtml(issue.topic)}">
           <div class="issue-summary" onclick="toggleEdit('${uid}')">
             <div class="issue-left">
               <div class="issue-title">${issue.issueNum ? `<span style="font-size:0.78em;color:var(--muted);font-weight:600;margin-right:6px;">${escHtml(issue.issueNum)}</span>` : ""}${escHtml(issue.topic)}</div>
@@ -646,35 +652,92 @@ ${existingNotes}` : prefix;
 
 // ── ALERTS ───────────────────────────────────────────────────────────────────
 function checkRcAlerts() {
-  const banner = document.getElementById("rc-alert-banner");
-  const text   = document.getElementById("rc-alert-text");
-  const msgs   = [];
+  const banner   = document.getElementById("rc-alert-banner");
+  const text     = document.getElementById("rc-alert-text");
+  const listWrap = document.getElementById("cm-alert-list");
+  const msgLines = [];
 
-  // 1. CM has updated issues since RC last checked
-  const cmAlerts = JSON.parse(localStorage.getItem("bdrv_cm_alerts") || "[]");
+  // 1. CM has updated issues since RC last checked — show clickable chips
+  const cmAlerts   = JSON.parse(localStorage.getItem("bdrv_cm_alerts") || "[]");
   const cmRelevant = cmAlerts.filter(key => {
     const [cat, topic] = key.split("||");
     return issueData.some(i => i.category === cat && i.topic === topic);
   });
   if (cmRelevant.length > 0) {
-    msgs.push(`📋 The CM has updated ${cmRelevant.length} issue${cmRelevant.length !== 1 ? "s" : ""} since you last checked — review the notes below.`);
+    msgLines.push(`📋 The CM has updated ${cmRelevant.length} issue${cmRelevant.length !== 1 ? "s" : ""} — tap an issue below to jump straight to it:`);
+    listWrap.innerHTML = cmRelevant.map(key => {
+      const [cat, topic] = key.split("||");
+      const issue = issueData.find(i => i.category === cat && i.topic === topic);
+      const label = issue && issue.issueNum ? `${issue.issueNum} — ${issue.topic}` : topic;
+      return `<button type="button" class="cm-alert-link" data-jump-cat="${escHtml(cat)}" data-jump-top="${escHtml(topic)}">${escHtml(label)}</button>`;
+    }).join("");
+    listWrap.querySelectorAll(".cm-alert-link").forEach(btn => {
+      btn.addEventListener("click", () => goToIssue(btn.dataset.jumpCat, btn.dataset.jumpTop));
+    });
+    // Category "new" badges
+    document.querySelectorAll(".cat-new-badge").forEach(el => el.remove());
+    const countByCat = {};
+    cmRelevant.forEach(key => {
+      const cat = key.split("||")[0];
+      countByCat[cat] = (countByCat[cat] || 0) + 1;
+    });
+    Object.entries(countByCat).forEach(([cat, count]) => {
+      const block = Array.from(document.querySelectorAll(".cat-block")).find(b => b.dataset.cat === cat);
+      if (!block) return;
+      const nameEl = block.querySelector(".cat-name");
+      if (!nameEl) return;
+      const badge = document.createElement("span");
+      badge.className = "cat-new-badge";
+      badge.textContent = `🔔 ${count} new`;
+      nameEl.appendChild(badge);
+    });
   }
 
-  // 2. Summary of RC responses sent this session
+  // 2. RC responses sent this session
   const rcAlerts = JSON.parse(localStorage.getItem("bdrv_rc_alerts") || "[]");
   if (rcAlerts.length > 0) {
-    msgs.push(`📬 You have sent RC responses on ${rcAlerts.length} issue${rcAlerts.length !== 1 ? "s" : ""} this session. The CM will be alerted on her next login.`);
+    msgLines.push(`📬 You have sent RC responses on ${rcAlerts.length} issue${rcAlerts.length !== 1 ? "s" : ""} this session. The CM will be alerted on her next login.`);
   }
 
-  if (msgs.length === 0) return;
-  text.innerHTML = msgs.join("<br>");
+  if (msgLines.length === 0) return;
+  text.innerHTML = msgLines.join("<br>");
   banner.style.display = "block";
 }
 
 function dismissRcAlert() {
   document.getElementById("rc-alert-banner").style.display = "none";
-  // Clear CM alerts once RC has seen them
+  document.getElementById("cm-alert-list").innerHTML = "";
+  document.querySelectorAll(".cat-new-badge").forEach(el => el.remove());
   localStorage.removeItem("bdrv_cm_alerts");
+}
+
+// ── JUMP TO A SPECIFIC ISSUE (from the CM alert banner) ──────────────────────
+function goToIssue(cat, topic) {
+  let target = null;
+  document.querySelectorAll(".issue-row").forEach(row => {
+    if (row.dataset.cat === cat && row.dataset.top === topic) target = row;
+  });
+  if (!target) return;
+
+  activeFilter = "all";
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === "all"));
+  searchTerm = "";
+  const si = document.getElementById("search-input");
+  const sc = document.getElementById("search-clear");
+  if (si) si.value = "";
+  if (sc) sc.style.display = "none";
+  applyFilter();
+
+  const catBlock = target.closest(".cat-block");
+  if (catBlock) catBlock.classList.add("open");
+
+  document.querySelectorAll(".issue-row.editing").forEach(r => r.classList.remove("editing"));
+  target.classList.add("editing");
+
+  target.scrollIntoView({ behavior: "smooth", block: "center" });
+  target.style.transition = "background-color 0.6s";
+  target.style.backgroundColor = "#fff3cd";
+  setTimeout(() => { target.style.backgroundColor = ""; }, 2200);
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
