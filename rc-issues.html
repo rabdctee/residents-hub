@@ -422,7 +422,7 @@ function buildAccordion() {
           <div class="issue-summary" onclick="toggleEdit('${uid}')">
             <div class="issue-left">
               <div class="issue-title">${issue.issueNum ? `<span style="font-size:0.78em;color:var(--muted);font-weight:600;margin-right:6px;">${escHtml(issue.issueNum)}</span>` : ""}${escHtml(issue.topic)}</div>
-              ${(i.origCategory && (CAT_MAP[i.origCategory] !== i.origCategory)) ? `<div style="font-size:0.72em;color:#888;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;">${escHtml(i.origCategory)}</div>` : ""}
+              ${(issue.origCategory && (CAT_MAP[issue.origCategory] !== issue.origCategory)) ? `<div style="font-size:0.72em;color:#888;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;">${escHtml(issue.origCategory)}</div>` : ""}
               ${issue.lastUpdated ? `<div style="font-size:0.72em;color:#888;margin-top:2px;">Last updated: ${escHtml(issue.lastUpdated)}</div>` : ""}
               <div class="issue-note-preview">${escHtml(notePreview)}</div>
             </div>
