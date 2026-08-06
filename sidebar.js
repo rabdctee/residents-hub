@@ -404,6 +404,11 @@
           </ul>
         </div>
 
+         <!-- Raise a Concern — always visible -->
+         <ul class="sb-links">
+          <li><a href="raise-a-concern.html" class="sb-lock${isActive('raise-a-concern.html') ? ' sb-active' : ''}">💬 Raise a Concern</a></li>
+        </ul>
+
          <!-- Residents Only — always visible -->
          <ul class="sb-links">
           <li><a href="community-info.html" class="sb-lock${isActive('community-info.html') ? ' sb-active' : ''}">🔒 Residents Only</a></li>
