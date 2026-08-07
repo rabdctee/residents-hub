@@ -300,6 +300,12 @@
       '2PACX-1vRUhPoqJON4Uj1yF9VTORD4RSrLJzMjoNOT9ObAAqMze2TfwKTHwRHKSp_q8wN7tNo26o49d3TbgjnB' +
       '/pub?gid=41043603&single=true&output=csv';
 
+    // Events feed (same Apps Script used by manage-events / manage-registrations)
+    // — used only to know each event's real date, so we can tell current from past.
+    const EVENTS_SCRIPT_URL =
+      'https://script.google.com/macros/s/AKfycbxUcetKOKOyNwn1SSqI54xBIGTHV2YVTXcD1o2UTFo7uKGoqCts-nUqFSMEhLxXanK0CA/exec';
+    let eventDateMap = new Map(); // event name -> Date object (from the Events sheet)
+
     let allRows    = [];   // array of objects, one per data row
     let headers    = [];   // column names from row 1
     let activeFilter = 'all';  // 'all' | 'paid' | 'unpaid' | 'dietary'
@@ -323,9 +329,34 @@
       }
     }
 
+    // Parse dd/mm/yyyy (as returned by the Events feed) into a Date
+    function parseDdMmYyyy(str) {
+      if (!str) return null;
+      const m = String(str).match(/^(\d{1,2})[\/](\d{1,2})[\/](\d{4})/);
+      if (!m) return null;
+      return new Date(+m[3], +m[2] - 1, +m[1]);
+    }
+
+    // ── Fetch the Events feed so we know each event's real date ────────────
+    async function loadEventDates() {
+      try {
+        const res = await fetch(EVENTS_SCRIPT_URL + '?action=getEvents');
+        const data = await res.json();
+        (data.events || []).forEach(ev => {
+          const d = parseDdMmYyyy(ev.date);
+          if (ev.name && d) eventDateMap.set(ev.name.trim(), d);
+        });
+      } catch (err) {
+        // If this fails, we just fall back to sorting by registration
+        // timestamps — the page still works, it just can't split current/past.
+        console.log('Could not load event dates:', err);
+      }
+    }
+
     // ── Fetch & parse CSV ─────────────────────────────────────────────────
     async function loadData() {
       try {
+        await loadEventDates();
         const res = await fetch(CSV_URL);
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const text = await res.text();
@@ -426,22 +457,57 @@
       }
 
       const allKeys = [...seen.keys()];
+
+      // Today at midnight, for a clean current-vs-past comparison
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Prefer the real date from the Events sheet; fall back to a date
+      // found in the event's own name, then to its latest registration
+      // timestamp — this only matters for older events no longer in the
+      // Events sheet.
+      function bestDate(name) {
+        return eventDateMap.get(name) || extractNameDate(name) || latestTs.get(name) || null;
+      }
+
       const events = allKeys.slice().sort((a, b) => {
-        // Name date takes priority, then latest registration timestamp
-        const da = extractNameDate(a) || latestTs.get(a) || new Date(0);
-        const db = extractNameDate(b) || latestTs.get(b) || new Date(0);
+        const da = bestDate(a) || new Date(0);
+        const db = bestDate(b) || new Date(0);
         return db - da;  // newest first
       });
+
+      const currentEvents = events.filter(ev => {
+        const d = bestDate(ev);
+        return d && d >= today;
+      });
+      const pastEvents = events.filter(ev => !currentEvents.includes(ev));
+      // Past events: oldest-first sort feels backwards for "recent history" —
+      // keep most-recently-held events at the top of that group too.
 
       const sel = document.getElementById('event-select');
       sel.innerHTML = '';
 
-      events.forEach((ev, i) => {
-        const opt = document.createElement('option');
-        opt.value = ev;
-        opt.textContent = ev;
-        sel.appendChild(opt);
-      });
+      if (currentEvents.length > 0) {
+        const curGroup = document.createElement('optgroup');
+        curGroup.label = '🗓️ Current & Upcoming Events';
+        currentEvents.forEach(ev => {
+          const opt = document.createElement('option');
+          opt.value = ev; opt.textContent = ev;
+          curGroup.appendChild(opt);
+        });
+        sel.appendChild(curGroup);
+      }
+
+      if (pastEvents.length > 0) {
+        const pastGroup = document.createElement('optgroup');
+        pastGroup.label = '📜 Past Events (historical record)';
+        pastEvents.forEach(ev => {
+          const opt = document.createElement('option');
+          opt.value = ev; opt.textContent = ev;
+          pastGroup.appendChild(opt);
+        });
+        sel.appendChild(pastGroup);
+      }
 
       // Add "Show all" at the bottom
       const all = document.createElement('option');
@@ -452,10 +518,12 @@
       sortedEvents = events;
       console.log("sortedEvents set:", sortedEvents.length, "events", sortedEvents);
 
-      // Default: URL param > most recent event
+      // Default: URL param > most recent current event > most recent event overall
       const urlEvent = new URLSearchParams(window.location.search).get('event');
       if (urlEvent && events.includes(urlEvent)) {
         sel.value = urlEvent;
+      } else if (currentEvents.length > 0) {
+        sel.value = currentEvents[0];
       } else if (events.length > 0) {
         sel.value = events[0];
       } else {
@@ -666,7 +734,7 @@
         const aw = document.getElementById('accordion-wrap');
         if (aw) { aw.style.display = ''; openAccordion(); }
         const at = document.getElementById('accordion-title');
-        if (at) at.textContent = chosen + ' — 0 registrations';
+        if (at) at.textContent = chosen + ' — 0 people';
         return;
       }
 
@@ -750,7 +818,13 @@
       if (accWrap) accWrap.style.display = '';
       if (accTitle) {
         const label = chosen === '__ALL__' ? 'All Events' : chosen;
-        accTitle.textContent = label + ' — ' + (displayRows.length) + ' registration' + (displayRows.length === 1 ? '' : 's');
+        // Count people (summing the "how many people" column), not rows —
+        // one registration can be for more than one person.
+        let headingPeople = 0;
+        displayRows.forEach(row => {
+          headingPeople += parseInt(row[numCol] || '1', 10) || 1;
+        });
+        accTitle.textContent = label + ' — ' + headingPeople + (headingPeople === 1 ? ' person' : ' people');
       }
       openAccordion();
 
