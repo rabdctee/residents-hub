@@ -337,10 +337,23 @@ const CAT_ORDER = [
   "Manor",
 ];
 
+// Squashes extra/odd spacing and ignores upper/lower case, so a stray typo
+// (e.g. "Village  Maintenance" with two spaces) still matches correctly
+// instead of silently creating a second, identical-looking group.
+function normaliseCat(s) {
+  return (s || "").replace(/\s+/g, " ").trim();
+}
+const CAT_MAP_LOOKUP = {};
+Object.keys(CAT_MAP).forEach(k => { CAT_MAP_LOOKUP[normaliseCat(k).toLowerCase()] = CAT_MAP[k]; });
+function mapCategory(raw) {
+  const clean = normaliseCat(raw);
+  return CAT_MAP_LOOKUP[clean.toLowerCase()] || clean;
+}
+
 function groupByCategory(rows) {
   const map = {};
   rows.forEach(r => {
-    const group = CAT_MAP[r.category] || r.category;
+    const group = mapCategory(r.category);
     if (!map[group]) map[group] = [];
     map[group].push(r);
   });

@@ -423,6 +423,19 @@ const CAT_ORDER = [
   "Initiatives",
   "Manor",
 ];
+// Squashes extra/odd spacing and ignores upper/lower case, so a stray typo
+// (e.g. "Village  Maintenance" with two spaces) still matches correctly
+// instead of silently creating a second, identical-looking group.
+function normaliseCat(s) {
+  return (s || "").replace(/\s+/g, " ").trim();
+}
+const CAT_MAP_LOOKUP = {};
+Object.keys(CAT_MAP).forEach(k => { CAT_MAP_LOOKUP[normaliseCat(k).toLowerCase()] = CAT_MAP[k]; });
+function mapCategory(raw) {
+  const clean = normaliseCat(raw);
+  return CAT_MAP_LOOKUP[clean.toLowerCase()] || clean;
+}
+
 function buildAccordion() {
   const acc = document.getElementById("accordion");
   acc.innerHTML = "";
@@ -430,7 +443,7 @@ function buildAccordion() {
   // Build grouped map using friendly category names
   const _rawGrouped = {};
   issueData.forEach(i => {
-    const grp = CAT_MAP[i.category] || i.category;
+    const grp = mapCategory(i.category);
     if (!_rawGrouped[grp]) _rawGrouped[grp] = [];
     _rawGrouped[grp].push(i);
   });
