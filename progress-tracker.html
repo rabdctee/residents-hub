@@ -93,6 +93,9 @@
   .issue-text { flex: 1; min-width: 0; }
   .issue-name { font-size: 0.92em; font-weight: 700; color: var(--hub-blue); line-height: 1.4; margin-bottom: 4px; }
   .issue-note { font-size: 0.8em; color: var(--text-muted); line-height: 1.5; }
+  .issue-note .entry { padding: 5px 0; border-bottom: 1px dashed var(--border); }
+  .issue-note .entry:last-child { padding-bottom: 0; border-bottom: none; }
+  .issue-note .rc-tag { color: #2e7d32; font-weight: 700; }
   .badge { font-size: 0.78em; font-weight: 700; padding: 7px 14px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; border: 1.5px solid transparent; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
 
   /* ── Status colours ── */
@@ -263,6 +266,21 @@ function statusIcon(s) {
   return "○";
 }
 
+// Splits accumulated notes (CM notes + stacked RC responses) into separate,
+// clearly divided entries so a long history is easy to read at a glance.
+function formatNotes(notes) {
+  if (!notes || !notes.trim()) return "";
+  return notes.split(/\n\s*\n/).map(block => {
+    block = block.trim();
+    if (!block) return "";
+    const m = block.match(/^(\[RC[^\]]*\])\s*([\s\S]*)$/);
+    if (m) {
+      return `<div class="entry"><span class="rc-tag">${escHtml(m[1])}</span> ${escHtml(m[2]).replace(/\n/g,"<br>")}</div>`;
+    }
+    return `<div class="entry">${escHtml(block).replace(/\n/g,"<br>")}</div>`;
+  }).join("");
+}
+
 function parseCSV(text) {
   // Robust parser that handles newlines inside quoted fields
   const rows = [];
@@ -378,7 +396,7 @@ function buildAccordion(grouped) {
             ${i.issueNum ? `<span id="issue-${i.issueNum}" style="font-size:0.75em;background:#e8f0fb;color:#1F4E79;border:1px solid #c5d8ee;border-radius:4px;padding:1px 6px;margin-right:6px;font-weight:700;">${escHtml(i.issueNum)}</span>` : ""}${escHtml(i.topic)}
           </div>
           ${(i.origCategory && (CAT_MAP[i.origCategory] !== i.origCategory)) ? `<div style="font-size:0.72em;color:#888;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;">${escHtml(i.origCategory)}</div>` : ""}
-          ${i.notes ? `<div class="issue-note">${escHtml(i.notes)}</div>` : ""}
+          ${i.notes ? `<div class="issue-note">${formatNotes(i.notes)}</div>` : ""}
           ${i.lastUpdated ? `<div style="font-size:0.72em;color:#999;margin-top:3px;">Last updated: ${escHtml(i.lastUpdated)}</div>` : ""}
         </div>
         <span class="badge ${statusClass(i.status)}">${statusIcon(i.status)} ${statusLabel(i.status)}</span>
