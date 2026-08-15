@@ -346,26 +346,41 @@
       err.style.display = 'block';
       document.getElementById('pinInput').value = '';
       document.getElementById('pinInput').focus();
-
-// Skip PIN if already authenticated this session
-if (sessionStorage.getItem('bdrv_committee_auth') === 'true') {
-  document.getElementById('pinOverlay').style.display = 'none';
-}
       setTimeout(function() { err.style.display = 'none'; }, 3000);
     }
   }
 
+  // Skip PIN if already authenticated this session
+  if (sessionStorage.getItem('bdrv_committee_auth') === 'true') {
+    document.getElementById('pinOverlay').style.display = 'none';
+    loadAnnouncements();
+  }
+
   function loadAnnouncements() {
+    document.getElementById('annList').innerHTML =
+      '<div class="status-msg">Loading announcements…</div>';
+
+    var timedOut = false;
+    var loadTimer = setTimeout(function() {
+      timedOut = true;
+      document.getElementById('annList').innerHTML =
+        '<div class="status-msg">⚠️ This is taking longer than expected.<br>' +
+        '<button class="btn-add" style="margin-top:12px;" onclick="loadAnnouncements()">🔄 Try Again</button></div>';
+    }, 10000);
+
     fetch(SCRIPT_URL + '?action=getAnnouncements')
       .then(function(r) { return r.json(); })
       .then(function(data) {
+        clearTimeout(loadTimer);
         allAnn = data.announcements || [];
         renderList();
         renderPreview();
       })
       .catch(function() {
+        clearTimeout(loadTimer);
         document.getElementById('annList').innerHTML =
-          '<div class="status-msg">⚠️ Could not load announcements. Please refresh.</div>';
+          '<div class="status-msg">⚠️ Could not load announcements.<br>' +
+          '<button class="btn-add" style="margin-top:12px;" onclick="loadAnnouncements()">🔄 Try Again</button></div>';
       });
   }
 
