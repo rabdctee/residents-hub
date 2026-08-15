@@ -479,6 +479,10 @@
        href="mailto:rabd.chair@gmail.com?subject=Life in Our Community — Recipe&body=Hi,%0A%0AI would like to share a favourite recipe!%0A%0ARecipe name:%0AServes:%0AYour name (or 'Anonymous'):%0AUnit number (optional):%0A%0AINGREDIENTS:%0A(list each ingredient on a new line)%0A%0AMETHOD:%0A(list each step on a new line)%0A%0AAny tips or notes:%0A%0AThank you!">
       🍽️ Share your recipe →
     </a>
+    <div id="recipe-email-fallback" style="margin-top:8px;font-size:0.88em;color:#555;">
+      Button not opening your email app?
+      <a href="#" onclick="copyRecipeEmail(this); return false;" style="color:#2a5faa;text-decoration:underline;">Copy our email address instead</a>
+    </div>
 
     <!-- Add recipe cards here as contributions arrive. Example format:
     <div class="recipe-card">
@@ -517,9 +521,57 @@
     </div>
     -->
 
+    <div class="recipe-card">
+      <div class="recipe-card-header" onclick="toggleRecipe(this)">
+        <div>
+          <div class="recipe-title">Easy Lentil &amp; Vegetable Soup</div>
+          <div class="recipe-meta">Makes about 4 litres (8–10 serves) · contributed by Anonymous</div>
+        </div>
+        <span class="recipe-arrow">▼</span>
+      </div>
+      <div class="recipe-body">
+        <h4>Ingredients</h4>
+        <ul>
+          <li>2 cups (about 400 g) dried red lentils, rinsed</li>
+          <li>2 tbsp olive oil</li>
+          <li>2 medium onions, finely chopped</li>
+          <li>3 carrots, diced fairly small</li>
+          <li>2 celery sticks, finely chopped</li>
+          <li>2 medium potatoes, peeled and diced</li>
+          <li>2 cloves garlic, finely chopped</li>
+          <li>2 tsp ground cumin</li>
+          <li>1 tsp sweet paprika</li>
+          <li>2 x 400 g cans diced tomatoes</li>
+          <li>2 litres vegetable or chicken stock</li>
+          <li>1–1½ litres water, as needed</li>
+          <li>2 bay leaves</li>
+          <li>1 tsp salt to start, then adjust</li>
+          <li>½ tsp black pepper</li>
+          <li>2 large handfuls baby spinach, optional</li>
+          <li>1 tbsp lemon juice, optional</li>
+        </ul>
+        <h4>Method</h4>
+        <ol>
+          <li>Heat the olive oil in a large saucepan or stockpot.</li>
+          <li>Add the onion, carrot and celery. Cook gently for 5–7 minutes until softened.</li>
+          <li>Add the garlic, cumin and paprika and cook for another minute.</li>
+          <li>Add the lentils, potatoes, tomatoes, stock, bay leaves and 1 litre of water.</li>
+          <li>Bring to the boil, then reduce to a gentle simmer.</li>
+          <li>Cover partially and cook for 40–50 minutes, stirring occasionally. The lentils should become very soft and the potatoes tender.</li>
+          <li>Add more water if the soup becomes too thick.</li>
+          <li>Remove the bay leaves. For an especially senior-friendly texture, use a stick blender for a few seconds to partially blend the soup — not completely smooth, unless preferred.</li>
+          <li>Stir in the spinach and cook for 2–3 minutes.</li>
+          <li>Taste and adjust the salt and pepper. A little lemon juice at the end brightens the flavour.</li>
+        </ol>
+        <h4>Tips</h4>
+        <p style="font-size:0.92em;color:#444;">Red lentils are ideal because they cook quickly and become very soft without needing soaking. Keep the seasoning moderate — cumin gives good flavour without making the soup spicy. For extra protein and calories, add shredded cooked chicken or a little grated cheese when serving. The soup freezes very well in individual portions; it will thicken considerably when refrigerated, so add a little water when reheating. Serve with soft bread or a small bread roll — a spoonful of natural yoghurt stirred into each bowl is also nice.</p>
+        <div class="recipe-contributor">Recipe shared by Anonymous</div>
+      </div>
+    </div>
+
     <div class="placeholder-card">
       <span class="placeholder-icon">🍽️</span>
-      <strong>Recipes coming soon</strong>
+      <strong>More recipes coming soon</strong>
       Share a favourite recipe — a family classic, a crowd-pleaser, or something you make every week.
       Email it to <strong>rabd.chair@gmail.com</strong> with "Recipe" in the subject line.
     </div>
@@ -793,6 +845,23 @@ Its shade a borrowed room.</div>
     var isOpen = body.classList.contains('open');
     body.classList.toggle('open', !isOpen);
     if (arrow) arrow.classList.toggle('open', !isOpen);
+  }
+
+  /* Fallback: copy the recipe email address if the mailto button doesn't open a mail app */
+  function copyRecipeEmail(link) {
+    var email = 'rabd.chair@gmail.com';
+    var showCopied = function() {
+      var original = link.textContent;
+      link.textContent = 'Copied! (' + email + ')';
+      setTimeout(function() { link.textContent = original; }, 3000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(email).then(showCopied, function() {
+        window.prompt('Copy this email address:', email);
+      });
+    } else {
+      window.prompt('Copy this email address:', email);
+    }
   }
 
 </script>
