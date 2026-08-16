@@ -429,6 +429,65 @@
       document.getElementById('panel-' + cat).classList.add('active');
     });
   });
+
+  // ── Load resident-added "What's New" items ──────────────────
+  var WHATSNEW_URL = 'https://script.google.com/macros/s/AKfycbzDIMmLd_FOleNKie0B6y74tL_Xhcty6MKVf7tzfVdmlzStmy_rGlts3KXtqkjEFLda/exec';
+
+  var CATEGORY_TO_PANEL = {
+    'Health & Wellbeing':  'panel-health',
+    'Technology':          'panel-tech',
+    'Books, Film & TV':    'panel-arts',
+    'Local Brisbane':      'panel-local',
+    'Science & Nature':    'panel-science',
+    'Nostalgia':           'panel-nostalgia'
+  };
+
+  function esc(str) {
+    return (str || '').toString()
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function loadWhatsNewItems() {
+    fetch(WHATSNEW_URL + '?action=getItems')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var items = data.items || [];
+        // Newest first
+        items.slice().reverse().forEach(function (it) {
+          var panelId = CATEGORY_TO_PANEL[(it.category || '').trim()];
+          var panel = panelId ? document.getElementById(panelId) : null;
+          if (!panel) return;
+
+          var card = document.createElement('div');
+          card.className = 'item-card';
+
+          var linkHtml = it.link
+            ? '<a class="item-link-btn" href="' + esc(it.link) + '" target="_blank">Read more ↗</a>'
+            : '';
+
+          card.innerHTML =
+            '<div class="item-source-bar">' + esc(it.addedBy || 'Hub') + '</div>' +
+            '<div class="item-body">' +
+              '<div class="item-title">' + esc(it.title) +
+                ' <span class="item-added-badge">Added by ' + esc(it.addedBy || 'Hub') + '</span>' +
+              '</div>' +
+              '<p class="item-snippet">' + esc(it.blurb) + '</p>' +
+              '<div class="item-meta">' +
+                '<span class="item-date">' + esc(it.timestamp) + '</span>' +
+                linkHtml +
+              '</div>' +
+            '</div>';
+
+          // Newest resident items appear first in their category
+          panel.insertBefore(card, panel.firstChild);
+        });
+      })
+      .catch(function () {
+        // Quietly do nothing if the feed can't be reached — placeholder cards still show
+      });
+  }
+
+  loadWhatsNewItems();
 </script>
 
 </body>
