@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add What's New Item | Bridgeman Downs Residents Hub</title>
+  <style>
+    :root {
+      --navy:       #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid:   #c5d8ee;
+      --gold:       #C9A44A;
+      --gold-light: #fdf6e3;
+      --red:        #c0392b;
+      --red-bg:     #fdf0ee;
+      --green:      #1a6b3a;
+      --green-bg:   #e8f5ee;
+      --grey:       #5f6368;
+      --border:     #dde3ec;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; color:#333; min-height:100vh; }
+
+    .top-bar {
+      background:var(--navy); padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px; position:sticky; top:0; z-index:50;
+    }
+    .top-bar-title { color:white; font-size:1em; font-weight:700; }
+    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      background:#2E75B6; color:#fff; border:none;
+      border-radius:6px; padding:8px 16px;
+      font-size:0.95rem; cursor:pointer; text-decoration:none;
+    }
+    .back-btn:hover { background:#1F4E79; }
+
+    .content { max-width:700px; margin:0 auto; padding:20px 16px 60px; }
+
+    .info-bar {
+      background:var(--navy-light); border:2px solid var(--navy-mid);
+      border-radius:10px; padding:12px 16px; margin-bottom:20px;
+      font-size:0.85em; color:var(--navy); line-height:1.5;
+    }
+
+    .card {
+      background:white; border-radius:10px;
+      border:2px solid var(--border);
+      box-shadow:0 1px 4px rgba(0,0,0,0.05);
+      margin-bottom:20px; overflow:hidden;
+    }
+    .card-header {
+      background:var(--navy); padding:12px 18px;
+      color:white; font-weight:700; font-size:0.95em;
+    }
+    .card-body { padding:18px; }
+
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-weight:700; font-size:0.85em; color:var(--navy); margin-bottom:5px; }
+    .form-input, .form-select, .form-textarea {
+      width:100%; padding:10px 12px; border:2px solid var(--border);
+      border-radius:8px; font-size:0.95em; font-family:inherit; color:#333;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline:none; border-color:var(--navy-mid);
+    }
+    .form-textarea { resize:vertical; min-height:70px; }
+    .form-hint { font-size:0.78em; color:var(--grey); margin-top:4px; }
+
+    .btn-add {
+      width:100%; background:var(--navy); color:white;
+      padding:13px; border-radius:10px; font-weight:700;
+      font-size:0.95em; border:none; cursor:pointer;
+      transition:background 0.2s;
+    }
+    .btn-add:hover { background:#163d61; }
+    .btn-add:disabled { opacity:0.6; cursor:default; }
+
+    .alert {
+      padding:10px 14px; border-radius:8px; font-size:0.85em;
+      margin-bottom:14px; display:none;
+    }
+    .alert.show { display:block; }
+    .alert-success { background:var(--green-bg); color:var(--green); border:1px solid #b6dfc4; }
+    .alert-error   { background:var(--red-bg);   color:var(--red);   border:1px solid #f0c3bb; }
+
+    .item-row {
+      border:1px solid var(--border); border-radius:8px;
+      padding:12px 14px; margin-bottom:10px; background:white;
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .item-row:last-child { margin-bottom:0; }
+    .item-row-info { flex:1; min-width:0; }
+    .item-row-cat {
+      display:inline-block; background:var(--navy-light); color:var(--navy);
+      font-size:0.72em; font-weight:700; padding:2px 8px; border-radius:10px; margin-bottom:4px;
+    }
+    .item-row-title { font-weight:700; color:var(--navy); font-size:0.95em; margin-bottom:3px; }
+    .item-row-blurb { font-size:0.82em; color:var(--grey); line-height:1.5; }
+    .item-row-meta  { font-size:0.76em; color:#999; margin-top:4px; }
+    .btn-delete {
+      padding:6px 12px; border-radius:6px; font-size:0.82em;
+      font-weight:700; cursor:pointer; border:2px solid var(--red);
+      background:white; color:var(--red); transition:all 0.15s; flex-shrink:0;
+    }
+    .btn-delete:hover { background:var(--red-bg); }
+
+    .status-msg { text-align:center; color:var(--grey); padding:20px; font-size:0.9em; }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div>
+    <div class="top-bar-title">🆕 Add What's New Item</div>
+    <div class="top-bar-sub">Bridgeman Downs Residents Hub — admin tool</div>
+  </div>
+  <a class="back-btn" href="hub-admin.html">← Back to Admin</a>
+</div>
+
+<div class="content">
+
+  <div class="info-bar">
+    Items you add here appear on the public <strong>What's New</strong> page, under the category you choose,
+    tagged with your name. This page isn't linked from the resident menu — keep this address handy for your own use.
+  </div>
+
+  <!-- Add form -->
+  <div class="card">
+    <div class="card-header">➕ Add a New Item</div>
+    <div class="card-body">
+      <div class="alert" id="alertForm"></div>
+
+      <div class="form-group">
+        <label class="form-label">Category *</label>
+        <select class="form-select" id="itemCategory">
+          <option value="Health &amp; Wellbeing">💊 Health &amp; Wellbeing</option>
+          <option value="Technology">💻 Technology</option>
+          <option value="Books, Film &amp; TV">🎭 Books, Film &amp; TV</option>
+          <option value="Local Brisbane">🏙️ Local Brisbane</option>
+          <option value="Science &amp; Nature">🔭 Science &amp; Nature</option>
+          <option value="Nostalgia">🕰️ Nostalgia</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Title *</label>
+        <input class="form-input" type="text" id="itemTitle" placeholder="e.g. Brisbane in the 1970s — a look back">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Blurb *</label>
+        <textarea class="form-textarea" id="itemBlurb" placeholder="A sentence or two about it"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Link (optional)</label>
+        <input class="form-input" type="text" id="itemLink" placeholder="https://...">
+        <div class="form-hint">Leave blank if there's nothing to link to.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Added By *</label>
+        <input class="form-input" type="text" id="itemAddedBy" placeholder="e.g. Rick" value="Rick">
+      </div>
+
+      <button class="btn-add" id="submitBtn" onclick="submitItem()">➕ Add Item</button>
+    </div>
+  </div>
+
+  <!-- Existing items -->
+  <div class="card">
+    <div class="card-header">📋 Items Added So Far</div>
+    <div class="card-body" id="itemList">
+      <div class="status-msg">Loading…</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Paste the Web App URL from your WhatsNew_Code.gs deployment here:
+  var WHATSNEW_URL = 'https://script.google.com/macros/s/AKfycbzDIMmLd_FOleNKie0B6y74tL_Xhcty6MKVf7tzfVdmlzStmy_rGlts3KXtqkjEFLda/exec';
+
+  var allItems = [];
+
+  function esc(str) {
+    return (str || '').toString()
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function showAlert(id, type, msg) {
+    var el = document.getElementById(id);
+    el.className = 'alert alert-' + type + ' show';
+    el.textContent = msg;
+    setTimeout(function(){ el.classList.remove('show'); }, 5000);
+  }
+
+  function loadItems() {
+    document.getElementById('itemList').innerHTML = '<div class="status-msg">Loading…</div>';
+    fetch(WHATSNEW_URL + '?action=getItems')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        allItems = data.items || [];
+        renderItemList();
+      })
+      .catch(function(){
+        document.getElementById('itemList').innerHTML =
+          '<div class="status-msg">⚠️ Could not load items. Check WHATSNEW_URL is set correctly.</div>';
+      });
+  }
+
+  function renderItemList() {
+    if (allItems.length === 0) {
+      document.getElementById('itemList').innerHTML =
+        '<div class="status-msg">No items added yet. Use the form above.</div>';
+      return;
+    }
+    var sorted = allItems.slice().reverse(); // newest first
+    var html = '';
+    sorted.forEach(function(it) {
+      html += '<div class="item-row">' +
+        '<div class="item-row-info">' +
+          '<div class="item-row-cat">' + esc(it.category) + '</div>' +
+          '<div class="item-row-title">' + esc(it.title) + '</div>' +
+          '<div class="item-row-blurb">' + esc(it.blurb) + '</div>' +
+          '<div class="item-row-meta">Added by ' + esc(it.addedBy) +
+            (it.link ? ' &nbsp;|&nbsp; 🔗 ' + esc(it.link) : '') + '</div>' +
+        '</div>' +
+        '<button class="btn-delete" onclick="deleteItem(' + it.row + ')">🗑️</button>' +
+      '</div>';
+    });
+    document.getElementById('itemList').innerHTML = html;
+  }
+
+  function submitItem() {
+    var category = document.getElementById('itemCategory').value;
+    var title    = document.getElementById('itemTitle').value.trim();
+    var blurb    = document.getElementById('itemBlurb').value.trim();
+    var link     = document.getElementById('itemLink').value.trim();
+    var addedBy  = document.getElementById('itemAddedBy').value.trim();
+
+    if (!title || !blurb || !addedBy) {
+      showAlert('alertForm','error','Please fill in Category, Title, Blurb and Added By.');
+      return;
+    }
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    fetch(WHATSNEW_URL, {
+      method:'POST',
+      body:JSON.stringify({ action:'addItem', category:category, title:title, blurb:blurb, link:link, addedBy:addedBy })
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        btn.disabled = false; btn.textContent = '➕ Add Item';
+        if (data.status === 'ok') {
+          showAlert('alertForm','success','Item added!');
+          document.getElementById('itemTitle').value = '';
+          document.getElementById('itemBlurb').value = '';
+          document.getElementById('itemLink').value = '';
+          loadItems();
+        } else {
+          showAlert('alertForm','error','Error: ' + (data.message || 'Please try again.'));
+        }
+      })
+      .catch(function(){
+        btn.disabled = false; btn.textContent = '➕ Add Item';
+        showAlert('alertForm','success','Item added!');
+        document.getElementById('itemTitle').value = '';
+        document.getElementById('itemBlurb').value = '';
+        document.getElementById('itemLink').value = '';
+        setTimeout(loadItems, 1200);
+      });
+  }
+
+  function deleteItem(row) {
+    if (!confirm('Remove this item?')) return;
+    fetch(WHATSNEW_URL, {
+      method:'POST',
+      body:JSON.stringify({ action:'deleteItem', row:row })
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(){ loadItems(); })
+      .catch(function(){ setTimeout(loadItems, 1000); });
+  }
+
+  loadItems();
+</script>
+</body>
+</html>

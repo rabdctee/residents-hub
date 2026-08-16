@@ -341,6 +341,11 @@
         <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>🌏 World News</a></li>
       </ul>
 
+      <!-- What's New -->
+      <ul class="sb-links">
+        <li><a href="whats-new.html"${isActive('whats-new.html') ? ' class="sb-active"' : ''}>🆕 What's New</a></li>
+      </ul>
+
       <!-- What's On -->
         <div class="sb-acc-header${openWhatsOn}" onclick="sbToggle('sba-whatson')">
           🎉 What's On <span class="sb-acc-arrow">▼</span>

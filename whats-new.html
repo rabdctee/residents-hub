@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>What's New | Bridgeman Downs Residents' Hub</title>
+  <style>
+    /* ── Base reset & typography ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 20px;
+      background: #f5f5f5;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Layout ── */
+    .page-wrapper { max-width: 100%; padding: 20px 22px; }
+    main { flex: 1; min-width: 0; }
+
+    /* Page title banner */
+    .page-banner {
+      background: linear-gradient(135deg, #1F4E79 0%, #1a3f66 100%);
+      border-radius: 8px;
+      padding: 22px 24px;
+      margin-bottom: 20px;
+      border-left: 5px solid #C9A44A;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-banner::after {
+      content: "🆕";
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 3em;
+      opacity: 0.18;
+    }
+    .page-banner h1 {
+      font-size: 1.4em;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .page-banner .banner-sub {
+      color: #C9A44A;
+      font-size: 0.85em;
+      font-weight: 600;
+    }
+
+    /* Info notice box */
+    .info-notice {
+      background: #fff8e6;
+      border: 1px solid #e0c96a;
+      border-left: 4px solid #C9A44A;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 0.92em;
+      color: #5a4a00;
+      line-height: 1.5;
+    }
+    .info-notice strong { color: #3a2f00; }
+
+    /* ── Add an item button ── */
+    .add-item-bar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 16px;
+    }
+    .add-item-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #C9A44A;
+      color: #1F4E79;
+      font-size: 0.85em;
+      font-weight: 700;
+      padding: 10px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .add-item-btn:hover { background: #b8923d; }
+
+    /* ── Category tabs ── */
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .cat-tab {
+      background: #fff;
+      border: 1.5px solid #c5d8ee;
+      color: #1F4E79;
+      font-size: 0.85em;
+      font-weight: 700;
+      padding: 9px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .cat-tab:hover { background: #E7F1FB; }
+    .cat-tab.active { background: #1F4E79; color: #fff; border-color: #1F4E79; }
+
+    /* ── Category panels ── */
+    .cat-panel { display: none; }
+    .cat-panel.active { display: block; }
+
+    /* ── Item cards ── */
+    .item-card {
+      background: #fff;
+      border: 1px solid #d8dfe8;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: stretch;
+    }
+    .item-source-bar {
+      background: #1F4E79;
+      color: #C9A44A;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 0.7em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 10px 6px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .item-body { padding: 14px 18px; flex: 1; }
+    .item-title {
+      font-size: 1em;
+      font-weight: 700;
+      color: #1F4E79;
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+    .item-snippet {
+      font-size: 0.9em;
+      color: #444;
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+    .item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .item-date {
+      font-size: 0.78em;
+      color: #888;
+    }
+    .item-link-btn {
+      display: inline-block;
+      background: #1F4E79;
+      color: #C9A44A;
+      font-size: 0.78em;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 4px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .item-link-btn:hover { background: #C9A44A; color: #1F4E79; }
+
+    /* Resident-added item badge */
+    .item-added-badge {
+      display: inline-block;
+      background: #E7F1FB;
+      color: #1F4E79;
+      font-size: 0.7em;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 6px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: #1F4E79;
+      color: #c5d8ee;
+      text-align: center;
+      font-size: 0.75em;
+      padding: 14px 20px;
+      margin-top: auto;
+    }
+    footer a { color: #C9A44A; text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 680px) {
+      .page-wrapper { max-width: 100%; padding: 20px 22px; }
+      .page-banner::after { display: none; }
+      .item-card { flex-direction: column; }
+      .item-source-bar {
+        writing-mode: horizontal-tb;
+        text-align: left;
+        padding: 6px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<header style="background:#1F4E79;color:white;padding:30px 20px;text-align:center;">
+  <h1 style="font-size:2em;font-weight:700;">Bridgeman Downs Retirement Village</h1>
+  <p style="margin-top:8px;font-size:0.95em;opacity:0.88;">Residents' Information Hub</p>
+  <p style="margin-top:14px;font-size:1.1em;font-weight:600;">
+    <span style="display:inline-block;background:rgba(255,255,255,0.18);border-radius:6px;padding:6px 22px;">🆕 What's New</span>
+  </p>
+</header>
+
+<!-- ══════════════ PAGE WRAPPER ══════════════ -->
+<div class="container"><div class="page-wrapper">
+  <main>
+
+    <!-- Page banner -->
+    <div class="page-banner">
+      <h1>🆕 What's New</h1>
+      <div class="banner-sub">A little of what's happening across health, technology, arts, science, our own city — and a look back too</div>
+    </div>
+
+    <!-- Info notice -->
+    <div class="info-notice">
+      <strong>ℹ️ About this page:</strong> Headlines below are pulled from trusted sources so you can read the full story on the original website. Spotted something worth sharing? Use the "Add an item" button to suggest it.
+    </div>
+
+    <!-- Category tabs -->
+    <div class="category-tabs" id="catTabs">
+      <button class="cat-tab active" data-cat="health">💊 Health &amp; Wellbeing</button>
+      <button class="cat-tab" data-cat="tech">💻 Technology</button>
+      <button class="cat-tab" data-cat="arts">🎭 Books, Film &amp; TV</button>
+      <button class="cat-tab" data-cat="local">🏙️ Local Brisbane</button>
+      <button class="cat-tab" data-cat="science">🔭 Science &amp; Nature</button>
+      <button class="cat-tab" data-cat="nostalgia">🕰️ Nostalgia</button>
+    </div>
+
+    <!-- ══════════════ HEALTH & WELLBEING ══════════════ -->
+    <div class="cat-panel active" id="panel-health">
+
+      <div class="item-card">
+        <div class="item-source-bar">ABC Health</div>
+        <div class="item-body">
+          <div class="item-title">Sample headline: New research on healthy ageing and daily movement</div>
+          <p class="item-snippet">Placeholder snippet — once the live feed is connected, a short summary of the real ABC Health article will appear here automatically.</p>
+          <div class="item-meta">
+            <span class="item-date">Placeholder date</span>
+            <a class="item-link-btn" href="#" target="_blank">Read on ABC ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="item-source-bar">Healthdirect</div>
+        <div class="item-body">
+          <div class="item-title">Sample headline: Understanding the flu vaccine this winter</div>
+          <p class="item-snippet">Placeholder snippet — this card shows how a Healthdirect item will look once wired in.</p>
+          <div class="item-meta">
+            <span class="item-date">Placeholder date</span>
+            <a class="item-link-btn" href="#" target="_blank">Read on Healthdirect ↗</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════ TECHNOLOGY ══════════════ -->
+    <div class="cat-panel" id="panel-tech">
+
+      <div class="item-card">
+        <div class="item-source-bar">ABC Technology</div>
+        <div class="item-body">
+          <div class="item-title">Sample headline: A simple new tool to block scam calls</div>
+          <p class="item-snippet">Placeholder snippet for the ABC Technology feed.</p>
+          <div class="item-meta">
+            <span class="item-date">Placeholder date</span>
+            <a class="item-link-btn" href="#" target="_blank">Read on ABC ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="item-source-bar">Choice</div>
+        <div class="item-body">
+          <div class="item-title">Sample headline: Choice reviews the easiest tablets for seniors</div>
+          <p class="item-snippet">Placeholder snippet for the Choice feed.</p>
+          <div class="item-meta">
+            <span class="item-date">Placeholder date</span>
+            <a class="item-link-btn" href="#" target="_blank">Read on Choice ↗</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════ BOOKS, FILM & TV ══════════════ -->
+    <div class="cat-panel" id="panel-arts">
+
+      <div class="item-card">
+        <div class="item-source-bar">ABC Arts</div>
+        <div class="item-body">
+          <div class="item-title">Sample headline: New Australian novel tops the bestseller list</div>
+          <p class="item-snippet">Placeholder snippet for the ABC Entertainment/Arts feed.</p>
+          <div class="item-meta">
+            <span class="item-date">Placeholder date</span>
+            <a class="item-link-btn" href="#" target="_blank">Read on ABC ↗</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════ LOCAL BRISBANE ══════════════ -->
+    <div class="cat-panel" id="panel-local">
+
+      <div class="item-card">
+        <div class="item-source-bar">Brisbane Times</div>
+        <div class="item-body">
+          <div class="item-title">Sample headline: New exhibition opens at GOMA this month</div>
+          <p class="item-snippet">Placeholder snippet for the Brisbane Times feed.</p>
+          <div class="item-meta">
+            <span class="item-date">Placeholder date</span>
+            <a class="item-link-btn" href="#" target="_blank">Read on Brisbane Times ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="item-source-bar">City Hall Concerts</div>
+        <div class="item-body">
+          <div class="item-title">🎵 Lord Mayor's City Hall Concerts — see this week's programme</div>
+          <p class="item-snippet">The full concert schedule already lives on its own Hub page — this card just points residents there.</p>
+          <div class="item-meta">
+            <span class="item-date">Every Tuesday, 12–1pm</span>
+            <a class="item-link-btn" href="concerts.html">View Concerts Page</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════ SCIENCE & NATURE ══════════════ -->
+    <div class="cat-panel" id="panel-science">
+
+      <div class="item-card">
+        <div class="item-source-bar">NASA</div>
+        <div class="item-body">
+          <div class="item-title">Sample headline: NASA shares new image from deep space telescope</div>
+          <p class="item-snippet">Placeholder snippet for the NASA breaking news feed.</p>
+          <div class="item-meta">
+            <span class="item-date">Placeholder date</span>
+            <a class="item-link-btn" href="#" target="_blank">Read on NASA ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="item-card">
+        <div class="item-source-bar">Australian Geographic</div>
+        <div class="item-body">
+          <div class="item-title">Sample headline: Rare wildlife sighting delights researchers</div>
+          <p class="item-snippet">Placeholder snippet for the Australian Geographic feed.</p>
+          <div class="item-meta">
+            <span class="item-date">Placeholder date</span>
+            <a class="item-link-btn" href="#" target="_blank">Read on Australian Geographic ↗</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══════════════ NOSTALGIA ══════════════ -->
+    <div class="cat-panel" id="panel-nostalgia">
+
+      <div class="item-card">
+        <div class="item-source-bar">From the Vault</div>
+        <div class="item-body">
+          <div class="item-title">Sample headline: On this day — a look back at Brisbane in the 1970s
+            <span class="item-added-badge">Added by Rick</span>
+          </div>
+          <p class="item-snippet">This is how items added through the "Add an item" tool will appear — no feed needed, just Rick's own picks.</p>
+          <div class="item-meta">
+            <span class="item-date">Placeholder date</span>
+            <a class="item-link-btn" href="#" target="_blank">Read more ↗</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+</div><!-- end container -->
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  Bridgeman Downs Residents' Hub &nbsp;|&nbsp; Managed by the Residents Committee &nbsp;|&nbsp;
+  Headlines sourced from trusted news, health, science and local Brisbane websites
+</footer>
+
+<script>
+  document.querySelectorAll('.cat-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      var cat = tab.getAttribute('data-cat');
+
+      document.querySelectorAll('.cat-tab').forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+
+      document.querySelectorAll('.cat-panel').forEach(function (p) { p.classList.remove('active'); });
+      document.getElementById('panel-' + cat).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
