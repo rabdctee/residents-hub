@@ -294,15 +294,10 @@
     <!-- ══════════════ LOCAL BRISBANE ══════════════ -->
     <div class="cat-panel" id="panel-local">
 
-      <div class="item-card">
+      <div id="brisbanetimes-status" class="item-card" style="display:none;">
         <div class="item-source-bar">Brisbane Times</div>
         <div class="item-body">
-          <div class="item-title">Sample headline: New exhibition opens at GOMA this month</div>
-          <p class="item-snippet">Placeholder snippet for the Brisbane Times feed.</p>
-          <div class="item-meta">
-            <span class="item-date">Placeholder date</span>
-            <a class="item-link-btn" href="#" target="_blank">Read on Brisbane Times ↗</a>
-          </div>
+          <p class="item-snippet">⚠️ Couldn't load the latest Brisbane Times headlines right now — please check back later.</p>
         </div>
       </div>
 
@@ -505,8 +500,9 @@
   loadNasaFeed();
 
   // ── Load live ABC News headlines (Health, Technology, Entertainment) ──
-  // Same "translator" approach as NASA above — reused for three ABC topic feeds.
-  function loadAbcFeed(rssUrl, panelId, statusId, maxItems) {
+  // Same "translator" approach as NASA above — reused for three ABC topic feeds
+  // and the Brisbane Times feed below.
+  function loadFeed(rssUrl, panelId, statusId, sourceLabel, maxItems) {
     var jsonUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rssUrl);
     var panel = document.getElementById(panelId);
 
@@ -532,13 +528,13 @@
           var card = document.createElement('div');
           card.className = 'item-card';
           card.innerHTML =
-            '<div class="item-source-bar">ABC News</div>' +
+            '<div class="item-source-bar">' + esc(sourceLabel) + '</div>' +
             '<div class="item-body">' +
               '<div class="item-title">' + esc(it.title) + '</div>' +
               '<p class="item-snippet">' + esc(snippet) + '</p>' +
               '<div class="item-meta">' +
                 '<span class="item-date">' + esc(dateStr) + '</span>' +
-                '<a class="item-link-btn" href="' + esc(it.link) + '" target="_blank">Read on ABC ↗</a>' +
+                '<a class="item-link-btn" href="' + esc(it.link) + '" target="_blank">Read on ' + esc(sourceLabel) + ' ↗</a>' +
               '</div>' +
             '</div>';
           fragment.appendChild(card);
@@ -551,9 +547,10 @@
       });
   }
 
-  loadAbcFeed('https://www.abc.net.au/news/feed/7176066/rss.xml', 'panel-health', 'abc-health-status', 4);
-  loadAbcFeed('https://www.abc.net.au/news/feed/2298/rss.xml',    'panel-tech',   'abc-tech-status',   4);
-  loadAbcFeed('https://www.abc.net.au/news/feed/46992/rss.xml',   'panel-arts',   'abc-arts-status',   4);
+  loadFeed('https://www.abc.net.au/news/feed/7176066/rss.xml', 'panel-health', 'abc-health-status', 'ABC News', 4);
+  loadFeed('https://www.abc.net.au/news/feed/2298/rss.xml',    'panel-tech',   'abc-tech-status',   'ABC News', 4);
+  loadFeed('https://www.abc.net.au/news/feed/46992/rss.xml',   'panel-arts',   'abc-arts-status',   'ABC News', 4);
+  loadFeed('https://www.brisbanetimes.com.au/rss/feed.xml',    'panel-local',  'brisbanetimes-status', 'Brisbane Times', 4);
 </script>
 
 </body>
