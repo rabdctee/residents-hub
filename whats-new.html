@@ -362,15 +362,10 @@
     <!-- ══════════════ SCIENCE & NATURE ══════════════ -->
     <div class="cat-panel" id="panel-science">
 
-      <div class="item-card">
+      <div id="nasa-feed-status" class="item-card" style="display:none;">
         <div class="item-source-bar">NASA</div>
         <div class="item-body">
-          <div class="item-title">Sample headline: NASA shares new image from deep space telescope</div>
-          <p class="item-snippet">Placeholder snippet for the NASA breaking news feed.</p>
-          <div class="item-meta">
-            <span class="item-date">Placeholder date</span>
-            <a class="item-link-btn" href="#" target="_blank">Read on NASA ↗</a>
-          </div>
+          <p class="item-snippet">⚠️ Couldn't load the latest NASA headlines right now — please check back later.</p>
         </div>
       </div>
 
@@ -488,6 +483,65 @@
   }
 
   loadWhatsNewItems();
+
+  // ── Load live NASA headlines ─────────────────────────────────
+  // Browsers aren't allowed to read another website's RSS feed directly
+  // (a security rule called CORS), so this goes through a free
+  // "translator" service (rss2json.com) that converts the feed into a
+  // format the page is allowed to read.
+  var NASA_RSS_URL   = 'https://www.nasa.gov/rss/dyn/breaking_news.rss';
+  var NASA_JSON_URL  = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(NASA_RSS_URL);
+
+  function stripHtml(html) {
+    var tmp = document.createElement('div');
+    tmp.innerHTML = html || '';
+    return (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function loadNasaFeed() {
+    var panel = document.getElementById('panel-science');
+    fetch(NASA_JSON_URL)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.status !== 'ok' || !data.items || !data.items.length) throw new Error('bad response');
+
+        var fragment = document.createDocumentFragment();
+
+        data.items.slice(0, 4).forEach(function (it) {
+          var snippet = stripHtml(it.description);
+          if (snippet.length > 220) snippet = snippet.slice(0, 220).trim() + '…';
+
+          var dateStr = '';
+          if (it.pubDate) {
+            var d = new Date(it.pubDate);
+            if (!isNaN(d.getTime())) {
+              dateStr = d.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+          }
+
+          var card = document.createElement('div');
+          card.className = 'item-card';
+          card.innerHTML =
+            '<div class="item-source-bar">NASA</div>' +
+            '<div class="item-body">' +
+              '<div class="item-title">' + esc(it.title) + '</div>' +
+              '<p class="item-snippet">' + esc(snippet) + '</p>' +
+              '<div class="item-meta">' +
+                '<span class="item-date">' + esc(dateStr) + '</span>' +
+                '<a class="item-link-btn" href="' + esc(it.link) + '" target="_blank">Read on NASA ↗</a>' +
+              '</div>' +
+            '</div>';
+          fragment.appendChild(card);
+        });
+
+        panel.insertBefore(fragment, panel.firstChild);
+      })
+      .catch(function () {
+        document.getElementById('nasa-feed-status').style.display = 'flex';
+      });
+  }
+
+  loadNasaFeed();
 </script>
 
 </body>
