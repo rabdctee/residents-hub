@@ -258,27 +258,10 @@
     <!-- ══════════════ HEALTH & WELLBEING ══════════════ -->
     <div class="cat-panel active" id="panel-health">
 
-      <div class="item-card">
-        <div class="item-source-bar">ABC Health</div>
+      <div id="abc-health-status" class="item-card" style="display:none;">
+        <div class="item-source-bar">ABC News</div>
         <div class="item-body">
-          <div class="item-title">Sample headline: New research on healthy ageing and daily movement</div>
-          <p class="item-snippet">Placeholder snippet — once the live feed is connected, a short summary of the real ABC Health article will appear here automatically.</p>
-          <div class="item-meta">
-            <span class="item-date">Placeholder date</span>
-            <a class="item-link-btn" href="#" target="_blank">Read on ABC ↗</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="item-card">
-        <div class="item-source-bar">Healthdirect</div>
-        <div class="item-body">
-          <div class="item-title">Sample headline: Understanding the flu vaccine this winter</div>
-          <p class="item-snippet">Placeholder snippet — this card shows how a Healthdirect item will look once wired in.</p>
-          <div class="item-meta">
-            <span class="item-date">Placeholder date</span>
-            <a class="item-link-btn" href="#" target="_blank">Read on Healthdirect ↗</a>
-          </div>
+          <p class="item-snippet">⚠️ Couldn't load the latest Health headlines right now — please check back later.</p>
         </div>
       </div>
 
@@ -287,27 +270,10 @@
     <!-- ══════════════ TECHNOLOGY ══════════════ -->
     <div class="cat-panel" id="panel-tech">
 
-      <div class="item-card">
-        <div class="item-source-bar">ABC Technology</div>
+      <div id="abc-tech-status" class="item-card" style="display:none;">
+        <div class="item-source-bar">ABC News</div>
         <div class="item-body">
-          <div class="item-title">Sample headline: A simple new tool to block scam calls</div>
-          <p class="item-snippet">Placeholder snippet for the ABC Technology feed.</p>
-          <div class="item-meta">
-            <span class="item-date">Placeholder date</span>
-            <a class="item-link-btn" href="#" target="_blank">Read on ABC ↗</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="item-card">
-        <div class="item-source-bar">Choice</div>
-        <div class="item-body">
-          <div class="item-title">Sample headline: Choice reviews the easiest tablets for seniors</div>
-          <p class="item-snippet">Placeholder snippet for the Choice feed.</p>
-          <div class="item-meta">
-            <span class="item-date">Placeholder date</span>
-            <a class="item-link-btn" href="#" target="_blank">Read on Choice ↗</a>
-          </div>
+          <p class="item-snippet">⚠️ Couldn't load the latest Technology headlines right now — please check back later.</p>
         </div>
       </div>
 
@@ -316,15 +282,10 @@
     <!-- ══════════════ BOOKS, FILM & TV ══════════════ -->
     <div class="cat-panel" id="panel-arts">
 
-      <div class="item-card">
-        <div class="item-source-bar">ABC Arts</div>
+      <div id="abc-arts-status" class="item-card" style="display:none;">
+        <div class="item-source-bar">ABC News</div>
         <div class="item-body">
-          <div class="item-title">Sample headline: New Australian novel tops the bestseller list</div>
-          <p class="item-snippet">Placeholder snippet for the ABC Entertainment/Arts feed.</p>
-          <div class="item-meta">
-            <span class="item-date">Placeholder date</span>
-            <a class="item-link-btn" href="#" target="_blank">Read on ABC ↗</a>
-          </div>
+          <p class="item-snippet">⚠️ Couldn't load the latest Entertainment headlines right now — please check back later.</p>
         </div>
       </div>
 
@@ -542,6 +503,57 @@
   }
 
   loadNasaFeed();
+
+  // ── Load live ABC News headlines (Health, Technology, Entertainment) ──
+  // Same "translator" approach as NASA above — reused for three ABC topic feeds.
+  function loadAbcFeed(rssUrl, panelId, statusId, maxItems) {
+    var jsonUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rssUrl);
+    var panel = document.getElementById(panelId);
+
+    fetch(jsonUrl)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.status !== 'ok' || !data.items || !data.items.length) throw new Error('bad response');
+
+        var fragment = document.createDocumentFragment();
+
+        data.items.slice(0, maxItems).forEach(function (it) {
+          var snippet = stripHtml(it.description);
+          if (snippet.length > 220) snippet = snippet.slice(0, 220).trim() + '…';
+
+          var dateStr = '';
+          if (it.pubDate) {
+            var d = new Date(it.pubDate);
+            if (!isNaN(d.getTime())) {
+              dateStr = d.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+          }
+
+          var card = document.createElement('div');
+          card.className = 'item-card';
+          card.innerHTML =
+            '<div class="item-source-bar">ABC News</div>' +
+            '<div class="item-body">' +
+              '<div class="item-title">' + esc(it.title) + '</div>' +
+              '<p class="item-snippet">' + esc(snippet) + '</p>' +
+              '<div class="item-meta">' +
+                '<span class="item-date">' + esc(dateStr) + '</span>' +
+                '<a class="item-link-btn" href="' + esc(it.link) + '" target="_blank">Read on ABC ↗</a>' +
+              '</div>' +
+            '</div>';
+          fragment.appendChild(card);
+        });
+
+        panel.insertBefore(fragment, panel.firstChild);
+      })
+      .catch(function () {
+        document.getElementById(statusId).style.display = 'flex';
+      });
+  }
+
+  loadAbcFeed('https://www.abc.net.au/news/feed/7176066/rss.xml', 'panel-health', 'abc-health-status', 4);
+  loadAbcFeed('https://www.abc.net.au/news/feed/2298/rss.xml',    'panel-tech',   'abc-tech-status',   4);
+  loadAbcFeed('https://www.abc.net.au/news/feed/46992/rss.xml',   'panel-arts',   'abc-arts-status',   4);
 </script>
 
 </body>
