@@ -340,17 +340,10 @@
     </div>
     <div class="cat-panel" id="panel-nostalgia">
 
-      <div class="item-card">
-        <div class="item-source-bar">From the Vault</div>
+      <div id="onthisday-status" class="item-card" style="display:none;">
+        <div class="item-source-bar">On This Day</div>
         <div class="item-body">
-          <div class="item-title">Sample headline: On this day — a look back at Brisbane in the 1970s
-            <span class="item-added-badge">Added by Rick</span>
-          </div>
-          <p class="item-snippet">This is how items added through the "Add an item" tool will appear — no feed needed, just Rick's own picks.</p>
-          <div class="item-meta">
-            <span class="item-date">Placeholder date</span>
-            <a class="item-link-btn" href="#" target="_blank">Read more ↗</a>
-          </div>
+          <p class="item-snippet">⚠️ Couldn't load today's "On This Day" history right now — please check back later.</p>
         </div>
       </div>
 
@@ -549,6 +542,59 @@
   loadFeed('https://www.abc.net.au/news/feed/2298/rss.xml',      'panel-tech',   'abc-tech-status',   'ABC News', 4);
   loadFeed('https://www.abc.net.au/news/feed/103728568/rss.xml', 'panel-arts',   'abc-arts-status',   'ABC News', 4);
   loadFeed('https://www.brisbanetimes.com.au/rss/feed.xml',      'panel-local',  'brisbanetimes-status', 'Brisbane Times', 4);
+
+  // ── Load "On This Day" history from Wikipedia ───────────────
+  // A genuine, free, no-signup feed — updates itself daily based on
+  // today's date. Shows real historical events, most recent first.
+  function loadOnThisDay() {
+    var panel = document.getElementById('panel-nostalgia');
+    var today = new Date();
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    var url = 'https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/' + mm + '/' + dd;
+
+    fetch(url)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var events = (data.events || []).filter(function (ev) {
+          var age = today.getFullYear() - ev.year;
+          return ev.year && age >= 5 && age <= 100; // keep it within a relatable lifetime
+        });
+        events.sort(function (a, b) { return b.year - a.year; }); // most recent first
+        var picks = events.slice(0, 4);
+        if (!picks.length) throw new Error('no events in range');
+
+        var fragment = document.createDocumentFragment();
+        picks.forEach(function (ev) {
+          var yearsAgo = today.getFullYear() - ev.year;
+          var page = ev.pages && ev.pages[0];
+          var link = (page && page.content_urls && page.content_urls.desktop)
+            ? page.content_urls.desktop.page
+            : 'https://en.wikipedia.org/wiki/' + today.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }).replace(' ', '_');
+
+          var card = document.createElement('div');
+          card.className = 'item-card';
+          card.innerHTML =
+            '<div class="item-source-bar">On This Day</div>' +
+            '<div class="item-body">' +
+              '<div class="item-title">' + ev.year + ' — ' + yearsAgo + ' years ago today</div>' +
+              '<p class="item-snippet">' + esc(ev.text) + '</p>' +
+              '<div class="item-meta">' +
+                '<span class="item-date"></span>' +
+                '<a class="item-link-btn" href="' + esc(link) + '" target="_blank">Read more ↗</a>' +
+              '</div>' +
+            '</div>';
+          fragment.appendChild(card);
+        });
+
+        panel.insertBefore(fragment, panel.firstChild);
+      })
+      .catch(function () {
+        document.getElementById('onthisday-status').style.display = 'flex';
+      });
+  }
+
+  loadOnThisDay();
 </script>
 
 </body>
