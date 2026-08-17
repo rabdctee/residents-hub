@@ -130,6 +130,52 @@
     .col-meet, .col-issue, .col-notes, .col-outcome { display: none; }
     .form-grid { grid-template-columns: 1fr; }
   }
+
+  /* ══════════════════════════════════════════════════
+     DARK MODE — overrides the colours above.
+     Delete this block to go back to the light version.
+  ═══════════════════════════════════════════════════ */
+  :root {
+    --surface: #232f3d;
+    --border:  #2e3b4b;
+  }
+  body { background: #12181f; color: #c3ccd9; }
+
+  .page-title, #pin-gate h2, .col-ref, .summary-card .count,
+  #add-panel h3 { color: #6fa8dc; }
+  .summary-card.active { border-color: #6fa8dc; box-shadow: 0 0 0 2px #6fa8dc; }
+  .issue-link, .icon-btn { color: #6fa8dc; }
+
+  .filter-bar, .summary-card, .table-wrap, #add-panel { background: #1c2530; }
+  .filter-bar label, .form-grid label { color: #93a0b3; }
+  .filter-bar select, .filter-bar input[type=text],
+  .form-grid input, .form-grid select, .form-grid textarea,
+  #pin-gate input { background: #12181f; color: #c3ccd9; }
+  .summary-card .label { color: #93a0b3; }
+
+  tbody tr { border-bottom: 1px solid #2e3b4b; }
+  tbody tr:hover { background: #232f3d; }
+
+  .col-notes { color: #c3ccd9; }
+  .col-outcome { color: #6fcf97; }
+  .outcome-required { background: #3a2c0f !important; }
+
+  .pill-open        { background: #173147; color: #7cb8f0; }
+  .pill-inprogress  { background: #4a3a12; color: #e8c774; }
+  .pill-done        { background: #173a26; color: #6fcf97; }
+  .pill-deferred    { background: #4a1e1e; color: #ff9b9b; }
+
+  .edit-row { background: #171f29 !important; }
+  .edit-row select, .edit-row textarea { background: #12181f; color: #c3ccd9; }
+  .edit-row span { color: #6fa8dc !important; }
+  .outcome-label { color: #6fcf97; }
+
+  .btn-cancel { background: #2e3b4b; color: #c3ccd9; }
+
+  .error-msg { background: #4a1e1e; color: #ff9b9b; }
+  .success-msg { background: #173a26; color: #6fcf97; }
+
+  .loading, .empty-state { color: #93a0b3; }
 </style>
 </head>
 <body>
@@ -442,7 +488,7 @@ function loadActions() {
         const c = allRows[i];
         if (!c[0]) continue; // skip blank ref
         allActions.push({
-          row:      i + 1,   // 1-based sheet row: header=row1, i=1 → sheet row 2
+          row:      i + 2,   // 1-based sheet row: header=row1, first data row (i=0) → sheet row 2
           ref:      c[0] || "",
           meeting:  c[1] || "",
           action:   c[2] || "",
