@@ -401,6 +401,57 @@
     .tab-btn { padding: 8px 14px; font-size: 14px; }
     .edit-panel-grid { grid-template-columns: 1fr; }
   }
+
+  /* ══════════════════════════════════════════════════
+     DARK MODE — overrides the colours above.
+     Delete this block to go back to the light version.
+  ═══════════════════════════════════════════════════ */
+  body { background: #12181f; color: #c3ccd9; }
+  .container { background: #1c2530; }
+
+  .back-bar { background: #1c2530; border-bottom: 2px solid #2e3b4b; }
+  .back-bar a { background: #1c2530; color: #6fa8dc; border-color: #2e3b4b; }
+  .back-bar a:hover { background: #232f3d; border-color: #6fa8dc; }
+
+  .section-title { color: #6fa8dc; }
+
+  .tab-bar { border-bottom: 2px solid #2e3b4b; }
+  .tab-btn { background: #1c2530; border-color: #2e3b4b; color: #6fa8dc; }
+  .tab-btn:hover:not(.active) { background: #232f3d; }
+
+  .admin-card { background: #1c2530; border-color: #2e3b4b; }
+  .card-headline { color: #6fa8dc; }
+  .card-details { color: #c3ccd9; }
+  .card-meta { color: #93a0b3; border-bottom: 1px solid #2e3b4b; }
+
+  .btn-unpublish { background: #1c2530; color: #6fa8dc; border-color: #2e3b4b; }
+  .btn-unpublish:hover { background: #232f3d; border-color: #6fa8dc; }
+  .btn-delete { background: #1c2530; }
+  .btn-reload { background: #1c2530; border-color: #2e3b4b; color: #6fa8dc; }
+  .btn-reload:hover { background: #232f3d; border-color: #6fa8dc; }
+  .btn-edit { background: #1c2530; color: #6fa8dc; border-color: #6fa8dc; }
+
+  .state-msg { color: #93a0b3; }
+
+  .info-box { background: #17324a; color: #c3ccd9; }
+
+  .hub-footer { background: #171f29; color: #93a0b3; border-top: 1px solid #2e3b4b; }
+
+  .edit-panel { background: #171f29; border-color: #2e3b4b; }
+  .edit-panel-grid label { color: #6fa8dc; }
+  .edit-panel-grid input,
+  .edit-panel-grid select,
+  .edit-panel-grid textarea {
+    background: #12181f;
+    color: #c3ccd9;
+    border-color: #2e3b4b;
+  }
+
+  .btn-cancel-edit-admin { background: #1c2530; color: #93a0b3; border-color: #2e3b4b; }
+  .btn-cancel-edit-admin:hover { border-color: #6fa8dc; color: #c3ccd9; }
+
+  .edit-photo-current em { color: #93a0b3; }
+  .edit-remove-photo-row { color: #c3ccd9; }
 </style>
 </head>
 <body>

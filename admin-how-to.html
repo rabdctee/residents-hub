@@ -281,6 +281,45 @@
   @media(max-width:600px){
     .tab-btn { font-size: 0.82em; padding: 8px 12px; }
   }
+
+  /* ══════════════════════════════════════════════════
+     DARK MODE — overrides the colours above.
+     Delete this block to go back to the light version.
+  ═══════════════════════════════════════════════════ */
+  :root {
+    --light:  #232f3d;
+    --border: #2e3b4b;
+    --bg:     #12181f;
+  }
+  body { color: #c3ccd9; }
+
+  .step-card, .cat-row, .qa-item, .modal, .tab-btn, .format-helper, .btn-outline {
+    background: #1c2530;
+  }
+  .qa-item-header { background: #171f29; }
+  .qa-item-body, .format-helper { color: #c3ccd9; }
+  .qa-answer-preview::after { background: linear-gradient(transparent, #1c2530); }
+
+  .drop-zone:hover { background: #2c3947; }
+  .drop-zone p, .cat-row .cat-name, .qa-item-q, label,
+  .breadcrumb a, .tab-btn, .btn-outline { color: #6fa8dc; }
+
+  .cat-row .cat-count, .cat-row .cat-arrow, .breadcrumb span,
+  .empty-state, .drop-zone .hint { color: #93a0b3; }
+
+  .btn-outline { border-color: #2e3b4b; }
+  .format-helper { border-color: #2e3b4b; }
+  .format-helper code { background: #2e3b4b; }
+
+  input[type=text], textarea, select { background: #12181f; color: #c3ccd9; }
+
+  .notice-info { background: #17324a; }
+  .notice-ok   { background: #16382a; }
+  .notice-warn { background: #3a3212; }
+
+  .back-bar { background: #1c2530; border-bottom: 2px solid #2e3b4b; }
+  .back-bar a { background: #1c2530; color: #6fa8dc; border-color: #2e3b4b; }
+  .back-bar a:hover { background: #232f3d; border-color: #6fa8dc; }
 </style>
 </head>
 <body>

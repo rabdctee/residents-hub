@@ -245,6 +245,52 @@
       .page-area { padding: 18px 16px 40px; }
       .type-row { flex-direction: column; }
     }
+
+    /* ══════════════════════════════════════════════════
+       DARK MODE — overrides the colours above.
+       Delete this block to go back to the light version.
+    ═══════════════════════════════════════════════════ */
+    body { background:#12181f; color:#c3ccd9; }
+    .container { background:#1c2530; }
+
+    .page-title { color:#6fa8dc; }
+    .back-link { color:#6fa8dc; }
+
+    .form-card { background:#171f29; border-color:#2e3b4b; }
+    .form-card h2 { color:#6fa8dc; }
+    label { color:#c3ccd9; }
+
+    input[type="text"], input[type="date"], textarea, select {
+      background:#12181f; color:#c3ccd9; border-color:#2e3b4b;
+    }
+
+    .type-option { background:#1c2530; border-color:#2e3b4b; }
+    .type-option:hover { background:#232f3d; }
+    .type-option.selected { background:#232f3d; border-color:#6fa8dc; }
+    .type-option .type-label { color:#6fa8dc; }
+    .type-option .type-desc { color:#93a0b3; }
+
+    .btn-submit:disabled { background:#3a4453; }
+
+    .status-msg.success { background:#173a26; color:#6fcf97; border-color:#2a5c40; }
+    .status-msg.error   { background:#4a1e1e; color:#ff9b9b; border-color:#6b2c2c; }
+
+    td { border-bottom:1px solid #2e3b4b; }
+    tr:hover td { background:#1c2530; }
+
+    .badge-public    { background:#173147; color:#7cb8f0; }
+    .badge-residents { background:#4a3a12; color:#e8c774; }
+    .badge-active    { background:#173a26; color:#6fcf97; }
+    .badge-archived  { background:#232f3d; color:#93a0b3; }
+
+    .btn-archive { background:#232f3d; border-color:#2e3b4b; color:#93a0b3; }
+    .btn-archive:hover { background:#4a1e1e; border-color:#6b2c2c; color:#ff9b9b; }
+    .btn-edit { background:#173147; border-color:#2e5477; color:#7cb8f0; }
+    .btn-edit:hover { background:#1e3f5c; border-color:#7cb8f0; }
+
+    .loading-msg { color:#93a0b3; }
+
+    .hub-footer { background:#171f29; color:#93a0b3; border-top:1px solid #2e3b4b; }
   </style>
 </head>
 
