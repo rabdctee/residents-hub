@@ -189,11 +189,11 @@
 
       return `
         <div style="border:1.5px solid #c5d8ee;border-radius:8px;margin-bottom:18px;
-                    page-break-inside:avoid;overflow:hidden;">
-          <div style="background:#1F4E79;color:white;padding:10px 16px;
-                      font-size:15px;font-weight:700;">
+                    overflow:hidden;">
+          <div style="background:#1F4E79;color:white;padding:14px 18px;
+                      font-size:20px;font-weight:800;page-break-after:avoid;">
             ${esc(catName)}
-            <span style="font-size:12px;font-weight:400;opacity:0.85;margin-left:8px;">
+            <span style="font-size:13px;font-weight:400;opacity:0.85;margin-left:8px;">
               (${issues.length} issue${issues.length !== 1 ? "s" : ""})
             </span>
           </div>
