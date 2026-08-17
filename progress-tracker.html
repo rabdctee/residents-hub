@@ -75,13 +75,14 @@
 
   /* ── Category blocks ── */
   .cat-block { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
-  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; cursor: pointer; background: var(--surface); gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; background: var(--hub-blue); gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
+  .cat-header:hover { background: #163d5f; }
   .cat-header:hover { background: #cfe0f5; }
   .cat-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; flex-wrap: wrap; }
-  .cat-name { font-weight: 700; font-size: 1.08em; color: var(--hub-blue); }
+  .cat-name { font-weight: 800; font-size: 1.22em; color: #fff; letter-spacing: 0.01em; }
   .cat-mini-pills { display: flex; gap: 5px; flex-wrap: wrap; }
   .mini-pill { font-size: 0.68em; font-weight: 700; padding: 2px 8px; border-radius: 20px; border: 1.5px solid transparent; }
-  .cat-chevron { color: var(--hub-blue); font-size: 1em; transition: transform 0.25s ease; flex-shrink: 0; }
+  .cat-chevron { color: #fff; font-size: 1.1em; transition: transform 0.25s ease; flex-shrink: 0; }
   .cat-block.open .cat-chevron { transform: rotate(180deg); }
   .cat-body { display: none; border-top: 1px solid var(--border); }
   .cat-block.open .cat-body { display: block; }
@@ -112,10 +113,6 @@
   /* ── Expand/collapse ── */
   /* ── Print button ── */
   .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: #1F4E79; border: 2px solid #1F4E79; border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
-  .section-print-btn { font-size: 0.78em; font-weight: 700; padding: 4px 10px; background: #fff; color: #1F4E79; border: 1.5px solid #1F4E79; border-radius: 16px; cursor: pointer; font-family: var(--font); flex-shrink: 0; }
-  .section-print-btn:hover { background: #1F4E79; color: #fff; }
-  .section-print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  @media print { .section-print-btn { display: none !important; } }
   .print-btn:hover { background: #1F4E79; color: #fff; }
   .print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
   /* ── Explainer panel ── */
@@ -248,7 +245,7 @@ const REFRESH_INTERVAL = 300000;
 
 let allData = [];
 let activeFilter = "all";
-let filterSelected = false; // tracks if user has actively chosen a filter
+let filterSelected = true; // show every issue by default, right under the Summary buttons
 let searchTerm = "";
 
 function statusClass(s) {
@@ -428,18 +425,10 @@ function buildAccordion(grouped) {
           <span class="cat-name">${escHtml(catName)}</span>
           <div class="cat-mini-pills">${miniPills}</div>
         </div>
-        <button class="section-print-btn" title="Print just the ${escHtml(catName)} section">🖨️ Print section</button>
         <span class="cat-chevron">▼</span>
       </div>
       <div class="cat-body">${rows}</div>`;
     block.querySelector(".cat-header").addEventListener("click", () => block.classList.toggle("open"));
-    block.querySelector(".section-print-btn").addEventListener("click", e => {
-      e.stopPropagation();
-      printIssues(e.currentTarget, {
-        category: catName,
-        status: activeFilter !== "all" ? activeFilter : null
-      });
-    });
    block.querySelectorAll(".mini-pill").forEach(pill => {
       pill.addEventListener("click", e => {
         e.stopPropagation();
