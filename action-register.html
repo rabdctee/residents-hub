@@ -714,15 +714,17 @@ function saveEdit(rowNum) {
   editingRow = null;
   renderSummary();
   applyFilters();
-  showSuccess("Saved ✓ — changes visible now. Sheet syncs within ~30 seconds.");
+  showSuccess("Saved ✓ — the sheet can take a few minutes to show it if you reload the page.");
 
   // Post single combined update to Apps Script (fire-and-forget)
   postScript({ action: "updateAction", row: rowNum, status: newStatus, notes: newNotes, outcome: newOutcome });
 
-  // Re-fetch from sheet after 30 seconds to confirm sync
-  setTimeout(function() {
-    loadActions();
-  }, 30000);
+  // NOTE: we deliberately do NOT auto re-fetch from the sheet here any more.
+  // Google's "publish to web" CSV feed can take a few minutes to catch up
+  // with a change, so checking too soon was pulling the old, stale data
+  // and overwriting this correct save on screen — making a successful
+  // save look like it had reverted. Reloading the page later will pick
+  // up the confirmed data once Google's feed has caught up.
 }
 
 // ── Add action ────────────────────────────────────────────────────────────────
