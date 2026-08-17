@@ -280,6 +280,53 @@
     .dash-header { flex-direction: column; }
     .card-grid { grid-template-columns: 1fr; }
   }
+
+  /* ══════════════════════════════════════════════════
+     DARK MODE — overrides the colours above.
+     Delete this block to go back to the light version.
+  ═══════════════════════════════════════════════════ */
+  body { background: #12181f; color: #c3ccd9; }
+
+  .back-bar { background: #1c2530; border-bottom: 2px solid #2e3b4b; }
+  .back-bar a { background: #1c2530; color: #6fa8dc; border-color: #2e3b4b; }
+  .back-bar a:hover { background: #232f3d; border-color: #6fa8dc; }
+
+  .section-label { color: #6fa8dc; }
+
+  .admin-card { background: #1c2530; border-color: #2e3b4b; }
+  .card-title { color: #6fa8dc; }
+  .card-desc { color: #93a0b3; }
+
+  .btn-secondary { background: #1c2530; color: #6fa8dc; border-color: #2e3b4b; }
+
+  .checklist-strip { background: #1c2530; border-color: #2e3b4b; }
+  .checklist-strip h3 { color: #6fa8dc; }
+  .check-item { color: #c3ccd9; }
+  .check-item:hover { background: #232f3d; }
+  .check-item.done span { color: #5a6472; }
+  #check-progress { color: #93a0b3; }
+
+  .btn-reset-checks { background: #1c2530; color: #6fa8dc; border-color: #2e3b4b; }
+  .btn-reset-checks:hover { background: #232f3d; }
+
+  .dash-footer { color: #5a6472; }
+
+  /* the "Add New Issue" form uses some colours written directly
+     on the HTML elements, so these need "!important" to win */
+  #add-issue-panel { border-top-color: #2e3b4b !important; }
+  #add-issue-panel label { color: #6fa8dc !important; }
+  #add-issue-panel input,
+  #add-issue-panel select,
+  #add-issue-panel textarea {
+    background: #12181f;
+    color: #c3ccd9;
+    border-color: #2e3b4b !important;
+  }
+  #add-issue-panel button:not([id]):not([class]) {
+    background: #1c2530 !important;
+    color: #93a0b3 !important;
+    border-color: #2e3b4b !important;
+  }
 </style>
 </head>
 <body>
