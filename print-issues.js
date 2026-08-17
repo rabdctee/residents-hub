@@ -17,6 +17,37 @@
     "2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_" +
     "-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 
+  // ── Category remapping — kept identical to progress-tracker.html so a
+  // printed section always matches the on-screen section of the same name ──
+  const CAT_MAP = {
+    "Safety & Emergency":       "Safety, Security & Emergency",
+    "Security":                 "Safety, Security & Emergency",
+    "Infrastructure & Maintenance": "Village Maintenance",
+    "Staffing & Management":    "Village Maintenance",
+    "Facilities & Amenities":   "Village Maintenance",
+    "Environment & Grounds":    "Village Maintenance",
+    "Administration & Finance": "Administration & Finance",
+    "Initiatives":              "Initiatives",
+    "Manor":                    "Manor",
+    "Access":                   "Manor",
+  };
+  const CAT_ORDER = [
+    "Safety, Security & Emergency",
+    "Village Maintenance",
+    "Administration & Finance",
+    "Initiatives",
+    "Manor",
+  ];
+  function normaliseCat(s) {
+    return (s || "").replace(/\s+/g, " ").trim();
+  }
+  const CAT_MAP_LOOKUP = {};
+  Object.keys(CAT_MAP).forEach(k => { CAT_MAP_LOOKUP[normaliseCat(k).toLowerCase()] = CAT_MAP[k]; });
+  function mapCategory(raw) {
+    const clean = normaliseCat(raw);
+    return CAT_MAP_LOOKUP[clean.toLowerCase()] || clean;
+  }
+
   /* ── Helpers ── */
 
   function parseCSV(text) {
@@ -84,10 +115,14 @@
   function groupByCategory(rows) {
     const map = {};
     rows.forEach(r => {
-      if (!map[r.category]) map[r.category] = [];
-      map[r.category].push(r);
+      const group = mapCategory(r.category);
+      if (!map[group]) map[group] = [];
+      map[group].push(r);
     });
-    return map;
+    const ordered = {};
+    CAT_ORDER.forEach(g => { if (map[g]) ordered[g] = map[g]; });
+    Object.keys(map).sort().forEach(g => { if (!ordered[g]) ordered[g] = map[g]; });
+    return ordered;
   }
 
   function buildCountSummary(rows) {
@@ -98,7 +133,7 @@
 
   /* ── Build print HTML ── */
 
-  function buildPrintHTML(rows) {
+  function buildPrintHTML(rows, filterLabel) {
     const grouped = groupByCategory(rows);
     const counts  = buildCountSummary(rows);
     const now     = new Date().toLocaleString("en-AU", {
@@ -194,6 +229,7 @@
       </div>
       <div style="font-size:13px;color:#5f6368;margin-top:3px;">
         Bridgeman Downs Retirement Village — Residents Committee
+        ${filterLabel ? `<span style="color:#1F4E79;font-weight:700;"> — ${esc(filterLabel)}</span>` : ""}
       </div>
     </div>
     <div style="text-align:right;font-size:12px;color:#5f6368;line-height:1.7;">
@@ -227,7 +263,7 @@ ${catBlocks}
 
   /* ── Main entry point ── */
 
-  window.printIssues = async function (btnEl) {
+  window.printIssues = async function (btnEl, filter) {
     const orig = btnEl ? btnEl.innerHTML : null;
     if (btnEl) { btnEl.disabled = true; btnEl.innerHTML = "⏳ Loading data…"; }
 
@@ -235,10 +271,21 @@ ${catBlocks}
       const resp = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
       if (!resp.ok) throw new Error("HTTP " + resp.status);
       const text = await resp.text();
-      const rows = parseCSV(text);
+      let rows = parseCSV(text);
       if (!rows.length) throw new Error("No data found in the spreadsheet.");
 
-      const html = buildPrintHTML(rows);
+      const labelParts = [];
+      if (filter && filter.category) {
+        rows = rows.filter(r => mapCategory(r.category) === filter.category);
+        labelParts.push(filter.category);
+      }
+      if (filter && filter.status) {
+        rows = rows.filter(r => r.status === filter.status);
+        labelParts.push(statusLabel(filter.status) + " only");
+      }
+      if (!rows.length) throw new Error("No issues match that selection to print.");
+
+      const html = buildPrintHTML(rows, labelParts.join(" — "));
 
       // Open in a new window and trigger print dialog
       const win = window.open("", "_blank",
