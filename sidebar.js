@@ -341,9 +341,9 @@
         <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>🌏 World News</a></li>
       </ul>
 
-      <!-- What's New -->
+      <!-- The Roundup -->
       <ul class="sb-links">
-        <li><a href="whats-new.html"${isActive('whats-new.html') ? ' class="sb-active"' : ''}>🆕 What's New</a></li>
+        <li><a href="whats-new.html"${isActive('whats-new.html') ? ' class="sb-active"' : ''}>📰 The Roundup</a></li>
       </ul>
 
       <!-- What's On -->
