@@ -311,11 +311,13 @@
   // Determine which accordion group should auto-open
   var whatsOnPages  = ['fireside-talks.html','concerts.html','sports-hub.html'];
   var communityPages = ['classifieds.html','community-life.html','savings.html'];
+  var worldNewsPages = ['news.html','whats-new.html'];
   var villagePages  = ['our-story.html','memories.html','village-map.html'];
   var infoPages      = ['info-sessions.html','useful-links.html','getting-around.html','how-to.html','contacts.html'];
 
   var openWhatsOn   = whatsOnPages.some(isActive)    ? ' open' : '';
   var openCommunity = communityPages.some(isActive)  ? ' open' : '';
+  var openWorldNews = worldNewsPages.some(isActive)  ? ' open' : '';
   var openVillage   = villagePages.some(isActive)    ? ' open' : '';
   var openInfo      = infoPages.some(isActive)       ? ' open' : '';
 
@@ -337,14 +339,15 @@
       </ul>
 
       <!-- World News -->
+        <div class="sb-acc-header${openWorldNews}" onclick="sbToggle('sba-worldnews')">
+          🌏 World News <span class="sb-acc-arrow">▼</span>
+        </div>
+        <div class="sb-acc-body${openWorldNews}" id="sba-worldnews">
       <ul class="sb-links">
-        <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>🌏 World News</a></li>
-      </ul>
-
-      <!-- The Roundup -->
-      <ul class="sb-links">
+            <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>🌏 Headlines</a></li>
         <li><a href="whats-new.html"${isActive('whats-new.html') ? ' class="sb-active"' : ''}>📰 The Roundup</a></li>
       </ul>
+        </div>
 
       <!-- What's On -->
         <div class="sb-acc-header${openWhatsOn}" onclick="sbToggle('sba-whatson')">
