@@ -344,7 +344,7 @@
         </div>
         <div class="sb-acc-body${openWorldNews}" id="sba-worldnews">
       <ul class="sb-links">
-            <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>🌏 Headlines</a></li>
+            <li><a href="news.html"${isActive('news.html') ? ' class="sb-active"' : ''}>🌏 Major Media Outlets</a></li>
         <li><a href="whats-new.html"${isActive('whats-new.html') ? ' class="sb-active"' : ''}>📰 The Roundup</a></li>
       </ul>
         </div>
