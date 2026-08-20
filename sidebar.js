@@ -366,7 +366,7 @@
 
         <!-- Community -->
         <div class="sb-acc-header${openCommunity}" onclick="sbToggle('sba-community')">
-          👥 Our Community <span class="sb-acc-arrow">▼</span>
+          🧑‍🤝‍🧑 Our Community <span class="sb-acc-arrow">▼</span>
         </div>
         <div class="sb-acc-body${openCommunity}" id="sba-community">
           <ul class="sb-links">
