@@ -11,6 +11,23 @@
 
 (function () {
 
+  // ── GOOGLE ANALYTICS ─────────────────────────────────────────
+  // Loads Google's tracking script and starts it up, on every page
+  // that includes sidebar.js. Replaces the same snippet Google gave
+  // you (the one currently pasted directly into index.html) so you
+  // don't have to add it to every page by hand.
+  (function () {
+    var gaScript = document.createElement('script');
+    gaScript.async = true;
+    gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R';
+    document.head.appendChild(gaScript);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  })();
+
   // ── CLEAN UP LITERAL \n TEXT ────────────────────────────────
   // VS Code find-and-replace without regex mode inserts a literal \n
   // character instead of a real line break. This removes it immediately.
