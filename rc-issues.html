@@ -680,9 +680,9 @@ async function submitRcResponse(uid, originalCategory, originalTopic) {
 
   const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
   const existingNotes = issue ? issue.notes : "";
-  const newNotes = existingNotes ? `${prefix}
+  const newNotes = existingNotes ? `${existingNotes}
 
-${existingNotes}` : prefix;
+${prefix}` : prefix;
 
   const status = row.querySelector(".edit-status").value;
 

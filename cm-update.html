@@ -609,7 +609,7 @@ async function submitCmUpdate(uid, originalCategory, originalTopic) {
 
   const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
   const existingNotes = issue ? issue.notes : "";
-  const newNotes = existingNotes ? `${prefix}\n\n${existingNotes}` : prefix;
+  const newNotes = existingNotes ? `${existingNotes}\n\n${prefix}` : prefix;
 
   const status = row.querySelector(".edit-status").value;
 

@@ -1001,7 +1001,7 @@ async function submitNewIssue() {
   btn.textContent = "⏳ Adding…";
 
   const stamp = new Date().toLocaleDateString("en-AU", { day:"2-digit", month:"2-digit", year:"numeric" });
-  const tag   = `[Added - ${stamp}]` + (addedBy ? ` (${addedBy})` : "");
+  const tag   = `[Added by RC - ${stamp}]` + (addedBy ? ` (${addedBy})` : "");
   const notes = rawNotes ? `${tag} ${rawNotes}` : `${tag} New issue added.`;
 
   const payload = JSON.stringify({ action: "add", category, topic, notes, status, source });
