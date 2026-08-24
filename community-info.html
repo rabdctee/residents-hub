@@ -979,6 +979,38 @@
     ul.innerHTML = html || '<li style="color:#888;font-style:italic;">No documents yet.</li>';
   }
 
+  // Recognise month names/abbreviations so documents can be sorted by the
+  // month they're actually about, not by when they were typed into the sheet.
+  var MONTH_INDEX = {
+    jan:0, january:0, feb:1, february:1, mar:2, march:2, apr:3, april:3,
+    may:4, jun:5, june:5, jul:6, july:6, aug:7, august:7,
+    sep:8, sept:8, september:8, oct:9, october:9, nov:10, november:10, dec:11, december:11
+  };
+
+  function extractSortKey(subfolder, name) {
+    var text = subfolder || name || '';
+    var m = /([A-Za-z]+)\.?\s+(\d{4})/.exec(text);
+    if (m) {
+      var mon = MONTH_INDEX[m[1].toLowerCase()];
+      var yr  = parseInt(m[2]);
+      if (mon !== undefined && !isNaN(yr)) return yr * 12 + mon;
+    }
+    return -1; // unrecognised dates sink to the bottom rather than breaking the sort
+  }
+
+  // Standardise how meeting documents are displayed (e.g. "Jun 2026 — Minutes"),
+  // regardless of how the file name was actually typed into the registry.
+  function formatMeetingDisplayName(rawName, subfolder) {
+    var name = rawName || '';
+    var type = null;
+    if (/agenda/i.test(name))       type = 'Agenda';
+    else if (/minutes/i.test(name)) type = 'Minutes';
+    if (subfolder && type) {
+      return subfolder + ' — ' + type;
+    }
+    return name; // not enough information to standardise safely — show as typed
+  }
+
   function buildFileList(key) {
     var ul = document.getElementById(key + '-files');
     if (ul.children.length > 0) return;
@@ -1003,17 +1035,24 @@
         for (var i = 1; i < lines.length; i++) {
           var line = lines[i].trim();
           if (!line) continue;
-          var cols      = parseCSVLine(line);
-          var fileName  = cols[1] ? cols[1].trim() : null;
-          var fileId    = cols[2] ? cols[2].trim() : null;
-          var rowFolder = cols[3] ? cols[3].trim() : null;
+          var cols         = parseCSVLine(line);
+          var fileName     = cols[1] ? cols[1].trim() : null;
+          var fileId       = cols[2] ? cols[2].trim() : null;
+          var rowFolder    = cols[3] ? cols[3].trim() : null;
+          var rowSubfolder = cols[4] ? cols[4].trim() : null;
           if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
-            newItems.push({ name: fileName, id: fileId });
+            newItems.push({
+              name: formatMeetingDisplayName(fileName, rowSubfolder),
+              id: fileId,
+              sortKey: extractSortKey(rowSubfolder, fileName)
+            });
           }
         }
-        // Rows in the sheet are added oldest-first (as they're uploaded), so
-        // reverse them here to show the newest upload at the top.
+        // Start from newest-uploaded-first, then sort by the document's actual
+        // month/year so registry entry order no longer matters. Items with the
+        // same month keep their upload order (most recent upload wins ties).
         newItems.reverse();
+        newItems.sort(function(a, b) { return b.sortKey - a.sortKey; });
         var newHtml = '';
         newItems.forEach(function(f) {
           newHtml += '<li><a href="view-document.html?id=' + encodeURIComponent(f.id) +
