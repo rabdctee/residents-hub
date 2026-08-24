@@ -491,7 +491,6 @@ function buildAccordion() {
               <div class="full">
                 <label class="field-label">CM Notes</label>
                 <div class="notes-display">${formatNotes(issue.notes)}</div>
-                <textarea class="edit-notes" rows="3">${escHtml(issue.notes)}</textarea>
               </div>
             </div>
             <div class="edit-actions">
@@ -538,7 +537,7 @@ function toggleEdit(uid) {
   document.querySelectorAll(".issue-row.editing").forEach(r => r.classList.remove("editing"));
   if (!isEditing) {
     row.classList.add("editing");
-    row.querySelector(".edit-notes").focus();
+    row.querySelector(".rc-response-text").focus();
   }
 }
 
@@ -547,7 +546,6 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
   const row      = document.getElementById(uid);
   const category = row.querySelector(".edit-category").value.trim();
   const status   = row.querySelector(".edit-status").value;
-  const notes    = row.querySelector(".edit-notes").value.trim();
   const btn      = row.querySelector(".btn-update");
 
   if (!category) { alert("Category cannot be empty."); return; }
@@ -561,7 +559,6 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
     originalTopic,
     category,
     topic: originalTopic,
-    notes,
     status
   });
 
@@ -570,7 +567,7 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
 
     // Update local data and refresh the badge/preview in the DOM
     const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
-    if (issue) { issue.category = category; issue.notes = notes; issue.status = status; }
+    if (issue) { issue.category = category; issue.status = status; }
 
     row.classList.remove("editing");
     showToast("success");
