@@ -97,6 +97,8 @@
   .issue-note .entry { padding: 5px 0; border-bottom: 1px dashed var(--border); }
   .issue-note .entry:last-child { padding-bottom: 0; border-bottom: none; }
   .issue-note .rc-tag { color: #2e7d32; font-weight: 700; }
+  .issue-note .cm-tag { color: #1565c0; font-weight: 700; }
+  .issue-note .added-tag { color: #a67c00; font-weight: 700; }
   .badge { font-size: 0.78em; font-weight: 700; padding: 7px 14px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; border: 1.5px solid transparent; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
 
   /* ── Status colours ── */
@@ -278,9 +280,10 @@ function formatNotes(notes) {
   return notes.split(/\n\s*\n/).map(block => {
     block = block.trim();
     if (!block) return "";
-    const m = block.match(/^(\[RC[^\]]*\])\s*([\s\S]*)$/);
+    const m = block.match(/^(\[(RC|CM|Added)[^\]]*\])\s*([\s\S]*)$/);
     if (m) {
-      return `<div class="entry"><span class="rc-tag">${escHtml(m[1])}</span> ${escHtml(m[2]).replace(/\n/g,"<br>")}</div>`;
+      const cls = m[2] === "RC" ? "rc-tag" : m[2] === "CM" ? "cm-tag" : "added-tag";
+      return `<div class="entry"><span class="${cls}">${escHtml(m[1])}</span> ${escHtml(m[3]).replace(/\n/g,"<br>")}</div>`;
     }
     return `<div class="entry">${escHtml(block).replace(/\n/g,"<br>")}</div>`;
   }).join("");

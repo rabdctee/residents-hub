@@ -103,6 +103,8 @@
   .notes-display .entry { padding: 7px 0; border-bottom: 1px dashed #dde8f5; }
   .notes-display .entry:last-child { border-bottom: none; }
   .notes-display .rc-tag { color: #2e7d32; font-weight: 700; }
+  .notes-display .cm-tag { color: #1565c0; font-weight: 700; }
+  .notes-display .added-tag { color: #a67c00; font-weight: 700; }
   .s-completed  { background: var(--green-bg);  color: var(--green);      border-color: var(--green-border); }
   .s-inprogress { background: var(--surface);   color: var(--navy);       border-color: var(--navy); }
   .s-onhold     { background: var(--amber-bg);  color: var(--amber-text); border-color: var(--amber-border); }
@@ -339,9 +341,10 @@ function formatNotes(notes) {
   return notes.split(/\n\s*\n/).map(block => {
     block = block.trim();
     if (!block) return "";
-    const m = block.match(/^(\[RC[^\]]*\])\s*([\s\S]*)$/);
+    const m = block.match(/^(\[(RC|CM|Added)[^\]]*\])\s*([\s\S]*)$/);
     if (m) {
-      return `<div class="entry"><span class="rc-tag">${escHtml(m[1])}</span> ${escHtml(m[2]).replace(/\n/g,"<br>")}</div>`;
+      const cls = m[2] === "RC" ? "rc-tag" : m[2] === "CM" ? "cm-tag" : "added-tag";
+      return `<div class="entry"><span class="${cls}">${escHtml(m[1])}</span> ${escHtml(m[3]).replace(/\n/g,"<br>")}</div>`;
     }
     return `<div class="entry">${escHtml(block).replace(/\n/g,"<br>")}</div>`;
   }).join("");

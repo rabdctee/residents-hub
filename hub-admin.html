@@ -528,6 +528,11 @@
               <option value="Manor">Manor</option>
             </select>
           </div>
+          <div style="grid-column:1/-1;">
+            <label style="font-size:0.76em;font-weight:700;color:#1F4E79;display:block;margin-bottom:4px;">Added by / Raised via (optional)</label>
+            <input type="text" id="ai-addedby" placeholder="e.g. Resident feedback, CM request, walk-around"
+              style="width:100%;padding:8px 10px;font-size:0.82em;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;">
+          </div>
         </div>
         <div style="display:flex;gap:8px;margin-top:12px;">
           <button id="ai-submit-btn" onclick="submitNewIssue()"
@@ -979,7 +984,8 @@ async function submitNewIssue() {
   const catNew    = document.getElementById("ai-category-new").value.trim();
   const category  = catNew || catSelect;
   const topic     = document.getElementById("ai-topic").value.trim();
-  const notes     = document.getElementById("ai-notes").value.trim();
+  const rawNotes  = document.getElementById("ai-notes").value.trim();
+  const addedBy   = document.getElementById("ai-addedby").value.trim();
   const status    = document.getElementById("ai-status").value;
   const source    = document.getElementById("ai-source").value;
   const msgEl     = document.getElementById("ai-msg");
@@ -994,6 +1000,10 @@ async function submitNewIssue() {
   btn.disabled = true;
   btn.textContent = "⏳ Adding…";
 
+  const stamp = new Date().toLocaleDateString("en-AU", { day:"2-digit", month:"2-digit", year:"numeric" });
+  const tag   = `[Added - ${stamp}]` + (addedBy ? ` (${addedBy})` : "");
+  const notes = rawNotes ? `${tag} ${rawNotes}` : `${tag} New issue added.`;
+
   const payload = JSON.stringify({ action: "add", category, topic, notes, status, source });
 
   try {
@@ -1003,6 +1013,7 @@ async function submitNewIssue() {
     document.getElementById("ai-category-new").value = "";
     document.getElementById("ai-topic").value = "";
     document.getElementById("ai-notes").value = "";
+    document.getElementById("ai-addedby").value = "";
     document.getElementById("ai-status").value = "";
     document.getElementById("ai-source").value = "General";
     showAiMsg("✅ Issue added successfully! It will appear in the tracker within a few minutes.", "#2e7d32");

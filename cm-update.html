@@ -105,6 +105,8 @@
   .notes-display .entry { padding: 7px 0; border-bottom: 1px dashed #dde8f5; }
   .notes-display .entry:last-child { border-bottom: none; }
   .notes-display .rc-tag { color: #2e7d32; font-weight: 700; }
+  .notes-display .cm-tag { color: #1565c0; font-weight: 700; }
+  .notes-display .added-tag { color: #a67c00; font-weight: 700; }
   .s-completed  { background: var(--green-bg);  color: var(--green);      border-color: var(--green-border); }
   .s-inprogress { background: var(--surface);   color: var(--navy);       border-color: var(--navy); }
   .s-onhold     { background: var(--amber-bg);  color: var(--amber-text); border-color: var(--amber-border); }
@@ -342,9 +344,10 @@ function formatNotes(notes) {
   return notes.split(/\n\s*\n/).map(block => {
     block = block.trim();
     if (!block) return "";
-    const m = block.match(/^(\[RC[^\]]*\])\s*([\s\S]*)$/);
+    const m = block.match(/^(\[(RC|CM|Added)[^\]]*\])\s*([\s\S]*)$/);
     if (m) {
-      return `<div class="entry"><span class="rc-tag">${escHtml(m[1])}</span> ${escHtml(m[2]).replace(/\n/g,"<br>")}</div>`;
+      const cls = m[2] === "RC" ? "rc-tag" : m[2] === "CM" ? "cm-tag" : "added-tag";
+      return `<div class="entry"><span class="${cls}">${escHtml(m[1])}</span> ${escHtml(m[3]).replace(/\n/g,"<br>")}</div>`;
     }
     return `<div class="entry">${escHtml(block).replace(/\n/g,"<br>")}</div>`;
   }).join("");
@@ -500,6 +503,19 @@ function buildAccordion() {
               <button class="btn-update" onclick="submitInlineUpdate('${uid}', '${escHtml(issue.category)}', '${escHtml(issue.topic)}')">Save changes</button>
               <button class="btn-discard" onclick="toggleEdit('${uid}')">Discard</button>
             </div>
+            <div style="margin-top:12px;padding-top:12px;border-top:2px dashed #c5d8ee;">
+              <label class="field-label" style="color:#1565c0;margin-bottom:4px;display:block;">📝 Add CM Update</label>
+              <textarea class="cm-update-text" rows="2"
+                placeholder="Type a new note or progress update here…"
+                style="width:100%;padding:9px 11px;font-size:0.88em;font-family:inherit;border:1.5px solid #1565c0;border-radius:6px;resize:vertical;"></textarea>
+              <div style="margin-top:8px;">
+                <button class="btn-cm-update"
+                  onclick="submitCmUpdate('${uid}', '${escHtml(issue.category)}', '${escHtml(issue.topic)}')"
+                  style="padding:8px 18px;background:#1565c0;color:white;border:none;border-radius:6px;font-family:inherit;font-size:0.82em;font-weight:700;cursor:pointer;">
+                  📝 Add CM Update
+                </button>
+              </div>
+            </div>
 
           </div>
         </div>`;
@@ -577,6 +593,52 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
 
   btn.disabled = false;
   btn.innerHTML = "Save changes";
+}
+
+async function submitCmUpdate(uid, originalCategory, originalTopic) {
+  const row      = document.getElementById(uid);
+  const textarea = row.querySelector(".cm-update-text");
+  const btn      = row.querySelector(".btn-cm-update");
+  const update   = textarea.value.trim();
+
+  if (!update) { alert("Please type an update before adding it."); return; }
+
+  const now   = new Date();
+  const stamp = now.toLocaleDateString("en-AU", { day:"2-digit", month:"2-digit", year:"numeric" });
+  const prefix = `[CM - ${stamp}] ${update}`;
+
+  const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
+  const existingNotes = issue ? issue.notes : "";
+  const newNotes = existingNotes ? `${prefix}\n\n${existingNotes}` : prefix;
+
+  const status = row.querySelector(".edit-status").value;
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Adding…";
+
+  const payload = JSON.stringify({
+    action: "update",
+    originalCategory,
+    originalTopic,
+    category: originalCategory,
+    topic: originalTopic,
+    notes: newNotes,
+    status
+  });
+
+  try {
+    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+
+    if (issue) { issue.notes = newNotes; }
+    textarea.value = "";
+    showToast("success");
+    setTimeout(() => loadIssues(), 2000);
+  } catch(e) {
+    showToast("error");
+  }
+
+  btn.disabled = false;
+  btn.textContent = "📝 Add CM Update";
 }
 
 // ── ADD NEW ISSUE ─────────────────────────────────────────────────────────────
