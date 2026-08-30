@@ -346,7 +346,8 @@ function formatNotes(notes) {
       const cls = m[2] === "RC" ? "rc-tag" : m[2] === "CM" ? "cm-tag" : "added-tag";
       return `<div class="entry"><span class="${cls}">${escHtml(m[1])}</span> ${escHtml(m[3]).replace(/\n/g,"<br>")}</div>`;
     }
-    return `<div class="entry">${escHtml(block).replace(/\n/g,"<br>")}</div>`;
+    // Untagged text predates the tagging system — it's the CM's own note
+    return `<div class="entry"><span class="cm-tag">[CM Notes]</span> ${escHtml(block).replace(/\n/g,"<br>")}</div>`;
   }).join("");
 }
 
