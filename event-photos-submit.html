@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share Event Photos & Videos | Bridgeman Downs Residents Hub</title>
+  <style>
+    :root {
+      --navy:       #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid:   #c5d8ee;
+      --gold:       #C9A44A;
+      --green:      #1a6b3a;
+      --green-bg:   #e8f5ee;
+      --red:        #c0392b;
+      --red-bg:     #fdf2f2;
+      --grey:       #5f6368;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; min-height:100vh; }
+    .top-bar {
+      background:var(--navy); padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px;
+    }
+    .top-bar-title { color:white; font-size:1em; font-weight:700; }
+    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      background:#1F4E79; color:#fff; border:none;
+      border-radius:6px; padding:8px 16px;
+      font-size:0.95rem; font-family:'Segoe UI',Arial,sans-serif;
+      cursor:pointer; text-decoration:none;
+    }
+    .back-btn:hover { background:#2E75B6; }
+    .content { max-width:640px; margin:0 auto; padding:24px 16px 60px; }
+    .intro-box {
+      background:var(--navy-light); border-left:4px solid var(--navy);
+      border-radius:6px; padding:16px 18px; margin-bottom:18px;
+      font-size:0.92em; color:#22333f; line-height:1.6;
+    }
+    .card {
+      background:white; border-radius:12px;
+      border:2px solid var(--navy-light);
+      box-shadow:0 2px 8px rgba(0,0,0,0.07);
+      overflow:hidden; margin-bottom:16px;
+    }
+    .card-header { background:var(--navy); padding:14px 20px; color:white; font-weight:700; font-size:0.95em; }
+    .card-body { padding:22px; }
+    .form-group { margin-bottom:18px; }
+    .form-group:last-child { margin-bottom:0; }
+    label { display:block; font-weight:600; font-size:0.88em; color:var(--navy); margin-bottom:6px; }
+    label .required { color:var(--red); margin-left:2px; }
+    label .optional { font-weight:400; color:var(--grey); font-size:0.9em; }
+    select, input[type="text"] {
+      width:100%; padding:11px 13px; font-size:0.95em;
+      border:2px solid var(--navy-mid); border-radius:7px;
+      background:white; color:#333; font-family:inherit;
+      transition:border-color 0.15s; appearance:none;
+    }
+    select:focus, input:focus { outline:none; border-color:var(--navy); }
+    .drop-zone {
+      border:2px dashed var(--navy-mid); border-radius:9px; padding:28px 20px;
+      text-align:center; cursor:pointer; transition:all 0.2s; background:#fafcff;
+      position:relative;
+    }
+    .drop-zone:hover, .drop-zone.dragover { border-color:var(--navy); background:var(--navy-light); }
+    .drop-zone input[type="file"] { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+    .drop-icon { font-size:2em; margin-bottom:8px; }
+    .drop-text { font-size:0.9em; color:var(--grey); line-height:1.5; }
+    .drop-text strong { color:var(--navy); }
+    .file-list { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+    .file-row {
+      display:flex; align-items:center; gap:8px;
+      background:var(--navy-light); border-radius:7px;
+      padding:9px 12px; font-size:0.85em; color:var(--navy); font-weight:600;
+    }
+    .file-row .file-meta { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .file-row .file-status { font-size:0.85em; font-weight:700; flex-shrink:0; }
+    .file-row .file-status.pending { color:var(--grey); }
+    .file-row .file-status.ok { color:var(--green); }
+    .file-row .file-status.err { color:var(--red); }
+    .file-remove { cursor:pointer; color:var(--red); font-weight:700; font-size:1.05em; flex-shrink:0; background:none; border:none; padding:0 4px; }
+    .progress-wrap { display:none; margin-bottom:14px; background:#e0e0e0; border-radius:20px; overflow:hidden; height:8px; }
+    .progress-wrap.show { display:block; }
+    .progress-bar { height:100%; background:var(--navy); border-radius:20px; width:0%; transition:width 0.3s; }
+    .progress-label { font-size:0.82em; color:var(--grey); text-align:center; margin-top:6px; display:none; }
+    .progress-label.show { display:block; }
+    .alert { padding:12px 16px; border-radius:8px; font-size:0.88em; margin-bottom:16px; display:none; line-height:1.55; }
+    .alert.show { display:block; }
+    .alert-success { background:var(--green-bg); color:var(--green); border:1px solid #a8d5b8; }
+    .alert-error   { background:var(--red-bg);   color:var(--red);   border:1px solid #f1b0a8; }
+    .btn-primary {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      background:var(--navy); color:white; padding:13px 24px;
+      border-radius:8px; font-weight:700; font-size:0.95em;
+      border:none; cursor:pointer; width:100%; transition:background 0.2s;
+    }
+    .btn-primary:hover { background:#17406a; }
+    .btn-primary:disabled { background:#aaa; cursor:not-allowed; }
+    .spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .success-card { display:none; }
+    .success-card.show { display:block; }
+    .success-icon { font-size:3em; text-align:center; margin-bottom:12px; }
+    .success-detail { background:var(--navy-light); border-radius:8px; padding:12px 16px; font-size:0.88em; color:#333; margin:14px 0; line-height:1.6; }
+    .btn-another {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      background:white; color:var(--navy); padding:12px 24px;
+      border-radius:8px; font-weight:700; font-size:0.92em;
+      border:2px solid var(--navy); cursor:pointer; width:100%; transition:all 0.2s; margin-top:10px;
+    }
+    .btn-another:hover { background:var(--navy-light); }
+    @media(max-width:480px){ .top-bar { padding:10px 14px; } .back-btn { font-size:0.82em; padding:8px 12px; } .card-body { padding:16px; } }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div>
+    <div class="top-bar-title">&#128248; Share Event Photos &amp; Videos</div>
+    <div class="top-bar-sub">Bridgeman Downs Residents Hub</div>
+  </div>
+  <button class="back-btn" onclick="history.back()">← Back</button>
+</div>
+
+<div class="content">
+
+  <div class="intro-box">
+    Captured some great photos or video at a recent event? Share them here and they'll appear in the
+    <strong>Event Photos &amp; Videos</strong> gallery for all residents to enjoy — no Facebook account needed.
+  </div>
+
+  <div class="card" id="uploadCard">
+    <div class="card-header">&#128247; Submit Your Photos &amp; Videos</div>
+    <div class="card-body">
+
+      <div id="alertMsg" class="alert"></div>
+
+      <div class="form-group">
+        <label for="eventSelect">Which event? <span class="required">*</span></label>
+        <select id="eventSelect" onchange="toggleOtherEvent()">
+          <option value="">— Select an event —</option>
+          <!-- Rick: add/update event names here as new events come up -->
+          <option value="Fashion Parade">Fashion Parade</option>
+          <option value="__other__">Other (type below)</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="otherEventGroup" style="display:none;">
+        <label for="otherEventName">Event name <span class="required">*</span></label>
+        <input type="text" id="otherEventName" placeholder="e.g. Melbourne Cup Lunch">
+      </div>
+
+      <div class="form-group">
+        <label for="uploaderName">Your name <span class="optional">(optional — shown as photo credit)</span></label>
+        <input type="text" id="uploaderName" placeholder="e.g. Margaret, Unit 24">
+      </div>
+
+      <div class="form-group">
+        <label>Photos &amp; videos <span class="required">*</span> <span class="optional">(photos are resized automatically; videos max 50MB)</span></label>
+        <div class="drop-zone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/*,video/*" multiple onchange="handleFileSelect(this.files)">
+          <div class="drop-icon">&#128247;</div>
+          <div class="drop-text">
+            <strong>Click to choose photos or videos</strong><br>
+            or drag and drop them here — you can select several at once
+          </div>
+        </div>
+        <div class="file-list" id="fileList"></div>
+      </div>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="progress-label" id="progressLabel"></div>
+
+      <button class="btn-primary" id="uploadBtn" onclick="uploadAll()">
+        &#128248; Submit to the Hub
+      </button>
+
+    </div>
+  </div>
+
+  <div class="card success-card" id="successCard">
+    <div class="card-header">&#9989; Thank You!</div>
+    <div class="card-body">
+      <div class="success-icon">&#127881;</div>
+      <p style="text-align:center;font-weight:700;color:var(--navy);margin-bottom:6px;">Your photos &amp; videos have been shared!</p>
+      <p style="text-align:center;font-size:0.88em;color:var(--grey);margin-bottom:14px;">
+        They'll appear in the Event Photos &amp; Videos gallery on the Hub shortly.
+      </p>
+      <div class="success-detail" id="successDetail"></div>
+      <button class="btn-another" onclick="resetForm()">&#128248; Submit More</button>
+      <button onclick="history.back()" class="back-btn">← Back</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Replace with the /exec URL from the new, dedicated Event Media Apps Script deployment
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDvm1XBaqZXts2pzZrGsZcseoNXnORnxQi1w5FxOrPjqhbpl3N-nOfGNt5XBVMWU8jtA/exec';
+
+  var MAX_FILE_BYTES = 50 * 1024 * 1024; // 50MB
+  var selectedFiles = []; // { file, status: 'pending'|'ok'|'err' }
+
+  function toggleOtherEvent() {
+    var isOther = document.getElementById('eventSelect').value === '__other__';
+    document.getElementById('otherEventGroup').style.display = isOther ? 'block' : 'none';
+  }
+
+  function getEventName() {
+    var sel = document.getElementById('eventSelect').value;
+    if (sel === '__other__') return document.getElementById('otherEventName').value.trim();
+    return sel;
+  }
+
+  function handleFileSelect(fileListObj) {
+    Array.prototype.forEach.call(fileListObj, function(file) {
+      var isImage = file.type.indexOf('image') === 0;
+      var isVideo = file.type.indexOf('video') === 0;
+      if (!isImage && !isVideo) return; // silently skip non-media files
+      // Photos are shrunk automatically before sending, so their original size
+      // doesn't matter here — only videos are checked against the cap upfront.
+      var tooLarge = isVideo && file.size > MAX_FILE_BYTES;
+      selectedFiles.push({ file: file, status: tooLarge ? 'err' : 'pending' });
+    });
+    document.getElementById('fileInput').value = '';
+    renderFileList();
+  }
+
+  function renderFileList() {
+    var wrap = document.getElementById('fileList');
+    wrap.innerHTML = '';
+    selectedFiles.forEach(function(entry, idx) {
+      var row = document.createElement('div');
+      row.className = 'file-row';
+      var statusText = entry.status === 'pending' ? 'Ready' : entry.status === 'ok' ? 'Uploaded ✓' : 'Too large ✗';
+      var statusClass = entry.status === 'pending' ? 'pending' : entry.status === 'ok' ? 'ok' : 'err';
+      row.innerHTML =
+        '<span class="file-meta">' + entry.file.name + ' (' + formatSize(entry.file.size) + ')</span>' +
+        '<span class="file-status ' + statusClass + '">' + statusText + '</span>' +
+        '<button class="file-remove" onclick="removeFile(' + idx + ')" title="Remove">&#10005;</button>';
+      wrap.appendChild(row);
+    });
+    if (selectedFiles.some(function(e){ return e.status === 'err'; })) {
+      showAlert('error','One or more videos are over the 50MB limit — please remove them or choose a shorter clip. (Photos don\'t need to be resized — that happens automatically.)');
+    }
+  }
+
+  function removeFile(idx) {
+    selectedFiles.splice(idx, 1);
+    renderFileList();
+    hideAlert();
+  }
+
+  function formatSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    var dz = document.getElementById('dropZone');
+    dz.addEventListener('dragover',  function(e){ e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', function(){ dz.classList.remove('dragover'); });
+    dz.addEventListener('drop', function(e) {
+      e.preventDefault(); dz.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFileSelect(e.dataTransfer.files);
+    });
+  });
+
+  function uploadAll() {
+    var eventName = getEventName();
+    var uploader  = document.getElementById('uploaderName').value.trim();
+    var toUpload  = selectedFiles.filter(function(e){ return e.status === 'pending'; });
+
+    if (!eventName)          { showAlert('error','Please select or type the event name.'); return; }
+    if (!toUpload.length)    { showAlert('error','Please choose at least one photo or video (under 50MB each).'); return; }
+
+    hideAlert();
+    var btn = document.getElementById('uploadBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Uploading…';
+    setProgress(0, 'Starting upload…');
+
+    var completed = 0;
+    var failed = 0;
+
+    function uploadNext(i) {
+      if (i >= toUpload.length) {
+        btn.disabled = false;
+        btn.innerHTML = '&#128248; Submit to the Hub';
+        hideProgress();
+        if (failed === 0) {
+          showSuccess(eventName, completed);
+        } else {
+          showAlert('error', completed + ' file(s) uploaded, ' + failed + ' failed. You can try submitting the failed ones again.');
+          renderFileList();
+        }
+        return;
+      }
+      var entry = toUpload[i];
+      setProgress(Math.round((i / toUpload.length) * 100), 'Preparing ' + (i+1) + ' of ' + toUpload.length + '…');
+
+      prepareUploadItem(entry.file).then(function(prepared) {
+        setProgress(Math.round((i / toUpload.length) * 100), 'Uploading ' + (i+1) + ' of ' + toUpload.length + '…');
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var base64 = e.target.result.split(',')[1];
+          fetch(SCRIPT_URL, {
+            method:'POST',
+            body: JSON.stringify({
+              action:       'uploadEventMedia',
+              eventName:    eventName,
+              uploaderName: uploader,
+              fileName:     prepared.fileName,
+              fileData:     base64,
+              mimeType:     prepared.mimeType
+            })
+          })
+          .then(function(r){ return r.json(); })
+          .then(function(data){
+            if (data.status === 'ok') { entry.status = 'ok'; completed++; }
+            else { entry.status = 'err'; failed++; }
+            uploadNext(i + 1);
+          })
+          .catch(function(){ entry.status = 'err'; failed++; uploadNext(i + 1); });
+        };
+        reader.onerror = function(){ entry.status = 'err'; failed++; uploadNext(i + 1); };
+        reader.readAsDataURL(prepared.blob);
+      });
+    }
+
+    // Shrinks photos to a sensible sharing size (matching what Facebook does
+    // automatically behind the scenes) so residents don't need to think about
+    // pixel sizes — they just pick a photo like they would on FB. Videos are
+    // sent as-is (browsers can't resize video without extra software).
+    function prepareUploadItem(file) {
+      var fallback = { blob: file, fileName: file.name, mimeType: file.type || 'application/octet-stream' };
+      var isImage = file.type.indexOf('image') === 0;
+      if (!isImage || typeof createImageBitmap !== 'function') return Promise.resolve(fallback);
+
+      return createImageBitmap(file, { imageOrientation: 'from-image' }).then(function(bitmap) {
+        var maxDim = 2048; // matches Facebook's own recommended max photo width
+        var scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
+        var canvas = document.createElement('canvas');
+        canvas.width  = Math.round(bitmap.width  * scale);
+        canvas.height = Math.round(bitmap.height * scale);
+        canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+        return new Promise(function(resolve) {
+          canvas.toBlob(function(blob) {
+            if (!blob) { resolve(fallback); return; }
+            var newName = file.name.replace(/\.[^.]+$/, '') + '.jpg';
+            resolve({ blob: blob, fileName: newName, mimeType: 'image/jpeg' });
+          }, 'image/jpeg', 0.85);
+        });
+      }).catch(function(){ return fallback; });
+    }
+
+    uploadNext(0);
+  }
+
+  function setProgress(pct, label) {
+    document.getElementById('progressWrap').classList.add('show');
+    document.getElementById('progressLabel').classList.add('show');
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = label;
+  }
+  function hideProgress() {
+    setTimeout(function(){ document.getElementById('progressWrap').classList.remove('show'); document.getElementById('progressLabel').classList.remove('show'); }, 800);
+  }
+  function showAlert(type, msg) {
+    var el = document.getElementById('alertMsg');
+    el.className = 'alert alert-'+type+' show';
+    el.textContent = msg;
+    el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function hideAlert() {
+    var el = document.getElementById('alertMsg');
+    el.className = 'alert'; el.textContent = '';
+  }
+  function showSuccess(eventName, count) {
+    document.getElementById('uploadCard').style.display = 'none';
+    document.getElementById('successDetail').innerHTML =
+      '<strong>Event:</strong> ' + eventName + '<br>' +
+      '<strong>Files shared:</strong> ' + count + '<br>' +
+      '<strong>Status:</strong> Visible in the Hub gallery automatically';
+    document.getElementById('successCard').classList.add('show');
+    window.scrollTo(0,0);
+  }
+  function resetForm() {
+    document.getElementById('uploadCard').style.display = 'block';
+    document.getElementById('successCard').classList.remove('show');
+    document.getElementById('eventSelect').value = '';
+    document.getElementById('otherEventName').value = '';
+    document.getElementById('otherEventGroup').style.display = 'none';
+    document.getElementById('uploaderName').value = '';
+    selectedFiles = [];
+    renderFileList(); hideAlert(); window.scrollTo(0,0);
+  }
+</script>
+
+</body>
+</html>

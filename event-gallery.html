@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Photos & Videos | Bridgeman Downs Residents Hub</title>
+  <style>
+    :root {
+      --navy:       #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid:   #c5d8ee;
+      --gold:       #C9A44A;
+      --grey:       #5f6368;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; min-height:100vh; }
+    .top-bar {
+      background:var(--navy); padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:10px;
+    }
+    .top-bar-title { color:white; font-size:1em; font-weight:700; }
+    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:6px;
+      background:#1F4E79; color:#fff; border:none;
+      border-radius:6px; padding:8px 16px;
+      font-size:0.95rem; font-family:'Segoe UI',Arial,sans-serif;
+      cursor:pointer; text-decoration:none;
+    }
+    .back-btn:hover { background:#2E75B6; }
+    .content { max-width:920px; margin:0 auto; padding:24px 16px 60px; }
+    .new-banner {
+      display:none; background:var(--gold); color:#3a2e0f; font-weight:700;
+      border-radius:8px; padding:12px 18px; margin-bottom:18px; font-size:0.92em;
+      align-items:center; gap:10px;
+    }
+    .new-banner.show { display:flex; }
+    .share-cta {
+      background:var(--navy); color:white; border-radius:10px;
+      padding:18px 22px; margin-bottom:22px;
+      display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap;
+    }
+    .share-cta p { font-size:0.92em; opacity:0.9; max-width:520px; }
+    .share-cta a.btn {
+      background:white; color:var(--navy); font-weight:700; text-decoration:none;
+      padding:10px 18px; border-radius:7px; font-size:0.9em; white-space:nowrap;
+    }
+    .event-card {
+      background:white; border-radius:12px; border:2px solid var(--navy-light);
+      box-shadow:0 2px 8px rgba(0,0,0,0.06); overflow:hidden; margin-bottom:18px;
+    }
+    .event-header {
+      background:var(--navy-light); padding:14px 20px;
+      display:flex; align-items:center; justify-content:space-between; cursor:pointer;
+    }
+    .event-title { font-weight:700; color:var(--navy); font-size:1em; }
+    .event-meta { font-size:0.8em; color:var(--grey); margin-top:2px; }
+    .event-toggle { font-size:1.2em; color:var(--navy); transition:transform 0.2s; }
+    .event-toggle.open { transform:rotate(180deg); }
+    .event-grid {
+      display:none; grid-template-columns:repeat(auto-fill, minmax(140px,1fr));
+      gap:10px; padding:18px 20px;
+    }
+    .event-grid.open { display:grid; }
+    .thumb {
+      position:relative; border-radius:8px; overflow:hidden; cursor:pointer;
+      aspect-ratio:1/1; background:#222;
+    }
+    .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .thumb .play-icon {
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      font-size:2em; color:white; text-shadow:0 1px 4px rgba(0,0,0,0.6); pointer-events:none;
+    }
+    .thumb .credit {
+      position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.55);
+      color:white; font-size:0.72em; padding:3px 6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .empty-state { text-align:center; color:var(--grey); padding:50px 20px; font-size:0.95em; }
+    .lightbox {
+      display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88);
+      z-index:1000; align-items:center; justify-content:center; padding:20px;
+    }
+    .lightbox.show { display:flex; }
+    .lightbox img, .lightbox iframe { max-width:100%; max-height:85vh; border-radius:6px; border:none; }
+    .lightbox iframe { width:80vw; height:70vh; }
+    .lightbox-close {
+      position:absolute; top:18px; right:24px; color:white; font-size:2em;
+      cursor:pointer; background:none; border:none; line-height:1;
+    }
+    @media(max-width:480px){ .top-bar { padding:10px 14px; } .back-btn { font-size:0.82em; padding:8px 12px; } }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div>
+    <div class="top-bar-title">&#128248; Event Photos &amp; Videos</div>
+    <div class="top-bar-sub">Bridgeman Downs Residents Hub</div>
+  </div>
+  <button class="back-btn" onclick="history.back()">← Back</button>
+</div>
+
+<div class="content">
+
+  <div class="new-banner" id="newBanner">✨ New photos/videos have been added since your last visit!</div>
+
+  <div class="share-cta">
+    <p>Captured photos or video at a recent event? Share them here for everyone to enjoy.</p>
+    <a class="btn" href="event-photos-submit.html">📷 Share Photos/Videos</a>
+  </div>
+
+  <div id="galleryWrap">
+    <div class="empty-state">Loading gallery…</div>
+  </div>
+
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <div id="lightboxContent"></div>
+</div>
+
+<script>
+  // Same dedicated Event Media Apps Script deployment used by event-photos-submit.html
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDvm1XBaqZXts2pzZrGsZcseoNXnORnxQi1w5FxOrPjqhbpl3N-nOfGNt5XBVMWU8jtA/exec';
+  var LAST_VISIT_KEY = 'bdrvEventGalleryLastVisit';
+
+  function thumbUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w400'; }
+  function largeUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1200'; }
+  function previewUrl(fileId){ return 'https://drive.google.com/file/d/' + fileId + '/preview'; }
+
+  function openLightbox(item) {
+    var el = document.getElementById('lightboxContent');
+    if (item.type === 'video') {
+      el.innerHTML = '<iframe src="' + previewUrl(item.fileId) + '" allow="autoplay"></iframe>';
+    } else {
+      el.innerHTML = '<img src="' + largeUrl(item.fileId) + '" alt="">';
+    }
+    document.getElementById('lightbox').classList.add('show');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('show');
+    document.getElementById('lightboxContent').innerHTML = '';
+  }
+  document.getElementById('lightbox').addEventListener('click', function(e){
+    if (e.target === this) closeLightbox();
+  });
+
+  function toggleEvent(idx) {
+    document.getElementById('grid-' + idx).classList.toggle('open');
+    document.getElementById('toggle-' + idx).classList.toggle('open');
+  }
+
+  fetch(SCRIPT_URL + '?action=gallery')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var wrap = document.getElementById('galleryWrap');
+      if (data.status !== 'ok' || !data.events || !Object.keys(data.events).length) {
+        wrap.innerHTML = '<div class="empty-state">No event photos or videos have been shared yet — be the first!</div>';
+        return;
+      }
+
+      // Sort events by most recent item first
+      var eventNames = Object.keys(data.events);
+      eventNames.sort(function(a, b){
+        var latestA = Math.max.apply(null, data.events[a].map(function(i){ return new Date(i.date).getTime(); }));
+        var latestB = Math.max.apply(null, data.events[b].map(function(i){ return new Date(i.date).getTime(); }));
+        return latestB - latestA;
+      });
+
+      var lastVisit = localStorage.getItem(LAST_VISIT_KEY);
+      var lastVisitTime = lastVisit ? new Date(lastVisit).getTime() : 0;
+      var hasNew = false;
+      var newestOverall = 0;
+
+      var html = '';
+      eventNames.forEach(function(eventName, idx){
+        var items = data.events[eventName].slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+        var latest = new Date(items[0].date).getTime();
+        if (latest > newestOverall) newestOverall = latest;
+        if (latest > lastVisitTime) hasNew = true;
+
+        html += '<div class="event-card">';
+        html += '  <div class="event-header" onclick="toggleEvent(' + idx + ')">';
+        html += '    <div><div class="event-title">' + eventName + '</div><div class="event-meta">' + items.length + ' item' + (items.length===1?'':'s') + '</div></div>';
+        html += '    <div class="event-toggle" id="toggle-' + idx + '">▾</div>';
+        html += '  </div>';
+        html += '  <div class="event-grid" id="grid-' + idx + '">';
+        items.forEach(function(item, i){
+          html += '<div class="thumb" onclick=\'openLightbox(' + JSON.stringify(item) + ')\'>';
+          html += '  <img src="' + thumbUrl(item.fileId) + '" loading="lazy" alt="">';
+          if (item.type === 'video') html += '<div class="play-icon">▶</div>';
+          if (item.uploader) html += '<div class="credit">' + item.uploader + '</div>';
+          html += '</div>';
+        });
+        html += '  </div>';
+        html += '</div>';
+      });
+
+      wrap.innerHTML = html;
+      // Open the most recent event by default
+      if (eventNames.length) { toggleEvent(0); }
+
+      if (hasNew) document.getElementById('newBanner').classList.add('show');
+      if (newestOverall) localStorage.setItem(LAST_VISIT_KEY, new Date(newestOverall + 1).toISOString());
+    })
+    .catch(function(){
+      document.getElementById('galleryWrap').innerHTML = '<div class="empty-state">Could not load the gallery right now — please try again shortly.</div>';
+    });
+</script>
+
+</body>
+</html>
