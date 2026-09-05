@@ -200,7 +200,7 @@
 
 <script>
   // Replace with the /exec URL from the new, dedicated Event Media Apps Script deployment
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDvm1XBaqZXts2pzZrGsZcseoNXnORnxQi1w5FxOrPjqhbpl3N-nOfGNt5XBVMWU8jtA/exec';
+  var SCRIPT_URL = 'PASTE_YOUR_EVENT_MEDIA_SCRIPT_URL_HERE';
 
   var MAX_FILE_BYTES = 50 * 1024 * 1024; // 50MB
   var selectedFiles = []; // { file, status: 'pending'|'ok'|'err' }
@@ -215,6 +215,56 @@
     if (sel === '__other__') return document.getElementById('otherEventName').value.trim();
     return sel;
   }
+
+  // ── Populate the event dropdown from the same Events sheet the rest of
+  //    the Hub already uses (index.html reads it the same way). If this
+  //    can't be reached for any reason, the manually-listed options already
+  //    in the HTML stay as a fallback.
+  var SPREADSHEET_ID = '19kWpb7_FRt7mbf_JjvjfnOhe9p2qEcPNg8jYXuYE31A';
+  var API_KEY        = 'AIzaSyBD8FWf12JVjXwSnFnqx0pLldSf1ZeYH1c';
+
+  function parseEventDate(str) {
+    if (!str) return 0;
+    if (str.indexOf('-') !== -1) { var p = str.split('-'); return new Date(p[0], p[1]-1, p[2]).getTime(); }
+    if (str.indexOf('/') !== -1) { var p = str.split('/'); return new Date(p[2], p[1]-1, p[0]).getTime(); }
+    var d = new Date(str); return isNaN(d) ? 0 : d.getTime();
+  }
+
+  function loadEventOptions() {
+    var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/Events!A2:F200?key=' + API_KEY;
+    fetch(url).then(function(r){ return r.json(); }).then(function(data){
+      if (!data.values || !data.values.length) return; // keep manual fallback
+
+      var byName = {};
+      data.values.forEach(function(row){
+        var name = (row[2] || '').trim();
+        if (!name) return;
+        var sortKey = parseEventDate(row[3] || '');
+        if (!byName[name] || sortKey > byName[name].sortKey) {
+          byName[name] = { name: name, dateStr: row[3] || '', sortKey: sortKey };
+        }
+      });
+      var list = Object.keys(byName).map(function(k){ return byName[k]; })
+                   .sort(function(a,b){ return b.sortKey - a.sortKey; });
+      if (!list.length) return; // keep manual fallback
+
+      var sel = document.getElementById('eventSelect');
+      var currentValue = sel.value;
+      sel.innerHTML = '<option value="">— Select an event —</option>';
+      list.forEach(function(e){
+        var opt = document.createElement('option');
+        opt.value = e.name;
+        opt.textContent = e.name + (e.dateStr ? ' (' + e.dateStr + ')' : '');
+        sel.appendChild(opt);
+      });
+      var otherOpt = document.createElement('option');
+      otherOpt.value = '__other__';
+      otherOpt.textContent = 'Other (type below)';
+      sel.appendChild(otherOpt);
+      if (currentValue) sel.value = currentValue;
+    }).catch(function(){ /* keep manual fallback already in the HTML */ });
+  }
+  window.addEventListener('DOMContentLoaded', loadEventOptions);
 
   function handleFileSelect(fileListObj) {
     Array.prototype.forEach.call(fileListObj, function(file) {
