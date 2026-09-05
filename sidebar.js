@@ -378,6 +378,7 @@
             <li><a href="fireside-talks.html"${isActive('fireside-talks.html') ? ' class="sb-active"' : ''}>☕ Fireside Talks</a></li>
             <li><a href="concerts.html"${isActive('concerts.html') ? ' class="sb-active"' : ''}>🎵 City Hall Concerts</a></li>
             <li><a href="sports-hub.html"${isActive('sports-hub.html') ? ' class="sb-active"' : ''}>🏆 Sports Hub</a></li>
+            <li><a href="event-gallery.html"${isActive('event-gallery.html') ? ' class="sb-active"' : ''}>📷 Event Photos &amp; Videos <span class="sb-notice-badge" id="sb-event-badge" style="display:none;">0</span></a></li>
           </ul>
         </div>
 
@@ -468,6 +469,17 @@
   // If currently on rc-notices.html, record visit now (before fetch runs)
   if (window.location.pathname.indexOf('rc-notices.html') !== -1) {
     localStorage.setItem(RC_BADGE_LS_KEY, Date.now().toString());
+  }
+
+  // ── EVENT PHOTOS & VIDEOS BADGE ───────────────────────────
+  // Same idea as the RC Notices badge above, fed by the EventMedia
+  // sheet published to the web (File > Share > Publish to web > CSV).
+  var EVENT_BADGE_CSV    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR5enBRJgr5hzkTZIBBZX81YMNdNe9Rh2L7HCzk5W7DpiAZGfPqFMwvkRAqXrp4diDcGDrFtctZUe8a/pub?gid=0&single=true&output=csv';
+  var EVENT_BADGE_LS_KEY = 'eventGalleryLastVisit';
+
+  // If currently on event-gallery.html, record visit now (before fetch runs)
+  if (window.location.pathname.indexOf('event-gallery.html') !== -1) {
+    localStorage.setItem(EVENT_BADGE_LS_KEY, Date.now().toString());
   }
 
 
@@ -620,6 +632,32 @@
       .catch(function() {});
 
 
+  }
+
+  // ── EVENT PHOTOS & VIDEOS BADGE FETCH ─────────────────────
+  // Counts EventMedia rows submitted since the resident's last visit
+  // to event-gallery.html. Reuses the CSV/timestamp helpers above.
+  if (window.location.pathname.indexOf('event-gallery.html') === -1) {
+    var eventLastVisit = localStorage.getItem(EVENT_BADGE_LS_KEY) ? parseInt(localStorage.getItem(EVENT_BADGE_LS_KEY)) : 0;
+
+    fetch(EVENT_BADGE_CSV + '&t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var rows  = parseCSVRowsForBadge(csv);
+        var count = 0;
+        for (var i = 1; i < rows.length; i++) {
+          var ts = rows[i][0] ? rows[i][0].trim() : '';
+          if (parseTimestamp(ts) > eventLastVisit) count++;
+        }
+        if (count > 0) {
+          var badge = document.getElementById('sb-event-badge');
+          if (badge) {
+            badge.textContent   = count;
+            badge.style.display = 'inline-flex';
+          }
+        }
+      })
+      .catch(function() {});
   }
 
   // ── FONT SIZE CONTROL ─────────────────────────────────────

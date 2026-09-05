@@ -1376,6 +1376,76 @@ if (month === 2 && day === 17) {
     .catch(function() {});
 })();
 </script>
+
+<!-- Event Photos & Videos crosslink banner -->
+<a id="eventGalleryBanner" href="event-gallery.html" style="display:flex;align-items:center;gap:12px;background:#fffdf5;border:2px solid #C9A44A;border-radius:8px;padding:13px 18px;margin-bottom:18px;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='#fff8e1'" onmouseout="this.style.background='#fffdf5'">
+  <span style="font-size:1.4em;">📷</span>
+  <span>
+     <strong style="color:#1F4E79;font-size:0.92em;">Event Photos &amp; Videos</strong><br>
+    <span style="color:#555;font-size:0.78em;">See (and share!) photos and videos from recent events: <br> <u style="color:#C9A44A;"><strong>Event Gallery</strong></u></span>
+  </span>
+  <span style="margin-left:auto;display:flex;align-items:center;gap:8px;">
+    <span id="eventGalleryBadge" style="display:none;background:#c0392b;color:white;font-size:0.72em;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;">NEW</span>
+    <span style="color:#C9A44A;font-size:1.1em;">›</span>
+  </span>
+</a>
+
+<script>
+(function() {
+  // File > Share > Publish to web > EventMedia tab > CSV — same as the RC Notices sheet above
+  var EVENT_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR5enBRJgr5hzkTZIBBZX81YMNdNe9Rh2L7HCzk5W7DpiAZGfPqFMwvkRAqXrp4diDcGDrFtctZUe8a/pub?gid=0&single=true&output=csv';
+  var lastVisit = parseInt(localStorage.getItem('eventGalleryLastVisit') || '0', 10);
+
+  function parseTimestamp(ts) {
+    try {
+      var parts = ts.trim().split(' ');
+      var d = parts[0].split('/');
+      var t = parts[1] ? parts[1].split(':') : ['0','0'];
+      return new Date(parseInt(d[2]), parseInt(d[1])-1, parseInt(d[0]),
+                      parseInt(t[0]), parseInt(t[1])).getTime();
+    } catch(e) { return 0; }
+  }
+
+  function parseCSVRows(text) {
+    var rows = [], row = [], cur = '', inQ = false;
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i], n = text[i+1];
+      if (inQ) {
+        if (c==='"' && n==='"') { cur+='"'; i++; }
+        else if (c==='"') { inQ=false; }
+        else { cur+=c; }
+      } else {
+        if (c==='"') { inQ=true; }
+        else if (c===',') { row.push(cur); cur=''; }
+        else if (c==='\r' && n==='\n') { row.push(cur); rows.push(row); row=[]; cur=''; i++; }
+        else if (c==='\n'||c==='\r') { row.push(cur); rows.push(row); row=[]; cur=''; }
+        else { cur+=c; }
+      }
+    }
+    if (cur||row.length) { row.push(cur); rows.push(row); }
+    return rows;
+  }
+
+  fetch(EVENT_CSV + '&t=' + Date.now())
+    .then(function(r) { return r.text(); })
+    .then(function(csv) {
+      var rows = parseCSVRows(csv);
+      var newCount = 0;
+      for (var i = 1; i < rows.length; i++) {
+        var ts = rows[i][0] ? rows[i][0].trim() : '';
+        if (parseTimestamp(ts) > lastVisit) newCount++;
+      }
+      if (newCount > 0) {
+        var badge = document.getElementById('eventGalleryBadge');
+        if (badge) {
+          badge.textContent = newCount === 1 ? '1 NEW' : newCount + ' NEW';
+          badge.style.display = 'inline-block';
+        }
+      }
+    })
+    .catch(function() {});
+})();
+</script>
     
 <!-- MANUAL FALLBACK ANNOUNCEMENTS -->
 <div class="announcement">
