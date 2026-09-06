@@ -245,7 +245,7 @@
         }
       });
       var list = Object.keys(byName).map(function(k){ return byName[k]; })
-                   .sort(function(a,b){ return b.sortKey - a.sortKey; });
+                   .sort(function(a,b){ return a.sortKey - b.sortKey; });
       if (!list.length) return; // keep manual fallback
 
       var sel = document.getElementById('eventSelect');
