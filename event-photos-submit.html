@@ -128,7 +128,7 @@
 
   <div class="intro-box">
     Captured some great photos or video at a recent event? Share them here and they'll appear in the
-    <strong>Event Photos &amp; Videos</strong> gallery for all residents to enjoy.
+    <strong>Event Photos &amp; Videos</strong> gallery for all residents to enjoy — no Facebook account needed.
   </div>
 
   <div class="card" id="uploadCard">
@@ -154,7 +154,7 @@
 
       <div class="form-group">
         <label for="uploaderName">Your name <span class="optional">(optional — shown as photo credit)</span></label>
-        <input type="text" id="uploaderName" placeholder="e.g. Maggie, Unit 42">
+        <input type="text" id="uploaderName" placeholder="e.g. Margaret, Unit 24">
       </div>
 
       <div class="form-group">
@@ -200,7 +200,7 @@
 
 <script>
   // Replace with the /exec URL from the new, dedicated Event Media Apps Script deployment
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDvm1XBaqZXts2pzZrGsZcseoNXnORnxQi1w5FxOrPjqhbpl3N-nOfGNt5XBVMWU8jtA/exec';
+  var SCRIPT_URL = ''https://script.google.com/macros/s/AKfycbyDvm1XBaqZXts2pzZrGsZcseoNXnORnxQi1w5FxOrPjqhbpl3N-nOfGNt5XBVMWU8jtA/exec';
 
   var MAX_FILE_BYTES = 50 * 1024 * 1024; // 50MB
   var selectedFiles = []; // { file, status: 'pending'|'ok'|'err' }
@@ -216,32 +216,32 @@
     return sel;
   }
 
-  // ── Populate the event dropdown from the same Events sheet the rest of
-  //    the Hub already uses (index.html reads it the same way). If this
-  //    can't be reached for any reason, the manually-listed options already
-  //    in the HTML stay as a fallback.
-  var SPREADSHEET_ID = '19kWpb7_FRt7mbf_JjvjfnOhe9p2qEcPNg8jYXuYE31A';
-  var API_KEY        = 'AIzaSyBD8FWf12JVjXwSnFnqx0pLldSf1ZeYH1c';
+  // ── Populate the event dropdown from the SAME source manage-events.html
+  //    uses (EVENTS_URL, action=getEvents) — this is the actual "Manage
+  //    Events" list, separate from the small Events tab the homepage
+  //    sidebar widget reads. If this can't be reached, the manually-listed
+  //    options already in the HTML stay as a fallback.
+  var EVENTS_URL = 'https://script.google.com/macros/s/AKfycbxUcetKOKOyNwn1SSqI54xBIGTHV2YVTXcD1o2UTFo7uKGoqCts-nUqFSMEhLxXanK0CA/exec';
 
-  function parseEventDate(str) {
+  function parseDdMmYyyy(str) {
     if (!str) return 0;
-    if (str.indexOf('-') !== -1) { var p = str.split('-'); return new Date(p[0], p[1]-1, p[2]).getTime(); }
-    if (str.indexOf('/') !== -1) { var p = str.split('/'); return new Date(p[2], p[1]-1, p[0]).getTime(); }
-    var d = new Date(str); return isNaN(d) ? 0 : d.getTime();
+    var p = str.split('/');
+    if (p.length !== 3) return 0;
+    return new Date(p[2], p[1]-1, p[0]).getTime();
   }
 
   function loadEventOptions() {
-    var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SPREADSHEET_ID + '/values/Events!A2:F200?key=' + API_KEY;
-    fetch(url).then(function(r){ return r.json(); }).then(function(data){
-      if (!data.values || !data.values.length) return; // keep manual fallback
+    fetch(EVENTS_URL + '?action=getEvents').then(function(r){ return r.json(); }).then(function(data){
+      var events = data.events || [];
+      if (!events.length) return; // keep manual fallback
 
       var byName = {};
-      data.values.forEach(function(row){
-        var name = (row[2] || '').trim();
+      events.forEach(function(ev){
+        var name = (ev.name || '').trim();
         if (!name) return;
-        var sortKey = parseEventDate(row[3] || '');
+        var sortKey = parseDdMmYyyy(ev.date || '');
         if (!byName[name] || sortKey > byName[name].sortKey) {
-          byName[name] = { name: name, dateStr: row[3] || '', sortKey: sortKey };
+          byName[name] = { name: name, dateStr: ev.date || '', sortKey: sortKey };
         }
       });
       var list = Object.keys(byName).map(function(k){ return byName[k]; })
@@ -346,7 +346,7 @@
         if (failed === 0) {
           showSuccess(eventName, completed);
         } else {
-          showAlert('error', completed + ' file(s) uploaded, ' + failed + ' failed. You can try submitting the failed ones again.');
+          showAlert('error', completed + ' file(s) uploaded, ' + failed + ' failed. You can try sharing the failed ones again.');
           renderFileList();
         }
         return;
