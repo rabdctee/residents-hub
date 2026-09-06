@@ -128,11 +128,11 @@
 
   <div class="intro-box">
     Captured some great photos or video at a recent event? Share them here and they'll appear in the
-    <strong>Event Photos &amp; Videos</strong> gallery for all residents to enjoy — no Facebook account needed.
+    <strong>Event Photos &amp; Videos</strong> gallery for all residents to enjoy.
   </div>
 
   <div class="card" id="uploadCard">
-    <div class="card-header">&#128247; Submit Your Photos &amp; Videos</div>
+    <div class="card-header">&#128247; Share Your Photos &amp; Videos</div>
     <div class="card-body">
 
       <div id="alertMsg" class="alert"></div>
@@ -154,7 +154,7 @@
 
       <div class="form-group">
         <label for="uploaderName">Your name <span class="optional">(optional — shown as photo credit)</span></label>
-        <input type="text" id="uploaderName" placeholder="e.g. Margaret, Unit 24">
+        <input type="text" id="uploaderName" placeholder="e.g. Maggie, Unit 42">
       </div>
 
       <div class="form-group">
@@ -176,7 +176,7 @@
       <div class="progress-label" id="progressLabel"></div>
 
       <button class="btn-primary" id="uploadBtn" onclick="uploadAll()">
-        &#128248; Submit to the Hub
+        &#128248; Share to the Hub
       </button>
 
     </div>
@@ -191,7 +191,7 @@
         They'll appear in the Event Photos &amp; Videos gallery on the Hub shortly.
       </p>
       <div class="success-detail" id="successDetail"></div>
-      <button class="btn-another" onclick="resetForm()">&#128248; Submit More</button>
+      <button class="btn-another" onclick="resetForm()">&#128248; Share More</button>
       <button onclick="history.back()" class="back-btn">← Back</button>
     </div>
   </div>
@@ -341,7 +341,7 @@
     function uploadNext(i) {
       if (i >= toUpload.length) {
         btn.disabled = false;
-        btn.innerHTML = '&#128248; Submit to the Hub';
+        btn.innerHTML = '&#128248; Share to the Hub';
         hideProgress();
         if (failed === 0) {
           showSuccess(eventName, completed);
