@@ -101,6 +101,10 @@
     tbody td { padding:9px 12px; border-bottom:1px solid var(--navy-light); vertical-align:middle; }
     tbody tr:last-child td { border-bottom:none; }
     tbody tr:nth-child(even) td { background:#f8fbff; }
+    tbody tr.duplicate-row td { background:#fff0f0 !important; }
+    .dup-badge { font-size:0.75em; font-weight:700; color:#b91c1c;
+                 background:#fde8e8; border:1px solid #f5c6c6;
+                 border-radius:4px; padding:1px 5px; margin-left:5px; }
     tbody tr:hover td { background:var(--navy-light); }
 
     .paid-badge {
@@ -430,8 +434,16 @@
       return;
     }
 
+    // Find unit numbers that appear more than once
+    var unitCounts = {};
+    rows.forEach(function(r) {
+      var u = (r.unit || '').toString().trim();
+      if (u) unitCounts[u] = (unitCounts[u] || 0) + 1;
+    });
+
     var html = '';
     rows.forEach(function(r) {
+      var isDup = (r.unit || '').toString().trim() && unitCounts[(r.unit || '').toString().trim()] > 1;
       // Determine source
       var ts = r.timestamp ? r.timestamp.toString().toLowerCase() : '';
       var source = (ts === 'paper' || ts === 'mailbox drop') ? '📄 Paper' : '🌐 Online';
@@ -440,8 +452,8 @@
           ? '<span class="paid-badge paid-yes">✓ Paid</span>'
           : '<span class="paid-badge paid-no">✗ Unpaid</span>') + '</td>';
 
-      html += '<tr>' +
-        '<td><strong>' + esc(r.name) + '</strong></td>' +
+      html += '<tr' + (isDup ? ' class="duplicate-row"' : '') + '>' +
+        '<td><strong>' + esc(r.name) + '</strong>' + (isDup ? '<span class="dup-badge">⚠ Duplicate</span>' : '') + '</td>' +
         '<td>' + esc(r.unit) + '</td>' +
         '<td style="text-align:center;">' + esc(r.number) + '</td>' +
         '<td>' + esc(r.email) + '</td>' +
@@ -596,12 +608,18 @@
       clearInterval(mt_manageregistrationshtml); btn.textContent = '➕ Add Registration';
         return;
       }
-      // Check for duplicate name in current event
+      // Check for duplicate name or unit in current event
+      var unit = document.getElementById('editUnit').value.trim();
       var duplicate = allRegistrations.find(function(r) {
-        return r.name.toLowerCase().trim() === name.toLowerCase().trim();
+        var sameName = r.name.toLowerCase().trim() === name.toLowerCase().trim();
+        var sameUnit = unit && r.unit && r.unit.toString().trim() === unit.toString().trim();
+        return sameName || sameUnit;
       });
       if (duplicate) {
-        showToast('⚠️ ' + name + ' is already registered for this event.', true);
+        var reason = duplicate.name.toLowerCase().trim() === name.toLowerCase().trim()
+          ? name + ' is already registered for this event.'
+          : 'Unit ' + unit + ' (' + duplicate.name + ') is already registered for this event.';
+        showToast('⚠️ ' + reason, true);
         btn.disabled = false;
       clearInterval(mt_manageregistrationshtml); btn.textContent = '➕ Add Registration';
         return;
