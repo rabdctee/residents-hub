@@ -16,27 +16,36 @@
   <style>
 
     /* ===== Base — identical to index.html ===== */
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-navy-hover: #324A5F;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-muted:      #B9AF9C;
+      --hub-charcoal:   #3F4143;
+    }
     *{margin:0;padding:0;box-sizing:border-box;}
 
     body{
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      background:#f5f5f5;
+      background:var(--hub-navy);
       font-size:20px;
       line-height:1.7;
-      color:#222;
+      color:var(--hub-cream);
     }
 
     .container{
       max-width:1200px;
       margin:auto;
-      background:white;
+      background:var(--hub-navy);
       box-shadow:0 2px 10px rgba(0,0,0,0.1);
     }
 
     /* ===== Header ===== */
     header{
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-navy);
+      color:var(--hub-cream);
       padding:36px 20px 30px;
       text-align:center;
     }
@@ -50,7 +59,8 @@
     }
     header .page-tagline span{
       display:inline-block;
-      background:rgba(255,255,255,0.18);
+      background:rgba(212,184,96,0.18);
+      color:var(--hub-gold);
       border-radius:6px;
       padding:6px 20px;
     }
@@ -62,8 +72,8 @@
     /* ===== Search — identical to index.html ===== */
     .search-container{
       padding:20px 25px;
-      background:#f8f9fa;
-      border-bottom:2px solid #e0e0e0;
+      background:var(--hub-navy-panel);
+      border-bottom:2px solid var(--hub-charcoal);
     }
 
     .search-box{
@@ -76,15 +86,17 @@
       width:100%;
       padding:15px 50px 15px 20px;
       font-size:18px;
-      border:2px solid #1F4E79;
+      border:2px solid var(--hub-gold);
       border-radius:8px;
       box-sizing:border-box;
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:white;
+      color:#222;
     }
     .search-input:focus{
       outline:none;
-      border-color:#1e4178;
-      box-shadow:0 0 0 3px rgba(44,90,160,0.1);
+      border-color:var(--hub-gold);
+      box-shadow:0 0 0 3px rgba(212,184,96,0.2);
     }
 
     .search-button{
@@ -92,8 +104,8 @@
       right:5px;
       top:50%;
       transform:translateY(-50%);
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-gold);
+      color:var(--hub-navy);
       border:none;
       padding:10px 20px;
       border-radius:6px;
@@ -102,23 +114,24 @@
       font-weight:600;
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
     }
-    .search-button:hover{ background:#1e4178; }
+    .search-button:hover{ background:#c2a44f; }
 
     .search-results{
       margin-top:15px;
       padding:15px;
-      background:white;
+      background:var(--hub-navy-panel);
       border-radius:8px;
-      border:1px solid #e0e0e0;
+      border:1px solid var(--hub-charcoal);
       display:none;
     }
 
     .search-result-item{
       padding:12px;
-      border-bottom:1px solid #f0f0f0;
+      border-bottom:1px solid var(--hub-charcoal);
       cursor:pointer;
+      color:var(--hub-cream);
     }
-    .search-result-item:hover{ background:#e8f4f8; }
+    .search-result-item:hover{ background:var(--hub-navy-hover); }
     .search-result-item:last-child{ border-bottom:none; }
 
     /* ===== Page content ===== */
@@ -127,7 +140,7 @@
     .back-home{
       display:inline-block;
       margin-bottom:25px;
-      color:#1F4E79;
+      color:var(--hub-gold);
       font-weight:600;
       text-decoration:none;
       cursor:pointer;
@@ -136,39 +149,41 @@
 
     .section-heading{
       font-size:1.5em;
-      color:#1F4E79;
+      color:var(--hub-gold);
       margin-bottom:20px;
       padding-bottom:10px;
-      border-bottom:2px solid #e0e0e0;
+      border-bottom:2px solid var(--hub-charcoal);
     }
 
     .info-box{
-      background:#e8f4f8;
-      border-left:4px solid #1F4E79;
+      background:var(--hub-navy-panel);
+      border-left:4px solid var(--hub-gold);
       padding:20px;
       margin:0 0 30px;
       border-radius:4px;
+      color:var(--hub-cream);
     }
 
     .tip-box{
-      background:#fff9e6;
-      border-left:4px solid #fbbc04;
+      background:var(--hub-navy-panel);
+      border-left:4px solid var(--hub-gold);
       padding:14px 18px;
       margin:14px 0 4px;
       border-radius:4px;
       font-size:0.92em;
+      color:var(--hub-cream);
     }
 
     /* ===== Coming soon ===== */
     .coming-soon-box{
-      border:2px dashed #e0e0e0;
+      border:2px dashed var(--hub-charcoal);
       border-radius:8px;
       padding:28px 20px;
       text-align:center;
-      color:#888;
+      color:var(--hub-muted);
       margin-bottom:30px;
     }
-    .coming-soon-box h3{ color:#1F4E79; margin-bottom:8px; font-size:1.2em; }
+    .coming-soon-box h3{ color:var(--hub-gold); margin-bottom:8px; font-size:1.2em; }
 
     /* ===== Group Labels ===== */
     .group-label{
@@ -180,14 +195,14 @@
     .group-label-line{
       flex:1;
       height:1px;
-      background:#dde3ea;
+      background:var(--hub-charcoal);
     }
     .group-label-text{
       font-size:0.72em;
       font-weight:700;
       letter-spacing:0.09em;
       text-transform:uppercase;
-      color:#8a96a3;
+      color:var(--hub-gold);
       white-space:nowrap;
     }
 
@@ -217,7 +232,7 @@
 
     .category-body{
       display:none;
-      border:1px solid #1F4E79;
+      border:1px solid var(--hub-gold);
       border-top:none;
       border-radius:0 0 8px 8px;
       overflow:hidden;
@@ -229,8 +244,8 @@
     ═══════════════════════════════════════════ */
     .tab-bar{
       display:flex;
-      background:#f5f5f5;
-      border-bottom:2px solid #e0e0e0;
+      background:var(--hub-navy-panel);
+      border-bottom:2px solid var(--hub-charcoal);
     }
 
     .tab-btn{
@@ -241,14 +256,14 @@
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
       font-size:18px;
       font-weight:700;
-      color:#1f3f73;
+      color:var(--hub-muted);
       cursor:pointer;
       border-bottom:3px solid transparent;
       margin-bottom:-2px;
       transition:all 0.2s;
     }
-    .tab-btn.active{ background:white; color:#1F4E79; border-bottom:3px solid #1F4E79; }
-    .tab-btn:hover:not(.active){ background:#e8f4f8; color:#1F4E79; }
+    .tab-btn.active{ background:var(--hub-navy); color:var(--hub-gold); border-bottom:3px solid var(--hub-gold); }
+    .tab-btn:hover:not(.active){ background:var(--hub-navy-hover); color:var(--hub-cream); }
 
     .tab-panel{ display:none; }
     .tab-panel.active{ display:block; }
@@ -256,20 +271,20 @@
     /* ═══════════════════════════════════════════
        LEVEL 2 — FAQ QUESTION / ANSWER
     ═══════════════════════════════════════════ */
-    .faq-item{ border-bottom:1px solid #e0e0e0; }
+    .faq-item{ border-bottom:1px solid var(--hub-charcoal); }
     .faq-item:last-child{ border-bottom:none; }
 
     .faq-question{
       width:100%;
-      background:#f8f9fa;
+      background:var(--hub-navy-panel);
       border:none;
-      border-top:1px solid #e0e0e0;
+      border-top:1px solid var(--hub-charcoal);
       text-align:left;
       padding:16px 20px;
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
       font-size:18px;
       font-weight:600;
-      color:#202124;
+      color:var(--hub-cream);
       cursor:pointer;
       display:flex;
       justify-content:space-between;
@@ -278,24 +293,24 @@
       transition:background 0.2s;
       line-height:1.4;
     }
-    .faq-question:hover{ background:#e8eaed; }
-    .faq-question.open{ background:#e8f4f8; color:#1F4E79; }
+    .faq-question:hover{ background:var(--hub-navy-hover); }
+    .faq-question.open{ background:var(--hub-navy-hover); color:var(--hub-gold); }
 
     .faq-arrow{
-      color:#5f6368;
+      color:var(--hub-muted);
       font-size:1.2em;
       transition:transform 0.3s ease;
       flex-shrink:0;
     }
-    .faq-question.open .faq-arrow{ transform:rotate(180deg); color:#1F4E79; }
+    .faq-question.open .faq-arrow{ transform:rotate(180deg); color:var(--hub-gold); }
 
     .faq-answer{
       display:none;
       padding:18px 22px 22px;
-      background:white;
+      background:var(--hub-navy);
       font-size:20px;
       line-height:1.75;
-      color:#222;
+      color:var(--hub-cream);
     }
     .faq-answer.open{ display:block; }
     .faq-answer ol, .faq-answer ul{ margin:10px 0 10px 24px; }
@@ -303,13 +318,15 @@
 
     /* ===== Ask a Question ===== */
     .ask-section{
-      background:#1F4E79;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
+      border-left:4px solid var(--hub-gold);
       border-radius:8px;
       padding:30px 25px;
       margin-bottom:30px;
-      color:white;
+      color:var(--hub-cream);
     }
-    .ask-section h2{ font-size:1.3em; margin-bottom:8px; }
+    .ask-section h2{ font-size:1.3em; margin-bottom:8px; color:var(--hub-gold); }
     .ask-section > p{ font-size:0.95em; margin-bottom:20px; }
 
     .ask-label{ display:block; font-size:0.88em; margin-bottom:5px; }
@@ -319,7 +336,7 @@
   padding:12px 15px;
   font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
   font-size:17px;
-  border:2px solid #1e4178;
+  border:2px solid var(--hub-charcoal);
   border-radius:5px;
   background:white;
   color:#222;
@@ -327,13 +344,13 @@
   transition:border-color 0.2s;
   }
   .ask-input:focus, .ask-textarea:focus{
-    outline:none; border-color:#1e4178; background:white;
+    outline:none; border-color:var(--hub-gold); background:white;
   }
     .ask-textarea{ resize:vertical; min-height:100px; }
 
     .ask-btn{
-      background:white;
-      color:#1F4E79;
+      background:var(--hub-gold);
+      color:var(--hub-navy);
       border:none;
       padding:12px 28px;
       border-radius:5px;
@@ -343,12 +360,13 @@
       cursor:pointer;
       transition:background 0.2s;
     }
-    .ask-btn:hover{ background:#e8f4f8; }
+    .ask-btn:hover{ background:#c2a44f; }
 
     .ask-success{
       display:none;
-      background:rgba(255,255,255,0.15);
-      border:1px solid rgba(255,255,255,0.35);
+      background:rgba(95,184,126,0.18);
+      border:1px solid #5fb87e;
+      color:#5fb87e;
       border-radius:5px;
       padding:16px 20px;
       font-size:0.97em;
@@ -357,8 +375,8 @@
 
     /* ===== Welcome panel ===== */
     .welcome-panel{
-      background:linear-gradient(135deg,#e8f4f8 0%,#f0f7ff 100%);
-      border:2px solid #c5ddf0;
+      background:var(--hub-navy-panel);
+      border:2px solid var(--hub-gold);
       border-radius:12px;
       padding:24px 28px;
       margin:0 0 24px;
@@ -368,9 +386,9 @@
     }
     .welcome-panel-icon{ font-size:2.4em; flex-shrink:0; line-height:1; margin-top:2px; }
     .welcome-panel-text h2{
-      font-size:1.15em; color:#1F4E79; margin-bottom:6px; font-weight:800;
+      font-size:1.15em; color:var(--hub-gold); margin-bottom:6px; font-weight:800;
     }
-    .welcome-panel-text p{ font-size:0.92em; color:#444; line-height:1.65; margin:0; }
+    .welcome-panel-text p{ font-size:0.92em; color:var(--hub-cream); opacity:0.9; line-height:1.65; margin:0; }
     @media(max-width:600px){
       .welcome-panel{ flex-direction:column; gap:10px; padding:18px; }
       .welcome-panel-icon{ font-size:1.8em; }
@@ -378,14 +396,14 @@
 
     /* ===== Start Here spotlight ===== */
     .start-here{
-      background:#fffbea;
-      border:2px solid #f9c74f;
+      background:var(--hub-navy-panel);
+      border:2px solid var(--hub-gold);
       border-radius:12px;
       padding:20px 24px 22px;
       margin:0 0 28px;
     }
     .start-here-heading{
-      font-size:0.88em; font-weight:800; color:#b07d00;
+      font-size:0.88em; font-weight:800; color:var(--hub-gold);
       text-transform:uppercase; letter-spacing:0.07em; margin-bottom:14px;
     }
     .start-here-btns{
@@ -393,30 +411,30 @@
     }
     .start-here-btn{
       display:inline-flex; align-items:center; gap:8px;
-      background:white; color:#1F4E79;
-      border:2px solid #c5ddf0; border-radius:10px;
+      background:var(--hub-navy); color:var(--hub-cream);
+      border:2px solid var(--hub-charcoal); border-radius:10px;
       padding:12px 18px; font-size:0.88em; font-weight:700;
       text-decoration:none; cursor:pointer;
       transition:all 0.2s;
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
     }
-    .start-here-btn:hover{ background:#e8f4f8; border-color:#1F4E79; }
+    .start-here-btn:hover{ background:var(--hub-gold); color:var(--hub-navy); border-color:var(--hub-gold); }
     .start-here-btn-icon{ font-size:1.3em; }
 
     /* ===== Group label subtitle ===== */
     .group-label-subtitle{
       text-align:center;
       font-size:0.82em;
-      color:#6b7785;
+      color:var(--hub-muted);
       margin:-4px 0 14px;
       font-style:italic;
     }
 
     /* ===== Softer category headers ===== */
     .category-header{
-      background:white;
-      color:#1F4E79;
-      border:2px solid #1F4E79;
+      background:var(--hub-navy-panel);
+      color:var(--hub-cream);
+      border:2px solid var(--hub-gold);
       padding:16px 22px;
       border-radius:8px;
       display:flex;
@@ -426,18 +444,19 @@
       transition:background 0.2s;
       user-select:none;
     }
-    .category-header:hover{ background:#e8f4f8; }
+    .category-header:hover{ background:var(--hub-navy-hover); }
     .category-header.open{
-      background:#1F4E79; color:white;
+      background:var(--hub-gold); color:var(--hub-navy);
       border-radius:8px 8px 0 0;
     }
-    .category-header.open .category-subtitle{ color:rgba(255,255,255,0.8); }
-    .category-header.open .category-arrow{ color:white; }
-    .category-arrow{ color:#1F4E79; }
+    .category-header.open .category-subtitle{ color:rgba(38,55,70,0.75); }
+    .category-header.open .category-arrow{ color:var(--hub-navy); }
+    .category-arrow{ color:var(--hub-gold); }
 
     /* ===== Highlight for search matches ===== */
     .search-highlight{
-      background:#fff176;
+      background:var(--hub-gold);
+      color:var(--hub-navy);
       border-radius:3px;
       padding:0 2px;
     }
@@ -2100,7 +2119,7 @@
           <div class="faq-answer">
             <p>Yes — Canstar Blue has published a clear, plain-English guide to reading your electricity bill. It explains each section of a typical energy bill, what the numbers mean, and what to look out for.</p>
             <p style="margin-top:12px;">
-              <a href="https://www.canstar.com.au/energy/how-to-read-energy-bill/" target="_blank" style="color:#2c5aa0;font-weight:600;">
+              <a href="https://www.canstar.com.au/energy/how-to-read-energy-bill/" target="_blank" style="color:#D4B860;font-weight:600;">
                 🔗 Canstar Blue — How to read your energy bill
               </a>
             </p>
@@ -2744,16 +2763,16 @@
     });
 
     if (matches.length === 0) {
-      resultsDiv.innerHTML = '<div style="padding:15px;color:#666;">No results found for "<strong>' + query + '</strong>". Try different words, or use the "Have a Question?" form below.</div>';
+      resultsDiv.innerHTML = '<div style="padding:15px;color:#B9AF9C;">No results found for "<strong>' + query + '</strong>". Try different words, or use the "Have a Question?" form below.</div>';
       resultsDiv.style.display = 'block';
       return;
     }
 
-    var html = '<div style="padding:10px 12px;color:#666;font-weight:600;">Found ' + matches.length + ' result' + (matches.length > 1 ? 's' : '') + ' for "<strong>' + query + '</strong>":</div>';
+    var html = '<div style="padding:10px 12px;color:#B9AF9C;font-weight:600;">Found ' + matches.length + ' result' + (matches.length > 1 ? 's' : '') + ' for "<strong>' + query + '</strong>":</div>';
 
     matches.forEach(function(m, i) {
       html += '<div class="search-result-item" data-match-index="' + i + '">' +
-              '<span style="color:#5f6368;font-size:0.85em;">' + m.categoryName + ' &rsaquo; </span>' +
+              '<span style="color:#B9AF9C;font-size:0.85em;">' + m.categoryName + ' &rsaquo; </span>' +
               m.questionText +
               '</div>';
     });

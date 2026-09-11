@@ -6,167 +6,168 @@
 <title>CM Update – Issues Tracker</title>
 <style>
   :root {
-    --navy:        #1F4E79;
-    --navy-light:  #17406a;
-    --surface:     #E7F1FB;
-    --border:      #c5d8ee;
-    --text:        #1a1a1a;
-    --muted:       #5f6368;
-    --red:         #c0392b;
-    --green:       #155724;
-    --green-bg:    #d4edda;
-    --green-border:#28a745;
-    --amber-bg:    #fff3cd;
-    --amber-text:  #7a5200;
-    --amber-border:#e0a800;
-    --gray-bg:     #f0f0f0;
-    --gray-text:   #3a3a3a;
-    --gray-border: #888;
+    --navy:        #263746;
+    --navy-panel:  #2E4256;
+    --navy-hover:  #324A5F;
+    --gold:        #D4B860;
+    --cream:       #F6F2E7;
+    --muted:       #B9AF9C;
+    --charcoal:    #3F4143;
+    --red:         #e8998c;
+    --green:       #5fb87e;
+    --green-bg:    #24402f;
+    --green-border:#5fb87e;
+    --amber:       #C9A44A;
+    --amber-bg:    #4a3a1a;
+    --amber-border:#C9A44A;
+    --gray:        #8a97a3;
+    --gray-bg:     #33424f;
+    --gray-border: #6b7a86;
     --radius:      8px;
     --font:        'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font); font-size: 18px; background: #f0f4f8; color: var(--text); line-height: 1.6; }
+  body { font-family: var(--font); font-size: 18px; background: var(--navy); color: var(--cream); line-height: 1.6; }
 
   /* ── PIN overlay ── */
-  #pinOverlay { position: fixed; inset: 0; background: var(--navy); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-  .pin-box { background: white; border-radius: 12px; padding: 40px 36px; max-width: 360px; width: 90%; text-align: center; }
+  #pinOverlay { position: fixed; inset: 0; background: linear-gradient(135deg, var(--navy) 0%, var(--navy-hover) 100%); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+  .pin-box { background: var(--navy-panel); border-radius: 12px; padding: 40px 36px; max-width: 360px; width: 90%; text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
   .pin-logo { font-size: 36px; margin-bottom: 12px; }
-  .pin-box h2 { font-size: 18px; color: var(--navy); margin-bottom: 6px; }
+  .pin-box h2 { font-size: 18px; color: var(--gold); margin-bottom: 6px; }
   .pin-box p  { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
-  .pin-input { width: 100%; padding: 14px; font-size: 24px; letter-spacing: 10px; text-align: center; border: 2px solid var(--border); border-radius: var(--radius); font-family: var(--font); margin-bottom: 16px; }
-  .pin-input:focus { outline: none; border-color: var(--navy); }
-  .pin-btn { width: 100%; padding: 14px; background: var(--navy); color: white; border: none; border-radius: var(--radius); font-family: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; }
-  .pin-btn:hover { background: var(--navy-light); }
+  .pin-input { width: 100%; padding: 14px; font-size: 24px; letter-spacing: 10px; text-align: center; border: 2px solid var(--charcoal); border-radius: var(--radius); font-family: var(--font); margin-bottom: 16px; background:white; color:#222; }
+  .pin-input:focus { outline: none; border-color: var(--gold); }
+  .pin-btn { width: 100%; padding: 14px; background: var(--gold); color: var(--navy); border: none; border-radius: var(--radius); font-family: var(--font); font-size: 16px; font-weight: 700; cursor: pointer; }
+  .pin-btn:hover { background: #c2a44f; }
   .pin-error { color: var(--red); font-size: 13px; margin-top: 12px; display: none; }
 
   /* ── Header ── */
-  .page-header { background: var(--navy); color: white; padding: 1.25rem 1.5rem; }
+  .page-header { background: var(--navy); color: var(--cream); padding: 1.25rem 1.5rem; }
   .page-header h1 { font-size: 1.6em; font-weight: 700; margin-bottom: 0.1rem; }
   .page-header p  { font-size: 0.88em; opacity: 0.85; }
 
   /* ── Toolbar ── */
-  .toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 0.75rem 1.5rem; background: #f8fbff; border-bottom: 1px solid var(--border); }
+  .toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 0.75rem 1.5rem; background: var(--navy-panel); border-bottom: 1px solid var(--charcoal); }
   .toolbar-left { font-size: 0.82em; color: var(--muted); }
-  .add-btn-top { font-size: 0.85em; font-weight: 700; padding: 8px 16px; background: var(--navy); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-family: var(--font); }
-  .add-btn-top:hover { background: var(--navy-light); }
+  .add-btn-top { font-size: 0.85em; font-weight: 700; padding: 8px 16px; background: var(--gold); color: var(--navy); border: none; border-radius: var(--radius); cursor: pointer; font-family: var(--font); }
+  .add-btn-top:hover { background: #c2a44f; }
 
   /* ── Main ── */
   .main { max-width: 860px; margin: 1rem auto; padding: 0 1rem 3rem; }
 
   /* ── Add new issue panel ── */
-  .add-panel { background: white; border: 2px solid var(--navy); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; display: none; }
+  .add-panel { background: var(--navy-panel); border: 2px solid var(--gold); border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; display: none; }
   .add-panel.open { display: block; }
-  .add-panel h2 { font-size: 1em; font-weight: 700; color: var(--navy); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--surface); }
+  .add-panel h2 { font-size: 1em; font-weight: 700; color: var(--gold); margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--charcoal); }
   .add-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
   .add-grid .full { grid-column: 1 / -1; }
-  .field-label { font-size: 0.82em; font-weight: 700; color: var(--navy); display: block; margin-bottom: 4px; }
+  .field-label { font-size: 0.82em; font-weight: 700; color: var(--cream); display: block; margin-bottom: 4px; }
   select, input[type="text"], textarea {
     width: 100%; padding: 9px 11px; font-size: 0.88em; font-family: var(--font);
-    border: 2px solid var(--border); border-radius: 6px; color: var(--text);
+    border: 2px solid var(--charcoal); border-radius: 6px; color: #222;
     background: white; appearance: none;
   }
-  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231F4E79' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
-  select:focus, input:focus, textarea:focus { outline: none; border-color: var(--navy); }
+  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23263746' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  select:focus, input:focus, textarea:focus { outline: none; border-color: var(--gold); }
   textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
   .add-actions { display: flex; gap: 10px; margin-top: 1rem; }
-  .btn-save { flex: 1; padding: 11px; background: var(--navy); color: white; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.92em; font-weight: 700; cursor: pointer; }
-  .btn-save:hover { background: var(--navy-light); }
-  .btn-save:disabled { background: #aaa; cursor: not-allowed; }
-  .btn-cancel { padding: 11px 18px; background: white; color: var(--muted); border: 2px solid var(--border); border-radius: 6px; font-family: var(--font); font-size: 0.92em; font-weight: 700; cursor: pointer; }
-  .btn-cancel:hover { background: var(--surface); color: var(--navy); }
+  .btn-save { flex: 1; padding: 11px; background: var(--gold); color: var(--navy); border: none; border-radius: 6px; font-family: var(--font); font-size: 0.92em; font-weight: 700; cursor: pointer; }
+  .btn-save:hover { background: #c2a44f; }
+  .btn-save:disabled { background: #6b7a86; cursor: not-allowed; }
+  .btn-cancel { padding: 11px 18px; background: var(--navy); color: var(--cream); border: 2px solid var(--charcoal); border-radius: 6px; font-family: var(--font); font-size: 0.92em; font-weight: 700; cursor: pointer; }
+  .btn-cancel:hover { background: var(--navy-hover); color: var(--gold); }
 
   /* ── Category accordion ── */
-  .cat-block { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
-  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; cursor: pointer; background: var(--surface); gap: 10px; user-select: none; }
-  .cat-header:hover { background: #cfe0f5; }
-  .cat-name { font-weight: 700; font-size: 1.05em; color: var(--navy); }
+  .cat-block { border: 1px solid var(--charcoal); border-radius: 8px; margin-bottom: 10px; overflow: hidden; }
+  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 13px 16px; cursor: pointer; background: var(--navy-panel); gap: 10px; user-select: none; }
+  .cat-header:hover { background: var(--navy-hover); }
+  .cat-name { font-weight: 700; font-size: 1.05em; color: var(--cream); }
   .cat-count { font-size: 0.75em; color: var(--muted); margin-left: 6px; }
-  .cat-chevron { color: var(--navy); font-size: 1em; transition: transform 0.25s; flex-shrink: 0; }
+  .cat-chevron { color: var(--gold); font-size: 1em; transition: transform 0.25s; flex-shrink: 0; }
   .cat-block.open .cat-chevron { transform: rotate(180deg); }
-  .cat-body { display: none; border-top: 1px solid var(--border); }
+  .cat-body { display: none; border-top: 1px solid var(--charcoal); }
   .cat-block.open .cat-body { display: block; }
 
   /* ── Issue rows ── */
-  .issue-row { border-bottom: 1px solid var(--border); background: white; }
+  .issue-row { border-bottom: 1px solid var(--charcoal); background: var(--navy); }
   .issue-row:last-child { border-bottom: none; }
   .issue-summary { display: flex; align-items: flex-start; justify-content: space-between; padding: 11px 16px; gap: 12px; cursor: pointer; }
-  .issue-summary:hover { background: #f8fbff; }
+  .issue-summary:hover { background: var(--navy-hover); }
   .issue-left { flex: 1; min-width: 0; }
-  .issue-title { font-size: 0.9em; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+  .issue-title { font-size: 0.9em; font-weight: 700; color: var(--cream); margin-bottom: 3px; }
   .issue-note-preview { font-size: 0.78em; color: var(--muted); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 500px; }
-  .issue-rc-reply { font-size: 0.74em; color: var(--amber-text); font-weight: 700; margin-top: 3px; }
-  .cat-new-badge { font-size: 0.68em; font-weight: 700; color: #7a5200; background: #fff3cd; border: 1.5px solid #e0a800; border-radius: 20px; padding: 2px 9px; margin-left: 8px; white-space: nowrap; }
+  .issue-rc-reply { font-size: 0.74em; color: var(--amber); font-weight: 700; margin-top: 3px; }
+  .cat-new-badge { font-size: 0.68em; font-weight: 700; color: var(--amber); background: var(--amber-bg); border: 1.5px solid var(--amber-border); border-radius: 20px; padding: 2px 9px; margin-left: 8px; white-space: nowrap; }
   .issue-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
   .badge { font-size: 0.72em; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1.5px solid transparent; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
   .edit-hint { font-size: 0.7em; color: var(--muted); font-style: italic; }
-  .notes-display { font-size: 0.85em; line-height: 1.5; color: #333; margin-bottom: 8px; }
-  .notes-display .entry { padding: 7px 0; border-bottom: 1px dashed #dde8f5; }
+  .notes-display { font-size: 0.85em; line-height: 1.5; color: var(--cream); margin-bottom: 8px; }
+  .notes-display .entry { padding: 7px 0; border-bottom: 1px dashed var(--charcoal); }
   .notes-display .entry:last-child { border-bottom: none; }
-  .notes-display .rc-tag { color: #2e7d32; font-weight: 700; }
-  .notes-display .cm-tag { color: #1565c0; font-weight: 700; }
-  .notes-display .added-tag { color: #a67c00; font-weight: 700; }
-  .s-completed  { background: var(--green-bg);  color: var(--green);      border-color: var(--green-border); }
-  .s-inprogress { background: var(--surface);   color: var(--navy);       border-color: var(--navy); }
-  .s-onhold     { background: var(--amber-bg);  color: var(--amber-text); border-color: var(--amber-border); }
-  .s-notstarted { background: var(--gray-bg);   color: var(--gray-text);  border-color: var(--gray-border); }
+  .notes-display .rc-tag { color: var(--green); font-weight: 700; }
+  .notes-display .cm-tag { color: #8fc4e8; font-weight: 700; }
+  .notes-display .added-tag { color: var(--amber); font-weight: 700; }
+  .s-completed  { background: var(--green-bg);  color: var(--green);  border-color: var(--green-border); }
+  .s-inprogress { background: rgba(212,184,96,0.15); color: var(--gold); border-color: var(--gold); }
+  .s-onhold     { background: var(--amber-bg);  color: var(--amber); border-color: var(--amber-border); }
+  .s-notstarted { background: var(--gray-bg);   color: var(--gray);  border-color: var(--gray-border); }
 
   /* ── Inline edit panel ── */
-  .issue-edit { display: none; padding: 12px 16px 16px; background: #f8fbff; border-top: 1px solid var(--border); }
+  .issue-edit { display: none; padding: 12px 16px 16px; background: var(--navy-panel); border-top: 1px solid var(--charcoal); }
   .issue-row.editing .issue-edit { display: block; }
-  .issue-row.editing .issue-summary { background: #eef5fc; }
+  .issue-row.editing .issue-summary { background: var(--navy-hover); }
   .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
   .edit-grid .full { grid-column: 1 / -1; }
   .edit-actions { display: flex; gap: 8px; }
-  .btn-update { flex: 1; padding: 9px; background: var(--navy); color: white; border: none; border-radius: 6px; font-family: var(--font); font-size: 0.85em; font-weight: 700; cursor: pointer; }
-  .btn-update:hover { background: var(--navy-light); }
-  .btn-update:disabled { background: #aaa; cursor: not-allowed; }
-  .btn-discard { padding: 9px 14px; background: white; color: var(--muted); border: 2px solid var(--border); border-radius: 6px; font-family: var(--font); font-size: 0.85em; font-weight: 700; cursor: pointer; }
-  .btn-discard:hover { background: var(--surface); color: var(--navy); }
+  .btn-update { flex: 1; padding: 9px; background: var(--gold); color: var(--navy); border: none; border-radius: 6px; font-family: var(--font); font-size: 0.85em; font-weight: 700; cursor: pointer; }
+  .btn-update:hover { background: #c2a44f; }
+  .btn-update:disabled { background: #6b7a86; cursor: not-allowed; }
+  .btn-discard { padding: 9px 14px; background: var(--navy); color: var(--cream); border: 2px solid var(--charcoal); border-radius: 6px; font-family: var(--font); font-size: 0.85em; font-weight: 700; cursor: pointer; }
+  .btn-discard:hover { background: var(--navy-hover); color: var(--gold); }
 
   /* ── RC alert "jump to issue" buttons ── */
-  .rc-alert-link { font-family: var(--font); font-size: 0.82em; font-weight: 700; padding: 6px 12px; background: #fff; color: #7a5200; border: 1.5px solid #e0a800; border-radius: 20px; cursor: pointer; }
-  .rc-alert-link:hover { background: #e0a800; color: #fff; }
+  .rc-alert-link { font-family: var(--font); font-size: 0.82em; font-weight: 700; padding: 6px 12px; background: var(--navy); color: var(--amber); border: 1.5px solid var(--amber-border); border-radius: 20px; cursor: pointer; }
+  .rc-alert-link:hover { background: var(--amber-border); color: var(--navy); }
 
   /* ── Toast notification ── */
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); padding: 12px 22px; border-radius: 8px; font-size: 0.88em; font-weight: 700; z-index: 8888; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); padding: 12px 22px; border-radius: 8px; font-size: 0.88em; font-weight: 700; z-index: 8888; display: none; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
   .toast-success { background: var(--green-bg); color: var(--green); border: 1.5px solid var(--green-border); }
-  .toast-error   { background: #fdecea; color: var(--red); border: 1.5px solid #f5c6cb; }
+  .toast-error   { background: #4a2320; color: var(--red); border: 1.5px solid var(--red); }
 
   /* ── Loading ── */
   .state-msg { text-align: center; padding: 2rem 1rem; color: var(--muted); font-size: 0.92em; }
-  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(38,55,70,0.4); border-top-color: var(--navy); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ── Dashboard cards ── */
-  .dashboard { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; padding: 1rem 1.5rem 0.85rem; background: #f0f6ff; border-bottom: 1px solid var(--border); }
+  .dashboard { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; padding: 1rem 1.5rem 0.85rem; background: var(--navy-panel); border-bottom: 1px solid var(--charcoal); }
   .dash-card { border-radius: 8px; padding: 10px 8px 8px; text-align: center; border: 1.5px solid transparent; }
   .dash-num { font-size: 1.7em; font-weight: 700; line-height: 1.1; margin-bottom: 2px; }
   .dash-lbl { font-size: 0.6em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 
   /* ── Progress bars ── */
-  .progress-section { padding: 0.8rem 1.5rem 0.7rem; background: #f0f6ff; border-bottom: 1px solid var(--border); }
-  .progress-title { font-size: 0.75em; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .progress-section { padding: 0.8rem 1.5rem 0.7rem; background: var(--navy-panel); border-bottom: 1px solid var(--charcoal); }
+  .progress-title { font-size: 0.75em; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
   .prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
   .prog-name { font-size: 0.7em; color: var(--muted); width: 88px; flex-shrink: 0; text-align: right; }
-  .prog-track { flex: 1; background: #dde8f5; border-radius: 20px; height: 13px; overflow: hidden; }
+  .prog-track { flex: 1; background: var(--charcoal); border-radius: 20px; height: 13px; overflow: hidden; }
   .prog-fill { height: 100%; border-radius: 20px; transition: width 0.4s ease; }
   .prog-count { font-size: 0.7em; font-weight: 700; width: 22px; flex-shrink: 0; }
 
   /* ── Filter pills ── */
-  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 0.65rem 1.5rem; border-bottom: 1px solid var(--border); align-items: center; background: #f8fbff; }
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 0.65rem 1.5rem; border-bottom: 1px solid var(--charcoal); align-items: center; background: var(--navy-panel); }
   .filter-row span { font-size: 0.82em; color: var(--muted); }
-  .filter-btn { font-size: 0.78em; padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: #f0f4f8; color: var(--navy); cursor: pointer; font-family: var(--font); font-weight: 700; transition: background 0.15s, color 0.15s, border-color 0.15s; }
-  .filter-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
-  .filter-btn:hover:not(.active) { background: var(--surface); border-color: var(--navy); }
-  .search-wrap { display: flex; align-items: center; gap: 6px; background: #fff; border: 2px solid var(--navy); border-radius: 8px; padding: 5px 12px; margin-left: auto; }
-  .search-wrap input { border: none; outline: none; font-size: 0.8em; font-family: var(--font); color: var(--text); background: transparent; width: 160px; }
-  .search-clear { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 1em; padding: 0 2px; line-height: 1; display: none; }
+  .filter-btn { font-size: 0.78em; padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--charcoal); background: var(--navy); color: var(--cream); cursor: pointer; font-family: var(--font); font-weight: 700; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .filter-btn.active { background: var(--gold); color: var(--navy); border-color: var(--gold); }
+  .filter-btn:hover:not(.active) { background: var(--navy-hover); border-color: var(--gold); }
+  .search-wrap { display: flex; align-items: center; gap: 6px; background: white; border: 2px solid var(--gold); border-radius: 8px; padding: 5px 12px; margin-left: auto; }
+  .search-wrap input { border: none; outline: none; font-size: 0.8em; font-family: var(--font); color: #222; background: transparent; width: 160px; }
+  .search-clear { background: none; border: none; cursor: pointer; color: #888; font-size: 1em; padding: 0 2px; line-height: 1; display: none; }
 
     /* ── Print button ── */
-  .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: var(--navy); border: 2px solid var(--navy); border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
-  .print-btn:hover { background: var(--navy); color: #fff; }
+  .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: var(--navy); color: var(--gold); border: 2px solid var(--gold); border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
+  .print-btn:hover { background: var(--gold); color: var(--navy); }
   .print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   @media(max-width:640px){
@@ -200,8 +201,8 @@
   <p id="cm-date" style="font-size:0.8em;opacity:0.75;margin-top:4px;"></p>
 </div>
 
-  <div style="background:#E7F1FB;border-bottom:2px solid #c5d8ee;padding:8px 16px;">
-  <a href="index.html" style="color:#1F4E79;font-weight:700;font-size:0.9em;text-decoration:none;">&#9664; Back to Residents Hub</a>
+  <div style="background:var(--navy-panel);border-bottom:2px solid var(--charcoal);padding:8px 16px;">
+  <a href="index.html" style="color:var(--gold);font-weight:700;font-size:0.9em;text-decoration:none;">&#9664; Back to Residents Hub</a>
 </div>
 
   <!-- ── TOOLBAR ── -->
@@ -212,35 +213,35 @@
 </div>
 
 <!-- ── RC ALERT BANNER ── -->
-<div id="rc-alert-banner" style="display:none;background:#fff8e1;border-bottom:2px solid #e0a800;padding:10px 1.5rem;font-size:0.85em;color:#7a5200;font-weight:700;">
+<div id="rc-alert-banner" style="display:none;background:#4a3a1a;border-bottom:2px solid #C9A44A;padding:10px 1.5rem;font-size:0.85em;color:#C9A44A;font-weight:700;">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
     <span id="rc-alert-text"></span>
-    <button onclick="dismissRcAlert()" style="background:none;border:none;cursor:pointer;font-size:1.1em;color:#7a5200;font-weight:700;">✕ Dismiss</button>
+    <button onclick="dismissRcAlert()" style="background:none;border:none;cursor:pointer;font-size:1.1em;color:#C9A44A;font-weight:700;">✕ Dismiss</button>
   </div>
   <div id="rc-alert-list" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;"></div>
 </div>
 
 <!-- ── DASHBOARD CARDS ── -->
 <div class="dashboard" id="dashboard">
-  <div class="dash-card" style="background:#E7F1FB;border-color:#c5d8ee;">
-    <div class="dash-num" style="color:#1F4E79;" id="d-total">–</div>
-    <div class="dash-lbl" style="color:#1F4E79;">Total issues</div>
+  <div class="dash-card" style="background:var(--navy);border-color:var(--charcoal);">
+    <div class="dash-num" style="color:var(--cream);" id="d-total">–</div>
+    <div class="dash-lbl" style="color:var(--cream);">Total issues</div>
   </div>
-  <div class="dash-card" style="background:#d4edda;border-color:#28a745;">
-    <div class="dash-num" style="color:#155724;" id="d-done">–</div>
-    <div class="dash-lbl" style="color:#155724;">✅ Done</div>
+  <div class="dash-card" style="background:#24402f;border-color:#5fb87e;">
+    <div class="dash-num" style="color:#5fb87e;" id="d-done">–</div>
+    <div class="dash-lbl" style="color:#5fb87e;">✅ Done</div>
   </div>
-  <div class="dash-card" style="background:#ddeeff;border-color:#1F4E79;">
-    <div class="dash-num" style="color:#1F4E79;" id="d-prog">–</div>
-    <div class="dash-lbl" style="color:#1F4E79;">🔄 Being worked on</div>
+  <div class="dash-card" style="background:rgba(212,184,96,0.15);border-color:#D4B860;">
+    <div class="dash-num" style="color:#D4B860;" id="d-prog">–</div>
+    <div class="dash-lbl" style="color:#D4B860;">🔄 Being worked on</div>
   </div>
-  <div class="dash-card" style="background:#f0f0f0;border-color:#888;">
-    <div class="dash-num" style="color:#3a3a3a;" id="d-new">–</div>
-    <div class="dash-lbl" style="color:#3a3a3a;">📋 Waiting to start</div>
+  <div class="dash-card" style="background:#33424f;border-color:#6b7a86;">
+    <div class="dash-num" style="color:#8a97a3;" id="d-new">–</div>
+    <div class="dash-lbl" style="color:#8a97a3;">📋 Waiting to start</div>
   </div>
-  <div class="dash-card" style="background:#fff3cd;border-color:#e0a800;">
-    <div class="dash-num" style="color:#7a5200;" id="d-hold">–</div>
-    <div class="dash-lbl" style="color:#7a5200;">⏸ On hold</div>
+  <div class="dash-card" style="background:#4a3a1a;border-color:#C9A44A;">
+    <div class="dash-num" style="color:#C9A44A;" id="d-hold">–</div>
+    <div class="dash-lbl" style="color:#C9A44A;">⏸ On hold</div>
   </div>
 </div>
 
@@ -260,8 +261,8 @@
   <button class="filter-btn" data-filter="On Hold">⏸ On hold</button>
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="6.5" cy="6.5" r="4.5" stroke="#1F4E79" stroke-width="1.5"/>
-      <line x1="10" y1="10" x2="14" y2="14" stroke="#1F4E79" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="6.5" cy="6.5" r="4.5" stroke="#263746" stroke-width="1.5"/>
+      <line x1="10" y1="10" x2="14" y2="14" stroke="#263746" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
     <input type="text" id="search-input" placeholder="Search issues…" aria-label="Search issues">
     <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
@@ -339,7 +340,7 @@ function statusLabel(s) {
 // clearly divided entries so a long history is easy to read at a glance.
 function formatNotes(notes) {
   if (!notes || !notes.trim()) {
-    return '<span style="color:#aaa;font-style:italic;">(no notes yet)</span>';
+    return '<span style="color:var(--muted);font-style:italic;">(no notes yet)</span>';
   }
   return notes.split(/\n\s*\n/).map(block => {
     block = block.trim();
@@ -470,8 +471,8 @@ function buildAccordion() {
           <div class="issue-summary" onclick="toggleEdit('${uid}')">
             <div class="issue-left">
               <div class="issue-title">${issue.issueNum ? `<span style="font-size:0.78em;color:var(--muted);font-weight:600;margin-right:6px;">${escHtml(issue.issueNum)}</span>` : ""}${escHtml(issue.topic)}</div>
-              ${(issue.origCategory && (CAT_MAP[issue.origCategory] !== issue.origCategory)) ? `<div style="font-size:0.72em;color:#888;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;">${escHtml(issue.origCategory)}</div>` : ""}
-              ${issue.lastUpdated ? `<div style="font-size:0.72em;color:#888;margin-top:2px;">Last updated: ${escHtml(issue.lastUpdated)}</div>` : ""}
+              ${(issue.origCategory && (CAT_MAP[issue.origCategory] !== issue.origCategory)) ? `<div style="font-size:0.72em;color:var(--muted);font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;">${escHtml(issue.origCategory)}</div>` : ""}
+              ${issue.lastUpdated ? `<div style="font-size:0.72em;color:var(--muted);margin-top:2px;">Last updated: ${escHtml(issue.lastUpdated)}</div>` : ""}
               <div class="issue-note-preview">${escHtml(notePreview)}</div>
               ${rcDate ? `<div class="issue-rc-reply">📬 RC replied: ${escHtml(rcDate)}</div>` : ""}
             </div>
@@ -504,15 +505,15 @@ function buildAccordion() {
               <button class="btn-update" onclick="submitInlineUpdate('${uid}', '${escHtml(issue.category)}', '${escHtml(issue.topic)}')">Save changes</button>
               <button class="btn-discard" onclick="toggleEdit('${uid}')">Discard</button>
             </div>
-            <div style="margin-top:12px;padding-top:12px;border-top:2px dashed #c5d8ee;">
-              <label class="field-label" style="color:#1565c0;margin-bottom:4px;display:block;">📝 Add CM Update</label>
+            <div style="margin-top:12px;padding-top:12px;border-top:2px dashed var(--charcoal);">
+              <label class="field-label" style="color:#8fc4e8;margin-bottom:4px;display:block;">📝 Add CM Update</label>
               <textarea class="cm-update-text" rows="2"
                 placeholder="Type a new note or progress update here…"
-                style="width:100%;padding:9px 11px;font-size:0.88em;font-family:inherit;border:1.5px solid #1565c0;border-radius:6px;resize:vertical;"></textarea>
+                style="width:100%;padding:9px 11px;font-size:0.88em;font-family:inherit;border:1.5px solid #8fc4e8;border-radius:6px;resize:vertical;"></textarea>
               <div style="margin-top:8px;">
                 <button class="btn-cm-update"
                   onclick="submitCmUpdate('${uid}', '${escHtml(issue.category)}', '${escHtml(issue.topic)}')"
-                  style="padding:8px 18px;background:#1565c0;color:white;border:none;border-radius:6px;font-family:inherit;font-size:0.82em;font-weight:700;cursor:pointer;">
+                  style="padding:8px 18px;background:#8fc4e8;color:#263746;border:none;border-radius:6px;font-family:inherit;font-size:0.82em;font-weight:700;cursor:pointer;">
                   📝 Add CM Update
                 </button>
               </div>
@@ -665,10 +666,10 @@ function buildDashboard() {
 
   const bars = document.getElementById("progress-bars");
   bars.innerHTML = [
-    { label: "✅ Done",      n: counts["Completed"],   col: "#28a745", tc: "#155724" },
-    { label: "🔄 Being worked on", n: counts["In Progress"], col: "#1F4E79", tc: "#1F4E79" },
-    { label: "📋 Waiting to start", n: counts["Not Started"], col: "#888",    tc: "#3a3a3a" },
-    { label: "⏸ On hold",   n: counts["On Hold"],     col: "#e0a800", tc: "#7a5200" },
+    { label: "✅ Done",      n: counts["Completed"],   col: "#5fb87e", tc: "#5fb87e" },
+    { label: "🔄 Being worked on", n: counts["In Progress"], col: "#D4B860", tc: "#D4B860" },
+    { label: "📋 Waiting to start", n: counts["Not Started"], col: "#6b7a86",    tc: "#8a97a3" },
+    { label: "⏸ On hold",   n: counts["On Hold"],     col: "#C9A44A", tc: "#C9A44A" },
   ].map(b => {
     const pct = total > 0 ? Math.round((b.n / total) * 100) : 0;
     return `<div class="prog-row">
@@ -815,7 +816,7 @@ function goToIssue(cat, topic) {
   // Scroll to it and give it a brief highlight so it's easy to spot
   target.scrollIntoView({ behavior: "smooth", block: "center" });
   target.style.transition = "background-color 0.6s";
-  target.style.backgroundColor = "#fff3cd";
+  target.style.backgroundColor = "rgba(212,184,96,0.35)";
   setTimeout(() => { target.style.backgroundColor = ""; }, 2200);
 }
 

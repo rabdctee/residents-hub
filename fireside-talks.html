@@ -15,27 +15,38 @@
   <title>Fireside Talks | Bridgeman Downs Retirement Village Residents' Information Hub</title>
 
   <style>
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-navy-hover: #324A5F;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-muted:      #B9AF9C;
+      --hub-charcoal:   #3F4143;
+      --hub-green:      #5fb87e;
+      --hub-red:        #e8998c;
+    }
     *{margin:0;padding:0;box-sizing:border-box;}
 
     body{
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      background:#f5f5f5;
+      background:var(--hub-navy);
       font-size:18px;
       line-height:1.6;
-      color:#222;
+      color:var(--hub-cream);
     }
 
     .container{
       max-width:1200px;
       margin:auto;
-      background:white;
+      background:var(--hub-navy);
       box-shadow:0 2px 10px rgba(0,0,0,0.1);
     }
 
     /* ===== Header ===== */
     header{
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-navy);
+      color:var(--hub-cream);
       padding:36px 20px 30px;
       text-align:center;
     }
@@ -48,15 +59,16 @@
     }
     header .page-tagline span{
       display:inline-block;
-      background:rgba(255,255,255,0.18);
+      background:rgba(212,184,96,0.18);
+      color:var(--hub-gold);
       border-radius:6px;
       padding:6px 20px;
     }
 
     /* ===== Section nav bar ===== */
     .section-bar{
-      background:#E7F1FB;
-      border-bottom:2px solid #c5d8ee;
+      background:var(--hub-navy-panel);
+      border-bottom:2px solid var(--hub-charcoal);
       padding:10px 14px;
       display:flex;
       flex-wrap:wrap;
@@ -64,16 +76,16 @@
       justify-content:center;
     }
     .section-bar a{
-      color:#1F4E79;
+      color:var(--hub-cream);
       font-weight:700;
       font-size:0.85em;
       text-decoration:none;
-      background:white;
-      border:1px solid #c5d8ee;
+      background:var(--hub-navy);
+      border:1px solid var(--hub-charcoal);
       border-radius:6px;
       padding:7px 14px;
     }
-    .section-bar a:hover{ background:#d0e8f5; }
+    .section-bar a:hover{ background:var(--hub-navy-hover); border-color:var(--hub-gold); }
 
     .page-content{ padding:30px 25px; }
 
@@ -85,22 +97,22 @@
       margin:34px 0 18px;
     }
     .section-divider:first-child{ margin-top:0; }
-    .section-divider-line{ flex:1; height:2px; background:#c5d8ee; }
+    .section-divider-line{ flex:1; height:2px; background:var(--hub-charcoal); }
     .section-divider-text{
-      color:#1F4E79;
+      color:var(--hub-gold);
       font-weight:700;
       font-size:1.05em;
       white-space:nowrap;
     }
 
     .intro-box{
-      background:#f0f6fc;
-      border-left:4px solid #1F4E79;
+      background:var(--hub-navy-panel);
+      border-left:4px solid var(--hub-gold);
       border-radius:6px;
       padding:16px 20px;
       margin-bottom:22px;
       font-size:0.95em;
-      color:#333;
+      color:var(--hub-cream);
     }
 
     /* ===== Volunteer CTA ===== */
@@ -110,8 +122,8 @@
     }
     .volunteer-btn{
       display:inline-block;
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-gold);
+      color:var(--hub-navy);
       font-weight:700;
       font-size:1em;
       text-decoration:none;
@@ -119,16 +131,16 @@
       border-radius:8px;
       transition:background 0.15s;
     }
-    .volunteer-btn:hover{ background:#173d5f; }
+    .volunteer-btn:hover{ background:#c2a44f; }
 
     /* ===== Upcoming talk cards ===== */
     #upcomingContainer{ margin-bottom:6px; }
     .upcoming-card{
       display:flex;
       gap:18px;
-      background:#f8f9fa;
-      border:1px solid #e0e0e0;
-      border-left:5px solid #2a7a4b;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
+      border-left:5px solid var(--hub-green);
       border-radius:10px;
       padding:18px 22px;
       margin-bottom:14px;
@@ -137,20 +149,20 @@
       flex-shrink:0;
       width:80px;
       text-align:center;
-      background:#2a7a4b;
-      color:white;
+      background:var(--hub-green);
+      color:var(--hub-navy);
       border-radius:8px;
       padding:10px 6px;
     }
     .upcoming-date .day{ font-size:1.6em; font-weight:700; line-height:1; }
     .upcoming-date .month{ font-size:0.78em; text-transform:uppercase; letter-spacing:0.04em; }
-    .upcoming-body h3{ color:#1F4E79; font-size:1.1em; margin-bottom:3px; }
-    .upcoming-meta{ font-size:0.82em; color:#666; margin-bottom:8px; }
-    .upcoming-desc{ font-size:0.92em; color:#333; }
+    .upcoming-body h3{ color:var(--hub-cream); font-size:1.1em; margin-bottom:3px; }
+    .upcoming-meta{ font-size:0.82em; color:var(--hub-muted); margin-bottom:8px; }
+    .upcoming-desc{ font-size:0.92em; color:var(--hub-cream); opacity:0.9; }
 
     .empty-msg{
       text-align:center;
-      color:#8a96a3;
+      color:var(--hub-muted);
       font-style:italic;
       padding:24px 10px;
     }
@@ -161,15 +173,17 @@
       width:100%;
       padding:12px 16px;
       font-size:0.95em;
-      border:2px solid #c5d8ee;
+      border:2px solid var(--hub-charcoal);
       border-radius:8px;
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:white;
+      color:#222;
     }
-    .talk-search-input:focus{ outline:none; border-color:#1F4E79; }
+    .talk-search-input:focus{ outline:none; border-color:var(--hub-gold); }
 
     .talk-card{
-      background:white;
-      border:1px solid #c5d8ee;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
       border-radius:10px;
       margin-bottom:12px;
       overflow:hidden;
@@ -179,32 +193,32 @@
       align-items:center;
       gap:14px;
       width:100%;
-      background:white;
+      background:var(--hub-navy-panel);
       border:none;
       padding:16px 20px;
       cursor:pointer;
       text-align:left;
       font-family:inherit;
     }
-    .accordion-header:hover{ background:#f0f6fc; }
+    .accordion-header:hover{ background:var(--hub-navy-hover); }
     .accordion-header .acc-icon{ font-size:1.5em; flex-shrink:0; }
     .accordion-header .acc-title{ flex:1; }
-    .accordion-header .acc-title h3{ color:#1F4E79; font-size:1.05em; margin-bottom:2px; }
-    .accordion-header .acc-title p{ font-size:0.8em; color:#888; }
+    .accordion-header .acc-title h3{ color:var(--hub-cream); font-size:1.05em; margin-bottom:2px; }
+    .accordion-header .acc-title p{ font-size:0.8em; color:var(--hub-muted); }
     .accordion-header .acc-chevron{
       font-size:0.8em;
-      color:#aaa;
+      color:var(--hub-gold);
       transition:transform 0.2s;
       flex-shrink:0;
     }
     .accordion-header.open .acc-chevron{ transform:rotate(180deg); }
-    .accordion-header.open{ background:#E7F1FB; }
+    .accordion-header.open{ background:var(--hub-navy-hover); }
 
     .accordion-body{ display:none; }
     .accordion-body.open{ display:block; }
 
     .talk-text{ padding:0 22px 20px; }
-    .talk-text p{ color:#333; font-size:0.94em; margin-bottom:14px; }
+    .talk-text p{ color:var(--hub-cream); opacity:0.9; font-size:0.94em; margin-bottom:14px; }
 
     .talk-video-wrap{
       position:relative;
@@ -221,14 +235,14 @@
       border:0;
     }
     .no-video-msg{
-      color:#8a96a3;
+      color:var(--hub-muted);
       font-style:italic;
       font-size:0.88em;
     }
 
     .no-stories-msg{
       text-align:center;
-      color:#8a96a3;
+      color:var(--hub-muted);
       font-style:italic;
       padding:30px 10px;
     }
@@ -243,40 +257,42 @@
     #pinScreen{
       max-width:380px;
       margin:80px auto;
-      background:white;
+      background:var(--hub-navy-panel);
       padding:30px;
       border-radius:8px;
-      border:1px solid #c5d8ee;
-      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+      border:1px solid var(--hub-charcoal);
+      box-shadow:0 2px 10px rgba(0,0,0,0.3);
       text-align:center;
     }
-    #pinScreen h2{ color:#1F4E79; font-size:1.2em; margin-bottom:10px; }
-    #pinScreen p{ font-size:0.85em; color:#5f6368; }
+    #pinScreen h2{ color:var(--hub-gold); font-size:1.2em; margin-bottom:10px; }
+    #pinScreen p{ font-size:0.85em; color:var(--hub-muted); }
     #pinScreen input{
       font-size:1.1em;
       padding:10px;
       width:140px;
       text-align:center;
       margin-top:14px;
-      border:2px solid #e0e0e0;
+      border:2px solid var(--hub-charcoal);
       border-radius:5px;
+      background:white;
+      color:#222;
     }
-    #pinScreen input:focus{ outline:none; border-color:#1F4E79; }
+    #pinScreen input:focus{ outline:none; border-color:var(--hub-gold); }
     #pinScreen button{
       display:block;
       margin:16px auto 0 auto;
       padding:10px 26px;
       font-size:0.9em;
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-gold);
+      color:var(--hub-navy);
       border:none;
       border-radius:5px;
       cursor:pointer;
       font-weight:600;
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
     }
-    #pinScreen button:hover{ background:#173d5f; }
-    #pinError{ color:#b3261e; font-size:0.8em; margin-top:10px; display:none; }
+    #pinScreen button:hover{ background:#c2a44f; }
+    #pinError{ color:var(--hub-red); font-size:0.8em; margin-top:10px; display:none; }
 
   </style>
 </head>

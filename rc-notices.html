@@ -15,26 +15,34 @@
   <title>Residents Committee Notices | Bridgeman Downs Residents' Hub</title>
 
   <style>
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-muted:      #B9AF9C;
+      --hub-charcoal:   #3F4143;
+    }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
+      background: var(--hub-navy);
       font-size: 20px;
       line-height: 1.7;
-      color: #222;
+      color: var(--hub-cream);
     }
     .container {
       max-width: 1200px;
       margin: auto;
-      background: white;
+      background: var(--hub-navy);
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
     /* Header */
     header {
-      background: #1F4E79;
-      color: white;
+      background: var(--hub-navy);
+      color: var(--hub-cream);
       padding: 30px 20px;
       text-align: center;
     }
@@ -47,7 +55,7 @@
     .page-title {
       font-size: 1.6em;
       font-weight: 700;
-      color: #1F4E79;
+      color: var(--hub-gold);
       border-bottom: 3px solid #C9A44A;
       padding-bottom: 10px;
       margin-bottom: 24px;
@@ -55,13 +63,13 @@
 
     /* Intro box */
     .intro-box {
-      background: #E7F1FB;
-      border-left: 5px solid #1F4E79;
+      background: var(--hub-navy-panel);
+      border-left: 5px solid var(--hub-gold);
       border-radius: 6px;
       padding: 20px 24px;
       margin-bottom: 32px;
       font-size: 0.95em;
-      color: #333;
+      color: var(--hub-cream);
     }
     .intro-box p + p { margin-top: 12px; }
 
@@ -70,15 +78,15 @@
     .notices-section h2 {
       font-size: 1.05em;
       font-weight: 700;
-      color: #1F4E79;
-      background: #E7F1FB;
+      color: var(--hub-cream);
+      background: var(--hub-navy-panel);
       padding: 10px 16px;
       border-radius: 6px 6px 0 0;
-      border: 1px solid #c5d8ee;
+      border: 1px solid var(--hub-charcoal);
       border-bottom: none;
     }
     .notices-list {
-      border: 1px solid #c5d8ee;
+      border: 1px solid var(--hub-charcoal);
       border-radius: 0 0 6px 6px;
       overflow: hidden;
     }
@@ -86,10 +94,10 @@
     /* Individual notice */
     .notice-item {
       padding: 18px 22px;
-      border-bottom: 1px solid #eef0f3;
+      border-bottom: 1px solid var(--hub-charcoal);
     }
     .notice-item:last-child { border-bottom: none; }
-    .notice-item:hover { background: #f8fafc; }
+    .notice-item:hover { background: var(--hub-navy-panel); }
     .notice-meta {
       display: flex;
       align-items: center;
@@ -98,17 +106,18 @@
     }
     .notice-date {
       font-size: 0.75em;
-      color: #888;
+      color: var(--hub-muted);
       white-space: nowrap;
     }
     .notice-title {
       font-size: 0.95em;
       font-weight: 700;
-      color: #1F4E79;
+      color: var(--hub-gold);
     }
     .notice-body {
       font-size: 0.85em;
-      color: #444;
+      color: var(--hub-cream);
+      opacity: 0.9;
       line-height: 1.6;
       white-space: pre-wrap;
     }
@@ -116,14 +125,14 @@
     /* Empty / loading states */
     .notice-empty {
       padding: 20px 22px;
-      color: #888;
+      color: var(--hub-muted);
       font-size: 0.88em;
       font-style: italic;
     }
 
     /* Residents login box */
     .residents-login-box {
-      background: #fffdf5;
+      background: var(--hub-navy-panel);
       border: 2px solid #C9A44A;
       border-radius: 8px;
       padding: 28px 30px;
@@ -132,18 +141,19 @@
     }
     .residents-login-box h2 {
       font-size: 1.05em;
-      color: #1F4E79;
+      color: #C9A44A;
       margin-bottom: 10px;
     }
     .residents-login-box p {
       font-size: 0.82em;
-      color: #555;
+      color: var(--hub-cream);
+      opacity: 0.85;
       margin-bottom: 20px;
     }
     .btn-residents {
       display: inline-block;
-      background: #1F4E79;
-      color: white;
+      background: #C9A44A;
+      color: var(--hub-navy);
       font-size: 0.95em;
       font-weight: 700;
       padding: 13px 30px;
@@ -151,15 +161,16 @@
       text-decoration: none;
       transition: background 0.2s;
     }
-    .btn-residents:hover { background: #163a5c; }
+    .btn-residents:hover { background: #b8944a; }
 
     /* Footer */
     .hub-footer {
-      background: #f8f9fa;
+      background: var(--hub-navy-panel);
       padding: 16px 30px;
       text-align: center;
-      color: #5f6368;
-      border-top: 1px solid #e0e0e0;
+      color: var(--hub-cream);
+      opacity: 0.85;
+      border-top: 1px solid var(--hub-charcoal);
       font-size: 0.85em;
     }
 
@@ -184,7 +195,7 @@
 
     <div class="intro-box">
       <p>This page contains <strong>notices and updates</strong> from the <strong>Residents Committee</strong> of Bridgeman Downs Retirement Village — including meeting minutes, other updates and communications.</p>
-      <p style="font-size:0.88em;color:#555;">For short day-to-day reminders and general village news, see <a href="index.html" style="color:#1F4E79;font-weight:700;">Latest Announcements</a> on the Home page.</p>
+      <p style="font-size:0.88em;color:#B9AF9C;">For short day-to-day reminders and general village news, see <a href="index.html" style="color:#D4B860;font-weight:700;">Latest Announcements</a> on the Home page.</p>
     </div>
 
     <!-- Public Notices -->
@@ -205,7 +216,7 @@
   </div><!-- end page-area -->
 
   <footer class="hub-footer">
-    <p>Bridgeman Downs Retirement Village &mdash; Residents' Information Hub &mdash; <a href="index.html" style="color:#1F4E79;">Home</a></p>
+    <p>Bridgeman Downs Retirement Village &mdash; Residents' Information Hub &mdash; <a href="index.html" style="color:#D4B860;">Home</a></p>
   </footer>
 
 </div><!-- end container -->
@@ -280,7 +291,7 @@
               var href = match
                 ? 'view-document.html?id=' + match[1] + '&title=' + encodeURIComponent(title) + '&back=rc-notices'
                 : rawLink;
-              return '<div style="margin-top:10px;"><a href="' + href + '" target="_blank" style="display:inline-block;background:#1F4E79;color:white;font-size:0.82em;font-weight:700;padding:7px 16px;border-radius:6px;text-decoration:none;">📄 View Document</a></div>';
+              return '<div style="margin-top:10px;"><a href="' + href + '" target="_blank" style="display:inline-block;background:#D4B860;color:#263746;font-size:0.82em;font-weight:700;padding:7px 16px;border-radius:6px;text-decoration:none;">📄 View Document</a></div>';
             })(n.link, n.title) : '') +
             '</div>';
         });

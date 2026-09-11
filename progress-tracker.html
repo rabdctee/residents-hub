@@ -6,16 +6,17 @@
 <title>What We're Working On – Bridgeman Downs Residents Hub</title>
 <style>
   :root {
-    --green-bg: #d4edda; --green-text: #155724; --green-border: #28a745;
-    --blue-bg:  #E7F1FB; --blue-text:  #1F4E79; --blue-border:  #1F4E79;
-    --amber-bg: #fff3cd; --amber-text: #7a5200; --amber-border: #e0a800;
-    --gray-bg:  #f0f0f0; --gray-text:  #3a3a3a; --gray-border:  #888;
-    --border:   #c5d8ee;
-    --surface:  #E7F1FB;
-    --page-bg:  #ffffff;
-    --text:     #1a1a1a;
-    --text-muted: #5f6368;
-    --hub-blue: #1F4E79;
+    --green-bg: #24402f; --green-text: #5fb87e; --green-border: #5fb87e;
+    --blue-bg:  rgba(212,184,96,0.15); --blue-text:  #D4B860; --blue-border:  #D4B860;
+    --amber-bg: #4a3a1a; --amber-text: #C9A44A; --amber-border: #C9A44A;
+    --gray-bg:  #33424f; --gray-text:  #8a97a3; --gray-border:  #6b7a86;
+    --border:   #3F4143;
+    --surface:  #2E4256;
+    --page-bg:  #263746;
+    --text:     #F6F2E7;
+    --text-muted: #B9AF9C;
+    --hub-blue: #D4B860;
+    --hub-navy: #263746;
     --radius:   6px;
     --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --base-size: 20px;
@@ -24,65 +25,64 @@
   body { font-family: var(--font); background: var(--page-bg); color: var(--text); font-size: var(--base-size); line-height: 1.7; }
 
   /* ── Header ── */
-  .page-header { background: #1F4E79; color: #fff; padding: 1.25rem 1.5rem; }
+  .page-header { background: var(--hub-navy); color: var(--text); padding: 1.25rem 1.5rem; }
   .page-header h1 { font-size: 2em; font-weight: 700; margin-bottom: 0.1rem; }
   .page-header p { font-size: 0.88em; opacity: 0.85; }
 
   /* ── Dashboard cards ── */
-  .dashboard { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; padding: 1rem 1.5rem 0.85rem; background: #f0f6ff; border-bottom: 1px solid var(--border); }
+  .dashboard { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; padding: 1rem 1.5rem 0.85rem; background: var(--surface); border-bottom: 1px solid var(--border); }
   .dash-card { border-radius: 8px; padding: 10px 8px 8px; text-align: center; border: 1.5px solid transparent; cursor: pointer; transition: opacity 0.15s; }
   .dash-card:hover { opacity: 0.85; }
   .dash-num { font-size: 1.7em; font-weight: 700; line-height: 1.1; margin-bottom: 2px; }
   .dash-lbl { font-size: 0.6em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
 
   /* ── Progress bars ── */
-  .progress-section { padding: 0.8rem 1.5rem 0.7rem; background: #f0f6ff; border-bottom: 1px solid var(--border); }
+  .progress-section { padding: 0.8rem 1.5rem 0.7rem; background: var(--surface); border-bottom: 1px solid var(--border); }
   .progress-title { font-size: 0.75em; font-weight: 700; color: var(--hub-blue); margin-bottom: 8px; }
   .prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
   .prog-name { font-size: 0.7em; color: var(--text-muted); width: 88px; flex-shrink: 0; text-align: right; }
-  .prog-track { flex: 1; background: #dde8f5; border-radius: 20px; height: 13px; overflow: hidden; }
+  .prog-track { flex: 1; background: var(--border); border-radius: 20px; height: 13px; overflow: hidden; }
   .prog-fill { height: 100%; border-radius: 20px; transition: width 0.4s ease; }
   .prog-count { font-size: 0.7em; font-weight: 700; width: 22px; flex-shrink: 0; }
 
   /* ── Filter + search row ── */
-  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 0.65rem 1.5rem; border-bottom: 1px solid var(--border); align-items: center; background: #f8fbff; }
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; padding: 0.65rem 1.5rem; border-bottom: 1px solid var(--border); align-items: center; background: var(--surface); }
   .filter-row span { font-size: 0.82em; color: var(--text-muted); }
-  .filter-btn { font-size: 0.78em; padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--page-bg); color: var(--hub-blue); cursor: pointer; font-family: var(--font); font-weight: 700; transition: background 0.15s, color 0.15s, border-color 0.15s; }
-  .filter-btn.active { background: var(--hub-blue); color: #fff; border-color: var(--hub-blue); }
+  .filter-btn { font-size: 0.78em; padding: 5px 13px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--page-bg); color: var(--text); cursor: pointer; font-family: var(--font); font-weight: 700; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .filter-btn.active { background: var(--hub-blue); color: var(--hub-navy); border-color: var(--hub-blue); }
   .filter-btn:hover:not(.active) { background: var(--surface); border-color: var(--hub-blue); }
 
   /* ── Search ── */
-  .search-wrap { display: flex; align-items: center; gap: 6px; background: #fff; border: 2px solid var(--hub-blue); border-radius: 8px; padding: 5px 12px; margin-left: auto; }
+  .search-wrap { display: flex; align-items: center; gap: 6px; background: white; border: 2px solid var(--hub-blue); border-radius: 8px; padding: 5px 12px; margin-left: auto; }
   .search-wrap svg { flex-shrink: 0; }
-  .search-wrap input { border: none; outline: none; font-size: 0.8em; font-family: var(--font); color: var(--text); background: transparent; width: 160px; }
-  .search-clear { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 1em; padding: 0 2px; line-height: 1; display: none; }
+  .search-wrap input { border: none; outline: none; font-size: 0.8em; font-family: var(--font); color: #222; background: transparent; width: 160px; }
+  .search-clear { background: none; border: none; cursor: pointer; color: #888; font-size: 1em; padding: 0 2px; line-height: 1; display: none; }
 
   /* ── Font size control ── */
-  .font-ctrl { display: flex; align-items: center; gap: 5px; padding: 0.45rem 1.5rem; background: #f8fbff; border-bottom: 1px solid var(--border); }
+  .font-ctrl { display: flex; align-items: center; gap: 5px; padding: 0.45rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
   .font-ctrl span { font-size: 0.75em; color: var(--text-muted); margin-right: 4px; }
-  .font-btn { font-weight: 700; padding: 3px 10px; border: 1.5px solid var(--border); border-radius: 6px; background: #fff; color: var(--hub-blue); cursor: pointer; font-family: var(--font); transition: background 0.15s; }
+  .font-btn { font-weight: 700; padding: 3px 10px; border: 1.5px solid var(--border); border-radius: 6px; background: var(--page-bg); color: var(--text); cursor: pointer; font-family: var(--font); transition: background 0.15s; }
   .font-btn:hover { background: var(--surface); }
-  .font-btn.active { background: var(--hub-blue); color: #fff; border-color: var(--hub-blue); }
+  .font-btn.active { background: var(--hub-blue); color: var(--hub-navy); border-color: var(--hub-blue); }
   .font-btn.sm { font-size: 0.72em; }
   .font-btn.md { font-size: 0.85em; }
   .font-btn.lg { font-size: 1em; }
 
   /* ── Last updated ── */
-  .last-updated { font-size: 0.72em; color: var(--text-muted); padding: 0.3rem 1.5rem; background: #f8fbff; border-bottom: 1px solid var(--border); }
+  .last-updated { font-size: 0.72em; color: var(--text-muted); padding: 0.3rem 1.5rem; background: var(--surface); border-bottom: 1px solid var(--border); }
 
   /* ── Main ── */
   .main { padding: 1rem 1.5rem 2rem; max-width: 920px; margin: 0 auto; }
 
   /* ── Category blocks ── */
   .cat-block { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; }
-  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; background: var(--hub-blue); gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; }
-  .cat-header:hover { background: #163d5f; }
-  .cat-header:hover { background: #cfe0f5; }
+  .cat-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; background: var(--hub-navy); gap: 10px; user-select: none; -webkit-tap-highlight-color: transparent; border-bottom: 1px solid var(--border); }
+  .cat-header:hover { background: var(--surface); }
   .cat-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; flex-wrap: wrap; }
-  .cat-name { font-weight: 800; font-size: 1.22em; color: #fff; letter-spacing: 0.01em; }
+  .cat-name { font-weight: 800; font-size: 1.22em; color: var(--hub-blue); letter-spacing: 0.01em; }
   .cat-mini-pills { display: flex; gap: 5px; flex-wrap: wrap; }
   .mini-pill { font-size: 0.68em; font-weight: 700; padding: 2px 8px; border-radius: 20px; border: 1.5px solid transparent; }
-  .cat-chevron { color: #fff; font-size: 1.1em; transition: transform 0.25s ease; flex-shrink: 0; }
+  .cat-chevron { color: var(--hub-blue); font-size: 1.1em; transition: transform 0.25s ease; flex-shrink: 0; }
   .cat-block.open .cat-chevron { transform: rotate(180deg); }
   .cat-body { display: none; border-top: 1px solid var(--border); }
   .cat-block.open .cat-body { display: block; }
@@ -92,13 +92,13 @@
   .issue-row:last-child { border-bottom: none; }
   .issue-row.hidden { display: none; }
   .issue-text { flex: 1; min-width: 0; }
-  .issue-name { font-size: 0.92em; font-weight: 700; color: var(--hub-blue); line-height: 1.4; margin-bottom: 4px; }
+  .issue-name { font-size: 0.92em; font-weight: 700; color: var(--text); line-height: 1.4; margin-bottom: 4px; }
   .issue-note { font-size: 0.8em; color: var(--text-muted); line-height: 1.5; }
   .issue-note .entry { padding: 5px 0; border-bottom: 1px dashed var(--border); }
   .issue-note .entry:last-child { padding-bottom: 0; border-bottom: none; }
-  .issue-note .rc-tag { color: #2e7d32; font-weight: 700; }
-  .issue-note .cm-tag { color: #1565c0; font-weight: 700; }
-  .issue-note .added-tag { color: #a67c00; font-weight: 700; }
+  .issue-note .rc-tag { color: #5fb87e; font-weight: 700; }
+  .issue-note .cm-tag { color: #8fc4e8; font-weight: 700; }
+  .issue-note .added-tag { color: #C9A44A; font-weight: 700; }
   .badge { font-size: 0.78em; font-weight: 700; padding: 7px 14px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; border: 1.5px solid transparent; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
 
   /* ── Status colours ── */
@@ -114,26 +114,26 @@
 
   /* ── Expand/collapse ── */
   /* ── Print button ── */
-  .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: #fff; color: #1F4E79; border: 2px solid #1F4E79; border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
-  .section-print-btn { font-size: 0.78em; font-weight: 700; padding: 4px 10px; background: transparent; color: #fff; border: 1.5px solid #fff; border-radius: 16px; cursor: pointer; font-family: var(--font); flex-shrink: 0; }
-  .section-print-btn:hover { background: #fff; color: #1F4E79; }
+  .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: var(--page-bg); color: var(--hub-blue); border: 2px solid var(--hub-blue); border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
+  .section-print-btn { font-size: 0.78em; font-weight: 700; padding: 4px 10px; background: transparent; color: var(--hub-blue); border: 1.5px solid var(--hub-blue); border-radius: 16px; cursor: pointer; font-family: var(--font); flex-shrink: 0; }
+  .section-print-btn:hover { background: var(--hub-blue); color: var(--hub-navy); }
   .section-print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
   @media print { .section-print-btn { display: none !important; } }
-  .print-btn:hover { background: #1F4E79; color: #fff; }
+  .print-btn:hover { background: var(--hub-blue); color: var(--hub-navy); }
   .print-btn:disabled { opacity: 0.6; cursor: not-allowed; }
   /* ── Explainer panel ── */
-  .explainer { background: #e8f4fd; border-left: 4px solid #1F4E79; margin: 0; padding: 14px 1.5rem; font-size: 0.88em; color: #1a3a5c; line-height: 1.7; display: flex; align-items: flex-start; gap: 12px; }
+  .explainer { background: var(--surface); border-left: 4px solid var(--hub-blue); margin: 0; padding: 14px 1.5rem; font-size: 0.88em; color: var(--text); line-height: 1.7; display: flex; align-items: flex-start; gap: 12px; }
   .explainer-icon { font-size: 1.6em; flex-shrink: 0; margin-top: 2px; }
   .explainer-text { flex: 1; }
-  .explainer-text strong { display: block; margin-bottom: 4px; font-size: 1.05em; color: #1F4E79; }
-  .explainer-dismiss { background: none; border: 1.5px solid #1F4E79; color: #1F4E79; border-radius: 20px; padding: 4px 12px; font-size: 0.82em; font-weight: 700; cursor: pointer; white-space: nowrap; margin-top: 6px; font-family: var(--font); }
-  .explainer-dismiss:hover { background: #1F4E79; color: white; }
+  .explainer-text strong { display: block; margin-bottom: 4px; font-size: 1.05em; color: var(--hub-blue); }
+  .explainer-dismiss { background: none; border: 1.5px solid var(--hub-blue); color: var(--hub-blue); border-radius: 20px; padding: 4px 12px; font-size: 0.82em; font-weight: 700; cursor: pointer; white-space: nowrap; margin-top: 6px; font-family: var(--font); }
+  .explainer-dismiss:hover { background: var(--hub-blue); color: var(--hub-navy); }
 
   @media print { .print-btn, .filter-row, .font-ctrl, .expand-row, .page-header p, .dashboard, .progress-section, .last-updated { display: none !important; } }
 
   .expand-row { display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 0.75rem; }
   .expand-btn { font-size: 0.8em; color: var(--hub-blue); background: none; border: none; cursor: pointer; font-family: var(--font); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
-  .expand-btn:hover { color: #163d60; }
+  .expand-btn:hover { color: #c2a44f; }
 
   @media(max-width:600px){
     .dashboard { grid-template-columns: repeat(3,1fr); }
@@ -147,8 +147,8 @@
 </head>
 <body>
 
-<div style="background:#E7F1FB;border-bottom:2px solid #c5d8ee;padding:8px 16px;">
-  <a href="community-info.html" style="color:#1F4E79;font-weight:700;font-size:0.9em;text-decoration:none;">&#9664; Back to Residents Hub</a>
+<div style="background:#2E4256;border-bottom:2px solid #3F4143;padding:8px 16px;">
+  <a href="community-info.html" style="color:#D4B860;font-weight:700;font-size:0.9em;text-decoration:none;">&#9664; Back to Residents Hub</a>
 </div>
 
 <div class="page-header">
@@ -171,25 +171,25 @@
 </div>
 
 <div class="dashboard" id="dashboard">
-  <div class="dash-card" style="background:#E7F1FB;border-color:#c5d8ee;" data-filter="all">
-    <div class="dash-num" style="color:#1F4E79;" id="d-total">–</div>
-    <div class="dash-lbl" style="color:#1F4E79;">Total issues</div>
+  <div class="dash-card" style="background:#263746;border-color:#3F4143;" data-filter="all">
+    <div class="dash-num" style="color:#F6F2E7;" id="d-total">–</div>
+    <div class="dash-lbl" style="color:#F6F2E7;">Total issues</div>
   </div>
-  <div class="dash-card" style="background:#d4edda;border-color:#28a745;" data-filter="Completed">
-    <div class="dash-num" style="color:#155724;" id="d-done">–</div>
-    <div class="dash-lbl" style="color:#155724;">✅ Done</div>
+  <div class="dash-card" style="background:#24402f;border-color:#5fb87e;" data-filter="Completed">
+    <div class="dash-num" style="color:#5fb87e;" id="d-done">–</div>
+    <div class="dash-lbl" style="color:#5fb87e;">✅ Done</div>
   </div>
-  <div class="dash-card" style="background:#ddeeff;border-color:#1F4E79;" data-filter="In Progress">
-    <div class="dash-num" style="color:#1F4E79;" id="d-prog">–</div>
-    <div class="dash-lbl" style="color:#1F4E79;">🔄 Being worked on</div>
+  <div class="dash-card" style="background:rgba(212,184,96,0.15);border-color:#D4B860;" data-filter="In Progress">
+    <div class="dash-num" style="color:#D4B860;" id="d-prog">–</div>
+    <div class="dash-lbl" style="color:#D4B860;">🔄 Being worked on</div>
   </div>
-  <div class="dash-card" style="background:#f0f0f0;border-color:#888;" data-filter="Not Started">
-    <div class="dash-num" style="color:#3a3a3a;" id="d-new">–</div>
-    <div class="dash-lbl" style="color:#3a3a3a;">📋 Waiting to start</div>
+  <div class="dash-card" style="background:#33424f;border-color:#6b7a86;" data-filter="Not Started">
+    <div class="dash-num" style="color:#8a97a3;" id="d-new">–</div>
+    <div class="dash-lbl" style="color:#8a97a3;">📋 Waiting to start</div>
   </div>
-  <div class="dash-card" style="background:#fff3cd;border-color:#e0a800;" data-filter="On Hold">
-    <div class="dash-num" style="color:#7a5200;" id="d-hold">–</div>
-    <div class="dash-lbl" style="color:#7a5200;">⏸ On hold</div>
+  <div class="dash-card" style="background:#4a3a1a;border-color:#C9A44A;" data-filter="On Hold">
+    <div class="dash-num" style="color:#C9A44A;" id="d-hold">–</div>
+    <div class="dash-lbl" style="color:#C9A44A;">⏸ On hold</div>
   </div>
 </div>
 
@@ -207,8 +207,8 @@
   <button class="filter-btn" data-filter="On Hold">⏸ On hold</button>
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="6.5" cy="6.5" r="4.5" stroke="#1F4E79" stroke-width="1.5"/>
-      <line x1="10" y1="10" x2="14" y2="14" stroke="#1F4E79" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="6.5" cy="6.5" r="4.5" stroke="#263746" stroke-width="1.5"/>
+      <line x1="10" y1="10" x2="14" y2="14" stroke="#263746" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
     <input type="text" id="search-input" placeholder="Search issues…" aria-label="Search issues">
     <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
@@ -230,10 +230,10 @@
   <div id="error" class="state-msg" style="display:none"><div class="icon">⚠️</div><div id="error-msg">Unable to load data. Please try refreshing the page.</div></div>
   <div id="content" style="display:none">
     <!-- Filter prompt shown before any selection -->
-    <div id="filter-prompt" style="padding:28px 1.5rem;text-align:center;color:#555;font-size:1em;">
+    <div id="filter-prompt" style="padding:28px 1.5rem;text-align:center;color:#B9AF9C;font-size:1em;">
       <div style="font-size:2em;margin-bottom:8px;">👆</div>
-      <div style="font-weight:700;margin-bottom:6px;color:#1F4E79;">Select a button above to see issues</div>
-      <div style="font-size:0.88em;color:#888;">Tap <strong>🔄 Being worked on</strong> to see what's in progress, <strong>✅ Done</strong> to see completed items, or use the Search box to find a specific topic.</div>
+      <div style="font-weight:700;margin-bottom:6px;color:#D4B860;">Select a button above to see issues</div>
+      <div style="font-size:0.88em;color:#B9AF9C;">Tap <strong>🔄 Being worked on</strong> to see what's in progress, <strong>✅ Done</strong> to see completed items, or use the Search box to find a specific topic.</div>
     </div>
 
     <div class="expand-row" id="expand-collapse-row" style="display:none;">
@@ -385,10 +385,10 @@ function buildDashboard(rows) {
   const total = rows.length;
   const bars = document.getElementById("progress-bars");
   bars.innerHTML = [
-    { label: "✅ Done",   n: counts["Completed"],   col: "#28a745", tc: "#155724" },
-    { label: "🔄 Being worked on", n: counts["In Progress"], col: "#1F4E79", tc: "#1F4E79" },
-    { label: "📋 Waiting to start", n: counts["Not Started"], col: "#888",    tc: "#3a3a3a" },
-    { label: "⏸ On hold",     n: counts["On Hold"],      col: "#e0a800", tc: "#7a5200" },
+    { label: "✅ Done",   n: counts["Completed"],   col: "#5fb87e", tc: "#5fb87e" },
+    { label: "🔄 Being worked on", n: counts["In Progress"], col: "#D4B860", tc: "#D4B860" },
+    { label: "📋 Waiting to start", n: counts["Not Started"], col: "#6b7a86",    tc: "#8a97a3" },
+    { label: "⏸ On hold",     n: counts["On Hold"],      col: "#C9A44A", tc: "#C9A44A" },
   ].map(b => {
     const pct = total > 0 ? Math.round((b.n / total) * 100) : 0;
     return `<div class="prog-row">
@@ -415,11 +415,11 @@ function buildAccordion(grouped) {
       `<div class="issue-row" data-status="${i.status}" data-topic="${escHtml(i.topic).toLowerCase()}" data-issuenum="${escHtml(i.issueNum).toLowerCase()}">
         <div class="issue-text">
           <div class="issue-name">
-            ${i.issueNum ? `<span id="issue-${i.issueNum}" style="font-size:0.75em;background:#e8f0fb;color:#1F4E79;border:1px solid #c5d8ee;border-radius:4px;padding:1px 6px;margin-right:6px;font-weight:700;">${escHtml(i.issueNum)}</span>` : ""}${escHtml(i.topic)}
+            ${i.issueNum ? `<span id="issue-${i.issueNum}" style="font-size:0.75em;background:rgba(212,184,96,0.15);color:#D4B860;border:1px solid #D4B860;border-radius:4px;padding:1px 6px;margin-right:6px;font-weight:700;">${escHtml(i.issueNum)}</span>` : ""}${escHtml(i.topic)}
           </div>
-          ${(i.origCategory && (CAT_MAP[i.origCategory] !== i.origCategory)) ? `<div style="font-size:0.72em;color:#888;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;">${escHtml(i.origCategory)}</div>` : ""}
+          ${(i.origCategory && (CAT_MAP[i.origCategory] !== i.origCategory)) ? `<div style="font-size:0.72em;color:#B9AF9C;font-weight:600;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.04em;">${escHtml(i.origCategory)}</div>` : ""}
           ${i.notes ? `<div class="issue-note">${formatNotes(i.notes)}</div>` : ""}
-          ${i.lastUpdated ? `<div style="font-size:0.72em;color:#999;margin-top:3px;">Last updated: ${escHtml(i.lastUpdated)}</div>` : ""}
+          ${i.lastUpdated ? `<div style="font-size:0.72em;color:#B9AF9C;margin-top:3px;">Last updated: ${escHtml(i.lastUpdated)}</div>` : ""}
         </div>
         <span class="badge ${statusClass(i.status)}">${statusIcon(i.status)} ${statusLabel(i.status)}</span>
       </div>`
@@ -467,7 +467,7 @@ function buildAccordion(grouped) {
 function applyFilterAndSearch() {
   document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === activeFilter));
   document.querySelectorAll(".dash-card").forEach(c => {
-    c.style.outline = c.dataset.filter === activeFilter ? "3px solid #1F4E79" : "none";
+    c.style.outline = c.dataset.filter === activeFilter ? "3px solid #D4B860" : "none";
   });
 
   const promptEl = document.getElementById("filter-prompt");
