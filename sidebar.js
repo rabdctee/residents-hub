@@ -45,19 +45,28 @@
 
   // ── CSS ────────────────────────────────────────────────────
   var css = `
+    :root{
+      --hub-navy:#263746;
+      --hub-navy-panel:#2E4256;
+      --hub-navy-hover:#324A5F;
+      --hub-navy-active:#3a5872;
+      --hub-gold:#D4B860;
+      --hub-cream:#F6F2E7;
+      --hub-charcoal:#3F4143;
+    }
     /* Sidebar layout wrapper */
     .hub-wrapper {
       display: flex;
       align-items: flex-start;
       width: 100%;
-      background: white;
+      background: var(--hub-navy);
     }
     .hub-sidebar {
       width: 260px;
       flex-shrink: 0;
       padding: 14px 10px;
-      border-right: 2px solid #c5d8ee;
-      background: white;
+      border-right: 2px solid var(--hub-charcoal);
+      background: var(--hub-navy);
       align-self: flex-start;
       position: sticky;
       top: 0;
@@ -71,15 +80,15 @@
 
     /* Sidebar card */
     .sb-section {
-      background: white;
-      border: 1px solid #c5d8ee;
+      background: var(--hub-navy-panel);
+      border: 1px solid var(--hub-charcoal);
       border-radius: 6px;
       overflow: hidden;
       margin-bottom: 10px;
     }
     .sb-heading {
-      background: #1F4E79;
-      color: #C9A44A;
+      background: var(--hub-navy);
+      color: var(--hub-gold);
       font-size: 0.68em;
       font-weight: 700;
       text-transform: uppercase;
@@ -95,8 +104,8 @@
       padding: 8px 12px;
       font-size: 17px;
       font-weight: 700;
-      color: #1F4E79;
-      border-bottom: 1px solid #eef0f3;
+      color: var(--hub-cream);
+      border-bottom: 1px solid var(--hub-charcoal);
       transition: background 0.15s;
       text-decoration: none;
       white-space: nowrap;
@@ -104,9 +113,9 @@
       text-overflow: ellipsis;
     }
     .sb-links li:last-child a { border-bottom: none; }
-    .sb-links li a:hover    { background: #E7F1FB; font-weight: 600; }
-    .sb-links li a.sb-active { background: #ddeef8; font-weight: 700; color: #1F4E79; border-left: 3px solid #1F4E79; padding-left: 9px; }
-    .sb-links li a.sb-active:hover { background: #c5d8ee; }
+    .sb-links li a:hover    { background: var(--hub-navy-hover); font-weight: 600; }
+    .sb-links li a.sb-active { background: var(--hub-navy-hover); font-weight: 700; color: var(--hub-gold); border-left: 3px solid var(--hub-gold); padding-left: 9px; }
+    .sb-links li a.sb-active:hover { background: var(--hub-navy-active); }
     .sb-links li a.sb-lock  { color: #7a5200; background: #fffdf5; }
     .sb-links li a.sb-lock:hover { background: #fff3cc; }
     .sb-notice-badge {
@@ -136,19 +145,19 @@
       cursor: pointer;
       font-size: 17px;
       font-weight: 700;
-      color: #1F4E79;
-      border-bottom: 1px solid #eef0f3;
-      background: white;
+      color: var(--hub-cream);
+      border-bottom: 1px solid var(--hub-charcoal);
+      background: var(--hub-navy-panel);
       transition: background 0.15s;
       user-select: none;
       white-space: nowrap;
     }
     .sb-acc-header:hover,
-    .sb-acc-header.open { background: #E7F1FB; }
-    .sb-acc-header.open { border-left: 3px solid #1F4E79; padding-left: 9px; }
+    .sb-acc-header.open { background: var(--hub-navy-hover); }
+    .sb-acc-header.open { border-left: 3px solid var(--hub-gold); padding-left: 9px; }
     .sb-acc-arrow {
       font-size: 0.6em;
-      color: #aaa;
+      color: var(--hub-gold);
       transition: transform 0.2s;
       margin-left: 4px;
       flex-shrink: 0;
@@ -159,33 +168,33 @@
     .sb-acc-body { display: none; }
     .sb-acc-body.open {
       display: block;
-      background: #f8fafc;
-      border-bottom: 1px solid #c5d8ee;
+      background: var(--hub-navy);
+      border-bottom: 1px solid var(--hub-charcoal);
     }
     .sb-acc-body .sb-links li a {
       padding-left: 22px;
       font-size: 15px;
-      color: #444;
-      border-bottom: 1px solid #eef0f3;
+      color: var(--hub-cream);
+      border-bottom: 1px solid var(--hub-charcoal);
     }
     .sb-acc-body .sb-links li:last-child a { border-bottom: none; }
     .sb-acc-body .sb-links li a:hover {
-      background: #E7F1FB;
-      color: #1F4E79;
+      background: var(--hub-navy-hover);
+      color: var(--hub-gold);
       font-weight: 600;
     }
     .sb-acc-body .sb-links li a.sb-active {
-      background: #ddeef8;
-      color: #1F4E79;
+      background: var(--hub-navy-hover);
+      color: var(--hub-gold);
       font-weight: 700;
-      border-left: 3px solid #1F4E79;
+      border-left: 3px solid var(--hub-gold);
       padding-left: 19px;
     }
 
     /* Breadcrumb bar */
     .sb-breadcrumb {
-      background: #E7F1FB;
-      border-bottom: 2px solid #c5d8ee;
+      background: var(--hub-navy-panel);
+      border-bottom: 2px solid var(--hub-charcoal);
       padding: 10px 22px;
       font-size: 0.82em;
       display: flex;
@@ -194,27 +203,28 @@
       flex-wrap: wrap;
     }
     .sb-breadcrumb a {
-      color: #1F4E79;
+      color: var(--hub-cream);
       text-decoration: none;
       font-weight: 700;
-      background: white;
-      border: 1px solid #c5d8ee;
+      background: var(--hub-navy);
+      border: 1px solid var(--hub-charcoal);
       border-radius: 6px;
       padding: 4px 10px;
       font-size: 0.95em;
       transition: all 0.15s;
     }
-    .sb-breadcrumb a:hover { background: #1F4E79; color: white; }
-    .sb-breadcrumb span { color: #aaa; font-size: 0.9em; }
-    .sb-breadcrumb strong { color: #444; font-weight: 600; }
+    .sb-breadcrumb a:hover { background: var(--hub-gold); color: var(--hub-navy); }
+    .sb-breadcrumb span { color: var(--hub-cream); opacity: 0.55; font-size: 0.9em; }
+    .sb-breadcrumb strong { color: var(--hub-cream); font-weight: 600; }
 
     /* Hub footer */
     .hub-footer {
-      background: #f8f9fa;
+      background: var(--hub-navy-panel);
       padding: 16px 30px;
       text-align: center;
-      color: #5f6368;
-      border-top: 1px solid #e0e0e0;
+      color: var(--hub-cream);
+      opacity: 0.85;
+      border-top: 1px solid var(--hub-charcoal);
       font-size: 0.85em;
       width: 100%;
     }
@@ -229,28 +239,29 @@
       align-items: center;
       gap: 5px;
       padding: 8px 12px;
-      border-top: 1px solid #c5d8ee;
+      border-top: 1px solid var(--hub-charcoal);
       margin-top: 4px;
     }
     .sb-font-ctrl span {
       font-size: 0.72em;
-      color: #5f6368;
+      color: var(--hub-cream);
+      opacity: 0.7;
       margin-right: 2px;
     }
     .sb-font-btn {
       font-weight: 700;
       padding: 3px 8px;
-      border: 1.5px solid #c5d8ee;
+      border: 1.5px solid var(--hub-charcoal);
       border-radius: 6px;
-      background: #fff;
-      color: #1F4E79;
+      background: var(--hub-navy);
+      color: var(--hub-cream);
       cursor: pointer;
       font-family: inherit;
       transition: background 0.15s;
       line-height: 1.4;
     }
-    .sb-font-btn:hover { background: #E7F1FB; }
-    .sb-font-btn.sb-font-active { background: #1F4E79; color: #fff; border-color: #1F4E79; }
+    .sb-font-btn:hover { background: var(--hub-navy-hover); }
+    .sb-font-btn.sb-font-active { background: var(--hub-gold); color: var(--hub-navy); border-color: var(--hub-gold); }
     .sb-font-btn.sb-sz-sm { font-size: 11px; }
     .sb-font-btn.sb-sz-md { font-size: 14px; }
     .sb-font-btn.sb-sz-lg { font-size: 17px; }
@@ -276,7 +287,7 @@
       .hub-sidebar {
         width: 100%;
         border-right: none;
-        border-bottom: 2px solid #c5d8ee;
+        border-bottom: 2px solid var(--hub-charcoal);
         align-self: auto;
         position: static;
         max-height: none;
@@ -418,12 +429,12 @@
             <li><a href="info-sessions.html"${isActive('info-sessions.html') ? ' class="sb-active"' : ''}>🎤 Information Sessions</a></li>
             <li><a href="useful-links.html"${isActive('useful-links.html') ? ' class="sb-active"' : ''}>🔗 Useful Links</a></li>
             ${isActive('how-to.html') ? `
-            <li style="background:#f0f6fc;"><a href="#group-getting-started" style="padding-left:30px;font-size:0.8em;color:#555;">🚀 Getting Started</a></li>
-            <li style="background:#f0f6fc;"><a href="#group-apps-services"   style="padding-left:30px;font-size:0.8em;color:#555;">📱 Phones, TV &amp; Email</a></li>
-            <li style="background:#f0f6fc;"><a href="#group-photos"          style="padding-left:30px;font-size:0.8em;color:#555;">📷 Managing Photos</a></li>
-            <li style="background:#f0f6fc;"><a href="#group-home"          style="padding-left:30px;font-size:0.8em;color:#555;">🏠 Around Your Home</a></li>
-            <li style="background:#f0f6fc;"><a href="#group-staying-safe"    style="padding-left:30px;font-size:0.8em;color:#555;">🔒 Staying Safe</a></li>
-            <li style="background:#f0f6fc;"><a href="#group-new-tech"        style="padding-left:30px;font-size:0.8em;color:#555;">🤖 New Technology</a></li>
+            <li style="background:var(--hub-navy-hover);"><a href="#group-getting-started" style="padding-left:30px;font-size:0.8em;color:var(--hub-cream);">🚀 Getting Started</a></li>
+            <li style="background:var(--hub-navy-hover);"><a href="#group-apps-services"   style="padding-left:30px;font-size:0.8em;color:var(--hub-cream);">📱 Phones, TV &amp; Email</a></li>
+            <li style="background:var(--hub-navy-hover);"><a href="#group-photos"          style="padding-left:30px;font-size:0.8em;color:var(--hub-cream);">📷 Managing Photos</a></li>
+            <li style="background:var(--hub-navy-hover);"><a href="#group-home"          style="padding-left:30px;font-size:0.8em;color:var(--hub-cream);">🏠 Around Your Home</a></li>
+            <li style="background:var(--hub-navy-hover);"><a href="#group-staying-safe"    style="padding-left:30px;font-size:0.8em;color:var(--hub-cream);">🔒 Staying Safe</a></li>
+            <li style="background:var(--hub-navy-hover);"><a href="#group-new-tech"        style="padding-left:30px;font-size:0.8em;color:var(--hub-cream);">🤖 New Technology</a></li>
             ` : ''}
             <li><a href="index.html" onclick="if(window.showPage){showPage('contact');return false;}else{window.location.href='index.html?page=contact';return false;}"${isActive('contacts.html') ? ' class="sb-active"' : ''}>📞 Contacts</a></li>
             <li><a href="index.html" onclick="if(window.showPage){showPage('about');return false;}else{window.location.href='index.html?page=about';return false;}">ℹ️ About This Website</a></li>
@@ -472,10 +483,10 @@
   }
 
   // ── EVENT PHOTOS & VIDEOS BADGE ───────────────────────────
-  // Reads the same JSON feed event-gallery.html itself uses — its dates
-  // are unambiguous, unlike a published sheet's CSV date format.
-  var EVENT_MEDIA_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDvm1XBaqZXts2pzZrGsZcseoNXnORnxQi1w5FxOrPjqhbpl3N-nOfGNt5XBVMWU8jtA/exec';
-  var EVENT_BADGE_LS_KEY     = 'eventGalleryLastVisit';
+  // Same idea as the RC Notices badge above, fed by the EventMedia
+  // sheet published to the web (File > Share > Publish to web > CSV).
+  var EVENT_BADGE_CSV    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR5enBRJgr5hzkTZIBBZX81YMNdNe9Rh2L7HCzk5W7DpiAZGfPqFMwvkRAqXrp4diDcGDrFtctZUe8a/pub?gid=0&single=true&output=csv';
+  var EVENT_BADGE_LS_KEY = 'eventGalleryLastVisit';
 
   // If currently on event-gallery.html, record visit now (before fetch runs)
   if (window.location.pathname.indexOf('event-gallery.html') !== -1) {
@@ -635,21 +646,20 @@
   }
 
   // ── EVENT PHOTOS & VIDEOS BADGE FETCH ─────────────────────
-  // Counts EventMedia items submitted since the resident's last visit
-  // to event-gallery.html, using the same JSON feed as that page.
+  // Counts EventMedia rows submitted since the resident's last visit
+  // to event-gallery.html. Reuses the CSV/timestamp helpers above.
   if (window.location.pathname.indexOf('event-gallery.html') === -1) {
     var eventLastVisit = localStorage.getItem(EVENT_BADGE_LS_KEY) ? parseInt(localStorage.getItem(EVENT_BADGE_LS_KEY)) : 0;
 
-    fetch(EVENT_MEDIA_SCRIPT_URL + '?action=gallery&t=' + Date.now())
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        if (data.status !== 'ok' || !data.events) return;
+    fetch(EVENT_BADGE_CSV + '&t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var rows  = parseCSVRowsForBadge(csv);
         var count = 0;
-        Object.keys(data.events).forEach(function(eventName) {
-          data.events[eventName].forEach(function(item) {
-            if (new Date(item.date).getTime() > eventLastVisit) count++;
-          });
-        });
+        for (var i = 1; i < rows.length; i++) {
+          var ts = rows[i][0] ? rows[i][0].trim() : '';
+          if (parseTimestamp(ts) > eventLastVisit) count++;
+        }
         if (count > 0) {
           var badge = document.getElementById('sb-event-badge');
           if (badge) {
