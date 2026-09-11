@@ -17,28 +17,37 @@
   <style>
 
     /* ===== Base ===== */
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-navy-hover: #324A5F;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-muted:      #B9AF9C;
+      --hub-charcoal:   #3F4143;
+    }
     *{ margin:0; padding:0; box-sizing:border-box; }
     html{ scroll-behavior:smooth; }
 
     body{
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      background:#f5f5f5;
+      background:var(--hub-navy);
       font-size:18px;
       line-height:1.7;
-      color:#1a1a1a;
+      color:var(--hub-cream);
     }
 
     .container{
       max-width:1200px;
       margin:auto;
-      background:#ffffff;
+      background:var(--hub-navy);
       box-shadow:0 2px 10px rgba(0,0,0,0.1);
     }
 
     /* ===== Header ===== */
     header{
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-navy);
+      color:var(--hub-cream);
       padding:36px 20px 30px;
       text-align:center;
     }
@@ -51,9 +60,10 @@
     }
     header .page-tagline span{
       display:inline-block;
-      background:rgba(255,255,255,0.18);
+      background:rgba(212,184,96,0.18);
       border-radius:6px;
       padding:6px 22px;
+      color:var(--hub-gold);
     }
 
     /* Navigation handled by sidebar.js */
@@ -63,16 +73,17 @@
 
     /* ===== Info box ===== */
     .info-box{
-      background:#E7F1FB;
-      border-left:4px solid #1F4E79;
+      background:var(--hub-navy-panel);
+      border-left:4px solid var(--hub-gold);
       padding:16px 20px;
       margin:0 0 28px;
       border-radius:0 4px 4px 0;
       font-size:0.95em;
+      color:var(--hub-cream);
     }
 
     .last-checked{
-      color:#555;
+      color:var(--hub-muted);
       font-size:0.85em;
       font-style:italic;
       margin:-18px 0 28px;
@@ -80,8 +91,8 @@
 
     /* ===== Collapsible sections ===== */
     .collapsible-header{
-      background:#E7F1FB;
-      border:1px solid #c5d8ee;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
       border-radius:6px;
       padding:16px 18px;
       cursor:pointer;
@@ -91,10 +102,10 @@
       transition:background 0.2s;
       margin-bottom:8px;
     }
-    .collapsible-header:hover{ background:#cfe0f5; }
+    .collapsible-header:hover{ background:var(--hub-navy-hover); }
 
     .collapsible-title{
-      color:#1F4E79;
+      color:var(--hub-cream);
       font-size:1.05em;
       font-weight:700;
       display:flex;
@@ -103,7 +114,7 @@
     }
 
     .collapsible-arrow{
-      color:#1F4E79;
+      color:var(--hub-gold);
       font-size:1.1em;
       transition:transform 0.3s ease;
       font-weight:700;
@@ -113,8 +124,8 @@
     .collapsible-content{
       display:none;
       padding:16px 18px;
-      background:#ffffff;
-      border:1px solid #c5d8ee;
+      background:var(--hub-navy);
+      border:1px solid var(--hub-charcoal);
       border-top:none;
       border-radius:0 0 6px 6px;
       margin-top:-8px;
@@ -126,20 +137,20 @@
     .doc-link{
       display:block;
       padding:11px 14px;
-      background:#f8fbff;
-      border:1px solid #c5d8ee;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
       border-radius:5px;
-      color:#1F4E79;
+      color:var(--hub-cream);
       text-decoration:none;
       margin-bottom:8px;
       transition:all 0.2s;
       font-size:0.92em;
       font-weight:600;
     }
-    .doc-link:hover{ background:#E7F1FB; border-color:#1F4E79; }
+    .doc-link:hover{ background:var(--hub-navy-hover); border-color:var(--hub-gold); }
 
     .section-note{
-      color:#555;
+      color:var(--hub-muted);
       font-size:0.88em;
       margin-top:8px;
       font-style:italic;
@@ -152,18 +163,19 @@
       font-size:0.92em;
     }
     .contact-table th{
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-gold);
+      color:var(--hub-navy);
       text-align:left;
       padding:10px 12px;
     }
     .contact-table td{
       padding:10px 12px;
-      border-bottom:1px solid #E7F1FB;
+      border-bottom:1px solid var(--hub-charcoal);
       vertical-align:top;
+      color:var(--hub-cream);
     }
-    .contact-table tr:nth-child(even) td{ background:#f8fbff; }
-    .contact-table a{ color:#1F4E79; font-weight:700; text-decoration:none; }
+    .contact-table tr:nth-child(even) td{ background:var(--hub-navy-panel); }
+    .contact-table a{ color:var(--hub-gold); font-weight:700; text-decoration:none; }
     .contact-table a:hover{ text-decoration:underline; }
 
     /* ===== Responsive ===== */
@@ -206,7 +218,7 @@
       <span id="public-transport-arrow" class="collapsible-arrow">▼</span>
     </div>
     <div id="public-transport" class="collapsible-content">
-      <p style="color:#444;font-size:0.88em;margin-bottom:12px;">
+      <p style="color:var(--hub-cream);font-size:0.88em;margin-bottom:12px;">
         Buses, trains, ferries and trams across Brisbane and South East Queensland.
       </p>
 
@@ -248,7 +260,7 @@
       <span id="council-cabs-arrow" class="collapsible-arrow">▼</span>
     </div>
     <div id="council-cabs" class="collapsible-content">
-      <p style="color:#444;font-size:0.88em;margin-bottom:12px;">
+      <p style="color:var(--hub-cream);font-size:0.88em;margin-bottom:12px;">
         A subsidised, shared-taxi service that collects you from home and takes you to your local
         shopping centre and back, on set days and times.
       </p>
@@ -276,7 +288,7 @@
 
       <p><strong>How to book</strong></p>
       <p style="margin-bottom:10px;">
-        Phone <strong><a href="tel:0734032227" style="color:#1F4E79;">07 3403 2227</a></strong> by 12 noon the day
+        Phone <strong><a href="tel:0734032227" style="color:var(--hub-gold);">07 3403 2227</a></strong> by 12 noon the day
         before you want to travel, and ask for Council Cabs. As Bridgeman Downs is within the Brisbane
         City Council area, residents here are covered — the operator can confirm your day, pick-up time
         and drop-off shopping centre.
@@ -357,7 +369,7 @@
       💡 <strong>Tip:</strong> All links open in a new tab so you never lose your place on this page.
       Fares, schedules and phone numbers can change — if something here looks out of date, please let
       us know using the <strong>Have a Question?</strong> form on the
-      <a href="how-to.html" style="color:#1F4E79;font-weight:700;">Help &amp; How To</a> page.
+      <a href="how-to.html" style="color:var(--hub-gold);font-weight:700;">Help &amp; How To</a> page.
     </div>
 
   </div><!-- end page-content -->

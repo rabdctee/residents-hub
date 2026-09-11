@@ -18,36 +18,50 @@
 
     /* ===================================================================
        COLOUR PALETTE
-       Primary:  Deep Blue   #1F4E79
-                 Soft Blue   #E7F1FB
-                 White       #FFFFFF
-       Accent:   Gold        #C9A44A  (resident-only elements)
-                 Green       #4A8F5C  (success)
-                 Red         #B94A48  (warnings)
+       Primary:  Navy        #263746
+                 Navy Panel  #2E4256
+       Accent:   Gold        #D4B860  (headings, buttons)
+                 Amber       #C9A44A  (resident-only elements — kept
+                             distinct from brand gold, matching the
+                             sidebar's locked-link convention)
+                 Green       #5fb87e  (success)
+                 Red         #e8998c  (warnings)
     =================================================================== */
+
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-navy-hover: #324A5F;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-muted:      #B9AF9C;
+      --hub-charcoal:   #3F4143;
+      --hub-green:      #5fb87e;
+      --hub-red:        #e8998c;
+    }
 
     *{ margin:0; padding:0; box-sizing:border-box; }
     html{ scroll-behavior:smooth; }
 
     body{
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      background:#f5f5f5;
+      background:var(--hub-navy);
       font-size:18px;
       line-height:1.7;
-      color:#1a1a1a;
+      color:var(--hub-cream);
     }
 
     .container{
       max-width:1200px;
       margin:auto;
-      background:#ffffff;
+      background:var(--hub-navy);
       box-shadow:0 2px 10px rgba(0,0,0,0.12);
     }
 
     /* ===== Header ===== */
     header{
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-navy);
+      color:var(--hub-cream);
       padding:36px 20px 30px;
       text-align:center;
     }
@@ -60,11 +74,11 @@
     }
     header .page-tagline span{
       display:inline-block;
-      background:rgba(201,164,74,0.25);
-      border:1px solid rgba(201,164,74,0.6);
+      background:rgba(212,184,96,0.18);
+      border:1px solid rgba(212,184,96,0.5);
       border-radius:6px;
       padding:6px 22px;
-      color:#fff;
+      color:var(--hub-gold);
     }
 
         /* Navigation handled by sidebar.js */
@@ -74,7 +88,7 @@
 
     /* ===== Resident-only banner ===== */
     .restricted-banner{
-      background:#fff8e6;
+      background:var(--hub-navy-panel);
       border:2px solid #C9A44A;
       border-radius:8px;
       padding:16px 20px;
@@ -90,12 +104,13 @@
     }
     .restricted-banner strong{
       display:block;
-      color:#8a6000;
+      color:#C9A44A;
       font-size:1em;
       margin-bottom:4px;
     }
     .restricted-banner p{
-      color:#6b4e00;
+      color:var(--hub-cream);
+      opacity:0.9;
       font-size:0.88em;
       line-height:1.5;
     }
@@ -104,26 +119,27 @@
     .section-heading{
       font-size:1.3em;
       font-weight:700;
-      color:#1F4E79;
+      color:var(--hub-gold);
       margin:24px 0 6px;
       padding-bottom:8px;
-      border-bottom:2px solid #E7F1FB;
+      border-bottom:2px solid var(--hub-charcoal);
     }
 
     /* ===== Info / tip box ===== */
     .info-box{
-      background:#E7F1FB;
-      border-left:4px solid #1F4E79;
+      background:var(--hub-navy-panel);
+      border-left:4px solid var(--hub-gold);
       padding:14px 18px;
       margin:16px 0;
       border-radius:0 4px 4px 0;
       font-size:0.92em;
+      color:var(--hub-cream);
     }
 
     /* ===== Collapsible sections ===== */
     .collapsible-header{
-      background:#E7F1FB;
-      border:1px solid #c5d8ee;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
       border-radius:6px;
       padding:16px 18px;
       cursor:pointer;
@@ -133,10 +149,10 @@
       transition:background 0.2s;
       margin-bottom:8px;
     }
-    .collapsible-header:hover{ background:#cfe0f5; }
+    .collapsible-header:hover{ background:var(--hub-navy-hover); }
 
     .collapsible-title{
-      color:#1F4E79;
+      color:var(--hub-cream);
       font-size:1.05em;
       font-weight:700;
       display:flex;
@@ -145,7 +161,7 @@
     }
 
     .collapsible-arrow{
-      color:#1F4E79;
+      color:var(--hub-gold);
       font-size:1.1em;
       transition:transform 0.3s ease;
       font-weight:700;
@@ -155,8 +171,8 @@
     .collapsible-content{
       display:none;
       padding:16px 18px;
-      background:#ffffff;
-      border:1px solid #c5d8ee;
+      background:var(--hub-navy);
+      border:1px solid var(--hub-charcoal);
       border-top:none;
       border-radius:0 0 6px 6px;
       margin-top:-8px;
@@ -166,7 +182,8 @@
 
     /* ===== Section description ===== */
     .section-desc{
-      color:#444;
+      color:var(--hub-cream);
+      opacity:0.85;
       font-size:0.88em;
       margin-bottom:14px;
       line-height:1.5;
@@ -176,25 +193,25 @@
     .doc-link{
       display:block;
       padding:11px 14px;
-      background:#f8fbff;
-      border:1px solid #c5d8ee;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
       border-radius:5px;
-      color:#1F4E79;
+      color:var(--hub-cream);
       text-decoration:none;
       margin-bottom:8px;
       transition:all 0.2s;
       font-size:0.92em;
       font-weight:600;
     }
-    .doc-link:hover{ background:#E7F1FB; border-color:#1F4E79; }
+    .doc-link:hover{ background:var(--hub-navy-hover); border-color:var(--hub-gold); }
 
     /* ===== Buttons ===== */
     .btn{
       display:inline-block;
       width:100%;
       padding:10px 14px;
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-gold);
+      color:var(--hub-navy);
       text-decoration:none;
       border-radius:5px;
       margin-bottom:8px;
@@ -205,7 +222,7 @@
       border:none;
       text-align:center;
     }
-    .btn:hover{ background:#163d60; }
+    .btn:hover{ background:#c2a44f; }
 
     /* ===== Form selects ===== */
     select{
@@ -213,7 +230,7 @@
       padding:11px 12px;
       margin-bottom:12px;
       font-size:16px;
-      border:2px solid #c5d8ee;
+      border:2px solid var(--hub-charcoal);
       border-radius:5px;
       background:white;
       color:#1a1a1a;
@@ -226,31 +243,31 @@
       width:100%;
       text-align:left;
       padding:10px 14px;
-      background:#f0f6fc;
-      border:1px solid #c5d8ee;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
       border-radius:6px;
       cursor:pointer;
       font-size:0.92em;
       font-weight:700;
-      color:#1F4E79;
+      color:var(--hub-cream);
       transition:background 0.2s;
     }
     .folder-toggle:hover, .folder-toggle.active{
-      background:#E7F1FB;
-      border-color:#1F4E79;
+      background:var(--hub-navy-hover);
+      border-color:var(--hub-gold);
     }
     .folder-contents{
-      border:1px solid #c5d8ee;
+      border:1px solid var(--hub-charcoal);
       border-top:none;
       border-radius:0 0 6px 6px;
       padding:10px 16px;
-      background:#fafcff;
+      background:var(--hub-navy);
     }
     .doc-list{ list-style:none; padding:0; margin:0 0 6px 0; }
-    .doc-list li{ padding:5px 0; border-bottom:1px solid #e8f0f8; }
+    .doc-list li{ padding:5px 0; border-bottom:1px solid var(--hub-charcoal); }
     .doc-list li:last-child{ border-bottom:none; }
-    .doc-list a{ text-decoration:none; color:#1F4E79; font-weight:600; font-size:0.9em; }
-    .doc-list a:hover{ text-decoration:underline; }
+    .doc-list a{ text-decoration:none; color:var(--hub-cream); font-weight:600; font-size:0.9em; }
+    .doc-list a:hover{ text-decoration:underline; color:var(--hub-gold); }
 
     /* ===== Quarterly sub-folder styles ===== */
     .subfolder-section{ margin-bottom:6px; }
@@ -258,31 +275,31 @@
       width:100%;
       text-align:left;
       padding:8px 12px;
-      background:#ffffff;
-      border:1px solid #d4e6f7;
+      background:var(--hub-navy);
+      border:1px solid var(--hub-charcoal);
       border-radius:5px;
       cursor:pointer;
       font-size:0.88em;
       font-weight:700;
-      color:#1F4E79;
+      color:var(--hub-cream);
       transition:background 0.2s;
       display:flex;
       justify-content:space-between;
       align-items:center;
     }
     .subfolder-toggle:hover, .subfolder-toggle.sf-active{
-      background:#E7F1FB;
-      border-color:#1F4E79;
+      background:var(--hub-navy-hover);
+      border-color:var(--hub-gold);
     }
     .subfolder-arrow{ font-size:0.85em; transition:transform 0.25s; }
     .subfolder-arrow.open{ transform:rotate(180deg); }
     .subfolder-contents{
       display:none;
-      border:1px solid #d4e6f7;
+      border:1px solid var(--hub-charcoal);
       border-top:none;
       border-radius:0 0 5px 5px;
       padding:8px 16px;
-      background:#fafcff;
+      background:var(--hub-navy);
       margin-bottom:2px;
     }
 
@@ -294,33 +311,34 @@
 
     /* ===== PIN Overlay ===== */
     #pinOverlay {
-      position:fixed; inset:0; background:#1F4E79;
+      position:fixed; inset:0; background:linear-gradient(135deg, var(--hub-navy) 0%, var(--hub-navy-hover) 100%);
       display:flex; align-items:center; justify-content:center;
       z-index:9999;
     }
     .pin-box {
-      background:white; border-radius:12px; padding:40px 36px;
+      background:var(--hub-navy-panel); border-radius:12px; padding:40px 36px;
       max-width:380px; width:90%; text-align:center;
-      box-shadow:0 8px 32px rgba(0,0,0,0.3);
+      box-shadow:0 8px 32px rgba(0,0,0,0.4);
     }
     .pin-logo { font-size:40px; margin-bottom:12px; }
-    .pin-box h2 { font-size:20px; color:#1F4E79; margin-bottom:6px; font-family:'Segoe UI',sans-serif; }
-    .pin-box p  { font-size:14px; color:#5f6368; margin-bottom:24px; line-height:1.5; font-family:'Segoe UI',sans-serif; }
+    .pin-box h2 { font-size:20px; color:var(--hub-gold); margin-bottom:6px; font-family:'Segoe UI',sans-serif; }
+    .pin-box p  { font-size:14px; color:var(--hub-muted); margin-bottom:24px; line-height:1.5; font-family:'Segoe UI',sans-serif; }
     .pin-input {
       width:100%; padding:14px; font-size:28px; letter-spacing:12px;
-      text-align:center; border:2px solid #c5d8ee; border-radius:8px;
+      text-align:center; border:2px solid var(--hub-charcoal); border-radius:8px;
       font-family:'Segoe UI',sans-serif; margin-bottom:16px;
       transition:border-color 0.2s;
+      background:white; color:#222;
     }
-    .pin-input:focus { outline:none; border-color:#1F4E79; }
+    .pin-input:focus { outline:none; border-color:var(--hub-gold); }
     .pin-btn {
-      width:100%; padding:14px; background:#1F4E79; color:white;
+      width:100%; padding:14px; background:var(--hub-gold); color:var(--hub-navy);
       border:none; border-radius:8px; font-size:16px; font-weight:700;
       cursor:pointer; font-family:'Segoe UI',sans-serif; transition:background 0.15s;
     }
-    .pin-btn:hover { background:#163d61; }
-    .pin-error { color:#c0392b; font-family:'Segoe UI',sans-serif; font-size:13px; margin-top:12px; display:none; }
-    .pin-hint  { color:#5f6368; font-family:'Segoe UI',sans-serif; font-size:12px; margin-top:16px; }
+    .pin-btn:hover { background:#c2a44f; }
+    .pin-error { color:var(--hub-red); font-family:'Segoe UI',sans-serif; font-size:13px; margin-top:12px; display:none; }
+    .pin-hint  { color:var(--hub-muted); font-family:'Segoe UI',sans-serif; font-size:12px; margin-top:16px; }
 
   </style>
 </head>
@@ -364,7 +382,7 @@
     </div>
 
     <h3 class="section-heading">📁 Documents &amp; Information</h3>
-    <p style="color:#444;margin-bottom:16px;font-size:0.92em;">
+    <p style="color:var(--hub-cream);margin-bottom:16px;font-size:0.92em;">
       Click any section below to expand it.
     </p>
 
@@ -375,10 +393,10 @@
           placeholder="🔍  Search sections… e.g. minutes, finances, aveo"
           oninput="searchSections()"
           style="width:100%;padding:12px 44px 12px 16px;font-size:16px;
-                 border:2px solid #1F4E79;border-radius:8px;
+                 border:2px solid var(--hub-gold);border-radius:8px;
                  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
                  box-sizing:border-box;transition:box-shadow 0.2s;"
-          onfocus="this.style.boxShadow='0 0 0 3px rgba(31,78,121,0.15)'"
+          onfocus="this.style.boxShadow='0 0 0 3px rgba(212,184,96,0.25)'"
           onblur="this.style.boxShadow='none'">
         <span style="position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;">🔍</span>
       </div>
@@ -404,8 +422,8 @@
       Social Club AGM — TBA 2027 in the Melody Ridge Centre<br>
       </p>
 
-      <h4 style="margin:14px 0 8px;color:#1F4E79;font-size:0.95em;">📄 Meeting Documents</h4>
-      <p style="margin-bottom:12px;font-size:0.85em;color:#444;">Click a folder below to view documents.</p>
+      <h4 style="margin:14px 0 8px;color:var(--hub-gold);font-size:0.95em;">📄 Meeting Documents</h4>
+      <p style="margin-bottom:12px;font-size:0.85em;color:var(--hub-cream);">Click a folder below to view documents.</p>
 
       <div id="meetings-browser">
         <div class="folder-section">
@@ -450,25 +468,25 @@
       <p class="section-desc">Residents' Finances — funds generated from Social Club events.
       Monthly and annual financial and bank statements, expenditure reports and other financial documents.</p>
 
-      <h4 style="margin-bottom:10px;color:#1F4E79;font-size:0.95em;">📊 Monthly Financial Reports</h4>
-      <p style="color:#444;margin-bottom:12px;font-size:0.85em;">Select a reporting period to view the financial report:</p>
+      <h4 style="margin-bottom:10px;color:var(--hub-gold);font-size:0.95em;">📊 Monthly Financial Reports</h4>
+      <p style="color:var(--hub-cream);margin-bottom:12px;font-size:0.85em;">Select a reporting period to view the financial report:</p>
       <select id="financial-period">
         <option value="">-- Select Month --</option>
       </select>
       <button onclick="viewFinancialReport()" class="btn">📄 View Selected Report</button>
-      <p style="color:#555;font-size:0.82em;margin-top:6px;margin-bottom:18px;">
+      <p style="color:var(--hub-cream);opacity:0.85;font-size:0.82em;margin-top:6px;margin-bottom:18px;">
         💡 Reports open in a new window. Use Ctrl+P or Cmd+P to print.
       </p>
 
-      <hr style="margin:16px 0;border:none;border-top:1px solid #E7F1FB;">
+      <hr style="margin:16px 0;border:none;border-top:1px solid var(--hub-charcoal);">
 
-      <h4 style="margin-bottom:10px;color:#1F4E79;font-size:0.95em;">🏦 Bank Statements</h4>
-      <p style="color:#444;margin-bottom:12px;font-size:0.85em;">Select a month to view the bank statement:</p>
+      <h4 style="margin-bottom:10px;color:var(--hub-gold);font-size:0.95em;">🏦 Bank Statements</h4>
+      <p style="color:var(--hub-cream);margin-bottom:12px;font-size:0.85em;">Select a month to view the bank statement:</p>
       <select id="bank-statement-period">
         <option value="">-- Select Month --</option>
       </select>
       <button onclick="viewBankStatement()" class="btn">📄 View Selected Statement</button>
-      <p style="color:#555;font-size:0.82em;margin-top:6px;">
+      <p style="color:var(--hub-cream);opacity:0.85;font-size:0.82em;margin-top:6px;">
         💡 Statements open in a new window. Use Ctrl+P or Cmd+P to print.
       </p>
     </div>
@@ -484,11 +502,11 @@
       <p class="section-desc">Current issues under review, progress updates, maintenance matters
       and resident-raised concerns.</p>
      <a href="progress-tracker.html" class="doc-link">📊 What We're Working On
-  <span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">
+  <span style="display:block;font-weight:400;font-size:0.85em;color:var(--hub-cream);opacity:0.85;margin-top:2px;">
     View all current issues, progress updates and initiatives — updates automatically
   </span>
 </a>
-      <p style="color:#555;margin-top:6px;font-size:0.85em;">This tracker is updated regularly to show progress on community issues.</p>
+      <p style="color:var(--hub-cream);opacity:0.85;margin-top:6px;font-size:0.85em;">This tracker is updated regularly to show progress on community issues.</p>
     </div>
 
 
@@ -503,125 +521,125 @@
       <p class="section-desc">Levy rates and budget breakdowns for each area for the current financial year (FY2026/27). Click an area below to see its levy details.</p>
 
       <!-- Sub-accordion: Leasehold ILU -->
-      <div class="collapsible-header" onclick="toggleSection('budget-leasehold')" style="margin-top:8px;background:#f0f6fc;">
+      <div class="collapsible-header" onclick="toggleSection('budget-leasehold')" style="margin-top:8px;background:var(--hub-navy-hover);">
         <span class="collapsible-title" style="font-size:0.97em;">🏘️ Leasehold ILU (20 units)</span>
         <span id="budget-leasehold-arrow" class="collapsible-arrow">▼</span>
       </div>
       <div id="budget-leasehold" class="collapsible-content" style="border-radius:0 0 6px 6px;">
-        <p style="font-size:0.88em;color:#555;margin-bottom:12px;">Levies are charged <strong>quarterly</strong> (4 times per year — due 1 Jul, 1 Oct, 1 Jan, 1 Apr).</p>
+        <p style="font-size:0.88em;color:var(--hub-cream);opacity:0.85;margin-bottom:12px;">Levies are charged <strong>quarterly</strong> (4 times per year — due 1 Jul, 1 Oct, 1 Jan, 1 Apr).</p>
         <table style="width:100%;border-collapse:collapse;font-size:0.88em;">
           <thead>
-            <tr style="background:#1F4E79;color:white;">
+            <tr style="background:var(--hub-gold);color:var(--hub-navy);">
               <th style="padding:9px 10px;text-align:left;">Levy Component</th>
               <th style="padding:9px 10px;text-align:right;">FY2026/27</th>
               <th style="padding:9px 10px;text-align:right;">FY2025/26</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="background:#f8fbff;"><td style="padding:8px 10px;">General Services Charge (GSC)</td><td style="padding:8px 10px;text-align:right;">$1,720.76</td><td style="padding:8px 10px;text-align:right;color:#888;">$1,621.44</td></tr>
-            <tr><td style="padding:8px 10px;">Maintenance Reserve Fund (MRF)</td><td style="padding:8px 10px;text-align:right;">$395.37</td><td style="padding:8px 10px;text-align:right;color:#888;">$355.37</td></tr>
-            <tr style="background:#1F4E79;color:white;font-weight:700;"><td style="padding:9px 10px;">Total Quarterly Levy</td><td style="padding:9px 10px;text-align:right;">$2,116.13</td><td style="padding:9px 10px;text-align:right;">$2,017.62</td></tr>
+            <tr style="background:var(--hub-navy-panel);"><td style="padding:8px 10px;">General Services Charge (GSC)</td><td style="padding:8px 10px;text-align:right;">$1,720.76</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$1,621.44</td></tr>
+            <tr><td style="padding:8px 10px;">Maintenance Reserve Fund (MRF)</td><td style="padding:8px 10px;text-align:right;">$395.37</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$355.37</td></tr>
+            <tr style="background:var(--hub-gold);color:var(--hub-navy);font-weight:700;"><td style="padding:9px 10px;">Total Quarterly Levy</td><td style="padding:9px 10px;text-align:right;">$2,116.13</td><td style="padding:9px 10px;text-align:right;">$2,017.62</td></tr>
           </tbody>
         </table>
-        <div style="margin-top:12px;font-size:0.85em;color:#444;background:#E7F1FB;padding:10px 14px;border-radius:5px;">
+        <div style="margin-top:12px;font-size:0.85em;color:var(--hub-cream);background:var(--hub-navy-panel);padding:10px 14px;border-radius:5px;">
           💡 <strong>For information only:</strong> Monthly equivalent $705.38 &nbsp;|&nbsp; Weekly equivalent $162.78 &nbsp;|&nbsp; Annual total $8,464.53<br>
           <strong>Increase this year:</strong> +$98.51 per quarter (+4.88%) &nbsp;|&nbsp; CPI applied: 4.70%
         </div>
       </div>
 
       <!-- Sub-accordion: Leasehold Aveo Way -->
-      <div class="collapsible-header" onclick="toggleSection('budget-aveoway')" style="margin-top:8px;background:#f0f6fc;">
+      <div class="collapsible-header" onclick="toggleSection('budget-aveoway')" style="margin-top:8px;background:var(--hub-navy-hover);">
         <span class="collapsible-title" style="font-size:0.97em;">🏘️ Leasehold Aveo Way ILU (72 units)</span>
         <span id="budget-aveoway-arrow" class="collapsible-arrow">▼</span>
       </div>
       <div id="budget-aveoway" class="collapsible-content" style="border-radius:0 0 6px 6px;">
-        <p style="font-size:0.88em;color:#555;margin-bottom:12px;">Levies are charged <strong>quarterly</strong>. Note: Council Rates and Water Rates (set by Brisbane City Council, not Aveo) account for the above-CPI increase.</p>
+        <p style="font-size:0.88em;color:var(--hub-cream);opacity:0.85;margin-bottom:12px;">Levies are charged <strong>quarterly</strong>. Note: Council Rates and Water Rates (set by Brisbane City Council, not Aveo) account for the above-CPI increase.</p>
         <table style="width:100%;border-collapse:collapse;font-size:0.88em;">
           <thead>
-            <tr style="background:#1F4E79;color:white;">
+            <tr style="background:var(--hub-gold);color:var(--hub-navy);">
               <th style="padding:9px 10px;text-align:left;">Levy Component</th>
               <th style="padding:9px 10px;text-align:right;">FY2026/27</th>
               <th style="padding:9px 10px;text-align:right;">FY2025/26</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="background:#f8fbff;"><td style="padding:8px 10px;">General Services Charge (GSC)</td><td style="padding:8px 10px;text-align:right;">$2,005.85</td><td style="padding:8px 10px;text-align:right;color:#888;">$1,883.34</td></tr>
-            <tr><td style="padding:8px 10px;">Maintenance Reserve Fund (MRF)</td><td style="padding:8px 10px;text-align:right;">$219.89</td><td style="padding:8px 10px;text-align:right;color:#888;">$219.95</td></tr>
-            <tr style="background:#1F4E79;color:white;font-weight:700;"><td style="padding:9px 10px;">Total Quarterly Levy</td><td style="padding:9px 10px;text-align:right;">$2,225.74</td><td style="padding:9px 10px;text-align:right;">$2,103.29</td></tr>
+            <tr style="background:var(--hub-navy-panel);"><td style="padding:8px 10px;">General Services Charge (GSC)</td><td style="padding:8px 10px;text-align:right;">$2,005.85</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$1,883.34</td></tr>
+            <tr><td style="padding:8px 10px;">Maintenance Reserve Fund (MRF)</td><td style="padding:8px 10px;text-align:right;">$219.89</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$219.95</td></tr>
+            <tr style="background:var(--hub-gold);color:var(--hub-navy);font-weight:700;"><td style="padding:9px 10px;">Total Quarterly Levy</td><td style="padding:9px 10px;text-align:right;">$2,225.74</td><td style="padding:9px 10px;text-align:right;">$2,103.29</td></tr>
           </tbody>
         </table>
-        <div style="margin-top:12px;font-size:0.85em;color:#444;background:#E7F1FB;padding:10px 14px;border-radius:5px;">
+        <div style="margin-top:12px;font-size:0.85em;color:var(--hub-cream);background:var(--hub-navy-panel);padding:10px 14px;border-radius:5px;">
           💡 <strong>For information only:</strong> Monthly equivalent $748.44 &nbsp;|&nbsp; Weekly equivalent $172.72 &nbsp;|&nbsp; Annual total $8,981.33<br>
           <strong>Increase this year:</strong> +$142.04 per quarter (+6.75%) &nbsp;|&nbsp; CPI applied: 4.70%
         </div>
       </div>
 
       <!-- Sub-accordion: Freehold ILU -->
-      <div class="collapsible-header" onclick="toggleSection('budget-freehold')" style="margin-top:8px;background:#f0f6fc;">
+      <div class="collapsible-header" onclick="toggleSection('budget-freehold')" style="margin-top:8px;background:var(--hub-navy-hover);">
         <span class="collapsible-title" style="font-size:0.97em;">🏘️ Freehold ILU (21 units)</span>
         <span id="budget-freehold-arrow" class="collapsible-arrow">▼</span>
       </div>
       <div id="budget-freehold" class="collapsible-content" style="border-radius:0 0 6px 6px;">
-        <p style="font-size:0.88em;color:#555;margin-bottom:12px;">Levies are charged <strong>quarterly</strong>. Freehold residents also pay Body Corporate levies (Administration and Sinking Fund) in addition to the GSC and MRF.</p>
+        <p style="font-size:0.88em;color:var(--hub-cream);opacity:0.85;margin-bottom:12px;">Levies are charged <strong>quarterly</strong>. Freehold residents also pay Body Corporate levies (Administration and Sinking Fund) in addition to the GSC and MRF.</p>
         <table style="width:100%;border-collapse:collapse;font-size:0.88em;">
           <thead>
-            <tr style="background:#1F4E79;color:white;">
+            <tr style="background:var(--hub-gold);color:var(--hub-navy);">
               <th style="padding:9px 10px;text-align:left;">Levy Component</th>
               <th style="padding:9px 10px;text-align:right;">FY2026/27</th>
               <th style="padding:9px 10px;text-align:right;">FY2025/26</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="background:#f8fbff;"><td style="padding:8px 10px;">General Services Charge (GSC)</td><td style="padding:8px 10px;text-align:right;">$847.24</td><td style="padding:8px 10px;text-align:right;color:#888;">$815.16</td></tr>
-            <tr><td style="padding:8px 10px;">Maintenance Reserve Fund (MRF)</td><td style="padding:8px 10px;text-align:right;">$97.26</td><td style="padding:8px 10px;text-align:right;color:#888;">$77.26</td></tr>
-            <tr style="background:#f8fbff;"><td style="padding:8px 10px;">Body Corporate — Administration</td><td style="padding:8px 10px;text-align:right;">$395.36</td><td style="padding:8px 10px;text-align:right;color:#888;">$407.08</td></tr>
-            <tr><td style="padding:8px 10px;">Body Corporate — Sinking Fund</td><td style="padding:8px 10px;text-align:right;">$196.22</td><td style="padding:8px 10px;text-align:right;color:#888;">$142.81</td></tr>
-            <tr style="background:#1F4E79;color:white;font-weight:700;"><td style="padding:9px 10px;">Total Quarterly Levy</td><td style="padding:9px 10px;text-align:right;">$1,536.08</td><td style="padding:9px 10px;text-align:right;">$1,442.31</td></tr>
+            <tr style="background:var(--hub-navy-panel);"><td style="padding:8px 10px;">General Services Charge (GSC)</td><td style="padding:8px 10px;text-align:right;">$847.24</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$815.16</td></tr>
+            <tr><td style="padding:8px 10px;">Maintenance Reserve Fund (MRF)</td><td style="padding:8px 10px;text-align:right;">$97.26</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$77.26</td></tr>
+            <tr style="background:var(--hub-navy-panel);"><td style="padding:8px 10px;">Body Corporate — Administration</td><td style="padding:8px 10px;text-align:right;">$395.36</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$407.08</td></tr>
+            <tr><td style="padding:8px 10px;">Body Corporate — Sinking Fund</td><td style="padding:8px 10px;text-align:right;">$196.22</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$142.81</td></tr>
+            <tr style="background:var(--hub-gold);color:var(--hub-navy);font-weight:700;"><td style="padding:9px 10px;">Total Quarterly Levy</td><td style="padding:9px 10px;text-align:right;">$1,536.08</td><td style="padding:9px 10px;text-align:right;">$1,442.31</td></tr>
           </tbody>
         </table>
-        <div style="margin-top:12px;font-size:0.85em;color:#444;background:#E7F1FB;padding:10px 14px;border-radius:5px;">
+        <div style="margin-top:12px;font-size:0.85em;color:var(--hub-cream);background:var(--hub-navy-panel);padding:10px 14px;border-radius:5px;">
           💡 <strong>For information only:</strong> Monthly equivalent $512.03 &nbsp;|&nbsp; Weekly equivalent $118.16 &nbsp;|&nbsp; Annual total $6,144.32<br>
           <strong>Increase this year:</strong> +$93.77 per quarter (+6.50%) &nbsp;|&nbsp; CPI applied: 4.70% (Body Corporate Sinking Fund up 37.4% due to planned works)
         </div>
       </div>
 
       <!-- Sub-accordion: Serviced Apartments Unbundled -->
-      <div class="collapsible-header" onclick="toggleSection('budget-sa-unbundled')" style="margin-top:8px;background:#f0f6fc;">
+      <div class="collapsible-header" onclick="toggleSection('budget-sa-unbundled')" style="margin-top:8px;background:var(--hub-navy-hover);">
         <span class="collapsible-title" style="font-size:0.97em;">🏢 Serviced Apartments — Unbundled (54 units)</span>
         <span id="budget-sa-unbundled-arrow" class="collapsible-arrow">▼</span>
       </div>
       <div id="budget-sa-unbundled" class="collapsible-content" style="border-radius:0 0 6px 6px;">
-        <p style="font-size:0.88em;color:#555;margin-bottom:12px;">Levies are charged <strong>monthly</strong>. Unbundled residents pay catering, laundry and cleaning separately. <strong>All four unit types pay the same levy.</strong></p>
+        <p style="font-size:0.88em;color:var(--hub-cream);opacity:0.85;margin-bottom:12px;">Levies are charged <strong>monthly</strong>. Unbundled residents pay catering, laundry and cleaning separately. <strong>All four unit types pay the same levy.</strong></p>
         <table style="width:100%;border-collapse:collapse;font-size:0.88em;">
           <thead>
-            <tr style="background:#1F4E79;color:white;">
+            <tr style="background:var(--hub-gold);color:var(--hub-navy);">
               <th style="padding:9px 10px;text-align:left;">Levy Component</th>
               <th style="padding:9px 10px;text-align:right;">FY2026/27</th>
               <th style="padding:9px 10px;text-align:right;">FY2025/26</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="background:#f8fbff;"><td style="padding:8px 10px;">General Services Charge (GSC)</td><td style="padding:8px 10px;text-align:right;">$810.65</td><td style="padding:8px 10px;text-align:right;color:#888;">$790.28</td></tr>
-            <tr><td style="padding:8px 10px;">Maintenance Reserve Fund (MRF)</td><td style="padding:8px 10px;text-align:right;">$145.74</td><td style="padding:8px 10px;text-align:right;color:#888;">$119.35</td></tr>
-            <tr style="background:#1F4E79;color:white;font-weight:700;"><td style="padding:9px 10px;">Total Monthly Levy</td><td style="padding:9px 10px;text-align:right;">$956.40</td><td style="padding:9px 10px;text-align:right;">$909.63</td></tr>
+            <tr style="background:var(--hub-navy-panel);"><td style="padding:8px 10px;">General Services Charge (GSC)</td><td style="padding:8px 10px;text-align:right;">$810.65</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$790.28</td></tr>
+            <tr><td style="padding:8px 10px;">Maintenance Reserve Fund (MRF)</td><td style="padding:8px 10px;text-align:right;">$145.74</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$119.35</td></tr>
+            <tr style="background:var(--hub-gold);color:var(--hub-navy);font-weight:700;"><td style="padding:9px 10px;">Total Monthly Levy</td><td style="padding:9px 10px;text-align:right;">$956.40</td><td style="padding:9px 10px;text-align:right;">$909.63</td></tr>
           </tbody>
         </table>
-        <div style="margin-top:12px;font-size:0.85em;color:#444;background:#E7F1FB;padding:10px 14px;border-radius:5px;">
+        <div style="margin-top:12px;font-size:0.85em;color:var(--hub-cream);background:var(--hub-navy-panel);padding:10px 14px;border-radius:5px;">
           💡 <strong>For information only:</strong> Quarterly equivalent $2,869.20 &nbsp;|&nbsp; Annual total $11,476.79<br>
           <strong>Increase this year:</strong> +$46.77 per month (+5.14%) &nbsp;|&nbsp; CPI applied: 4.70% (MRF up 22% due to planned capital works)
         </div>
       </div>
 
       <!-- Sub-accordion: Serviced Apartments Bundled -->
-      <div class="collapsible-header" onclick="toggleSection('budget-sa-bundled')" style="margin-top:8px;background:#f0f6fc;">
+      <div class="collapsible-header" onclick="toggleSection('budget-sa-bundled')" style="margin-top:8px;background:var(--hub-navy-hover);">
         <span class="collapsible-title" style="font-size:0.97em;">🏢 Serviced Apartments — Bundled (19 units)</span>
         <span id="budget-sa-bundled-arrow" class="collapsible-arrow">▼</span>
       </div>
       <div id="budget-sa-bundled" class="collapsible-content" style="border-radius:0 0 6px 6px;">
-        <p style="font-size:0.88em;color:#555;margin-bottom:12px;">Levies are charged <strong>monthly</strong>. Bundled residents have catering, laundry and cleaning included. The levy varies by unit type.</p>
+        <p style="font-size:0.88em;color:var(--hub-cream);opacity:0.85;margin-bottom:12px;">Levies are charged <strong>monthly</strong>. Bundled residents have catering, laundry and cleaning included. The levy varies by unit type.</p>
         <table style="width:100%;border-collapse:collapse;font-size:0.88em;">
           <thead>
-            <tr style="background:#1F4E79;color:white;">
+            <tr style="background:var(--hub-gold);color:var(--hub-navy);">
               <th style="padding:9px 10px;text-align:left;">Unit Type</th>
               <th style="padding:9px 10px;text-align:right;">FY2026/27</th>
               <th style="padding:9px 10px;text-align:right;">FY2025/26</th>
@@ -629,13 +647,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr style="background:#f8fbff;"><td style="padding:8px 10px;">1 Bedroom</td><td style="padding:8px 10px;text-align:right;">$1,995.78</td><td style="padding:8px 10px;text-align:right;color:#888;">$1,891.44</td><td style="padding:8px 10px;text-align:right;">+5.52%</td></tr>
-            <tr><td style="padding:8px 10px;">Large Standard</td><td style="padding:8px 10px;text-align:right;">$2,108.61</td><td style="padding:8px 10px;text-align:right;color:#888;">$1,998.83</td><td style="padding:8px 10px;text-align:right;">+5.49%</td></tr>
-            <tr style="background:#f8fbff;"><td style="padding:8px 10px;">Apartments</td><td style="padding:8px 10px;text-align:right;">$2,205.64</td><td style="padding:8px 10px;text-align:right;color:#888;">$2,091.18</td><td style="padding:8px 10px;text-align:right;">+5.47%</td></tr>
-            <tr><td style="padding:8px 10px;">2 Bedroom</td><td style="padding:8px 10px;text-align:right;">$2,407.47</td><td style="padding:8px 10px;text-align:right;color:#888;">$2,283.28</td><td style="padding:8px 10px;text-align:right;">+5.44%</td></tr>
+            <tr style="background:var(--hub-navy-panel);"><td style="padding:8px 10px;">1 Bedroom</td><td style="padding:8px 10px;text-align:right;">$1,995.78</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$1,891.44</td><td style="padding:8px 10px;text-align:right;">+5.52%</td></tr>
+            <tr><td style="padding:8px 10px;">Large Standard</td><td style="padding:8px 10px;text-align:right;">$2,108.61</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$1,998.83</td><td style="padding:8px 10px;text-align:right;">+5.49%</td></tr>
+            <tr style="background:var(--hub-navy-panel);"><td style="padding:8px 10px;">Apartments</td><td style="padding:8px 10px;text-align:right;">$2,205.64</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$2,091.18</td><td style="padding:8px 10px;text-align:right;">+5.47%</td></tr>
+            <tr><td style="padding:8px 10px;">2 Bedroom</td><td style="padding:8px 10px;text-align:right;">$2,407.47</td><td style="padding:8px 10px;text-align:right;color:var(--hub-muted);">$2,283.28</td><td style="padding:8px 10px;text-align:right;">+5.44%</td></tr>
           </tbody>
         </table>
-        <div style="margin-top:12px;font-size:0.85em;color:#444;background:#E7F1FB;padding:10px 14px;border-radius:5px;">
+        <div style="margin-top:12px;font-size:0.85em;color:var(--hub-cream);background:var(--hub-navy-panel);padding:10px 14px;border-radius:5px;">
           💡 <strong>Additional person charge:</strong> $757.72/month (prev. $736.83) — applies where a second person occupies the unit.<br>
           CPI applied: 4.70% &nbsp;|&nbsp; Aveo contributes $390,828 to the SA fund this year (covers catering shortfall).
         </div>
@@ -657,7 +675,7 @@
       summaries, budget updates, refurbishment progress and other RC communications.</p>
 
       <div id="rcNoticesList">
-        <div style="color:#888;font-style:italic;font-size:0.88em;">Loading notices…</div>
+        <div style="color:var(--hub-muted);font-style:italic;font-size:0.88em;">Loading notices…</div>
       </div>
     </div>
 
@@ -871,7 +889,7 @@
       legacyFiles[q.quarter] = (q.files || []).slice();
     });
 
-    container.innerHTML = '<p style="color:#888;font-style:italic;">Loading quarters…</p>';
+    container.innerHTML = '<p style="color:var(--hub-muted);font-style:italic;">Loading quarters…</p>';
 
     var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
 
@@ -920,7 +938,7 @@
 
         container.innerHTML = '';
         if (quarterLabels.length === 0) {
-          container.innerHTML = '<p style="color:#888;font-style:italic;">No quarterly documents yet.</p>';
+          container.innerHTML = '<p style="color:var(--hub-muted);font-style:italic;">No quarterly documents yet.</p>';
           return;
         }
 
@@ -934,13 +952,13 @@
               '<span class="subfolder-arrow" id="' + sfId + '-arrow">▼</span>' +
             '</button>' +
             '<div class="subfolder-contents" id="' + sfId + '">' +
-              '<ul class="doc-list" id="' + sfId + '-files"><li style="color:#888;font-style:italic;">Loading…</li></ul>' +
+              '<ul class="doc-list" id="' + sfId + '-files"><li style="color:var(--hub-muted);font-style:italic;">Loading…</li></ul>' +
             '</div>';
           container.appendChild(div);
         });
       })
       .catch(function() {
-        container.innerHTML = '<p style="color:#888;font-style:italic;">Could not load quarterly documents right now.</p>';
+        container.innerHTML = '<p style="color:var(--hub-muted);font-style:italic;">Could not load quarterly documents right now.</p>';
       });
   }
 
@@ -959,7 +977,7 @@
   function buildSubfolderFiles(sfId) {
     var ul = document.getElementById(sfId + '-files');
     if (!quarterlyCsvCache) {
-      ul.innerHTML = '<li style="color:#888;font-style:italic;">Still loading…</li>';
+      ul.innerHTML = '<li style="color:var(--hub-muted);font-style:italic;">Still loading…</li>';
       return;
     }
     var quarter = null;
@@ -975,7 +993,7 @@
         html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
       }
     });
-    ul.innerHTML = html || '<li style="color:#888;font-style:italic;">No documents yet.</li>';
+    ul.innerHTML = html || '<li style="color:var(--hub-muted);font-style:italic;">No documents yet.</li>';
   }
 
   // Recognise month names/abbreviations so documents can be sorted by the
@@ -1021,7 +1039,7 @@
         html += '<li><a href="' + wrapHref + '" target="_blank">📄 ' + f.name + '</a></li>';
       }
     });
-    ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
+    ul.innerHTML = html || '<li style="color:var(--hub-muted);font-style:italic;">Loading...</li>';
     var folderName = FOLDER_KEY_TO_NAME[key];
     if (!folderName) return;
     var csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
@@ -1067,12 +1085,12 @@
         // New sheet uploads are always more recent than the fixed list above,
         // so they go on top.
         ul.innerHTML = newHtml + baseHtml ||
-          '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
+          '<li style="color:var(--hub-muted);font-style:italic;">No documents available yet.</li>';
       })
       .catch(function() {
         if (!ul.innerHTML || ul.innerHTML.includes('Loading')) {
           ul.innerHTML = html ||
-            '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
+            '<li style="color:var(--hub-muted);font-style:italic;">No documents available yet.</li>';
         }
       });
   }
@@ -1224,7 +1242,7 @@
         }
 
         if (notices.length === 0) {
-          list.innerHTML = '<p style="color:#888;font-style:italic;font-size:0.88em;">No notices at this time.</p>';
+          list.innerHTML = '<p style="color:var(--hub-muted);font-style:italic;font-size:0.88em;">No notices at this time.</p>';
           return;
         }
 
@@ -1233,31 +1251,31 @@
         var html = '';
         notices.forEach(function(n) {
           var badge = n.type === 'Public'
-            ? '<span style="display:inline-block;padding:1px 7px;background:#e3f2fd;color:#1565c0;border-radius:8px;font-size:0.75em;font-weight:700;margin-left:8px;">🌐 Public</span>'
-            : '<span style="display:inline-block;padding:1px 7px;background:#fff8e6;color:#8a6000;border-radius:8px;font-size:0.75em;font-weight:700;margin-left:8px;">🔒 Residents</span>';
+            ? '<span style="display:inline-block;padding:1px 7px;background:rgba(122,184,224,0.18);color:#8fc4e8;border-radius:8px;font-size:0.75em;font-weight:700;margin-left:8px;">🌐 Public</span>'
+            : '<span style="display:inline-block;padding:1px 7px;background:rgba(201,164,74,0.18);color:#C9A44A;border-radius:8px;font-size:0.75em;font-weight:700;margin-left:8px;">🔒 Residents</span>';
          var linkHtml = '';
           if (n.link) {
             var match = n.link.match(/\/d\/([a-zA-Z0-9_-]+)/);
             var href = match
               ? 'view-document.html?id=' + match[1] + '&title=' + encodeURIComponent(n.title) + '&back=community-info.html'
               : n.link;
-            linkHtml = '<div style="margin-top:10px;"><a href="' + href + '" target="_blank" style="display:inline-block;background:#1F4E79;color:white;font-size:0.82em;font-weight:700;padding:7px 16px;border-radius:6px;text-decoration:none;">📄 View Document</a></div>';
+            linkHtml = '<div style="margin-top:10px;"><a href="' + href + '" target="_blank" style="display:inline-block;background:var(--hub-gold);color:var(--hub-navy);font-size:0.82em;font-weight:700;padding:7px 16px;border-radius:6px;text-decoration:none;">📄 View Document</a></div>';
           }
           html +=
-            '<div style="padding:14px 0;border-bottom:1px solid #eef0f3;">' +
+            '<div style="padding:14px 0;border-bottom:1px solid var(--hub-charcoal);">' +
             '<div style="margin-bottom:5px;">' +
-            '<span style="font-size:0.78em;color:#888;">🗓️ ' + n.date + '</span>' + badge +
+            '<span style="font-size:0.78em;color:var(--hub-muted);">🗓️ ' + n.date + '</span>' + badge +
             '</div>' +
-            '<div style="font-weight:700;color:#1F4E79;font-size:0.92em;margin-bottom:5px;">' + n.title + '</div>' +
-            '<div style="font-size:0.85em;color:#444;line-height:1.6;white-space:pre-wrap;">' + n.body + '</div>' +
+            '<div style="font-weight:700;color:var(--hub-gold);font-size:0.92em;margin-bottom:5px;">' + n.title + '</div>' +
+            '<div style="font-size:0.85em;color:var(--hub-cream);line-height:1.6;white-space:pre-wrap;">' + n.body + '</div>' +
             linkHtml +
             '</div>';
         });
-        list.innerHTML = '<div style="border-top:1px solid #eef0f3;">' + html + '</div>';
+        list.innerHTML = '<div style="border-top:1px solid var(--hub-charcoal);">' + html + '</div>';
       })
       .catch(function() {
         document.getElementById('rcNoticesList').innerHTML =
-          '<p style="color:#888;font-style:italic;font-size:0.88em;">Notices temporarily unavailable.</p>';
+          '<p style="color:var(--hub-muted);font-style:italic;font-size:0.88em;">Notices temporarily unavailable.</p>';
       });
   }
 

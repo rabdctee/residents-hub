@@ -17,28 +17,37 @@
   <style>
 
     /* ===== Base ===== */
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-navy-hover: #324A5F;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-muted:      #B9AF9C;
+      --hub-charcoal:   #3F4143;
+    }
     *{ margin:0; padding:0; box-sizing:border-box; }
     html{ scroll-behavior:smooth; }
 
     body{
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      background:#f5f5f5;
+      background:var(--hub-navy);
       font-size:18px;
       line-height:1.7;
-      color:#1a1a1a;
+      color:var(--hub-cream);
     }
 
     .container{
       max-width:1200px;
       margin:auto;
-      background:#ffffff;
+      background:var(--hub-navy);
       box-shadow:0 2px 10px rgba(0,0,0,0.12);
     }
 
     /* ===== Header ===== */
     header{
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-navy);
+      color:var(--hub-cream);
       padding:36px 20px 30px;
       text-align:center;
     }
@@ -51,10 +60,10 @@
     }
     header .page-tagline span{
       display:inline-block;
-      background:rgba(255,255,255,0.18);
+      background:rgba(212,184,96,0.18);
       border-radius:6px;
       padding:6px 22px;
-      color:#fff;
+      color:var(--hub-gold);
     }
 
         /* Navigation handled by sidebar.js */
@@ -64,12 +73,13 @@
 
     /* ===== Info box ===== */
     .info-box{
-      background:#E7F1FB;
-      border-left:4px solid #1F4E79;
+      background:var(--hub-navy-panel);
+      border-left:4px solid var(--hub-gold);
       padding:14px 18px;
       margin:0 0 28px;
       border-radius:0 4px 4px 0;
       font-size:0.92em;
+      color:var(--hub-cream);
     }
 
     /* ===== Section dividers ===== */
@@ -82,18 +92,18 @@
     .section-divider-line{
       flex:1;
       height:2px;
-      background:#E7F1FB;
+      background:var(--hub-charcoal);
     }
     .section-divider-text{
       font-size:1.1em;
       font-weight:700;
-      color:#1F4E79;
+      color:var(--hub-gold);
       white-space:nowrap;
     }
 
     /* ===== Accordion sections ===== */
     .accordion-item{
-      border-bottom:1px solid #E7F1FB;
+      border-bottom:1px solid var(--hub-charcoal);
       margin-bottom:4px;
     }
     .accordion-header{
@@ -109,15 +119,15 @@
       text-align:left;
       font-family:inherit;
     }
-    .accordion-header:hover .accordion-header-text{ color:#163d60; }
+    .accordion-header:hover .accordion-header-text{ color:var(--hub-gold); }
     .accordion-header-text{
       font-size:1.1em;
       font-weight:700;
-      color:#1F4E79;
+      color:var(--hub-cream);
       flex:1;
     }
     .accordion-arrow{
-      color:#1F4E79;
+      color:var(--hub-gold);
       font-weight:700;
       font-size:0.85em;
       transition:transform 0.3s;
@@ -135,8 +145,8 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
-      background:#1F4E79;
-      color:white;
+      background:var(--hub-gold);
+      color:var(--hub-navy);
       padding:10px 20px;
       border-radius:7px;
       text-decoration:none;
@@ -147,7 +157,7 @@
       transition:background 0.2s;
       margin-bottom:20px;
     }
-    .contribute-btn:hover{ background:#163d60; }
+    .contribute-btn:hover{ background:#c2a44f; }
 
     /* ===== Photo grid ===== */
     .photo-grid{
@@ -158,13 +168,13 @@
     }
 
     .photo-card{
-      border:1px solid #c5d8ee;
+      border:1px solid var(--hub-charcoal);
       border-radius:8px;
       overflow:hidden;
-      background:#f8fbff;
+      background:var(--hub-navy-panel);
       transition:box-shadow 0.2s;
     }
-    .photo-card:hover{ box-shadow:0 3px 12px rgba(31,78,121,0.12); }
+    .photo-card:hover{ box-shadow:0 3px 12px rgba(0,0,0,0.3); }
 
     .photo-card img{
       width:100%;
@@ -175,20 +185,21 @@
     /* Portrait (tall) photos are shown in full, letterboxed, instead of cropped */
     .photo-card img.is-portrait{
       object-fit:contain;
-      background:#e7edf5;
+      background:var(--hub-navy);
     }
 
     .photo-card-caption{
       padding:10px 14px;
       font-size:0.85em;
-      color:#444;
+      color:var(--hub-cream);
+      opacity:0.85;
       font-style:italic;
     }
 
     .photo-card-author{
       font-size:0.8em;
       font-weight:700;
-      color:#1F4E79;
+      color:var(--hub-gold);
       font-style:normal;
       display:block;
       margin-top:4px;
@@ -196,13 +207,13 @@
 
     /* ===== Placeholder card ===== */
     .placeholder-card{
-      border:2px dashed #c5d8ee;
+      border:2px dashed var(--hub-charcoal);
       border-radius:8px;
       padding:32px 20px;
       text-align:center;
-      color:#888;
+      color:var(--hub-muted);
       font-size:0.88em;
-      background:#fafcff;
+      background:var(--hub-navy-panel);
       margin-bottom:20px;
     }
     .placeholder-card .placeholder-icon{
@@ -213,16 +224,16 @@
     }
     .placeholder-card strong{
       display:block;
-      color:#1F4E79;
+      color:var(--hub-gold);
       font-size:1em;
       margin-bottom:6px;
     }
 
     /* ===== Poem / writing cards ===== */
     .writing-card{
-      background:#fafcff;
-      border:1px solid #c5d8ee;
-      border-left:4px solid #1F4E79;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
+      border-left:4px solid var(--hub-gold);
       border-radius:0 8px 8px 0;
       padding:20px 24px;
       margin-bottom:16px;
@@ -230,31 +241,32 @@
     .writing-card h4{
       font-size:1em;
       font-weight:700;
-      color:#1F4E79;
+      color:var(--hub-gold);
       margin-bottom:6px;
     }
     .writing-card .writing-body{
       font-family:Georgia,'Times New Roman',serif;
       font-size:0.95em;
       line-height:1.9;
-      color:#333;
+      color:var(--hub-cream);
       white-space:pre-line;
     }
     .writing-card .writing-author{
       font-size:0.82em;
       font-weight:700;
-      color:#888;
+      color:var(--hub-muted);
       margin-top:12px;
       text-align:right;
     }
 
     /* ===== Trivia ===== */
     .trivia-card{
-      background:#1F4E79;
+      background:var(--hub-navy-panel);
       border-radius:10px;
       padding:26px 28px;
       margin-bottom:20px;
-      color:white;
+      color:var(--hub-cream);
+      border:2px solid var(--hub-gold);
     }
     .trivia-card h3{
       font-size:1em;
@@ -263,6 +275,7 @@
       text-transform:uppercase;
       letter-spacing:0.06em;
       margin-bottom:12px;
+      color:var(--hub-gold);
     }
     .trivia-question{
       font-size:1.1em;
@@ -275,8 +288,8 @@
       margin-bottom:18px;
     }
     .trivia-options li{
-      background:rgba(255,255,255,0.1);
-      border:1px solid rgba(255,255,255,0.2);
+      background:rgba(246,242,231,0.08);
+      border:1px solid rgba(246,242,231,0.2);
       border-radius:6px;
       padding:10px 16px;
       margin-bottom:8px;
@@ -284,9 +297,9 @@
       transition:background 0.2s;
       font-size:0.92em;
     }
-    .trivia-options li:hover{ background:rgba(255,255,255,0.2); }
-    .trivia-options li.correct{ background:rgba(74,143,92,0.5); border-color:#4A8F5C; }
-    .trivia-options li.incorrect{ background:rgba(185,74,72,0.4); border-color:#B94A48; }
+    .trivia-options li:hover{ background:rgba(246,242,231,0.15); }
+    .trivia-options li.correct{ background:rgba(95,184,126,0.3); border-color:#5fb87e; }
+    .trivia-options li.incorrect{ background:rgba(232,153,140,0.25); border-color:#e8998c; }
     .trivia-result{
       display:none;
       font-size:0.92em;
@@ -295,46 +308,46 @@
       margin-top:8px;
       font-weight:600;
     }
-    .trivia-result.correct-msg{ background:rgba(74,143,92,0.3); }
-    .trivia-result.incorrect-msg{ background:rgba(185,74,72,0.25); }
+    .trivia-result.correct-msg{ background:rgba(95,184,126,0.25); }
+    .trivia-result.incorrect-msg{ background:rgba(232,153,140,0.2); }
     .trivia-archive-link{
       font-size:0.82em;
       opacity:0.75;
       text-decoration:underline;
       cursor:pointer;
-      color:white;
+      color:var(--hub-cream);
     }
 
     /* ===== Recipe cards ===== */
     .recipe-card{
-      border:1px solid #c5d8ee;
+      border:1px solid var(--hub-charcoal);
       border-radius:8px;
       overflow:hidden;
       margin-bottom:16px;
-      background:#f8fbff;
+      background:var(--hub-navy-panel);
     }
     .recipe-card-header{
-      background:#E7F1FB;
+      background:var(--hub-navy);
       padding:14px 18px;
       display:flex;
       justify-content:space-between;
       align-items:center;
       cursor:pointer;
-      border-bottom:1px solid #c5d8ee;
+      border-bottom:1px solid var(--hub-charcoal);
     }
-    .recipe-card-header:hover{ background:#cfe0f5; }
+    .recipe-card-header:hover{ background:var(--hub-navy-hover); }
     .recipe-title{
       font-weight:700;
-      color:#1F4E79;
+      color:var(--hub-cream);
       font-size:1em;
     }
     .recipe-meta{
       font-size:0.78em;
-      color:#666;
+      color:var(--hub-muted);
       margin-top:2px;
     }
     .recipe-arrow{
-      color:#1F4E79;
+      color:var(--hub-gold);
       font-weight:700;
       transition:transform 0.3s;
     }
@@ -347,7 +360,7 @@
     .recipe-body h4{
       font-size:0.88em;
       font-weight:700;
-      color:#1F4E79;
+      color:var(--hub-gold);
       text-transform:uppercase;
       letter-spacing:0.05em;
       margin:14px 0 8px;
@@ -356,16 +369,16 @@
     .recipe-body ul, .recipe-body ol{
       margin-left:20px;
       font-size:0.92em;
-      color:#333;
+      color:var(--hub-cream);
     }
     .recipe-body li{ margin-bottom:5px; }
     .recipe-contributor{
       font-size:0.82em;
       font-weight:700;
-      color:#888;
+      color:var(--hub-muted);
       margin-top:14px;
       padding-top:10px;
-      border-top:1px solid #E7F1FB;
+      border-top:1px solid var(--hub-charcoal);
     }
 
     /* ===== Responsive ===== */
@@ -418,7 +431,7 @@
     <div class="accordion-body">
 
 
-    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+    <p style="color:var(--hub-cream);font-size:0.92em;margin-bottom:16px;">
       Paintings, drawings, textile work, pottery, woodwork and more — created by the talented
       residents of Bridgeman Downs.
     </p>
@@ -443,7 +456,7 @@
     <div class="photo-card">
         <img src="images/lorraine-kahlo.jpg" alt="Tribute to Frida Kahlo by Lorraine Warner" style="height:auto;">
         <div class="photo-card-caption">
-          <strong style="color:#1F4E79;font-style:normal;">Tribute to Frida Kahlo</strong><br>
+          <strong style="color:var(--hub-gold);font-style:normal;">Tribute to Frida Kahlo</strong><br>
           Lorraine Warner created this vibrant portrait as a heartfelt tribute to the iconic Mexican
           artist Frida Kahlo. Painted in Lorraine's art class here at Bridgeman Downs, it captures
           Kahlo's trademark strength and dignity, adorned with her signature headdress and jewellery.<br><br>
@@ -470,7 +483,7 @@
     <div class="accordion-body">
 
 
-    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+    <p style="color:var(--hub-cream);font-size:0.92em;margin-bottom:16px;">
       Favourite recipes from Bridgeman Downs residents — tried, tested and delicious.
       Each recipe can also be included in a personal keepsake journal on request.
     </p>
@@ -479,9 +492,9 @@
        href="mailto:rabd.chair@gmail.com?subject=Life in Our Community — Recipe&body=Hi,%0A%0AI would like to share a favourite recipe!%0A%0ARecipe name:%0AServes:%0AYour name (or 'Anonymous'):%0AUnit number (optional):%0A%0AINGREDIENTS:%0A(list each ingredient on a new line)%0A%0AMETHOD:%0A(list each step on a new line)%0A%0AAny tips or notes:%0A%0AThank you!">
       🍽️ Share your recipe →
     </a>
-    <div id="recipe-email-fallback" style="margin-top:8px;font-size:0.88em;color:#555;">
+    <div id="recipe-email-fallback" style="margin-top:8px;font-size:0.88em;color:var(--hub-muted);">
       Button not opening your email app?
-      <a href="#" onclick="copyRecipeEmail(this); return false;" style="color:#2a5faa;text-decoration:underline;">Copy our email address instead</a>
+      <a href="#" onclick="copyRecipeEmail(this); return false;" style="color:var(--hub-gold);text-decoration:underline;">Copy our email address instead</a>
     </div>
 
     <!-- Add recipe cards here as contributions arrive. Example format:
@@ -515,7 +528,7 @@
           <li>Bake 12–15 minutes until golden. Cool on trays.</li>
         </ol>
         <h4>Tips</h4>
-        <p style="font-size:0.92em;color:#444;">Don't overbake — they firm up as they cool!</p>
+        <p style="font-size:0.92em;color:var(--hub-cream);">Don't overbake — they firm up as they cool!</p>
         <div class="recipe-contributor">Recipe shared by Dorothy B., Unit 7</div>
       </div>
     </div>
@@ -564,7 +577,7 @@
           <li>Taste and adjust the salt and pepper. A little lemon juice at the end brightens the flavour.</li>
         </ol>
         <h4>Tips</h4>
-        <p style="font-size:0.92em;color:#444;">Red lentils are ideal because they cook quickly and become very soft without needing soaking. Keep the seasoning moderate — cumin gives good flavour without making the soup spicy. For extra protein and calories, add shredded cooked chicken or a little grated cheese when serving. The soup freezes very well in individual portions; it will thicken considerably when refrigerated, so add a little water when reheating. Serve with soft bread or a small bread roll — a spoonful of natural yoghurt stirred into each bowl is also nice.</p>
+        <p style="font-size:0.92em;color:var(--hub-cream);">Red lentils are ideal because they cook quickly and become very soft without needing soaking. Keep the seasoning moderate — cumin gives good flavour without making the soup spicy. For extra protein and calories, add shredded cooked chicken or a little grated cheese when serving. The soup freezes very well in individual portions; it will thicken considerably when refrigerated, so add a little water when reheating. Serve with soft bread or a small bread roll — a spoonful of natural yoghurt stirred into each bowl is also nice.</p>
         <div class="recipe-contributor">Recipe shared by Rick</div>
       </div>
     </div>
@@ -591,7 +604,7 @@
     <div class="accordion-body">
 
 
-    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+    <p style="color:var(--hub-cream);font-size:0.92em;margin-bottom:16px;">
       Photos from events, outings, celebrations and everyday moments that capture life at
       Bridgeman Downs. All photos are shared with the permission of those pictured.
     </p>
@@ -645,7 +658,7 @@
     <div class="accordion-body">
 
 
-    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+    <p style="color:var(--hub-cream);font-size:0.92em;margin-bottom:16px;">
       Poems, short stories, reflections and other written pieces from our residents.
       All styles and lengths welcome — from a haiku to a short story.
     </p>
@@ -688,7 +701,7 @@ Its shade a borrowed room.</div>
     <div class="accordion-body">
 
 
-    <p style="color:#444;font-size:0.92em;margin-bottom:16px;">
+    <p style="color:var(--hub-cream);font-size:0.92em;margin-bottom:16px;">
       Line dancing, choir, musical performances and other events that bring our community together
       through music and movement.
     </p>
@@ -720,7 +733,7 @@ Its shade a borrowed room.</div>
     <div class="accordion-body">
 
 
-    <p style="color:#444;font-size:0.92em;margin-bottom:18px;">
+    <p style="color:var(--hub-cream);font-size:0.92em;margin-bottom:18px;">
       A new question each week — just for fun. Can you get it right without peeking?
     </p>
 

@@ -5,12 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Classifieds – Residents Hub</title>
 <style>
+  :root {
+    --hub-navy:       #263746;
+    --hub-navy-panel: #2E4256;
+    --hub-navy-hover: #324A5F;
+    --hub-gold:       #D4B860;
+    --hub-cream:      #F6F2E7;
+    --hub-muted:      #B9AF9C;
+    --hub-charcoal:   #3F4143;
+    --hub-green:      #5fb87e;
+    --hub-red:        #e8998c;
+    --hub-red-bg:     #4a2320;
+    --cat-wanted:     #b368d9;
+    --cat-lostfound:  #ff9d5c;
+    --cat-services:   #4dd0e1;
+  }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f5f5;
-    color: #222;
+    background: var(--hub-navy);
+    color: var(--hub-cream);
     font-size: 20px;
     line-height: 1.7;
   }
@@ -18,14 +33,14 @@
   .container {
     max-width: 1200px;
     margin: auto;
-    background: white;
+    background: var(--hub-navy);
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   }
 
   /* ── Header ── */
   header {
-    background: #1F4E79;
-    color: white;
+    background: var(--hub-navy);
+    color: var(--hub-cream);
     padding: 30px 20px;
     text-align: center;
   }
@@ -34,14 +49,14 @@
 
   /* ── Back nav ── */
   .back-bar {
-    background: #E7F1FB;
+    background: var(--hub-navy-panel);
     padding: 10px 20px;
-    border-bottom: 2px solid #c5d8ee;
+    border-bottom: 2px solid var(--hub-charcoal);
   }
   .back-bar a {
-    color: #1F4E79;
-    background: white;
-    border: 2px solid #c5d8ee;
+    color: var(--hub-cream);
+    background: var(--hub-navy);
+    border: 2px solid var(--hub-charcoal);
     border-radius: 10px;
     padding: 8px 18px;
     text-decoration: none;
@@ -53,8 +68,8 @@
     transition: all 0.2s;
   }
   .back-bar a:hover {
-    background: #E7F1FB;
-    border-color: #1F4E79;
+    background: var(--hub-navy-hover);
+    border-color: var(--hub-gold);
   }
 
   /* ── Content wrapper ── */
@@ -68,8 +83,8 @@
   .section-title {
     font-size: 1.3em;
     font-weight: 700;
-    color: #1F4E79;
-    border-bottom: 3px solid #C9A44A;
+    color: var(--hub-gold);
+    border-bottom: 3px solid var(--hub-gold);
     padding-bottom: 8px;
     margin-bottom: 20px;
   }
@@ -82,9 +97,9 @@
     margin-bottom: 24px;
   }
   .filter-btn {
-    background: white;
-    border: 2px solid #c5d8ee;
-    color: #1F4E79;
+    background: var(--hub-navy-panel);
+    border: 2px solid var(--hub-charcoal);
+    color: var(--hub-cream);
     padding: 7px 16px;
     border-radius: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -93,27 +108,30 @@
     cursor: pointer;
     transition: all 0.2s;
   }
-  .filter-btn:hover { background: #E7F1FB; border-color: #1F4E79; }
-  .filter-btn.active { background: #1F4E79; color: white; border-color: #1F4E79; }
+  .filter-btn:hover { background: var(--hub-navy-hover); border-color: var(--hub-gold); }
+  .filter-btn.active { background: var(--hub-gold); color: var(--hub-navy); border-color: var(--hub-gold); }
 
   /* ── Listing cards ── */
   #listings-container { display: grid; gap: 16px; }
 
   .listing-card {
-    background: white;
-    border: 1px solid #c5d8ee;
+    background: var(--hub-navy-panel);
+    border: 1px solid var(--hub-charcoal);
     border-radius: 8px;
     padding: 20px 22px;
-    border-left: 5px solid #1F4E79;
+    border-left: 5px solid var(--hub-gold);
     transition: box-shadow 0.2s;
   }
-  .listing-card:hover { box-shadow: 0 3px 12px rgba(31,78,121,0.12); }
+  .listing-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.3); }
 
-  .listing-card[data-cat="For Sale"]          { border-left-color: #1F4E79; }
-  .listing-card[data-cat="Wanted"]            { border-left-color: #6a1b9a; }
-  .listing-card[data-cat="Free to Good Home"] { border-left-color: #2e7d32; }
-  .listing-card[data-cat="Lost & Found"]      { border-left-color: #e65100; }
-  .listing-card[data-cat="Services"]          { border-left-color: #00838f; }
+  /* Category accent colours — kept as their own distinct system so residents
+     can keep scanning listing types at a glance, same reasoning as the
+     red/green/amber semantic colours used elsewhere on the Hub. */
+  .listing-card[data-cat="For Sale"]          { border-left-color: var(--hub-gold); }
+  .listing-card[data-cat="Wanted"]            { border-left-color: var(--cat-wanted); }
+  .listing-card[data-cat="Free to Good Home"] { border-left-color: var(--hub-green); }
+  .listing-card[data-cat="Lost & Found"]      { border-left-color: var(--cat-lostfound); }
+  .listing-card[data-cat="Services"]          { border-left-color: var(--cat-services); }
   .listing-card[data-cat="General Notice"]    { border-left-color: #C9A44A; }
 
   .listing-cat {
@@ -122,34 +140,35 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: white;
-    background: #1F4E79;
+    color: var(--hub-navy);
+    background: var(--hub-gold);
     border-radius: 4px;
     padding: 2px 10px;
     margin-bottom: 8px;
   }
-  .listing-card[data-cat="Wanted"]            .listing-cat { background: #6a1b9a; }
-  .listing-card[data-cat="Free to Good Home"] .listing-cat { background: #2e7d32; }
-  .listing-card[data-cat="Lost & Found"]      .listing-cat { background: #e65100; }
-  .listing-card[data-cat="Services"]          .listing-cat { background: #00838f; }
-  .listing-card[data-cat="General Notice"]    .listing-cat { background: #7a6200; }
+  .listing-card[data-cat="Wanted"]            .listing-cat { background: var(--cat-wanted); color: white; }
+  .listing-card[data-cat="Free to Good Home"] .listing-cat { background: var(--hub-green); color: var(--hub-navy); }
+  .listing-card[data-cat="Lost & Found"]      .listing-cat { background: var(--cat-lostfound); color: var(--hub-navy); }
+  .listing-card[data-cat="Services"]          .listing-cat { background: var(--cat-services); color: var(--hub-navy); }
+  .listing-card[data-cat="General Notice"]    .listing-cat { background: #7a6200; color: white; }
 
   .listing-headline {
     font-size: 1.05em;
     font-weight: 700;
-    color: #1F4E79;
+    color: var(--hub-cream);
     margin-bottom: 6px;
   }
   .listing-details {
-    color: #444;
+    color: var(--hub-cream);
+    opacity: 0.9;
     font-size: 0.92em;
     margin-bottom: 10px;
     line-height: 1.6;
   }
   .listing-meta {
     font-size: 0.8em;
-    color: #5f6368;
-    border-top: 1px solid #e0e0e0;
+    color: var(--hub-muted);
+    border-top: 1px solid var(--hub-charcoal);
     padding-top: 8px;
     display: flex;
     gap: 18px;
@@ -159,7 +178,7 @@
   .state-msg {
     text-align: center;
     padding: 40px 20px;
-    color: #5f6368;
+    color: var(--hub-muted);
     font-style: italic;
     font-size: 0.95em;
   }
@@ -167,18 +186,18 @@
   /* ── Divider ── */
   hr.section-divider {
     border: none;
-    border-top: 2px solid #E7F1FB;
+    border-top: 2px solid var(--hub-charcoal);
     margin: 40px 0;
   }
 
   /* ── Submission form ── */
   .form-intro {
-    background: #e8f4f8;
-    border-left: 4px solid #1F4E79;
+    background: var(--hub-navy-panel);
+    border-left: 4px solid var(--hub-gold);
     border-radius: 4px;
     padding: 15px 20px;
     font-size: 0.9em;
-    color: #222;
+    color: var(--hub-cream);
     margin-bottom: 24px;
     line-height: 1.6;
   }
@@ -194,10 +213,10 @@
   .form-group label {
     font-size: 0.82em;
     font-weight: 700;
-    color: #1F4E79;
+    color: var(--hub-cream);
     letter-spacing: 0.03em;
   }
-  .form-group label .req { color: #c0392b; margin-left: 2px; }
+  .form-group label .req { color: var(--hub-red); margin-left: 2px; }
 
   .form-group input,
   .form-group select,
@@ -206,7 +225,7 @@
     font-size: 0.9em;
     color: #222;
     background: white;
-    border: 2px solid #c5d8ee;
+    border: 2px solid var(--hub-charcoal);
     border-radius: 5px;
     padding: 9px 12px;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -215,12 +234,12 @@
   .form-group input:focus,
   .form-group select:focus,
   .form-group textarea:focus {
-    border-color: #1F4E79;
-    box-shadow: 0 0 0 3px rgba(31,78,121,0.10);
+    border-color: var(--hub-gold);
+    box-shadow: 0 0 0 3px rgba(212,184,96,0.18);
   }
   .form-group textarea { resize: vertical; min-height: 100px; }
 
-  .char-hint { font-size: 0.72em; color: #999; text-align: right; margin-top: 2px; }
+  .char-hint { font-size: 0.72em; color: var(--hub-muted); text-align: right; margin-top: 2px; }
 
   .submit-row {
     margin-top: 20px;
@@ -231,8 +250,8 @@
   }
 
   .btn-submit {
-    background: #1F4E79;
-    color: white;
+    background: var(--hub-gold);
+    color: var(--hub-navy);
     border: none;
     border-radius: 5px;
     padding: 12px 32px;
@@ -242,20 +261,21 @@
     cursor: pointer;
     transition: background 0.2s;
   }
-  .btn-submit:hover:not(:disabled) { background: #163d60; }
+  .btn-submit:hover:not(:disabled) { background: #c2a44f; }
   .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
 
   #form-status { font-size: 0.88em; font-weight: 600; display: none; }
-  #form-status.success { color: #2e7d32; display: block; }
-  #form-status.error   { color: #c0392b; display: block; }
+  #form-status.success { color: var(--hub-green); display: block; }
+  #form-status.error   { color: var(--hub-red); display: block; }
 
   /* ── Footer ── */
   .hub-footer {
-    background: #f8f9fa;
+    background: var(--hub-navy-panel);
     padding: 16px 30px;
     text-align: center;
-    color: #5f6368;
-    border-top: 1px solid #e0e0e0;
+    color: var(--hub-cream);
+    opacity: 0.85;
+    border-top: 1px solid var(--hub-charcoal);
     font-size: 0.75em;
   }
 
@@ -264,7 +284,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(31,78,121,0.85);
+    background: rgba(38,55,70,0.88);
     z-index: 1000;
     align-items: center;
     justify-content: center;
@@ -273,21 +293,21 @@
   .confirm-overlay.show { display: flex; }
 
   .confirm-box {
-    background: white;
+    background: var(--hub-navy-panel);
     border-radius: 12px;
     padding: 40px 36px;
     max-width: 480px;
     width: 100%;
     text-align: center;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
   }
   .confirm-icon { font-size: 3em; margin-bottom: 16px; }
-  .confirm-box h2 { color: #1F4E79; font-size: 1.3em; margin-bottom: 12px; }
-  .confirm-box p  { color: #444; font-size: 0.9em; line-height: 1.6; margin-bottom: 24px; }
+  .confirm-box h2 { color: var(--hub-gold); font-size: 1.3em; margin-bottom: 12px; }
+  .confirm-box p  { color: var(--hub-cream); opacity: 0.9; font-size: 0.9em; line-height: 1.6; margin-bottom: 24px; }
   .confirm-box .prompt {
     font-size: 0.92em;
     font-weight: 700;
-    color: #1F4E79;
+    color: var(--hub-gold);
     margin-bottom: 16px;
   }
   .confirm-actions {
@@ -311,16 +331,16 @@
   }
   .confirm-actions a:hover,
   .confirm-actions button:hover { opacity: 0.85; }
-  .confirm-btn-primary   { background: #1F4E79; color: white; }
-  .confirm-btn-secondary { background: #2e7d32; color: white; }
-  .confirm-btn-tertiary  { background: white; color: #1F4E79; border: 2px solid #c5d8ee !important; }
+  .confirm-btn-primary   { background: var(--hub-gold); color: var(--hub-navy); }
+  .confirm-btn-secondary { background: var(--hub-green); color: var(--hub-navy); }
+  .confirm-btn-tertiary  { background: var(--hub-navy); color: var(--hub-cream); border: 2px solid var(--hub-charcoal) !important; }
 
 
   /* ── Remove listing ── */
   .remove-toggle {
     background: none;
     border: none;
-    color: #999;
+    color: var(--hub-muted);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.72em;
     cursor: pointer;
@@ -329,13 +349,13 @@
     text-decoration: underline;
     display: block;
   }
-  .remove-toggle:hover { color: #c0392b; }
+  .remove-toggle:hover { color: var(--hub-red); }
 
   .remove-form {
     display: none;
     margin-top: 12px;
-    background: #fff8f8;
-    border: 1px solid #f5c6c6;
+    background: var(--hub-red-bg);
+    border: 1px solid var(--hub-red);
     border-radius: 6px;
     padding: 14px 16px;
   }
@@ -343,7 +363,8 @@
 
   .remove-form p {
     font-size: 0.78em;
-    color: #555;
+    color: var(--hub-cream);
+    opacity: 0.9;
     margin-bottom: 10px;
   }
   .remove-form-fields {
@@ -355,14 +376,16 @@
   .remove-form-fields input {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.82em;
-    border: 2px solid #e0a0a0;
+    border: 2px solid var(--hub-red);
     border-radius: 5px;
     padding: 7px 10px;
     outline: none;
     flex: 1;
     min-width: 120px;
+    background: white;
+    color: #222;
   }
-  .remove-form-fields input:focus { border-color: #c0392b; }
+  .remove-form-fields input:focus { border-color: var(--hub-red); }
 
   .remove-form-btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
@@ -381,9 +404,9 @@
   .btn-confirm-remove:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .btn-cancel-remove {
-    background: white;
-    color: #666;
-    border: 2px solid #ccc;
+    background: var(--hub-navy);
+    color: var(--hub-cream);
+    border: 2px solid var(--hub-charcoal);
     border-radius: 5px;
     padding: 6px 14px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -391,21 +414,21 @@
     font-weight: 700;
     cursor: pointer;
   }
-  .btn-cancel-remove:hover { border-color: #999; color: #333; }
+  .btn-cancel-remove:hover { border-color: var(--hub-gold); color: var(--hub-gold); }
 
   .remove-status {
     font-size: 0.78em;
     font-weight: 700;
     margin-left: 4px;
   }
-  .remove-status.ok  { color: #2e7d32; }
-  .remove-status.err { color: #c0392b; }
+  .remove-status.ok  { color: var(--hub-green); }
+  .remove-status.err { color: var(--hub-red); }
 
   /* ── Edit listing ── */
   .edit-toggle {
     background: none;
     border: none;
-    color: #999;
+    color: var(--hub-muted);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.72em;
     cursor: pointer;
@@ -414,13 +437,13 @@
     text-decoration: underline;
     display: block;
   }
-  .edit-toggle:hover { color: #1F4E79; }
+  .edit-toggle:hover { color: var(--hub-gold); }
 
   .edit-form {
     display: none;
     margin-top: 12px;
-    background: #eef5fc;
-    border: 1px solid #c5d8ee;
+    background: var(--hub-navy-panel);
+    border: 1px solid var(--hub-charcoal);
     border-radius: 6px;
     padding: 14px 16px;
   }
@@ -428,7 +451,8 @@
 
   .edit-form p {
     font-size: 0.78em;
-    color: #555;
+    color: var(--hub-cream);
+    opacity: 0.85;
     margin-bottom: 10px;
   }
   .edit-form-fields {
@@ -440,14 +464,16 @@
   .edit-form-fields input {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.82em;
-    border: 2px solid #a8c6e8;
+    border: 2px solid var(--hub-charcoal);
     border-radius: 5px;
     padding: 7px 10px;
     outline: none;
     flex: 1;
     min-width: 120px;
+    background: white;
+    color: #222;
   }
-  .edit-form-fields input:focus { border-color: #1F4E79; }
+  .edit-form-fields input:focus { border-color: var(--hub-gold); }
 
   .edit-form-details {
     display: grid;
@@ -457,7 +483,7 @@
   .edit-form-details label {
     font-size: 0.78em;
     font-weight: 700;
-    color: #1F4E79;
+    color: var(--hub-cream);
     display: block;
     margin-bottom: 4px;
   }
@@ -467,21 +493,23 @@
     width: 100%;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.85em;
-    border: 2px solid #a8c6e8;
+    border: 2px solid var(--hub-charcoal);
     border-radius: 5px;
     padding: 8px 10px;
     outline: none;
+    background: white;
+    color: #222;
   }
   .edit-form-details input:focus,
   .edit-form-details select:focus,
-  .edit-form-details textarea:focus { border-color: #1F4E79; }
+  .edit-form-details textarea:focus { border-color: var(--hub-gold); }
   .edit-form-details textarea { resize: vertical; min-height: 70px; }
 
   .edit-form-btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
   .btn-confirm-edit {
-    background: #1F4E79;
-    color: white;
+    background: var(--hub-gold);
+    color: var(--hub-navy);
     border: none;
     border-radius: 5px;
     padding: 7px 18px;
@@ -490,13 +518,13 @@
     font-weight: 700;
     cursor: pointer;
   }
-  .btn-confirm-edit:hover { background: #163d60; }
+  .btn-confirm-edit:hover { background: #c2a44f; }
   .btn-confirm-edit:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .btn-cancel-edit {
-    background: white;
-    color: #666;
-    border: 2px solid #ccc;
+    background: var(--hub-navy);
+    color: var(--hub-cream);
+    border: 2px solid var(--hub-charcoal);
     border-radius: 5px;
     padding: 6px 14px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -504,15 +532,15 @@
     font-weight: 700;
     cursor: pointer;
   }
-  .btn-cancel-edit:hover { border-color: #999; color: #333; }
+  .btn-cancel-edit:hover { border-color: var(--hub-gold); color: var(--hub-gold); }
 
   .edit-status {
     font-size: 0.78em;
     font-weight: 700;
     margin-left: 4px;
   }
-  .edit-status.ok  { color: #2e7d32; }
-  .edit-status.err { color: #c0392b; }
+  .edit-status.ok  { color: var(--hub-green); }
+  .edit-status.err { color: var(--hub-red); }
 
   .listing-photo { margin: 8px 0 12px; }
   .listing-photo img {
@@ -531,14 +559,15 @@
     margin-bottom: 8px;
     object-fit: cover;
   }
-  .edit-photo-current em { font-size: 0.8em; color: #999; }
+  .edit-photo-current em { font-size: 0.8em; color: var(--hub-muted); }
   .edit-remove-photo-row {
     display: flex;
     align-items: center;
     gap: 6px;
     margin-top: 6px;
     font-size: 0.8em;
-    color: #444;
+    color: var(--hub-cream);
+    opacity: 0.85;
     font-weight: 400;
   }
   .edit-remove-photo-row input { width: auto; }
@@ -563,7 +592,7 @@
 <div class="content-wrap">
 
   <h2 class="section-title">📌 Classifieds</h2>
-  <p style="color:#5f6368;margin-bottom:24px;">Community listings — buy, sell, swap, and share among your neighbours.</p>
+  <p style="color:var(--hub-cream);opacity:0.85;margin-bottom:24px;">Community listings — buy, sell, swap, and share among your neighbours.</p>
 
   <!-- ── FILTER BAR ── -->
   <div class="filter-bar">
