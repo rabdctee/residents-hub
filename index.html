@@ -1639,49 +1639,23 @@ For Manor events use the sign-up sheets in the Manor.
 
 <script>
 (function() {
-  // File > Share > Publish to web > EventMedia tab > CSV — same as the RC Notices sheet above
-  var EVENT_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR5enBRJgr5hzkTZIBBZX81YMNdNe9Rh2L7HCzk5W7DpiAZGfPqFMwvkRAqXrp4diDcGDrFtctZUe8a/pub?gid=0&single=true&output=csv';
+  // Reads the same JSON feed event-gallery.html itself uses — its dates are
+  // reported in a precise, unambiguous format, so there's no reliance on a
+  // published sheet's date format matching what we expect.
+  var EVENT_MEDIA_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDvm1XBaqZXts2pzZrGsZcseoNXnORnxQi1w5FxOrPjqhbpl3N-nOfGNt5XBVMWU8jtA/exec';
   var lastVisit = parseInt(localStorage.getItem('eventGalleryLastVisit') || '0', 10);
 
-  function parseTimestamp(ts) {
-    try {
-      var parts = ts.trim().split(' ');
-      var d = parts[0].split('/');
-      var t = parts[1] ? parts[1].split(':') : ['0','0'];
-      return new Date(parseInt(d[2]), parseInt(d[1])-1, parseInt(d[0]),
-                      parseInt(t[0]), parseInt(t[1])).getTime();
-    } catch(e) { return 0; }
-  }
-
-  function parseCSVRows(text) {
-    var rows = [], row = [], cur = '', inQ = false;
-    for (var i = 0; i < text.length; i++) {
-      var c = text[i], n = text[i+1];
-      if (inQ) {
-        if (c==='"' && n==='"') { cur+='"'; i++; }
-        else if (c==='"') { inQ=false; }
-        else { cur+=c; }
-      } else {
-        if (c==='"') { inQ=true; }
-        else if (c===',') { row.push(cur); cur=''; }
-        else if (c==='\r' && n==='\n') { row.push(cur); rows.push(row); row=[]; cur=''; i++; }
-        else if (c==='\n'||c==='\r') { row.push(cur); rows.push(row); row=[]; cur=''; }
-        else { cur+=c; }
-      }
-    }
-    if (cur||row.length) { row.push(cur); rows.push(row); }
-    return rows;
-  }
-
-  fetch(EVENT_CSV + '&t=' + Date.now())
+  fetch(EVENT_MEDIA_SCRIPT_URL + '?action=gallery&t=' + Date.now())
     .then(function(r) { return r.text(); })
-    .then(function(csv) {
-      var rows = parseCSVRows(csv);
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status !== 'ok' || !data.events) return;
       var newCount = 0;
-      for (var i = 1; i < rows.length; i++) {
-        var ts = rows[i][0] ? rows[i][0].trim() : '';
-        if (parseTimestamp(ts) > lastVisit) newCount++;
-      }
+      Object.keys(data.events).forEach(function(eventName) {
+        data.events[eventName].forEach(function(item) {
+          if (new Date(item.date).getTime() > lastVisit) newCount++;
+        });
+      });
       if (newCount > 0) {
         var badge = document.getElementById('eventGalleryBadge');
         if (badge) {
