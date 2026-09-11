@@ -5,59 +5,68 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Village Bus Replacement — Your Views | BDRV Residents Hub</title>
 <style>
+  :root {
+    --hub-navy:       #263746;
+    --hub-navy-panel: #2E4256;
+    --hub-navy-hover: #324A5F;
+    --hub-gold:       #D4B860;
+    --hub-cream:      #F6F2E7;
+    --hub-muted:      #B9AF9C;
+    --hub-charcoal:   #3F4143;
+  }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #222; font-size: 18px; line-height: 1.6; }
-  .container { max-width: 1100px; margin: auto; background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); min-height: 100vh; }
-  header { background: #1F4E79; color: white; padding: 30px 20px; text-align: center; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--hub-navy); color: var(--hub-cream); font-size: 18px; line-height: 1.6; }
+  .container { max-width: 1100px; margin: auto; background: var(--hub-navy); box-shadow: 0 2px 10px rgba(0,0,0,0.1); min-height: 100vh; }
+  header { background: var(--hub-navy); color: var(--hub-cream); padding: 30px 20px; text-align: center; }
   header h1 { font-size: 1.8em; }
   header p  { font-size: 0.82em; opacity: 0.85; margin-top: 6px; }
-  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee; }
-  .back-btn { display: inline-flex; align-items: center; gap: 6px; background: #1F4E79; color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.95rem; font-family: 'Segoe UI', Arial, sans-serif; cursor: pointer; text-decoration: none; }
-  .back-btn:hover { background: #2E75B6; }
+  .back-bar { background: var(--hub-navy-panel); padding: 10px 20px; border-bottom: 2px solid var(--hub-charcoal); }
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--hub-gold); color: var(--hub-navy); border: none; border-radius: 6px; padding: 8px 16px; font-size: 0.95rem; font-family: 'Segoe UI', Arial, sans-serif; cursor: pointer; text-decoration: none; font-weight: 700; }
+  .back-btn:hover { background: #c2a44f; }
   .content-wrap { max-width: 760px; margin: 0 auto; padding: 36px 25px 60px; }
 
   /* ── Page title ── */
-  .page-title { font-size: 1.5em; font-weight: 700; color: #1F4E79; border-bottom: 3px solid #C9A44A; padding-bottom: 10px; margin-bottom: 24px; }
+  .page-title { font-size: 1.5em; font-weight: 700; color: var(--hub-gold); border-bottom: 3px solid #C9A44A; padding-bottom: 10px; margin-bottom: 24px; }
 
   /* ── Intro text ── */
-  .intro-text { font-size: 0.92em; color: #333; line-height: 1.75; margin-bottom: 20px; white-space: pre-line; }
-  .close-date { background: #E7F1FB; border-left: 4px solid #1F4E79; border-radius: 4px; padding: 10px 16px; font-size: 0.88em; color: #1F4E79; font-weight: 700; margin-bottom: 24px; }
-  .question-text { font-size: 1em; font-weight: 700; color: #1F4E79; margin-bottom: 18px; }
+  .intro-text { font-size: 0.92em; color: var(--hub-cream); opacity: 0.92; line-height: 1.75; margin-bottom: 20px; white-space: pre-line; }
+  .close-date { background: var(--hub-navy-panel); border-left: 4px solid var(--hub-gold); border-radius: 4px; padding: 10px 16px; font-size: 0.88em; color: var(--hub-gold); font-weight: 700; margin-bottom: 24px; }
+  .question-text { font-size: 1em; font-weight: 700; color: var(--hub-cream); margin-bottom: 18px; }
 
   /* ── Option cards ── */
   #options-grid { display: grid; gap: 12px; margin-bottom: 24px; }
   .option-card {
     display: flex; align-items: center; gap: 16px;
-    border: 2px solid #c5d8ee; border-radius: 10px;
-    padding: 16px 20px; cursor: pointer; background: white;
+    border: 2px solid var(--hub-charcoal); border-radius: 10px;
+    padding: 16px 20px; cursor: pointer; background: var(--hub-navy-panel);
     transition: all 0.2s;
   }
-  .option-card:hover { border-color: #1F4E79; background: #E7F1FB; }
-  .option-card.selected { border-color: #1F4E79; background: #ddeeff; box-shadow: 0 0 0 3px rgba(31,78,121,0.15); }
+  .option-card:hover { border-color: var(--hub-gold); background: var(--hub-navy-hover); }
+  .option-card.selected { border-color: var(--hub-gold); background: var(--hub-navy-hover); box-shadow: 0 0 0 3px rgba(212,184,96,0.18); }
   .option-card input[type="radio"] { display: none; }
   .option-number {
     min-width: 36px; height: 36px; border-radius: 50%;
-    background: #1F4E79; color: white;
+    background: var(--hub-charcoal); color: var(--hub-cream);
     display: flex; align-items: center; justify-content: center;
     font-weight: 700; font-size: 0.95em; flex-shrink: 0;
   }
-  .option-card.selected .option-number { background: #C9A44A; }
+  .option-card.selected .option-number { background: var(--hub-gold); color: var(--hub-navy); }
   .option-info { flex: 1; }
-  .option-title { font-weight: 700; font-size: 0.95em; color: #1F4E79; }
-  .option-cost  { font-size: 0.82em; color: #555; margin-top: 3px; }
+  .option-title { font-weight: 700; font-size: 0.95em; color: var(--hub-cream); }
+  .option-cost  { font-size: 0.82em; color: var(--hub-muted); margin-top: 3px; }
 
   /* ── Comment box ── */
   .optional-section { margin-bottom: 24px; }
-  .optional-section label { font-weight: 700; font-size: 0.88em; color: #1F4E79; display: block; margin-bottom: 8px; }
+  .optional-section label { font-weight: 700; font-size: 0.88em; color: var(--hub-cream); display: block; margin-bottom: 8px; }
 
   /* ── Name/unit ── */
   .name-section { margin-bottom: 24px; }
-  .name-section label { font-weight: 700; font-size: 0.88em; color: #1F4E79; display: block; margin-bottom: 8px; }
-  .name-section input { width: 100%; padding: 10px 12px; border: 1.5px solid #c5d8ee; border-radius: 6px; font-family: inherit; font-size: 0.9em; }
+  .name-section label { font-weight: 700; font-size: 0.88em; color: var(--hub-cream); display: block; margin-bottom: 8px; }
+  .name-section input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--hub-charcoal); border-radius: 6px; font-family: inherit; font-size: 0.9em; background: white; color: #222; }
 
   /* ── Submit button ── */
   .btn-submit {
-    background: #1F4E79; color: white; border: none; border-radius: 8px;
+    background: var(--hub-gold); color: var(--hub-navy); border: none; border-radius: 8px;
     padding: 13px 32px; font-family: inherit; font-size: 1em; font-weight: 700;
     cursor: pointer; transition: opacity 0.2s;
   }
@@ -65,11 +74,11 @@
 
   /* ── Thank you ── */
   #thankyou { display: none; text-align: center; padding: 50px 20px; }
-  #thankyou h2 { color: #1F4E79; font-size: 1.6em; margin-bottom: 12px; }
-  #thankyou p  { color: #444; font-size: 0.95em; }
+  #thankyou h2 { color: var(--hub-gold); font-size: 1.6em; margin-bottom: 12px; }
+  #thankyou p  { color: var(--hub-cream); opacity: 0.9; font-size: 0.95em; }
   .thankyou-icon { font-size: 3em; margin-bottom: 16px; }
 
-  .hub-footer { background: #f8f9fa; padding: 16px 30px; text-align: center; color: #5f6368; border-top: 1px solid #e0e0e0; font-size: 0.75em; }
+  .hub-footer { background: var(--hub-navy-panel); padding: 16px 30px; text-align: center; color: var(--hub-cream); opacity: 0.85; border-top: 1px solid var(--hub-charcoal); font-size: 0.75em; }
 </style>
 </head>
 <body>
@@ -178,7 +187,7 @@ We'd like to know your overall view before any decisions are made.</p>
     </div>
     <div class="optional-section">
       <label>Do you have any other thoughts or suggestions about the bus replacement? (optional)</label>
-      <textarea id="extraComment" rows="3" style="width:100%;padding:10px;border:1.5px solid #c5d8ee;border-radius:6px;font-family:inherit;font-size:0.9em;" placeholder="Your thoughts…"></textarea>
+      <textarea id="extraComment" rows="3" style="width:100%;padding:10px;border:1.5px solid #3F4143;border-radius:6px;font-family:inherit;font-size:0.9em;background:white;color:#222;" placeholder="Your thoughts…"></textarea>
     </div>
 
     <button class="btn-submit" onclick="submitSurvey()">Submit my response →</button>

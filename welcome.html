@@ -17,28 +17,36 @@ gtag('config', 'G-V5X3VEVK8R');
 <style>
 
 /* ===== Base ===== */
+:root {
+  --hub-navy:       #263746;
+  --hub-navy-panel: #2E4256;
+  --hub-gold:       #D4B860;
+  --hub-cream:      #F6F2E7;
+  --hub-muted:      #B9AF9C;
+  --hub-charcoal:   #3F4143;
+}
 *{ margin:0; padding:0; box-sizing:border-box; }
 html{ scroll-behavior:smooth; }
 
 body{
   font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-  background:#f5f5f5;
+  background:var(--hub-navy);
   font-size:18px;
   line-height:1.7;
-  color:#1a1a1a;
+  color:var(--hub-cream);
 }
 
 .container{
   max-width:1200px;
   margin:auto;
-  background:#ffffff;
+  background:var(--hub-navy);
   box-shadow:0 2px 10px rgba(0,0,0,0.12);
 }
 
 /* ===== Header ===== */
 header{
-  background:#1F4E79;
-  color:white;
+  background:var(--hub-navy);
+  color:var(--hub-cream);
   padding:36px 20px 30px;
   text-align:center;
 }
@@ -51,10 +59,10 @@ header .page-tagline{
 }
 header .page-tagline span{
   display:inline-block;
-  background:rgba(255,255,255,0.18);
+  background:rgba(212,184,96,0.18);
   border-radius:6px;
   padding:6px 22px;
-  color:#fff;
+  color:var(--hub-gold);
 }
 
 /* ===== Page content ===== */
@@ -62,14 +70,15 @@ header .page-tagline span{
 
 /* ===== Welcome banner ===== */
 .welcome-banner{
-  background:linear-gradient(135deg, #1F4E79 0%, #2a6099 100%);
+  background:var(--hub-navy-panel);
   border-radius:10px;
   padding:32px 30px;
-  color:white;
+  color:var(--hub-cream);
   margin-bottom:32px;
   display:flex;
   align-items:flex-start;
   gap:20px;
+  border-left:4px solid var(--hub-gold);
 }
 .welcome-banner-icon{
   font-size:3em;
@@ -80,7 +89,7 @@ header .page-tagline span{
   font-size:1.4em;
   font-weight:700;
   margin-bottom:8px;
-  color:#C9A44A;
+  color:var(--hub-gold);
 }
 .welcome-banner p{
   font-size:0.95em;
@@ -98,12 +107,12 @@ header .page-tagline span{
 .section-heading-line{
   flex:1;
   height:2px;
-  background:#E7F1FB;
+  background:var(--hub-charcoal);
 }
 .section-heading-text{
   font-size:1em;
   font-weight:700;
-  color:#1F4E79;
+  color:var(--hub-gold);
   white-space:nowrap;
   text-transform:uppercase;
   letter-spacing:0.05em;
@@ -118,18 +127,18 @@ header .page-tagline span{
 }
 
 .signpost-card{
-  background:#ffffff;
-  border:1px solid #c5d8ee;
+  background:var(--hub-navy-panel);
+  border:1px solid var(--hub-charcoal);
   border-radius:8px;
   padding:20px 20px 18px;
   transition:box-shadow 0.2s, transform 0.15s;
   text-decoration:none;
   color:inherit;
   display:block;
-  border-top:4px solid #1F4E79;
+  border-top:4px solid var(--hub-gold);
 }
 .signpost-card:hover{
-  box-shadow:0 4px 14px rgba(31,78,121,0.14);
+  box-shadow:0 4px 14px rgba(0,0,0,0.3);
   transform:translateY(-2px);
 }
 .signpost-card .card-icon{
@@ -140,12 +149,13 @@ header .page-tagline span{
 .signpost-card .card-title{
   font-size:1em;
   font-weight:700;
-  color:#1F4E79;
+  color:var(--hub-gold);
   margin-bottom:6px;
 }
 .signpost-card .card-desc{
   font-size:0.85em;
-  color:#555;
+  color:var(--hub-cream);
+  opacity:0.85;
   line-height:1.55;
 }
 .signpost-card .card-link{
@@ -153,17 +163,19 @@ header .page-tagline span{
   margin-top:12px;
   font-size:0.82em;
   font-weight:700;
-  color:#1F4E79;
-  background:#E7F1FB;
+  color:var(--hub-gold);
+  background:var(--hub-navy);
   border-radius:5px;
   padding:5px 12px;
 }
 .signpost-card:hover .card-link{
-  background:#1F4E79;
-  color:#fff;
+  background:var(--hub-gold);
+  color:var(--hub-navy);
 }
 
-/* Gold accent variant */
+/* Gold accent variant — deliberately kept as its own amber "official/restricted"
+   language, matching the RC-notices / members-only styling used elsewhere on
+   the Hub (sidebar .sb-lock links, RC Notices box). Left untouched on purpose. */
 .signpost-card.gold-top{
   border-top-color:#C9A44A;
 }
@@ -173,51 +185,52 @@ header .page-tagline span{
 
 /* ===== Info box ===== */
 .info-box{
-  background:#E7F1FB;
-  border-left:4px solid #1F4E79;
+  background:var(--hub-navy-panel);
+  border-left:4px solid var(--hub-gold);
   padding:16px 20px;
   margin-bottom:28px;
   border-radius:0 6px 6px 0;
   font-size:0.92em;
   line-height:1.65;
 }
-.info-box strong{ color:#1F4E79; }
+.info-box strong{ color:var(--hub-gold); }
 
 /* ===== Tip box ===== */
 .tip-box{
-  background:#fffdf3;
-  border:1px solid #f0d98a;
-  border-left:4px solid #C9A44A;
+  background:var(--hub-navy-panel);
+  border:1px solid var(--hub-charcoal);
+  border-left:4px solid var(--hub-gold);
   border-radius:0 6px 6px 0;
   padding:14px 18px;
   margin-bottom:24px;
   font-size:0.88em;
-  color:#5a4000;
+  color:var(--hub-cream);
   line-height:1.6;
 }
 
 /* ===== Contact card ===== */
 .contact-card{
-  background:#1F4E79;
+  background:var(--hub-navy-panel);
   border-radius:10px;
   padding:28px 30px;
-  color:white;
+  color:var(--hub-cream);
   margin-top:36px;
   display:flex;
   align-items:center;
   gap:22px;
   flex-wrap:wrap;
+  border-left:4px solid var(--hub-gold);
 }
 .contact-card-icon{ font-size:2.5em; flex-shrink:0; }
 .contact-card h3{
   font-size:1.1em;
   font-weight:700;
-  color:#C9A44A;
+  color:var(--hub-gold);
   margin-bottom:6px;
 }
 .contact-card p{ font-size:0.92em; opacity:0.9; line-height:1.6; }
 .contact-card a{
-  color:#C9A44A;
+  color:var(--hub-gold);
   font-weight:700;
   text-decoration:none;
 }

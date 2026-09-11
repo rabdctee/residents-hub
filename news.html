@@ -17,30 +17,39 @@
   <script src="sidebar.js"></script>
 
   <style>
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-navy-hover: #324A5F;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-muted:      #B9AF9C;
+      --hub-charcoal:   #3F4143;
+    }
     /* ===== Base ===== */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
+      background: var(--hub-navy);
       font-size: 20px;
       line-height: 1.7;
-      color: #222;
+      color: var(--hub-cream);
     }
 
     /* ===== Page wrapper ===== */
     .container {
       max-width: 1200px;
       margin: auto;
-      background: white;
+      background: var(--hub-navy);
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
 
     /* ===== Header ===== */
     header {
-      background: #1F4E79;
-      color: white;
+      background: var(--hub-navy);
+      color: var(--hub-cream);
       padding: 30px 20px;
       text-align: center;
     }
@@ -53,12 +62,12 @@
 
     /* ===== Intro blurb ===== */
     .news-intro {
-      background: #E7F1FB;
-      border-left: 4px solid #1F4E79;
+      background: var(--hub-navy-panel);
+      border-left: 4px solid var(--hub-gold);
       border-radius: 0 8px 8px 0;
       padding: 14px 18px;
       margin-bottom: 30px;
-      color: #1a3a5c;
+      color: var(--hub-cream);
       font-size: 0.95em;
     }
 
@@ -68,10 +77,10 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: #8a96a3;
+      color: var(--hub-gold);
       margin: 30px 0 10px;
       padding-bottom: 6px;
-      border-bottom: 2px solid #E7F1FB;
+      border-bottom: 2px solid var(--hub-charcoal);
     }
     .region-heading:first-of-type { margin-top: 0; }
 
@@ -87,22 +96,22 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      background: #f8fafc;
-      border: 2px solid #c5d8ee;
+      background: var(--hub-navy-panel);
+      border: 2px solid var(--hub-charcoal);
       border-radius: 10px;
       padding: 14px 16px;
       text-decoration: none;
-      color: #1F4E79;
+      color: var(--hub-cream);
       font-weight: 700;
       font-size: 1em;
       transition: all 0.18s;
       cursor: pointer;
     }
     .news-card:hover {
-      background: #E7F1FB;
-      border-color: #1F4E79;
+      background: var(--hub-navy-hover);
+      border-color: var(--hub-gold);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(31,78,121,0.12);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
     .news-card:active {
       transform: translateY(0);
@@ -120,23 +129,24 @@
     .news-label .news-name {
       display: block;
       font-weight: 700;
-      color: #1F4E79;
+      color: var(--hub-cream);
     }
     .news-label .news-country {
       display: block;
       font-size: 0.72em;
       font-weight: 400;
-      color: #666;
+      color: var(--hub-muted);
       margin-top: 2px;
     }
 
     /* ===== Footer ===== */
     .hub-footer {
-      background: #f8f9fa;
+      background: var(--hub-navy-panel);
       padding: 16px 30px;
       text-align: center;
-      color: #5f6368;
-      border-top: 1px solid #e0e0e0;
+      color: var(--hub-cream);
+      opacity: 0.85;
+      border-top: 1px solid var(--hub-charcoal);
       font-size: 0.85em;
     }
 
@@ -327,7 +337,7 @@
   <div class="hub-footer">
     Bridgeman Downs Retirement Village Residents' Hub &nbsp;|&nbsp;
     Links open each news site in a new tab &nbsp;|&nbsp;
-    <a href="index.html" style="color:#1F4E79; font-weight:600;">🏠 Back to Home</a>
+    <a href="index.html" style="color:var(--hub-gold); font-weight:600;">🏠 Back to Home</a>
   </div>
 
 </div><!-- /container -->

@@ -5,14 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The Roundup | Bridgeman Downs Residents' Hub</title>
   <style>
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-navy-hover: #324A5F;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-muted:      #B9AF9C;
+      --hub-charcoal:   #3F4143;
+    }
     /* ── Base reset & typography ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 20px;
-      background: #f5f5f5;
-      color: #333;
+      background: var(--hub-navy);
+      color: var(--hub-cream);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
@@ -26,11 +35,11 @@
 
     /* Page title banner */
     .page-banner {
-      background: linear-gradient(135deg, #1F4E79 0%, #1a3f66 100%);
+      background: var(--hub-navy-panel);
       border-radius: 8px;
       padding: 22px 24px;
       margin-bottom: 20px;
-      border-left: 5px solid #C9A44A;
+      border-left: 5px solid var(--hub-gold);
       position: relative;
       overflow: hidden;
     }
@@ -45,29 +54,29 @@
     }
     .page-banner h1 {
       font-size: 1.4em;
-      color: #fff;
+      color: var(--hub-cream);
       font-weight: 700;
       margin-bottom: 4px;
     }
     .page-banner .banner-sub {
-      color: #C9A44A;
+      color: var(--hub-gold);
       font-size: 0.85em;
       font-weight: 600;
     }
 
     /* Info notice box */
     .info-notice {
-      background: #fff8e6;
-      border: 1px solid #e0c96a;
-      border-left: 4px solid #C9A44A;
+      background: var(--hub-navy-panel);
+      border: 1px solid var(--hub-charcoal);
+      border-left: 4px solid var(--hub-gold);
       border-radius: 6px;
       padding: 12px 16px;
       margin-bottom: 20px;
       font-size: 0.92em;
-      color: #5a4a00;
+      color: var(--hub-cream);
       line-height: 1.5;
     }
-    .info-notice strong { color: #3a2f00; }
+    .info-notice strong { color: var(--hub-gold); }
 
     /* ── Add an item button ── */
     .add-item-bar {
@@ -79,8 +88,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #C9A44A;
-      color: #1F4E79;
+      background: var(--hub-gold);
+      color: var(--hub-navy);
       font-size: 0.85em;
       font-weight: 700;
       padding: 10px 18px;
@@ -88,7 +97,7 @@
       text-decoration: none;
       transition: background 0.2s;
     }
-    .add-item-btn:hover { background: #b8923d; }
+    .add-item-btn:hover { background: #c2a44f; }
 
     /* ── Category tabs ── */
     .category-tabs {
@@ -98,9 +107,9 @@
       margin-bottom: 20px;
     }
     .cat-tab {
-      background: #fff;
-      border: 1.5px solid #c5d8ee;
-      color: #1F4E79;
+      background: var(--hub-navy-panel);
+      border: 1.5px solid var(--hub-charcoal);
+      color: var(--hub-cream);
       font-size: 0.85em;
       font-weight: 700;
       padding: 9px 16px;
@@ -109,8 +118,8 @@
       transition: all 0.15s;
       white-space: nowrap;
     }
-    .cat-tab:hover { background: #E7F1FB; }
-    .cat-tab.active { background: #1F4E79; color: #fff; border-color: #1F4E79; }
+    .cat-tab:hover { background: var(--hub-navy-hover); }
+    .cat-tab.active { background: var(--hub-gold); color: var(--hub-navy); border-color: var(--hub-gold); }
 
     /* ── Category panels ── */
     .cat-panel { display: none; }
@@ -118,18 +127,18 @@
 
     /* ── Item cards ── */
     .item-card {
-      background: #fff;
-      border: 1px solid #d8dfe8;
+      background: var(--hub-navy-panel);
+      border: 1px solid var(--hub-charcoal);
       border-radius: 8px;
       margin-bottom: 14px;
       overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
       display: flex;
       align-items: stretch;
     }
     .item-source-bar {
-      background: #1F4E79;
-      color: #C9A44A;
+      background: var(--hub-navy);
+      color: var(--hub-gold);
       writing-mode: vertical-rl;
       text-orientation: mixed;
       font-size: 0.7em;
@@ -144,13 +153,14 @@
     .item-title {
       font-size: 1em;
       font-weight: 700;
-      color: #1F4E79;
+      color: var(--hub-cream);
       margin-bottom: 6px;
       line-height: 1.35;
     }
     .item-snippet {
       font-size: 0.9em;
-      color: #444;
+      color: var(--hub-cream);
+      opacity: 0.85;
       line-height: 1.55;
       margin-bottom: 10px;
     }
@@ -163,12 +173,12 @@
     }
     .item-date {
       font-size: 0.78em;
-      color: #888;
+      color: var(--hub-muted);
     }
     .item-link-btn {
       display: inline-block;
-      background: #1F4E79;
-      color: #C9A44A;
+      background: var(--hub-gold);
+      color: var(--hub-navy);
       font-size: 0.78em;
       font-weight: 700;
       padding: 7px 14px;
@@ -178,13 +188,13 @@
       letter-spacing: 0.5px;
       transition: background 0.2s, color 0.2s;
     }
-    .item-link-btn:hover { background: #C9A44A; color: #1F4E79; }
+    .item-link-btn:hover { background: #c2a44f; }
 
     /* Resident-added item badge */
     .item-added-badge {
       display: inline-block;
-      background: #E7F1FB;
-      color: #1F4E79;
+      background: rgba(212,184,96,0.15);
+      color: var(--hub-gold);
       font-size: 0.7em;
       font-weight: 700;
       padding: 2px 8px;
@@ -196,14 +206,15 @@
 
     /* ── Footer ── */
     footer {
-      background: #1F4E79;
-      color: #c5d8ee;
+      background: var(--hub-navy-panel);
+      color: var(--hub-cream);
+      opacity: 0.85;
       text-align: center;
       font-size: 0.75em;
       padding: 14px 20px;
       margin-top: auto;
     }
-    footer a { color: #C9A44A; text-decoration: underline; }
+    footer a { color: var(--hub-gold); text-decoration: underline; opacity: 1; }
 
     /* ── Responsive ── */
     @media (max-width: 680px) {
@@ -222,11 +233,11 @@
 <script src="sidebar.js"></script>
 
 <!-- ══════════════ HEADER ══════════════ -->
-<header style="background:#1F4E79;color:white;padding:30px 20px;text-align:center;">
+<header style="background:#263746;color:#F6F2E7;padding:30px 20px;text-align:center;">
   <h1 style="font-size:2em;font-weight:700;">Bridgeman Downs Retirement Village</h1>
   <p style="margin-top:8px;font-size:0.95em;opacity:0.88;">Residents' Information Hub</p>
   <p style="margin-top:14px;font-size:1.1em;font-weight:600;">
-    <span style="display:inline-block;background:rgba(255,255,255,0.18);border-radius:6px;padding:6px 22px;">📰 The Roundup</span>
+    <span style="display:inline-block;background:rgba(212,184,96,0.18);color:#D4B860;border-radius:6px;padding:6px 22px;">📰 The Roundup</span>
   </p>
 </header>
 
