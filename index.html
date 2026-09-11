@@ -1304,14 +1304,14 @@ if (month === 2 && day === 17) {
 <div class="home-grid">
 <div>
 <h2 style="margin-bottom:6px;">Latest Announcements</h2>
-<p style="font-size:0.82em;color:#555;margin-bottom:14px;">Short updates and reminders for all residents.</p>
+<p style="font-size:0.82em;color:#B9AF9C;margin-bottom:14px;">Short updates and reminders for all residents.</p>
 
 <!-- RC Notices crosslink banner -->
-<a id="rcNoticesBanner" href="rc-notices.html" style="display:flex;align-items:center;gap:12px;background:#fffdf5;border:2px solid #C9A44A;border-radius:8px;padding:13px 18px;margin-bottom:18px;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='#fff8e1'" onmouseout="this.style.background='#fffdf5'">
+<a id="rcNoticesBanner" href="rc-notices.html" style="display:flex;align-items:center;gap:12px;background:rgba(201,164,74,0.12);border:2px solid #C9A44A;border-radius:8px;padding:13px 18px;margin-bottom:18px;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(201,164,74,0.22)'" onmouseout="this.style.background='rgba(201,164,74,0.12)'">
   <span style="font-size:1.4em;">📋</span>
   <span>
-     <strong style="color:#1F4E79;font-size:0.92em;">Residents Committee Notices</strong><br>
-    <span style="color:#555;font-size:0.78em;">To read meeting minutes, other updates and information, see the: <br> <u style="color:#C9A44A;"><strong>RC Notices page</u></strong></span>
+     <strong style="color:#D4B860;font-size:0.92em;">Residents Committee Notices</strong><br>
+    <span style="color:#B9AF9C;font-size:0.78em;">To read meeting minutes, other updates and information, see the: <br> <u style="color:#C9A44A;"><strong>RC Notices page</u></strong></span>
   </span>
   <span style="margin-left:auto;display:flex;align-items:center;gap:8px;">
     <span id="rcNoticesBadge" style="display:none;background:#c0392b;color:white;font-size:0.72em;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;">NEW</span>
@@ -1401,7 +1401,7 @@ if (month === 2 && day === 17) {
 </div>
 
 <!-- Emergency button - EXTRA LARGE for seniors -->
-<div class="sidebar-widget" style="background:#fff;border:none;padding:0;">
+<div class="sidebar-widget" style="background:transparent;border:none;padding:0;box-shadow:none;">
 <button class="emergency-btn" onclick="showPage('contact');setTimeout(function(){document.getElementById('emergency-contacts').scrollIntoView({behavior:'smooth',block:'start'});},100);">
 🚨 Emergency Services & Community Contacts
 </button>
@@ -1525,9 +1525,9 @@ setInterval(loadWeather, 1800000);
 <!-- ABOUT PAGE -->
 <div id="about" class="page-content">
 
-<h2 style="margin-bottom:20px;color:#1F4E79;">ℹ️ About This Website</h2>
+<h2 style="margin-bottom:20px;color:#D4B860;">ℹ️ About This Website</h2>
 
-<div style="background:#e8f4f8;border-left:4px solid #1F4E79;padding:30px;border-radius:8px;margin-bottom:30px;">
+<div style="background:#2E4256;border-left:4px solid #D4B860;padding:30px;border-radius:8px;margin-bottom:30px;color:#F6F2E7;">
 <p style="margin-bottom:20px;font-size:1.1em;line-height:1.8;">
 This website is created and run by your <strong>Residents Association Committee volunteers</strong>. It's your go-to place for:
 </p>
@@ -1550,7 +1550,7 @@ We hope you find it useful and that it makes staying informed easier for everyon
 
 <div class="info-box">
 <strong>💡 Have suggestions?</strong><br><br>
-We're always looking to improve! If you have ideas or feedback about this website, please use the <a href="javascript:void(0)" onclick="showPage('contact')" style="color:#1F4E79;font-weight:bold;">Contact & Feedback page</a> to get in touch with the committee.
+We're always looking to improve! If you have ideas or feedback about this website, please use the <a href="javascript:void(0)" onclick="showPage('contact')" style="color:#D4B860;font-weight:bold;">Contact & Feedback page</a> to get in touch with the committee.
 </div>
 
 </div>
@@ -1558,7 +1558,7 @@ We're always looking to improve! If you have ideas or feedback about this websit
 <!-- NEWSLETTER -->
 <div id="newsletter" class="page-content">
 <h2 style="margin-bottom:20px;">Newsletter Archive</h2>
-<p style="color:#5f6368;margin-bottom:20px;">Click any newsletter below to view it.</p>
+<p style="color:#B9AF9C;margin-bottom:20px;">Click any newsletter below to view it.</p>
 
 <div id="newsletter-browser">
 
@@ -1571,7 +1571,7 @@ We're always looking to improve! If you have ideas or feedback about this websit
 
 </div>
 
-<p style="color:#5f6368;margin-top:15px;font-size:0.9em;">
+<p style="color:#B9AF9C;margin-top:15px;font-size:0.9em;">
 💡 <strong>Tip:</strong> Documents open in a new window. Use your browser's print function to print.
 </p>
 
@@ -1598,10 +1598,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <div class="note-box">
 📌 Looking for the full list of events, or want to <strong>register for one</strong>? Visit the
-<a href="#" onclick="showPage('events-list');return false;" style="color:#2c5aa0;font-weight:bold;">Events page</a>.
+<a href="#" onclick="showPage('events-list');return false;" style="color:#D4B860;font-weight:bold;">Events page</a>.
 </div>
 
-<div style="margin:20px 0;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;">
+<div style="margin:20px 0;border:1px solid #3F4143;border-radius:8px;overflow:hidden;">
 <iframe src="https://calendar.google.com/calendar/embed?src=rabd.ctee%40gmail.com&ctz=Australia%2FBrisbane&mode=AGENDA" style="border:0" width="100%" height="600" frameborder="0" scrolling="yes"></iframe>
 </div>
 
@@ -1625,11 +1625,11 @@ Registrations are for <strong>Social Club events only</strong>.
 For Manor events use the sign-up sheets in the Manor.
 </div>
 <!-- Event Photos & Videos crosslink banner -->
-<a id="eventGalleryBanner" href="event-gallery.html" style="display:flex;align-items:center;gap:12px;background:#fffdf5;border:2px solid #C9A44A;border-radius:8px;padding:13px 18px;margin-bottom:18px;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='#fff8e1'" onmouseout="this.style.background='#fffdf5'">
+<a id="eventGalleryBanner" href="event-gallery.html" style="display:flex;align-items:center;gap:12px;background:rgba(201,164,74,0.12);border:2px solid #C9A44A;border-radius:8px;padding:13px 18px;margin-bottom:18px;text-decoration:none;transition:background 0.2s;" onmouseover="this.style.background='rgba(201,164,74,0.22)'" onmouseout="this.style.background='rgba(201,164,74,0.12)'">
   <span style="font-size:1.4em;">📷</span>
   <span>
-     <strong style="color:#1F4E79;font-size:0.92em;">Event Photos &amp; Videos</strong><br>
-    <span style="color:#555;font-size:0.78em;">See (and share!) photos and videos from recent events: <br> <u style="color:#C9A44A;"><strong>Event Gallery</strong></u></span>
+     <strong style="color:#D4B860;font-size:0.92em;">Event Photos &amp; Videos</strong><br>
+    <span style="color:#B9AF9C;font-size:0.78em;">See (and share!) photos and videos from recent events: <br> <u style="color:#C9A44A;"><strong>Event Gallery</strong></u></span>
   </span>
   <span style="margin-left:auto;display:flex;align-items:center;gap:8px;">
     <span id="eventGalleryBadge" style="display:none;background:#c0392b;color:white;font-size:0.72em;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap;">NEW</span>
@@ -1696,7 +1696,7 @@ For Manor events use the sign-up sheets in the Manor.
 	
 <h2 style="margin-bottom:15px;">🎉 Events</h2>
 
-<div id="eventsListFull"><div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">Loading events…</div></div>
+<div id="eventsListFull"><div class="event-item" style="color:#B9AF9C;font-style:italic;font-size:0.85em;">Loading events…</div></div>
 
 <script>
 (function() {
@@ -1760,7 +1760,7 @@ For Manor events use the sign-up sheets in the Manor.
           .sort(function(a, b) { return a.dateObj - b.dateObj; });
 
         if (events.length === 0) {
-          container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
+          container.innerHTML = '<div class="event-item" style="color:#B9AF9C;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
           return;
         }
 
@@ -1784,7 +1784,7 @@ For Manor events use the sign-up sheets in the Manor.
           if (weekKey !== lastWeekKey) {
             var we = new Date(ws);
             we.setDate(we.getDate() + 6);
-            html += '<div style="margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid #1F4E79;font-weight:700;color:#1F4E79;font-size:0.9em;">' +
+            html += '<div style="margin:18px 0 8px;padding-bottom:4px;border-bottom:2px solid #D4B860;font-weight:700;color:#D4B860;font-size:0.9em;">' +
                     'Week of ' + ws.toLocaleDateString('en-AU', weekHeaderOpts) + ' – ' + we.toLocaleDateString('en-AU', weekHeaderOpts) +
                     '</div>';
             lastWeekKey = weekKey;
@@ -1806,7 +1806,7 @@ For Manor events use the sign-up sheets in the Manor.
 
           var regBadge = '';
           if (isManor) {
-            regBadge = '<span style="color:#5f6368;font-size:0.82em;">📝 Use sign-up sheets in the Manor</span>';
+            regBadge = '<span style="color:#B9AF9C;font-size:0.82em;">📝 Use sign-up sheets in the Manor</span>';
           } else {
             var regText = ev.registration === 'Not required'
               ? 'Registration not required:'
@@ -1821,8 +1821,8 @@ For Manor events use the sign-up sheets in the Manor.
                 : 'Register ';
               secondPart = registerByBit + "on the Residents' Hub or sign-up sheets in the MRC and Manor noticeboard.";
             }
-            regBadge = '<span style="color:#5f6368;font-size:0.82em;">' + regText + '</span>' +
-                       '<span style="color:#2e7d32;font-size:0.82em;">' + secondPart + '</span>';
+            regBadge = '<span style="color:#B9AF9C;font-size:0.82em;">' + regText + '</span>' +
+                       '<span style="color:#5fb87e;font-size:0.82em;">' + secondPart + '</span>';
           }
 
           var paymentLine = '';
@@ -1861,7 +1861,7 @@ For Manor events use the sign-up sheets in the Manor.
         container.innerHTML = html;
       })
       .catch(function() {
-        container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">Events unavailable.</div>';
+        container.innerHTML = '<div class="event-item" style="color:#B9AF9C;font-style:italic;font-size:0.85em;">Events unavailable.</div>';
       });
   }
   document.addEventListener('DOMContentLoaded', loadFullEventsList);
@@ -1895,7 +1895,7 @@ For Manor events use the sign-up sheets in the Manor.
 </tr>
 </thead>
 <tbody id="activitiesTableBody">
-<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;padding:20px;">Loading activities…</td></tr>
+<tr><td colspan="5" style="text-align:center;color:#B9AF9C;font-style:italic;padding:20px;">Loading activities…</td></tr>
 </tbody>
 </table>
 
@@ -1919,30 +1919,30 @@ For Manor events use the sign-up sheets in the Manor.
 
 
 <h2 style="margin-bottom:15px;">Community Noticeboard</h2>
-<p style="color:#5f6368;margin-bottom:20px;">Share items for sale, wanted items, announcements and connect with your neighbours</p>
+<p style="color:#B9AF9C;margin-bottom:20px;">Share items for sale, wanted items, announcements and connect with your neighbours</p>
 
 <div class="info-box">
 <strong>📝 Want to share something?</strong><br>
-Use the blue button at the top to submit a post. Your post will be published as soon as possible.<br><strong>Please use the feedback button to let us know when to take down your post.</strong>
+Use the gold button at the top to submit a post. Your post will be published as soon as possible.<br><strong>Please use the feedback button to let us know when to take down your post.</strong>
 </div>
 
-<h3 style="color:#202124;font-size:1.4em;margin-bottom:15px;">Recent Posts</h3>
+<h3 style="color:#F6F2E7;font-size:1.4em;margin-bottom:15px;">Recent Posts</h3>
 
 <!-- UPDATE NOTICEBOARD POSTS HERE -->
-<div style="background:white;border:1px solid #e0e0e0;border-radius:8px;padding:20px;margin-bottom:20px;">
-<div style="color:#1F4E79;font-size:0.85em;font-weight:600;margin-bottom:5px;">FOR SALE</div>
+<div style="background:#2E4256;border:1px solid #3F4143;border-radius:8px;padding:20px;margin-bottom:20px;color:#F6F2E7;">
+<div style="color:#D4B860;font-size:0.85em;font-weight:600;margin-bottom:5px;">FOR SALE</div>
 <div style="font-weight:600;margin-bottom:5px;">Maggie & Max May • Unit NN</div>
-<div style="color:#5f6368;font-size:0.85em;margin-bottom:10px;">Posted February 20, 2026</div>
+<div style="color:#B9AF9C;font-size:0.85em;margin-bottom:10px;">Posted February 20, 2026</div>
 <div style="line-height:1.6;">
 <strong>Dining Table and 4 Chairs - $150</strong><br>
 Beautiful wooden dining set in excellent condition. Table extends to seat 6. Downsizing and must sell. Contact me at Unit NN or call NNNN NNN NNN.
 </div>
 </div>
 
-<div style="background:white;border:1px solid #e0e0e0;border-radius:8px;padding:20px;margin-bottom:20px;">
-<div style="color:#1F4E79;font-size:0.85em;font-weight:600;margin-bottom:5px;">ANNOUNCEMENT</div>
+<div style="background:#2E4256;border:1px solid #3F4143;border-radius:8px;padding:20px;margin-bottom:20px;color:#F6F2E7;">
+<div style="color:#D4B860;font-size:0.85em;font-weight:600;margin-bottom:5px;">ANNOUNCEMENT</div>
 <div style="font-weight:600;margin-bottom:5px;">Mickey Mouse • Unit NN</div>
-<div style="color:#5f6368;font-size:0.85em;margin-bottom:10px;">Posted February 21, 2026</div>
+<div style="color:#B9AF9C;font-size:0.85em;margin-bottom:10px;">Posted February 21, 2026</div>
 <div style="line-height:1.6;">
 <strong>Lost Cat - Please Help!</strong><br>
 Our grey tabby cat "Smokey" has been missing since Wednesday evening. Very friendly, wearing a blue collar. If you see him, please call NNNN NNN NNN. Reward offered!
@@ -1968,8 +1968,8 @@ This page contains village documents and financial information for residents onl
   <a onclick="showPage('noticeboard',this)" class="nav-item" style="font-size:16px;padding:12px 18px;min-height:44px;cursor:pointer;">📌 Notice Board</a>
 </div>
 
-<h3 style="margin-bottom:15px;color:#1F4E79;">📁 Village Documents</h3>
-<p style="color:#5f6368;margin-bottom:20px;">Click any section below to expand it</p>
+<h3 style="margin-bottom:15px;color:#D4B860;">📁 Village Documents</h3>
+<p style="color:#B9AF9C;margin-bottom:20px;">Click any section below to expand it</p>
 
 <!-- 1. QLD Act Section -->
 <div id="ci-legislation"></div>
@@ -2138,7 +2138,7 @@ files.forEach(function(f) {
     html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
   });
 
-  ul.innerHTML = html || '<li style="color:#888;font-style:italic;">Loading...</li>';
+  ul.innerHTML = html || '<li style="color:#B9AF9C;font-style:italic;">Loading...</li>';
 
   // Then fetch new documents from the published CSV registry
   var folderName = FOLDER_KEY_TO_NAME[key];
@@ -2199,12 +2199,12 @@ files.forEach(function(f) {
       });
 
       ul.innerHTML = newHtml + baseHtml ||
-        '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
+        '<li style="color:#B9AF9C;font-style:italic;">No documents available yet.</li>';
     })
     .catch(function() {
       // Sheet not accessible — just show hardcoded files silently
       if (!ul.innerHTML || ul.innerHTML.includes('Loading')) {
-        ul.innerHTML = html || '<li style="color:#888;font-style:italic;">No documents available yet.</li>';
+        ul.innerHTML = html || '<li style="color:#B9AF9C;font-style:italic;">No documents available yet.</li>';
       }
     });
 }
@@ -2364,13 +2364,13 @@ function parseCSVLine(line) {
 </div>
 <div id="financials" class="collapsible-content">
 
-<h4 style="margin-bottom:15px; color:#1F4E79;">📊 View Monthly Financial Reports</h4>
+<h4 style="margin-bottom:15px; color:#D4B860;">📊 View Monthly Financial Reports</h4>
 
-<p style="color:#5f6368; margin-bottom:15px;">
+<p style="color:#B9AF9C; margin-bottom:15px;">
 Select a reporting period below to view and print the financial report:
 </p>
 
-<select id="financial-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
+<select id="financial-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #3F4143; border-radius:5px; background:white; color:#222;">
 <option value="">-- Select Month --</option>
 </select>
 
@@ -2378,19 +2378,19 @@ Select a reporting period below to view and print the financial report:
 📄 View Selected Report
 </button>
 
-<p style="color:#5f6368; font-size:0.9em; margin-top:10px;">
+<p style="color:#B9AF9C; font-size:0.9em; margin-top:10px;">
 💡 <strong>Tip:</strong> Reports open in a new window. Use your browser's print function (Ctrl+P or Cmd+P) to print.
 </p>
 
-<hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
+<hr style="margin:20px 0; border:none; border-top:1px solid #3F4143;">
 
-<h4 style="margin-bottom:15px; color:#1F4E79;">🏦 Bank Statements</h4>
+<h4 style="margin-bottom:15px; color:#D4B860;">🏦 Bank Statements</h4>
 
-<p style="color:#5f6368; margin-bottom:15px;">
+<p style="color:#B9AF9C; margin-bottom:15px;">
 Select a month below to view the bank statement:
 </p>
 
-<select id="bank-statement-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
+<select id="bank-statement-period" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #3F4143; border-radius:5px; background:white; color:#222;">
 <option value="">-- Select Month --</option>
 </select>
 
@@ -2398,11 +2398,11 @@ Select a month below to view the bank statement:
 📄 View Selected Statement
 </button>
 
-<p style="color:#5f6368; font-size:0.9em; margin-top:10px;">
+<p style="color:#B9AF9C; font-size:0.9em; margin-top:10px;">
 💡 <strong>Tip:</strong> Statements open in a new window. Use your browser's print function (Ctrl+P or Cmd+P) to print.
 </p>
 
-<hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
+<hr style="margin:20px 0; border:none; border-top:1px solid #3F4143;">
 
 </div>
 
@@ -2414,9 +2414,9 @@ Select a month below to view the bank statement:
 </div>
 <div id="aveo" class="collapsible-content">
 
-<h4 style="margin-bottom:15px; color:#1F4E79;">📄 View Aveo Documents</h4>
+<h4 style="margin-bottom:15px; color:#D4B860;">📄 View Aveo Documents</h4>
 
-<select id="aveo-document" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #e0e0e0; border-radius:5px; background:white;">
+<select id="aveo-document" style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:2px solid #3F4143; border-radius:5px; background:white; color:#222;">
 <option value="">-- Select Document --</option>
 </select>
 
@@ -2424,7 +2424,7 @@ Select a month below to view the bank statement:
 📄 View Selected Document
 </button>
 
-<hr style="margin:20px 0; border:none; border-top:1px solid #e0e0e0;">
+<hr style="margin:20px 0; border:none; border-top:1px solid #3F4143;">
 
 </div>
 
@@ -2437,9 +2437,9 @@ Select a month below to view the bank statement:
 <div id="issues" class="collapsible-content">
 <a href="progress-tracker.html" class="doc-link">
 📊 Village Issues &amp; Progress Tracker
-<span style="display:block;font-weight:400;font-size:0.85em;color:#555;margin-top:2px;">View all current issues, progress updates and initiatives — updates automatically</span>
+<span style="display:block;font-weight:400;font-size:0.85em;color:#B9AF9C;margin-top:2px;">View all current issues, progress updates and initiatives — updates automatically</span>
 </a>
-<p style="color:#5f6368; margin-top:10px; font-size:0.9em;">
+<p style="color:#B9AF9C; margin-top:10px; font-size:0.9em;">
 This tracker is updated regularly to show progress on community issues.
 </p>
 </div>
@@ -2451,7 +2451,7 @@ This tracker is updated regularly to show progress on community issues.
 
 
 <h2 style="margin-bottom:15px;">🔗 Useful Links</h2>
-<p style="color:#5f6368;margin-bottom:30px;">Click any section below to view links</p>
+<p style="color:#B9AF9C;margin-bottom:30px;">Click any section below to view links</p>
 
 <!-- Government Services Section -->
 <div id="ci-resources"></div>
@@ -2473,15 +2473,15 @@ This tracker is updated regularly to show progress on community issues.
 <span id="using-govt-arrow" class="collapsible-arrow">▼</span>
 </div>
 <div id="using-govt" class="collapsible-content">
-<p style="color:#444;font-size:0.88em;margin-bottom:16px;">
+<p style="color:#F6F2E7;font-size:0.88em;margin-bottom:16px;">
 Step-by-step guides to accessing myGov, Medicare and Centrelink from your phone, tablet or computer.
 </p>
 
 <details style="margin-bottom:10px;">
-<summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+<summary style="cursor:pointer;font-weight:700;color:#F6F2E7;padding:10px 14px;background:#2E4256;border:1px solid #3F4143;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
 What is myGov and what can I use it for? <span>▼</span>
 </summary>
-<div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+<div style="padding:14px 16px;background:#263746;border:1px solid #3F4143;border-top:none;border-radius:0 0 6px 6px;">
 <p><strong>myGov</strong> (my.gov.au) is a secure Australian Government website that gives you access to a range of government services in one place — using a single username and password.</p>
 <p style="margin-top:10px;">Once you have a myGov account, you can link it to:</p>
 <ul style="margin:8px 0 8px 20px;">
@@ -2491,15 +2491,15 @@ What is myGov and what can I use it for? <span>▼</span>
 <li><strong>My Health Record</strong> — view your medical history and prescriptions</li>
 <li><strong>Aged Care</strong> — access My Aged Care information</li>
 </ul>
-<p style="margin-top:10px;font-size:0.88em;color:#555;">💡 You only need one myGov account to access all of these services.</p>
+<p style="margin-top:10px;font-size:0.88em;color:#B9AF9C;">💡 You only need one myGov account to access all of these services.</p>
 </div>
 </details>
 
 <details style="margin-bottom:10px;">
-<summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+<summary style="cursor:pointer;font-weight:700;color:#F6F2E7;padding:10px 14px;background:#2E4256;border:1px solid #3F4143;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
 How do I create a myGov account? <span>▼</span>
 </summary>
-<div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+<div style="padding:14px 16px;background:#263746;border:1px solid #3F4143;border-top:none;border-radius:0 0 6px 6px;">
 <p>Creating a myGov account is free and takes around 10 minutes. You will need your email address and mobile phone.</p>
 <ol style="margin:10px 0 10px 20px;">
 <li>Go to <strong>my.gov.au</strong> — type this directly into your browser.</li>
@@ -2509,30 +2509,30 @@ How do I create a myGov account? <span>▼</span>
 <li>Set a secret question for account recovery.</li>
 <li>Once created, link your services from the myGov home page.</li>
 </ol>
-<p style="font-size:0.88em;color:#555;">💡 The myGov help line is <strong>132 307</strong> (Option 1) — Monday to Friday.</p>
+<p style="font-size:0.88em;color:#B9AF9C;">💡 The myGov help line is <strong>132 307</strong> (Option 1) — Monday to Friday.</p>
 </div>
 </details>
 
 <details style="margin-bottom:10px;">
-<summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+<summary style="cursor:pointer;font-weight:700;color:#F6F2E7;padding:10px 14px;background:#2E4256;border:1px solid #3F4143;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
 How do I stay safe when using myGov? <span>▼</span>
 </summary>
-<div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+<div style="padding:14px 16px;background:#263746;border:1px solid #3F4143;border-top:none;border-radius:0 0 6px 6px;">
 <ul style="margin:8px 0 8px 20px;">
 <li><strong>myGov will never ask for your password</strong> by email, text or phone — if someone does, it is a scam</li>
 <li><strong>Check the web address</strong> shows <strong>my.gov.au</strong> with the padlock icon before logging in</li>
 <li><strong>Enable two-factor authentication</strong> for extra security</li>
 <li>Report suspicious messages to Scamwatch at <strong>scamwatch.gov.au</strong></li>
 </ul>
-<p style="font-size:0.88em;color:#555;">💡 myGov sends notifications to your <strong>myGov Inbox</strong> — not to your personal email. Always log in directly to check for messages.</p>
+<p style="font-size:0.88em;color:#B9AF9C;">💡 myGov sends notifications to your <strong>myGov Inbox</strong> — not to your personal email. Always log in directly to check for messages.</p>
 </div>
 </details>
 
 <details style="margin-bottom:10px;">
-<summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+<summary style="cursor:pointer;font-weight:700;color:#F6F2E7;padding:10px 14px;background:#2E4256;border:1px solid #3F4143;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
 What can I do with Medicare online? <span>▼</span>
 </summary>
-<div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+<div style="padding:14px 16px;background:#263746;border:1px solid #3F4143;border-top:none;border-radius:0 0 6px 6px;">
 <p>Once Medicare is linked to myGov, you can manage most Medicare needs without visiting a service centre:</p>
 <ul style="margin:8px 0 8px 20px;">
 <li>View and download your <strong>Medicare card</strong></li>
@@ -2541,15 +2541,15 @@ What can I do with Medicare online? <span>▼</span>
 <li>Access your <strong>My Health Record</strong></li>
 <li>Manage <strong>organ and tissue donation</strong> registration</li>
 </ul>
-<p style="font-size:0.88em;color:#555;">💡 If your doctor bulk bills, your rebate is processed automatically. If you pay upfront, submit a claim through myGov — rebates usually arrive within 2–3 business days.</p>
+<p style="font-size:0.88em;color:#B9AF9C;">💡 If your doctor bulk bills, your rebate is processed automatically. If you pay upfront, submit a claim through myGov — rebates usually arrive within 2–3 business days.</p>
 </div>
 </details>
 
 <details style="margin-bottom:10px;">
-<summary style="cursor:pointer;font-weight:700;color:#1F4E79;padding:10px 14px;background:#f0f6fc;border:1px solid #c5d8ee;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
+<summary style="cursor:pointer;font-weight:700;color:#F6F2E7;padding:10px 14px;background:#2E4256;border:1px solid #3F4143;border-radius:6px;list-style:none;display:flex;justify-content:space-between;">
 What can I do with Centrelink online? <span>▼</span>
 </summary>
-<div style="padding:14px 16px;background:#fafcff;border:1px solid #c5d8ee;border-top:none;border-radius:0 0 6px 6px;">
+<div style="padding:14px 16px;background:#263746;border:1px solid #3F4143;border-top:none;border-radius:0 0 6px 6px;">
 <p>Linking Centrelink to myGov gives you access to <strong>my Centrelink</strong>, where you can:</p>
 <ul style="margin:8px 0 8px 20px;">
 <li>View your <strong>payment details and history</strong></li>
@@ -2559,7 +2559,7 @@ What can I do with Centrelink online? <span>▼</span>
 <li>Send and receive <strong>messages</strong> — avoiding phone wait times</li>
 <li>Update your <strong>address and contact details</strong></li>
 </ul>
-<p style="font-size:0.88em;color:#555;">💡 Managing routine tasks online is much quicker than calling and is available 24 hours a day.</p>
+<p style="font-size:0.88em;color:#B9AF9C;">💡 Managing routine tasks online is much quicker than calling and is available 24 hours a day.</p>
 </div>
 </details>
 </div>
@@ -2570,20 +2570,20 @@ What can I do with Centrelink online? <span>▼</span>
 <span id="rv-resources-arrow" class="collapsible-arrow">▼</span>
 </div>
 <div id="rv-resources" class="collapsible-content">
-<p style="color:#444;font-size:0.88em;margin-bottom:12px;">
+<p style="color:#F6F2E7;font-size:0.88em;margin-bottom:12px;">
 Queensland legislation governing retirement villages, plus advocacy and support for residents.
 </p>
 <a href="https://drive.google.com/file/d/1FuSYYJkOKGMtnAMNaRy35DGvUbxNGBH8/view" target="_blank" class="doc-link">📄 Retirement Villages Act 1999</a>
 <a href="https://drive.google.com/file/d/16KJXXdMD7h5zkxYN0WcYPPiZhiw2aR-I/view" target="_blank" class="doc-link">📄 Retirement Villages Regulation 2018 (current as at June 2024)</a>
 <a href="view-document.html?id=1dA97VG7HlEFrXO3Kzqxf2UuygP7vdT7D&title=Village%20Constitution&back=useful-links.html" target="_blank" class="doc-link">📄 Bridgeman Downs Retirement Village Constitution</a>
-<hr style="margin:12px 0;border:none;border-top:1px solid #c5d8ee;">
+<hr style="margin:12px 0;border:none;border-top:1px solid #3F4143;">
 <a href="https://arqrv.org.au" target="_blank" class="doc-link">🔗 ARQ — Association of Residents of QLD Retirement Villages</a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">
+<p style="color:#B9AF9C;margin-top:10px;font-size:0.9em;">
 Advocacy, advice and support for retirement village residents in Queensland.
 </p>
-<hr style="margin:12px 0;border:none;border-top:1px solid #c5d8ee;">
+<hr style="margin:12px 0;border:none;border-top:1px solid #3F4143;">
 <a href="https://www.qld.gov.au/law/fair-trading" target="_blank" class="doc-link">🔗 QLD Fair Trading — Consumer rights and complaints</a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">
+<p style="color:#B9AF9C;margin-top:10px;font-size:0.9em;">
 Useful if you have a dispute or complaint about goods, services or tenancy matters in Queensland.
 </p>
 </div>
@@ -2598,11 +2598,11 @@ Useful if you have a dispute or complaint about goods, services or tenancy matte
 <a href="https://www.brisbane.qld.gov.au/community-support-and-safety/natural-disasters-and-emergencies/emergency-dashboard"target="_blank" class="doc-link">Brisbane City Council-Emergency Dashboard</a>
 <a href="https://www.esafety.gov.au/seniors" target="_blank" class="doc-link">eSafety - Online safety for seniors</a>
 <a href="https://www.scamwatch.gov.au/types-of-scams/relationship-scams" target="_blank" class="doc-link">🔗 Scamwatch — Relationship and romance scams</a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">Learn to recognise and avoid these scams.</p>
-<hr style="margin:12px 0;border:none;border-top:1px solid #c5d8ee;">
+<p style="color:#B9AF9C;margin-top:10px;font-size:0.9em;">Learn to recognise and avoid these scams.</p>
+<hr style="margin:12px 0;border:none;border-top:1px solid #3F4143;">
 <a href="https://beconnected.esafety.gov.au/" target="_blank" class="doc-link">🔗 Be Connected — Free digital literacy training for seniors</a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">Free online courses to help you use the internet, your phone and tablet with confidence. Funded by the Australian Government.</p>
-<hr style="margin:12px 0;border:none;border-top:1px solid #c5d8ee;">
+<p style="color:#B9AF9C;margin-top:10px;font-size:0.9em;">Free online courses to help you use the internet, your phone and tablet with confidence. Funded by the Australian Government.</p>
+<hr style="margin:12px 0;border:none;border-top:1px solid #3F4143;">
 <a href="https://www.canstar.com.au/energy/how-to-read-energy-bill/" target="_blank" class="doc-link">Canstar - How to read your energy bill</a>
 </div>
 
@@ -2613,18 +2613,18 @@ Useful if you have a dispute or complaint about goods, services or tenancy matte
 <span id="health-wellbeing-arrow" class="collapsible-arrow">▼</span>
 </div>
 <div id="health-wellbeing" class="collapsible-content">
-<p style="color:#444;font-size:0.88em;margin-bottom:12px;">
+<p style="color:#F6F2E7;font-size:0.88em;margin-bottom:12px;">
 Resources to support your health, independence and legal planning as you age.
 </p>
 <a href="https://www.mycaremychoices.com.au" target="_blank" class="doc-link">🔗 My Care My Choices — Advance Care Planning</a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">Helps you plan and record your wishes for future health and personal care — so the right decisions are made if you are unable to speak for yourself.</p>
+<p style="color:#B9AF9C;margin-top:10px;font-size:0.9em;">Helps you plan and record your wishes for future health and personal care — so the right decisions are made if you are unable to speak for yourself.</p>
 <a href="https://www.pt.qld.gov.au/wills-powers-of-attorney-estates/powers-of-attorney/about-power-of-attorney" target="_blank" class="doc-link">🔗 QLD Public Trustee — About Power of Attorney</a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">Plain-English explanation of what a Power of Attorney is, the different types available in Queensland, and how to set one up.</p>
-<hr style="margin:12px 0;border:none;border-top:1px solid #c5d8ee;">
+<p style="color:#B9AF9C;margin-top:10px;font-size:0.9em;">Plain-English explanation of what a Power of Attorney is, the different types available in Queensland, and how to set one up.</p>
+<hr style="margin:12px 0;border:none;border-top:1px solid #3F4143;">
 <a href="https://www.liveup.org.au/" target="_blank" class="doc-link">🔗 LiveUp — Healthy ageing resources</a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">Free Australian Government resource with practical tips and tools to help you stay active, connected and independent as you age.</p>
+<p style="color:#B9AF9C;margin-top:10px;font-size:0.9em;">Free Australian Government resource with practical tips and tools to help you stay active, connected and independent as you age.</p>
 <a href="https://adaaustralia.com.au/" target="_blank" class="doc-link">🔗 ADA Australia — Aged care and disability advocacy</a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">Independent advocacy service supporting older Australians and people with disability to understand their rights and navigate aged care services.</p>
+<p style="color:#B9AF9C;margin-top:10px;font-size:0.9em;">Independent advocacy service supporting older Australians and people with disability to understand their rights and navigate aged care services.</p>
 </div>
 
 <!-- Local Services Section -->
@@ -2635,7 +2635,7 @@ Resources to support your health, independence and legal planning as you age.
 </div>
 <div id="local-services" class="collapsible-content">
 <a href="getting-around.html" class="doc-link">🚌 Getting Around — public transport, Council Cabs &amp; subsidy schemes</a>
-<p style="color:#5f6368;margin-top:10px;font-size:0.9em;">Our full guide to fares, seniors travel cards, shopping shuttles and community transport.</p>
+<p style="color:#B9AF9C;margin-top:10px;font-size:0.9em;">Our full guide to fares, seniors travel cards, shopping shuttles and community transport.</p>
 <a href="https://www.brisbane-australia.com/brisbane-cinemas.html" target="_blank" class="doc-link">Brisbane Entertainment - Cinemas and events</a>
 <a href="https://www.brisbane.qld.gov.au/libraries-venues-and-facilities/libraries/library-locations" target="_blank" class="doc-link">Brisbane Libraries - Library locations and services</a>
 <a href="https://www.brisbane.qld.gov.au/events-arts-and-culture" target="_blank" class="doc-link">Brisbane City Council - Events, Arts and Culture</a>
@@ -2645,7 +2645,7 @@ Resources to support your health, independence and legal planning as you age.
 
 <div class="info-box" style="margin-top:40px;">
 <strong>💡 Tip:</strong> All links open in a new tab. Click any link above to visit the website while keeping this page open.
-If you find a link that no longer works, please let us know using the <strong>Have a Question?</strong> form on the <a href="how-to.html" style="color:#1F4E79;font-weight:700;">Help &amp; How To</a> page.
+If you find a link that no longer works, please let us know using the <strong>Have a Question?</strong> form on the <a href="how-to.html" style="color:#D4B860;font-weight:700;">Help &amp; How To</a> page.
 </div>
 
 </div>
@@ -2673,11 +2673,11 @@ If you find a link that no longer works, please let us know using the <strong>Ha
 <div>
 
 <!-- EMERGENCY SERVICES -->
-<div style="background:#fff3e0;border:3px solid #d32f2f;border-radius:8px;padding:25px;margin-bottom:25px;" id="emergency-contacts">
+<div style="background:#4a2320;border:3px solid #d32f2f;border-radius:8px;padding:25px;margin-bottom:25px;color:#F6F2E7;" id="emergency-contacts">
 <h3 style="color:#d32f2f;font-size:1.5em;margin-bottom:15px;display:flex;align-items:center;">
 🚨 Emergency Services
 </h3>
-<div style="background:white;padding:20px;border-radius:6px;font-size:1.1em;line-height:2;">
+<div style="background:white;padding:20px;border-radius:6px;font-size:1.1em;line-height:2;color:#222;">
 <p style="margin:0;"><strong style="color:#d32f2f;">Police / Fire / Ambulance:</strong> <strong>000</strong></p>
 <p style="margin:8px 0 0 0;"><strong>Police Non-Emergency (Policelink):</strong> 131 444</p>
 <p style="margin:8px 0 0 0;"><strong>SES:</strong> 132 500</p>
@@ -2691,41 +2691,41 @@ If you find a link that no longer works, please let us know using the <strong>Ha
 </div>
 
 <!-- COMMUNITY CONTACTS -->
-<div style="background:#e8f4f8;border:3px solid #1F4E79;border-radius:8px;padding:25px;margin-bottom:25px;" id="community-contacts">
-<h3 style="color:#1F4E79;font-size:1.5em;margin-bottom:20px;display:flex;align-items:center;">
+<div style="background:#2E4256;border:3px solid #D4B860;border-radius:8px;padding:25px;margin-bottom:25px;color:#F6F2E7;" id="community-contacts">
+<h3 style="color:#D4B860;font-size:1.5em;margin-bottom:20px;display:flex;align-items:center;">
 🏘️ Community Contacts
 </h3>
 
 <!-- Committee -->
 <div class="contact-card" style="margin-bottom:15px;">
 <h4>📧 Committee Email</h4>
-<p><a href="mailto:rabd.ctee@gmail.com" style="color:#1F4E79;text-decoration:none;word-break:break-all;">rabd.ctee@gmail.com</a></p>
+<p><a href="mailto:rabd.ctee@gmail.com" style="color:#D4B860;text-decoration:none;word-break:break-all;">rabd.ctee@gmail.com</a></p>
 </div>
 
 <div class="contact-card" style="margin-bottom:15px;">
 <h4>Residents Committee — Office Bearers</h4>
 <p><strong>Chairperson</strong><br>
 Rick Van Haeften<br>
-📧 <a href="mailto:rabd.chair@gmail.com" style="color:#1F4E79;text-decoration:none;word-break:break-all;">rabd.chair@gmail.com</a></p>
+📧 <a href="mailto:rabd.chair@gmail.com" style="color:#D4B860;text-decoration:none;word-break:break-all;">rabd.chair@gmail.com</a></p>
 <p style="margin-top:15px;"><strong>Treasurer</strong><br>
 Margaret Chapman<br>
-📧 <a href="mailto:rabd.treasurer@gmail.com" style="color:#1F4E79;text-decoration:none;word-break:break-all;">rabd.treasurer@gmail.com</a></p>
+📧 <a href="mailto:rabd.treasurer@gmail.com" style="color:#D4B860;text-decoration:none;word-break:break-all;">rabd.treasurer@gmail.com</a></p>
 <p style="margin-top:15px;"><strong>Secretary</strong><br>
 Jocelyn Gould<br>
-📧 <a href="mailto:rabd.secretary@gmail.com" style="color:#1F4E79;text-decoration:none;word-break:break-all;">rabd.secretary@gmail.com</a></p>
+📧 <a href="mailto:rabd.secretary@gmail.com" style="color:#D4B860;text-decoration:none;word-break:break-all;">rabd.secretary@gmail.com</a></p>
 </div>
 
 <div class="contact-card" style="margin-bottom:15px;">
 <h4>Social Club Committee — Office Bearers</h4>
 <p><strong>Convenor</strong><br>
 Kathy Kingsford<br>
-📧 <a href="mailto:bdsc.convenor@gmail.com" style="color:#1F4E79;text-decoration:none;word-break:break-all;">bdsc.convenor@gmail.com</a></p>
+📧 <a href="mailto:bdsc.convenor@gmail.com" style="color:#D4B860;text-decoration:none;word-break:break-all;">bdsc.convenor@gmail.com</a></p>
 <p style="margin-top:15px;"><strong>Treasurer</strong><br>
 Marie Rosolen<br>
-📧 <a href="mailto:bdsc.treas@gmail.com" style="color:#1F4E79;text-decoration:none;word-break:break-all;">bdsc.treas@gmail.com</a></p>
+📧 <a href="mailto:bdsc.treas@gmail.com" style="color:#D4B860;text-decoration:none;word-break:break-all;">bdsc.treas@gmail.com</a></p>
 <p style="margin-top:15px;"><strong>Secretary</strong><br>
 Judy Ash<br>
-📧 <a href="mailto:bdsc.secret@gmail.com" style="color:#1F4E79;text-decoration:none;word-break:break-all;">bdsc.secret@gmail.com</a></p>
+📧 <a href="mailto:bdsc.secret@gmail.com" style="color:#D4B860;text-decoration:none;word-break:break-all;">bdsc.secret@gmail.com</a></p>
 </div>
 
 <!-- Village Services -->
@@ -2759,12 +2759,12 @@ Judy Ash<br>
 </div>
 
 <div>
-<h3 style="color:#202124;font-size:1.4em;margin-bottom:15px;">Send Us Feedback</h3>
-<p style="color:#5f6368;margin-bottom:20px;">
+<h3 style="color:#F6F2E7;font-size:1.4em;margin-bottom:15px;">Send Us Feedback</h3>
+<p style="color:#B9AF9C;margin-bottom:20px;">
 We value your input! Use the Send Feedback to Committee button to share your thoughts with us.
 </p>
 
-<div style="background:#e8f4f8;border-left:4px solid #1F4E79;padding:20px;border-radius:4px;">
+<div style="background:#2E4256;border-left:4px solid #D4B860;padding:20px;border-radius:4px;color:#F6F2E7;">
 <strong>💡 Quick Tip:</strong><br><br>
 The feedback button stays visible as you scroll down the page, making it easy to submit feedback at any time.
 </div>
@@ -3113,7 +3113,7 @@ function activitiesPhoneHref(contact) {
 function renderActivities(rows) {
     const tbody = document.getElementById('activitiesTableBody');
     if (!rows || rows.length < 2) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;padding:20px;">No activities found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#B9AF9C;font-style:italic;padding:20px;">No activities found.</td></tr>';
         return;
     }
 
@@ -3170,7 +3170,7 @@ function renderActivities(rows) {
         html += '</tr>';
     }
 
-    tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;padding:20px;">No activities found.</td></tr>';
+    tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center;color:#B9AF9C;font-style:italic;padding:20px;">No activities found.</td></tr>';
 }
 
 function toggleActivityDesc(rowId, cell) {
@@ -3191,7 +3191,7 @@ function loadActivities() {
         })
         .catch(function() {
             const tbody = document.getElementById('activitiesTableBody');
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888;font-style:italic;padding:20px;">Activities are temporarily unavailable. Please try again later.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#B9AF9C;font-style:italic;padding:20px;">Activities are temporarily unavailable. Please try again later.</td></tr>';
         });
 }
 
@@ -3891,6 +3891,11 @@ function submitHomeQuestion() {
   --hub-charcoal:#3F4143;
 }
 
+/* ---- Base page background (was still white — now consistent with every other page) ---- */
+body{ background:var(--hub-navy); color:var(--hub-cream); }
+.container{ background:var(--hub-navy); }
+.hub-wrapper{ background:var(--hub-navy); }
+
 /* ---- Header ---- */
 header{ background:var(--hub-navy); color:var(--hub-cream); }
 .sb-header-date{ color:var(--hub-cream); }
@@ -3958,6 +3963,92 @@ a[href="welcome.html"]{ background:var(--hub-gold) !important; border-color:var(
 .ask-input, .ask-textarea{ border-color:var(--hub-gold); }
 .ask-btn{ background:var(--hub-gold); color:var(--hub-navy); }
 .ask-btn:hover{ background:#c2a44f; }
+
+/* ================================================================
+   ADDITIONAL SECTIONS — About, Newsletters, Events, Events List,
+   Activity Contacts, Noticeboard, Village Info (Residents Only),
+   Useful Links, Contact. These share the base stylesheet above
+   but weren't part of the original Home-page pass.
+   ================================================================ */
+
+/* ---- Top search bar (visible on every section) ---- */
+.search-container{ background:var(--hub-navy-panel); border-bottom-color:var(--hub-charcoal); }
+.search-input{ border-color:var(--hub-gold); }
+.search-input:focus{ border-color:var(--hub-gold); box-shadow:0 0 0 3px rgba(212,184,96,0.2); }
+.search-button{ background:var(--hub-gold); color:var(--hub-navy); }
+.search-button:hover{ background:#c2a44f; }
+/* search-results dropdown intentionally left white — self-contained popover, same treatment used on other pages */
+.search-result-item{ color:#222; }
+
+/* ---- Breadcrumbs ---- */
+.breadcrumbs{ background:var(--hub-navy-panel); border-bottom-color:var(--hub-charcoal); }
+.breadcrumbs a{ color:var(--hub-cream); background:var(--hub-navy); border-color:var(--hub-charcoal); }
+.breadcrumbs a:hover{ background:var(--hub-gold); color:var(--hub-navy); border-color:var(--hub-gold); }
+.breadcrumbs span{ color:var(--hub-charcoal); opacity:0.7; }
+.breadcrumbs strong{ color:var(--hub-cream); }
+
+/* ---- Generic buttons, links, boxes reused across sections ---- */
+.btn{ background:var(--hub-gold); color:var(--hub-navy); }
+.btn:hover{ background:#c2a44f; }
+.back-home{ color:var(--hub-gold); }
+.doc-link{ background:var(--hub-navy-panel); border-color:var(--hub-charcoal); color:var(--hub-cream); }
+.doc-link:hover{ background:var(--hub-navy-hover); border-color:var(--hub-gold); }
+.info-box{ background:var(--hub-navy-panel); border-left-color:var(--hub-gold); color:var(--hub-cream); }
+.warning-box{ background:var(--hub-navy-panel); border-left-color:var(--hub-gold); color:var(--hub-cream); }
+.note-box{ background:var(--hub-navy-panel); border-left-color:var(--hub-gold); color:var(--hub-cream); }
+.contact-card{ background:var(--hub-navy-panel); border-color:var(--hub-charcoal); }
+.contact-card h4{ color:var(--hub-gold); }
+
+/* ---- Sticky "Register Now" action box ---- */
+.sticky-action-box{ background:var(--hub-navy-panel); border:2px solid var(--hub-gold); box-shadow:none; }
+.sticky-action-box .btn{ background:var(--hub-gold); color:var(--hub-navy); }
+.sticky-action-box .btn:hover{ background:#c2a44f; }
+
+/* ---- Collapsible sections (Village Info / Useful Links style) ---- */
+.collapsible-header{ background:var(--hub-navy-panel); border-color:var(--hub-charcoal); }
+.collapsible-header:hover{ background:var(--hub-navy-hover); }
+.collapsible-title{ color:var(--hub-cream); }
+.collapsible-arrow{ color:var(--hub-gold); }
+.collapsible-content{ background:var(--hub-navy); border-color:var(--hub-charcoal); }
+
+/* ---- Village Info folder toggles (finances/aveo documents) ---- */
+.folder-toggle{ background:var(--hub-navy-panel); border-color:var(--hub-charcoal); color:var(--hub-cream); }
+.folder-toggle:hover, .folder-toggle.active{ background:var(--hub-navy-hover); border-color:var(--hub-gold); }
+.folder-contents{ background:var(--hub-navy); border-color:var(--hub-charcoal); }
+.doc-list li{ border-bottom-color:var(--hub-charcoal); }
+.doc-list a{ color:var(--hub-gold); }
+
+/* ---- Events page cards (Calendar / Events List) ---- */
+.evc-card{ background:var(--hub-navy-panel); border-color:var(--hub-charcoal); box-shadow:none; }
+.evc-card-header{ background:var(--hub-navy); }
+.evc-date-badge{ background:var(--hub-gold); color:var(--hub-navy); }
+.evc-title{ color:var(--hub-cream); }
+.evc-time{ color:var(--hub-gold); }
+.evc-tagline{ color:var(--hub-gold); }
+.evc-field{ color:var(--hub-cream); opacity:0.9; }
+.evc-field strong{ color:var(--hub-gold); }
+.evc-link-btn{ background:var(--hub-gold); color:var(--hub-navy); }
+.evc-link-btn:hover{ background:#c2a44f; }
+
+/* ---- Activity Contacts table ---- */
+.search-box input{ border-color:var(--hub-charcoal); background:white; color:#222; }
+.search-box input:focus{ border-color:var(--hub-gold); }
+.activities-table{ box-shadow:none; }
+.activities-table thead{ background-color:var(--hub-navy); color:var(--hub-cream); }
+.activities-table td{ border-bottom-color:var(--hub-charcoal); color:var(--hub-cream); }
+.activities-table tbody tr:nth-child(even){ background-color:var(--hub-navy-panel); }
+.activities-table tbody tr:hover{ background-color:var(--hub-navy-hover); }
+.activity-name{ color:var(--hub-cream); }
+.contact-link{ color:var(--hub-gold); }
+.day-badge{ background-color:rgba(212,184,96,0.15); color:var(--hub-gold); }
+.abbreviations{ background-color:var(--hub-navy-panel); color:var(--hub-cream); opacity:0.85; }
+.activity-arrow{ color:var(--hub-gold); }
+.activity-desc-row td{ background-color:var(--hub-navy); color:var(--hub-cream); border-bottom-color:var(--hub-charcoal); }
+.activity-desc-row em{ color:var(--hub-muted, #B9AF9C); }
+@media(max-width:768px){
+  .activities-table tr{ border-color:var(--hub-charcoal); }
+  .activities-table td::before{ color:var(--hub-gold); }
+}
 </style>
 </body>
 </html>
