@@ -1378,9 +1378,18 @@ if (month === 2 && day === 17) {
 </script>
     
 <!-- MANUAL FALLBACK ANNOUNCEMENTS -->
+
+<!-- PALETTE ROLLOUT NOTICE — delete this whole <div class="announcement">...</div> block once the rollout is finished and residents have had a few weeks to see it. Nothing else on the page depends on it. -->
 <div class="announcement">
 <div class="announcement-text">
-<strong>Social Club Events:</strong> A number of great events are scheduled for the next couple of months. Check out the Social happenings in the <a href="https://bdrv.au/view-document.html?id=1NxLblJbMyF2hzUwNbRba8swmAtV3oi_O&title=June%202026%20-%20Social%20Club%20Newsletter&back=community-info/view" target="_blank" style="color:#2c5aa0; font-weight:bold;">Newsletter</a>. Stay safe and enjoy.
+<strong>New look for the Hub:</strong> In response to feedback, you'll notice some pages turning navy with cream and gold text over the coming weeks — easier to read, especially in the evening. Nothing about how the Hub works is changing.
+</div>
+</div>
+<!-- END PALETTE ROLLOUT NOTICE -->
+
+<div class="announcement">
+<div class="announcement-text">
+<strong>Social Club Events:</strong> A number of great events are scheduled for the next couple of months. Check out the Social happenings in the <a href="https://bdrv.au/view-document.html?id=1NxLblJbMyF2hzUwNbRba8swmAtV3oi_O&title=June%202026%20-%20Social%20Club%20Newsletter&back=community-info/view" target="_blank" style="color:var(--hub-gold); font-weight:bold;">Newsletter</a>. Stay safe and enjoy.
 </div>
 </div>
 
@@ -1408,12 +1417,12 @@ if (month === 2 && day === 17) {
 <div class="sidebar-widget" style="padding:12px 20px;">
     <div style="display:flex;align-items:center;justify-content:space-between;">
         <div>
-            <div style="font-size:13px;color:#666;margin-bottom:3px;">🌤️ Bridgeman Downs</div>
-            <div style="font-size:24px;font-weight:bold;color:#1F4E79;" id="weather-temp">--°</div>
-            <div style="font-size:13px;color:#666;" id="weather-minmax">-- | --</div>
+            <div style="font-size:13px;color:var(--hub-cream);opacity:0.7;margin-bottom:3px;">🌤️ Bridgeman Downs</div>
+            <div style="font-size:24px;font-weight:bold;color:var(--hub-gold);" id="weather-temp">--°</div>
+            <div style="font-size:13px;color:var(--hub-cream);opacity:0.7;" id="weather-minmax">-- | --</div>
         </div>
         <div style="text-align:right;">
-            <div style="font-size:15px;color:#333;font-weight:500;" id="weather-desc">Loading...</div>
+            <div style="font-size:15px;color:var(--hub-cream);font-weight:500;" id="weather-desc">Loading...</div>
         </div>
     </div>
 </div>
@@ -1436,7 +1445,7 @@ setInterval(loadWeather, 1800000);
     
 <div class="sidebar-widget">
 <div class="widget-title">🗓️ Upcoming Events</div>
-<div id="upcomingEventsList"><div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">Loading events…</div></div>
+<div id="upcomingEventsList"><div class="event-item" style="color:var(--hub-cream);opacity:0.5;font-style:italic;font-size:0.85em;">Loading events…</div></div>
 </div>
 <!-- END OF EVENTS LIST -->
 
@@ -1451,7 +1460,7 @@ setInterval(loadWeather, 1800000);
         var container = document.getElementById('upcomingEventsList');
         if (!container) return;
         if (events.length === 0) {
-          container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
+          container.innerHTML = '<div class="event-item" style="color:var(--hub-cream);opacity:0.5;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
           return;
         }
         var html = '';
@@ -1473,7 +1482,7 @@ setInterval(loadWeather, 1800000);
       })
       .catch(function() {
         var container = document.getElementById('upcomingEventsList');
-        if (container) container.innerHTML = '<div class="event-item" style="color:#888;font-style:italic;font-size:0.85em;">Events unavailable.</div>';
+        if (container) container.innerHTML = '<div class="event-item" style="color:var(--hub-cream);opacity:0.5;font-style:italic;font-size:0.85em;">Events unavailable.</div>';
       });
   }
   document.addEventListener('DOMContentLoaded', loadUpcomingEvents);
@@ -3858,5 +3867,97 @@ function submitHomeQuestion() {
     now.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
 })();
 </script>
+
+<!-- ============================================================
+     NAVY/GOLD PALETTE OVERRIDE
+     Placed here (after everything else) so it reliably overrides
+     both existing copies of the sidebar CSS in this file.
+     Covers: header, top nav, hamburger menu, left sidebar, the
+     welcome box + "new to the Village" tip link, the announcement
+     boxes, the right-column widgets (weather / upcoming events /
+     quote of the day), and the "Share Your Thoughts" block.
+     Left deliberately UNCHANGED: the three amber "members-only"
+     sidebar links, and the red Emergency Services button (red is
+     kept on purpose as a universal "urgent" signal, same reasoning
+     as the red unread-notice badge in sidebar.js).
+     ============================================================ -->
+<style id="nav-palette-override">
+:root{
+  --hub-navy:#263746;
+  --hub-navy-panel:#2E4256;
+  --hub-navy-hover:#324A5F;
+  --hub-gold:#D4B860;
+  --hub-cream:#F6F2E7;
+  --hub-charcoal:#3F4143;
+}
+
+/* ---- Header ---- */
+header{ background:var(--hub-navy); color:var(--hub-cream); }
+.sb-header-date{ color:var(--hub-cream); }
+
+/* ---- Top nav bar ---- */
+nav{ background:var(--hub-navy-panel); border-bottom-color:var(--hub-charcoal); }
+.nav-item{ color:var(--hub-cream); background:var(--hub-navy); border-color:var(--hub-charcoal); }
+.nav-item:hover{ background:var(--hub-navy-hover); border-color:var(--hub-gold); color:var(--hub-gold); }
+.nav-item.active{ background:var(--hub-gold); color:var(--hub-navy); border-color:var(--hub-gold); }
+
+/* ---- Hamburger menu button ---- */
+.menu-btn{ background:var(--hub-gold); color:var(--hub-navy); }
+.menu-btn:hover{ background:#c2a44f; }
+.menu-bar{ background:var(--hub-navy); }
+
+/* ---- Menu panel (opens under the hamburger) ---- */
+.menu-panel{ background:var(--hub-navy-panel); border-bottom-color:var(--hub-charcoal); }
+.menu-section-title{ color:var(--hub-cream); opacity:0.65; border-bottom-color:var(--hub-charcoal); }
+.menu-item{ background:var(--hub-navy); border-color:var(--hub-charcoal); color:var(--hub-cream); }
+.menu-item:hover{ background:var(--hub-navy-hover); border-color:var(--hub-gold); }
+
+/* ---- Quick access tiles ---- */
+.quick-tile{ background:var(--hub-navy); border-color:var(--hub-charcoal); }
+.quick-tile:hover{ border-color:var(--hub-gold); background:var(--hub-navy-hover); }
+.quick-tile-name{ color:var(--hub-cream); }
+
+/* ---- Left sidebar (overrides BOTH copies of this CSS in the file) ---- */
+.hub-sidebar{ background:var(--hub-navy); border-right-color:var(--hub-charcoal); }
+.sb-section{ background:var(--hub-navy-panel); border-color:var(--hub-charcoal); }
+.sb-heading{ background:var(--hub-navy); color:var(--hub-gold); }
+.sb-links li a{ color:var(--hub-cream); border-bottom-color:var(--hub-charcoal); }
+.sb-links li a:hover{ background:var(--hub-navy-hover); }
+.sb-acc-header{ color:var(--hub-cream); background:var(--hub-navy-panel); border-bottom-color:var(--hub-charcoal); }
+.sb-acc-header:hover, .sb-acc-header.open{ background:var(--hub-navy-hover); }
+.sb-acc-arrow{ color:var(--hub-gold); }
+.sb-acc-body .sb-links li a{ color:var(--hub-cream); opacity:0.8; }
+.sb-acc-body .sb-links li a:hover{ background:var(--hub-navy-hover); color:var(--hub-gold); opacity:1; }
+
+/* ---- Footer ---- */
+.hub-footer{ background:var(--hub-navy-panel); color:var(--hub-cream); opacity:0.85; border-top-color:var(--hub-charcoal); }
+
+/* ---- Welcome box ---- */
+.welcome-box{ background:var(--hub-navy-panel); color:var(--hub-cream); border-left:4px solid var(--hub-gold); }
+
+/* ---- "New to the Village" tip link ---- */
+a[href="welcome.html"]{ background:var(--hub-gold) !important; border-color:var(--hub-gold) !important; color:var(--hub-navy) !important; }
+
+/* ---- Announcement boxes (Social Club Events / speeding fine / RC-generated notices) ---- */
+.announcement{ background:var(--hub-navy-panel); border-left-color:var(--hub-gold); }
+.announcement-date{ color:var(--hub-cream); opacity:0.65; }
+.announcement-text{ color:var(--hub-cream); }
+.announcement-text strong{ color:var(--hub-gold); }
+.announcement a:hover{ background:var(--hub-navy-hover) !important; }
+
+/* ---- Right-column widgets: weather, upcoming events, quote of the day ---- */
+.sidebar-widget{ background:var(--hub-navy-panel); border-color:var(--hub-charcoal); color:var(--hub-cream); }
+.widget-title{ color:var(--hub-gold); }
+.event-item{ border-bottom-color:var(--hub-charcoal); }
+.event-date{ color:var(--hub-gold); }
+.event-date:hover{ color:var(--hub-gold) !important; }
+.event-name{ color:var(--hub-cream); }
+
+/* ---- "Share Your Thoughts" block ---- */
+.ask-section{ background:var(--hub-navy-panel); color:var(--hub-cream); border-left:4px solid var(--hub-gold); }
+.ask-input, .ask-textarea{ border-color:var(--hub-gold); }
+.ask-btn{ background:var(--hub-gold); color:var(--hub-navy); }
+.ask-btn:hover{ background:#c2a44f; }
+</style>
 </body>
 </html>

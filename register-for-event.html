@@ -6,40 +6,42 @@
   <title>Register for an Event | Bridgeman Downs Residents Hub</title>
   <style>
     :root {
-      --navy:       #1F4E79;
-      --navy-light: #E7F1FB;
-      --navy-mid:   #c5d8ee;
-      --green:      #1a6b3a;
-      --green-bg:   #e8f5ee;
-      --red:        #c0392b;
-      --red-bg:     #fdf0ee;
-      --grey:       #5f6368;
-      --border:     #dde3ec;
+      --hub-navy:        #263746;
+      --hub-navy-panel:  #2E4256;
+      --hub-navy-hover:  #324A5F;
+      --hub-gold:        #D4B860;
+      --hub-cream:       #F6F2E7;
+      --hub-muted:       #B9AF9C;
+      --hub-charcoal:    #3F4143;
+      --hub-green:       #5fb87e;
+      --hub-green-bg:    #24402f;
+      --hub-red:         #e8998c;
+      --hub-red-bg:      #4a2320;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-      background:#f0f4f8;
-      color:#333;
+      background:var(--hub-navy);
+      color:var(--hub-cream);
       min-height:100vh;
     }
 
     /* ── Top bar ── */
     .top-bar {
-      background:var(--navy); padding:12px 20px;
+      background:var(--hub-navy-panel); padding:12px 20px;
       display:flex; align-items:center; justify-content:space-between;
       flex-wrap:wrap; gap:10px;
     }
     .top-bar-info { min-width:0; }
-    .top-bar-title { color:white; font-size:1.05em; font-weight:700; }
-    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
+    .top-bar-title { color:var(--hub-cream); font-size:1.05em; font-weight:700; }
+    .top-bar-sub   { color:rgba(246,242,231,0.72); font-size:0.8em; margin-top:2px; }
     .back-btn {
       display:inline-flex; align-items:center; gap:6px;
-      background:white; color:var(--navy); padding:9px 16px;
+      background:var(--hub-gold); color:var(--hub-navy); padding:9px 16px;
       border-radius:7px; text-decoration:none; font-weight:700;
-      font-size:0.88em; border:2px solid white; white-space:nowrap;
+      font-size:0.88em; border:2px solid var(--hub-gold); white-space:nowrap;
     }
-    .back-btn:hover { background:var(--navy-light); }
+    .back-btn:hover { background:#c2a44f; }
 
     /* ── Page layout ── */
     .page-wrap {
@@ -48,47 +50,47 @@
 
     /* ── Intro card ── */
     .intro-card {
-      background:white; border-radius:14px;
-      border:2px solid var(--navy-mid);
+      background:var(--hub-navy-panel); border-radius:14px;
+      border:2px solid var(--hub-charcoal);
       padding:22px 24px; margin-bottom:20px;
       display:flex; gap:16px; align-items:flex-start;
     }
     .intro-icon { font-size:2.4em; flex-shrink:0; }
-    .intro-text h2 { color:var(--navy); font-size:1.15em; margin-bottom:6px; }
-    .intro-text p  { color:var(--grey); font-size:0.9em; line-height:1.55; }
+    .intro-text h2 { color:var(--hub-gold); font-size:1.15em; margin-bottom:6px; }
+    .intro-text p  { color:var(--hub-muted); font-size:0.9em; line-height:1.55; }
 
     /* ── Form card ── */
     .form-card {
-      background:white; border-radius:14px;
-      border:2px solid var(--navy-mid);
+      background:var(--hub-navy-panel); border-radius:14px;
+      border:2px solid var(--hub-charcoal);
       padding:24px;
     }
     .form-card h3 {
-      color:var(--navy); font-size:1em; font-weight:700;
+      color:var(--hub-gold); font-size:1em; font-weight:700;
       margin-bottom:18px; padding-bottom:12px;
-      border-bottom:2px solid var(--navy-light);
+      border-bottom:2px solid var(--hub-charcoal);
     }
 
     .field { margin-bottom:16px; }
     .field label {
       display:block; font-weight:700; font-size:0.88em;
-      color:var(--navy); margin-bottom:6px;
+      color:var(--hub-cream); margin-bottom:6px;
     }
-    .field label .req { color:var(--red); margin-left:2px; }
+    .field label .req { color:var(--hub-red); margin-left:2px; }
     .field label .hint {
-      font-weight:400; color:var(--grey); font-size:0.93em; margin-left:4px;
+      font-weight:400; color:var(--hub-muted); font-size:0.93em; margin-left:4px;
     }
     .field input, .field select, .field textarea {
       width:100%; padding:11px 14px; font-size:0.93em;
-      border:2px solid var(--border); border-radius:8px;
+      border:2px solid var(--hub-charcoal); border-radius:8px;
       font-family:inherit; color:#333; background:white;
       transition:border-color 0.15s;
     }
     .field input:focus, .field select:focus, .field textarea:focus {
-      outline:none; border-color:var(--navy);
+      outline:none; border-color:var(--hub-gold);
     }
     .field input.error, .field select.error {
-      border-color:var(--red);
+      border-color:var(--hub-red);
     }
     .field textarea { resize:vertical; min-height:80px; }
 
@@ -96,65 +98,65 @@
     .field-row .field { flex:1; }
 
     .field-note {
-      font-size:0.82em; color:var(--grey); margin-top:5px; line-height:1.4;
+      font-size:0.82em; color:var(--hub-muted); margin-top:5px; line-height:1.4;
     }
 
     /* ── Submit button ── */
     .btn-submit {
-      width:100%; padding:14px; background:var(--navy); color:white;
+      width:100%; padding:14px; background:var(--hub-gold); color:var(--hub-navy);
       border:none; border-radius:9px; font-size:1em; font-weight:700;
       font-family:inherit; cursor:pointer; margin-top:8px;
       transition:background 0.15s;
       display:flex; align-items:center; justify-content:center; gap:8px;
     }
-    .btn-submit:hover:not(:disabled) { background:#163d61; }
+    .btn-submit:hover:not(:disabled) { background:#c2a44f; }
     .btn-submit:disabled { opacity:0.65; cursor:not-allowed; }
 
     /* ── Loading spinner ── */
     .spinner {
-      width:18px; height:18px; border:3px solid rgba(255,255,255,0.35);
-      border-top-color:white; border-radius:50%;
+      width:18px; height:18px; border:3px solid rgba(38,55,70,0.35);
+      border-top-color:var(--hub-navy); border-radius:50%;
       animation:spin 0.7s linear infinite; display:none;
     }
     @keyframes spin { to { transform:rotate(360deg); } }
 
     /* ── Error note ── */
     .form-error {
-      background:var(--red-bg); border:1px solid #f5c6c2;
+      background:var(--hub-red-bg); border:1px solid var(--hub-red);
       border-radius:8px; padding:12px 14px; margin-top:12px;
-      color:var(--red); font-size:0.88em; display:none;
+      color:var(--hub-red); font-size:0.88em; display:none;
     }
 
     /* ── Success panel ── */
     .success-panel {
-      display:none; background:white; border-radius:14px;
-      border:2px solid #a8d5b8; padding:32px 24px; text-align:center;
+      display:none; background:var(--hub-navy-panel); border-radius:14px;
+      border:2px solid var(--hub-green); padding:32px 24px; text-align:center;
     }
     .success-icon { font-size:3.5em; margin-bottom:14px; }
-    .success-panel h2 { color:var(--green); font-size:1.25em; margin-bottom:10px; }
-    .success-panel p  { color:var(--grey); font-size:0.92em; line-height:1.6; margin-bottom:8px; }
+    .success-panel h2 { color:var(--hub-green); font-size:1.25em; margin-bottom:10px; }
+    .success-panel p  { color:var(--hub-muted); font-size:0.92em; line-height:1.6; margin-bottom:8px; }
     .success-summary {
-      background:var(--green-bg); border-radius:10px;
+      background:var(--hub-green-bg); border-radius:10px;
       padding:14px 18px; margin:16px 0; text-align:left;
-      font-size:0.9em; line-height:1.8;
+      font-size:0.9em; line-height:1.8; color:var(--hub-cream);
     }
-    .success-summary strong { color:var(--green); }
+    .success-summary strong { color:var(--hub-green); }
     .btn-another {
       display:inline-block; margin-top:18px; padding:11px 24px;
-      background:var(--navy); color:white; border:none; border-radius:8px;
+      background:var(--hub-gold); color:var(--hub-navy); border:none; border-radius:8px;
       font-size:0.93em; font-weight:700; font-family:inherit;
       cursor:pointer; text-decoration:none;
     }
-    .btn-another:hover { background:#163d61; }
+    .btn-another:hover { background:#c2a44f; }
 
     /* ── Loading events ── */
     .loading-events {
-      text-align:center; color:var(--grey); padding:20px 0;
+      text-align:center; color:var(--hub-muted); padding:20px 0;
       font-style:italic; font-size:0.9em;
     }
     .no-events {
-      background:var(--navy-light); border-radius:10px;
-      padding:16px 18px; color:var(--navy); font-size:0.9em;
+      background:var(--hub-navy-panel); border-radius:10px;
+      padding:16px 18px; color:var(--hub-cream); font-size:0.9em;
       line-height:1.6;
     }
 
@@ -257,7 +259,7 @@
     <p>If you need to make any changes, please contact the Social Club Committee.</p>
     <button class="btn-another" onclick="registerAnother()">Register for Another Event</button>
     &nbsp;
-    <a href="index.html#events" class="btn-another" style="background:#555">← Back to Hub</a>
+    <a href="index.html#events" class="btn-another" style="background:var(--hub-charcoal);color:var(--hub-cream);">← Back to Hub</a>
   </div>
 
 </div><!-- /page-wrap -->
