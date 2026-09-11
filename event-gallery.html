@@ -119,6 +119,12 @@
   // Same dedicated Event Media Apps Script deployment used by event-photos-submit.html
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDvm1XBaqZXts2pzZrGsZcseoNXnORnxQi1w5FxOrPjqhbpl3N-nOfGNt5XBVMWU8jtA/exec';
 
+  // Record that the resident has now visited the gallery, so the homepage
+  // banner and sidebar badge (which read this same value) clear on their
+  // next visit to those pages. This page doesn't load sidebar.js (it has
+  // its own simple top bar), so it needs to set this itself.
+  localStorage.setItem('eventGalleryLastVisit', Date.now().toString());
+
   function thumbUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w400'; }
   function largeUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1200'; }
   function previewUrl(fileId){ return 'https://drive.google.com/file/d/' + fileId + '/preview'; }
