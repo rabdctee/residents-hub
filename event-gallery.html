@@ -86,7 +86,20 @@
       position:absolute; top:18px; right:24px; color:white; font-size:2em;
       cursor:pointer; background:none; border:none; line-height:1;
     }
+    .lightbox-nav {
+      position:absolute; top:50%; transform:translateY(-50%);
+      width:56px; height:56px; border-radius:50%;
+      background:rgba(255,255,255,0.12); color:white; border:none;
+      font-size:1.6em; cursor:pointer; display:flex; align-items:center; justify-content:center;
+      transition:background 0.2s;
+    }
+    .lightbox-nav:hover { background:rgba(255,255,255,0.28); }
+    .lightbox-nav.hide { display:none; }
+    .lightbox-prev { left:16px; }
+    .lightbox-next { right:16px; }
+    @media(max-width:600px){ .lightbox-nav { width:44px; height:44px; font-size:1.3em; } .lightbox-prev { left:6px; } .lightbox-next { right:6px; } }
     .lightbox-inner { display:flex; flex-direction:column; align-items:center; gap:10px; max-width:100%; }
+    .lightbox-counter { color:var(--hub-muted); font-size:0.85em; margin-top:-4px; }
     .lightbox-actions { display:flex; gap:10px; }
     .lightbox-actions button {
       background:var(--hub-navy-panel); color:var(--hub-cream); border:2px solid var(--hub-charcoal);
@@ -143,6 +156,8 @@
 
 <div class="lightbox" id="lightbox">
   <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" onclick="lightboxPrev(event)">&#10094;</button>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" onclick="lightboxNext(event)">&#10095;</button>
   <div id="lightboxContent"></div>
 </div>
 
@@ -160,20 +175,31 @@
   function largeUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1200'; }
   function previewUrl(fileId){ return 'https://drive.google.com/file/d/' + fileId + '/preview'; }
 
-  var galleryData  = {};   // { eventName: [item, ...] }
-  var lightboxItem = null; // the item currently open in the lightbox
+  var galleryData        = {};   // { eventName: [item, ...] } — from the server, unsorted
+  var sortedItemsByEvent = {};   // { eventName: [item, ...] } — same order shown in the grid
+  var lightboxEventName  = null;
+  var lightboxIndex      = -1;
+  var lightboxItem       = null; // the item currently open in the lightbox
 
   function esc(str) {
     return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // Safely embeds a JSON object inside a single-quoted HTML attribute
-  function jsonForAttr(obj) {
-    return JSON.stringify(obj).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/</g,'&lt;');
+  // Safely embeds a JSON value inside a single-quoted HTML attribute
+  function jsonForAttr(val) {
+    return JSON.stringify(val).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/</g,'&lt;');
   }
 
-  function openLightbox(item) {
-    lightboxItem = item;
+  function openLightbox(eventName, idx) {
+    var items = sortedItemsByEvent[eventName] || [];
+    if (!items.length) return;
+    idx = ((idx % items.length) + items.length) % items.length; // wrap around at either end
+    var item = items[idx];
+
+    lightboxEventName = eventName;
+    lightboxIndex      = idx;
+    lightboxItem        = Object.assign({ eventName: eventName }, item);
+
     var el = document.getElementById('lightboxContent');
 
     var mediaHtml = item.type === 'video'
@@ -181,13 +207,14 @@
       : '<img src="' + largeUrl(item.fileId) + '" alt="">';
 
     var eventOptions = Object.keys(galleryData).map(function(name){
-      var sel = name === item.eventName ? ' selected' : '';
+      var sel = name === eventName ? ' selected' : '';
       return '<option value="' + esc(name) + '"' + sel + '>' + esc(name) + '</option>';
     }).join('');
 
     el.innerHTML =
       '<div class="lightbox-inner">' +
         mediaHtml +
+        (items.length > 1 ? '<div class="lightbox-counter">' + (idx + 1) + ' of ' + items.length + '</div>' : '') +
         '<div class="lightbox-actions">' +
           '<button onclick="toggleLightboxForm(\'edit\')">✏️ Edit</button>' +
           '<button onclick="toggleLightboxForm(\'delete\')">🗑️ Delete</button>' +
@@ -218,6 +245,11 @@
         '</div>' +
       '</div>';
 
+    // Only show the arrows when there's more than one item to cycle through
+    var showNav = items.length > 1;
+    document.getElementById('lightboxPrev').classList.toggle('hide', !showNav);
+    document.getElementById('lightboxNext').classList.toggle('hide', !showNav);
+
     document.getElementById('lightbox').classList.add('show');
   }
 
@@ -225,9 +257,21 @@
     document.getElementById('lightbox').classList.remove('show');
     document.getElementById('lightboxContent').innerHTML = '';
     lightboxItem = null;
+    lightboxEventName = null;
+    lightboxIndex = -1;
   }
   document.getElementById('lightbox').addEventListener('click', function(e){
     if (e.target === this) closeLightbox();
+  });
+
+  function lightboxPrev(e) { if (e) e.stopPropagation(); if (lightboxEventName) openLightbox(lightboxEventName, lightboxIndex - 1); }
+  function lightboxNext(e) { if (e) e.stopPropagation(); if (lightboxEventName) openLightbox(lightboxEventName, lightboxIndex + 1); }
+
+  document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('lightbox').classList.contains('show')) return;
+    if (e.key === 'ArrowLeft')  lightboxPrev();
+    else if (e.key === 'ArrowRight') lightboxNext();
+    else if (e.key === 'Escape')     closeLightbox();
   });
 
   function toggleLightboxForm(which) {
@@ -261,6 +305,7 @@
     var html = '';
     eventNames.forEach(function(eventName, idx){
       var items = galleryData[eventName].slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+      sortedItemsByEvent[eventName] = items;
 
       html += '<div class="event-card">';
       html += '  <div class="event-header" onclick="toggleEvent(' + idx + ')">';
@@ -268,9 +313,8 @@
       html += '    <div class="event-toggle" id="toggle-' + idx + '">▾</div>';
       html += '  </div>';
       html += '  <div class="event-grid" id="grid-' + idx + '">';
-      items.forEach(function(item){
-        var itemWithEvent = Object.assign({ eventName: eventName }, item);
-        html += '<div class="thumb" onclick=\'openLightbox(' + jsonForAttr(itemWithEvent) + ')\'>';
+      items.forEach(function(item, i){
+        html += '<div class="thumb" onclick=\'openLightbox(' + jsonForAttr(eventName) + ', ' + i + ')\'>';
         html += '  <img src="' + thumbUrl(item.fileId) + '" loading="lazy" alt="">';
         if (item.type === 'video') html += '<div class="play-icon">▶</div>';
         if (item.uploader) html += '<div class="credit">' + esc(item.uploader) + '</div>';
