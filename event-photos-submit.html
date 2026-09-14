@@ -6,113 +6,111 @@
   <title>Share Event Photos & Videos | Bridgeman Downs Residents Hub</title>
   <style>
     :root {
-      --hub-navy:       #263746;
-      --hub-navy-panel: #2E4256;
-      --hub-navy-hover: #324A5F;
-      --hub-gold:       #D4B860;
-      --hub-cream:      #F6F2E7;
-      --hub-muted:      #B9AF9C;
-      --hub-charcoal:   #3F4143;
-      --hub-green:      #5fb87e;
-      --hub-green-bg:   #24402f;
-      --hub-red:        #e8998c;
-      --hub-red-bg:     #4a2320;
+      --navy:       #1F4E79;
+      --navy-light: #E7F1FB;
+      --navy-mid:   #c5d8ee;
+      --gold:       #C9A44A;
+      --green:      #1a6b3a;
+      --green-bg:   #e8f5ee;
+      --red:        #c0392b;
+      --red-bg:     #fdf2f2;
+      --grey:       #5f6368;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:var(--hub-navy); min-height:100vh; }
+    body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:#f5f5f5; min-height:100vh; }
     .top-bar {
-      background:var(--hub-navy-panel); padding:12px 20px;
+      background:var(--navy); padding:12px 20px;
       display:flex; align-items:center; justify-content:space-between;
       flex-wrap:wrap; gap:10px;
     }
-    .top-bar-title { color:var(--hub-cream); font-size:1em; font-weight:700; }
-    .top-bar-sub   { color:rgba(246,242,231,0.72); font-size:0.8em; margin-top:2px; }
+    .top-bar-title { color:white; font-size:1em; font-weight:700; }
+    .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; }
     .back-btn {
       display:inline-flex; align-items:center; gap:6px;
-      background:var(--hub-gold); color:var(--hub-navy); border:none;
+      background:#1F4E79; color:#fff; border:none;
       border-radius:6px; padding:8px 16px;
       font-size:0.95rem; font-family:'Segoe UI',Arial,sans-serif;
-      cursor:pointer; text-decoration:none; font-weight:700;
+      cursor:pointer; text-decoration:none;
     }
-    .back-btn:hover { background:#c2a44f; }
+    .back-btn:hover { background:#2E75B6; }
     .content { max-width:640px; margin:0 auto; padding:24px 16px 60px; }
     .intro-box {
-      background:var(--hub-navy-panel); border-left:4px solid var(--hub-gold);
+      background:var(--navy-light); border-left:4px solid var(--navy);
       border-radius:6px; padding:16px 18px; margin-bottom:18px;
-      font-size:0.92em; color:var(--hub-cream); line-height:1.6;
+      font-size:0.92em; color:#22333f; line-height:1.6;
     }
     .card {
-      background:var(--hub-navy-panel); border-radius:12px;
-      border:2px solid var(--hub-charcoal);
-      box-shadow:0 2px 8px rgba(0,0,0,0.25);
+      background:white; border-radius:12px;
+      border:2px solid var(--navy-light);
+      box-shadow:0 2px 8px rgba(0,0,0,0.07);
       overflow:hidden; margin-bottom:16px;
     }
-    .card-header { background:var(--hub-navy); padding:14px 20px; color:var(--hub-cream); font-weight:700; font-size:0.95em; }
+    .card-header { background:var(--navy); padding:14px 20px; color:white; font-weight:700; font-size:0.95em; }
     .card-body { padding:22px; }
     .form-group { margin-bottom:18px; }
     .form-group:last-child { margin-bottom:0; }
-    label { display:block; font-weight:600; font-size:0.88em; color:var(--hub-cream); margin-bottom:6px; }
-    label .required { color:var(--hub-red); margin-left:2px; }
-    label .optional { font-weight:400; color:var(--hub-muted); font-size:0.9em; }
+    label { display:block; font-weight:600; font-size:0.88em; color:var(--navy); margin-bottom:6px; }
+    label .required { color:var(--red); margin-left:2px; }
+    label .optional { font-weight:400; color:var(--grey); font-size:0.9em; }
     select, input[type="text"] {
       width:100%; padding:11px 13px; font-size:0.95em;
-      border:2px solid var(--hub-charcoal); border-radius:7px;
+      border:2px solid var(--navy-mid); border-radius:7px;
       background:white; color:#333; font-family:inherit;
       transition:border-color 0.15s; appearance:none;
     }
-    select:focus, input:focus { outline:none; border-color:var(--hub-gold); }
+    select:focus, input:focus { outline:none; border-color:var(--navy); }
     .drop-zone {
-      border:2px dashed var(--hub-charcoal); border-radius:9px; padding:28px 20px;
-      text-align:center; cursor:pointer; transition:all 0.2s; background:var(--hub-navy);
+      border:2px dashed var(--navy-mid); border-radius:9px; padding:28px 20px;
+      text-align:center; cursor:pointer; transition:all 0.2s; background:#fafcff;
       position:relative;
     }
-    .drop-zone:hover, .drop-zone.dragover { border-color:var(--hub-gold); background:var(--hub-navy-hover); }
+    .drop-zone:hover, .drop-zone.dragover { border-color:var(--navy); background:var(--navy-light); }
     .drop-zone input[type="file"] { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
     .drop-icon { font-size:2em; margin-bottom:8px; }
-    .drop-text { font-size:0.9em; color:var(--hub-muted); line-height:1.5; }
-    .drop-text strong { color:var(--hub-gold); }
+    .drop-text { font-size:0.9em; color:var(--grey); line-height:1.5; }
+    .drop-text strong { color:var(--navy); }
     .file-list { margin-top:14px; display:flex; flex-direction:column; gap:8px; }
     .file-row {
       display:flex; align-items:center; gap:8px;
-      background:var(--hub-navy); border-radius:7px;
-      padding:9px 12px; font-size:0.85em; color:var(--hub-cream); font-weight:600;
+      background:var(--navy-light); border-radius:7px;
+      padding:9px 12px; font-size:0.85em; color:var(--navy); font-weight:600;
     }
     .file-row .file-meta { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .file-row .file-status { font-size:0.85em; font-weight:700; flex-shrink:0; }
-    .file-row .file-status.pending { color:var(--hub-muted); }
-    .file-row .file-status.ok { color:var(--hub-green); }
-    .file-row .file-status.err { color:var(--hub-red); }
-    .file-remove { cursor:pointer; color:var(--hub-red); font-weight:700; font-size:1.05em; flex-shrink:0; background:none; border:none; padding:0 4px; }
-    .progress-wrap { display:none; margin-bottom:14px; background:var(--hub-charcoal); border-radius:20px; overflow:hidden; height:8px; }
+    .file-row .file-status.pending { color:var(--grey); }
+    .file-row .file-status.ok { color:var(--green); }
+    .file-row .file-status.err { color:var(--red); }
+    .file-remove { cursor:pointer; color:var(--red); font-weight:700; font-size:1.05em; flex-shrink:0; background:none; border:none; padding:0 4px; }
+    .progress-wrap { display:none; margin-bottom:14px; background:#e0e0e0; border-radius:20px; overflow:hidden; height:8px; }
     .progress-wrap.show { display:block; }
-    .progress-bar { height:100%; background:var(--hub-gold); border-radius:20px; width:0%; transition:width 0.3s; }
-    .progress-label { font-size:0.82em; color:var(--hub-muted); text-align:center; margin-top:6px; display:none; }
+    .progress-bar { height:100%; background:var(--navy); border-radius:20px; width:0%; transition:width 0.3s; }
+    .progress-label { font-size:0.82em; color:var(--grey); text-align:center; margin-top:6px; display:none; }
     .progress-label.show { display:block; }
     .alert { padding:12px 16px; border-radius:8px; font-size:0.88em; margin-bottom:16px; display:none; line-height:1.55; }
     .alert.show { display:block; }
-    .alert-success { background:var(--hub-green-bg); color:var(--hub-green); border:1px solid var(--hub-green); }
-    .alert-error   { background:var(--hub-red-bg);   color:var(--hub-red);   border:1px solid var(--hub-red); }
+    .alert-success { background:var(--green-bg); color:var(--green); border:1px solid #a8d5b8; }
+    .alert-error   { background:var(--red-bg);   color:var(--red);   border:1px solid #f1b0a8; }
     .btn-primary {
       display:flex; align-items:center; justify-content:center; gap:8px;
-      background:var(--hub-gold); color:var(--hub-navy); padding:13px 24px;
+      background:var(--navy); color:white; padding:13px 24px;
       border-radius:8px; font-weight:700; font-size:0.95em;
       border:none; cursor:pointer; width:100%; transition:background 0.2s;
     }
-    .btn-primary:hover { background:#c2a44f; }
-    .btn-primary:disabled { background:#6b7a86; cursor:not-allowed; }
-    .spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(38,55,70,0.4); border-top-color:var(--hub-navy); border-radius:50%; animation:spin 0.7s linear infinite; }
+    .btn-primary:hover { background:#17406a; }
+    .btn-primary:disabled { background:#aaa; cursor:not-allowed; }
+    .spinner { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
     .success-card { display:none; }
     .success-card.show { display:block; }
     .success-icon { font-size:3em; text-align:center; margin-bottom:12px; }
-    .success-detail { background:var(--hub-navy); border-radius:8px; padding:12px 16px; font-size:0.88em; color:var(--hub-cream); margin:14px 0; line-height:1.6; }
+    .success-detail { background:var(--navy-light); border-radius:8px; padding:12px 16px; font-size:0.88em; color:#333; margin:14px 0; line-height:1.6; }
     .btn-another {
       display:flex; align-items:center; justify-content:center; gap:8px;
-      background:var(--hub-navy); color:var(--hub-cream); padding:12px 24px;
+      background:white; color:var(--navy); padding:12px 24px;
       border-radius:8px; font-weight:700; font-size:0.92em;
-      border:2px solid var(--hub-charcoal); cursor:pointer; width:100%; transition:all 0.2s; margin-top:10px;
+      border:2px solid var(--navy); cursor:pointer; width:100%; transition:all 0.2s; margin-top:10px;
     }
-    .btn-another:hover { background:var(--hub-navy-hover); border-color:var(--hub-gold); }
+    .btn-another:hover { background:var(--navy-light); }
     @media(max-width:480px){ .top-bar { padding:10px 14px; } .back-btn { font-size:0.82em; padding:8px 12px; } .card-body { padding:16px; } }
   </style>
 </head>
@@ -155,8 +153,13 @@
       </div>
 
       <div class="form-group">
-        <label for="uploaderName">Your name <span class="optional">(optional — shown as photo credit)</span></label>
-        <input type="text" id="uploaderName" placeholder="e.g. Margaret, Unit 24">
+        <label for="uploaderName">Your name <span class="required">*</span> <span class="optional">(shown as photo credit)</span></label>
+        <input type="text" id="uploaderName" placeholder="e.g. Margaret">
+      </div>
+
+      <div class="form-group">
+        <label for="uploaderUnit">Unit number <span class="required">*</span> <span class="optional">(kept private — only used to verify you if you need to edit or delete this later)</span></label>
+        <input type="text" id="uploaderUnit" placeholder="e.g. 24">
       </div>
 
       <div class="form-group">
@@ -188,8 +191,8 @@
     <div class="card-header">&#9989; Thank You!</div>
     <div class="card-body">
       <div class="success-icon">&#127881;</div>
-      <p style="text-align:center;font-weight:700;color:var(--hub-gold);margin-bottom:6px;">Your photos &amp; videos have been shared!</p>
-      <p style="text-align:center;font-size:0.88em;color:var(--hub-muted);margin-bottom:14px;">
+      <p style="text-align:center;font-weight:700;color:var(--navy);margin-bottom:6px;">Your photos &amp; videos have been shared!</p>
+      <p style="text-align:center;font-size:0.88em;color:var(--grey);margin-bottom:14px;">
         They'll appear in the Event Photos &amp; Videos gallery on the Hub shortly.
       </p>
       <div class="success-detail" id="successDetail"></div>
@@ -326,9 +329,12 @@
   function uploadAll() {
     var eventName = getEventName();
     var uploader  = document.getElementById('uploaderName').value.trim();
+    var unit      = document.getElementById('uploaderUnit').value.trim();
     var toUpload  = selectedFiles.filter(function(e){ return e.status === 'pending'; });
 
     if (!eventName)          { showAlert('error','Please select or type the event name.'); return; }
+    if (!uploader)           { showAlert('error','Please enter your name.'); return; }
+    if (!unit)               { showAlert('error','Please enter your unit number — this is kept private and only used to verify you if you ever need to edit or delete this later.'); return; }
     if (!toUpload.length)    { showAlert('error','Please choose at least one photo or video (under 50MB each).'); return; }
 
     hideAlert();
@@ -367,6 +373,7 @@
               action:       'uploadEventMedia',
               eventName:    eventName,
               uploaderName: uploader,
+              uploaderUnit: unit,
               fileName:     prepared.fileName,
               fileData:     base64,
               mimeType:     prepared.mimeType
@@ -449,6 +456,7 @@
     document.getElementById('otherEventName').value = '';
     document.getElementById('otherEventGroup').style.display = 'none';
     document.getElementById('uploaderName').value = '';
+    document.getElementById('uploaderUnit').value = '';
     selectedFiles = [];
     renderFileList(); hideAlert(); window.scrollTo(0,0);
   }

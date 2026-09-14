@@ -13,6 +13,8 @@
       --hub-cream:      #F6F2E7;
       --hub-muted:      #B9AF9C;
       --hub-charcoal:   #3F4143;
+      --hub-green:      #5fb87e;
+      --hub-red:        #e8998c;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body { font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif; background:var(--hub-navy); min-height:100vh; }
@@ -84,6 +86,35 @@
       position:absolute; top:18px; right:24px; color:white; font-size:2em;
       cursor:pointer; background:none; border:none; line-height:1;
     }
+    .lightbox-inner { display:flex; flex-direction:column; align-items:center; gap:10px; max-width:100%; }
+    .lightbox-actions { display:flex; gap:10px; }
+    .lightbox-actions button {
+      background:var(--hub-navy-panel); color:var(--hub-cream); border:2px solid var(--hub-charcoal);
+      border-radius:7px; padding:8px 16px; font-size:0.85em; font-weight:700; cursor:pointer;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .lightbox-actions button:hover { border-color:var(--hub-gold); }
+    .lightbox-form {
+      display:none; background:var(--hub-navy-panel); border:2px solid var(--hub-charcoal);
+      border-radius:8px; padding:16px 18px; width:min(360px, 90vw); color:var(--hub-cream);
+    }
+    .lightbox-form.open { display:block; }
+    .lightbox-form p { font-size:0.85em; opacity:0.9; margin-bottom:10px; line-height:1.5; }
+    .lightbox-form label { display:block; font-size:0.78em; font-weight:700; margin:8px 0 4px; }
+    .lightbox-form input, .lightbox-form select {
+      width:100%; padding:8px 10px; font-size:0.9em; border-radius:5px; border:2px solid var(--hub-charcoal);
+      color:#222; font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .lightbox-form-btns { display:flex; align-items:center; gap:10px; margin-top:12px; }
+    .lightbox-form-btns button {
+      border:none; border-radius:6px; padding:8px 16px; font-size:0.85em; font-weight:700; cursor:pointer;
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    }
+    .btn-confirm-action { background:var(--hub-gold); color:var(--hub-navy); }
+    .btn-cancel-action  { background:transparent; color:var(--hub-cream); border:2px solid var(--hub-charcoal) !important; }
+    .lightbox-status { font-size:0.82em; }
+    .lightbox-status.err { color:var(--hub-red); }
+    .lightbox-status.ok  { color:var(--hub-green); }
     @media(max-width:480px){ .top-bar { padding:10px 14px; } .back-btn { font-size:0.82em; padding:8px 12px; } }
   </style>
 </head>
@@ -129,69 +160,235 @@
   function largeUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1200'; }
   function previewUrl(fileId){ return 'https://drive.google.com/file/d/' + fileId + '/preview'; }
 
+  var galleryData  = {};   // { eventName: [item, ...] }
+  var lightboxItem = null; // the item currently open in the lightbox
+
+  function esc(str) {
+    return String(str == null ? '' : str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Safely embeds a JSON object inside a single-quoted HTML attribute
+  function jsonForAttr(obj) {
+    return JSON.stringify(obj).replace(/&/g,'&amp;').replace(/'/g,'&#39;').replace(/</g,'&lt;');
+  }
+
   function openLightbox(item) {
+    lightboxItem = item;
     var el = document.getElementById('lightboxContent');
-    if (item.type === 'video') {
-      el.innerHTML = '<iframe src="' + previewUrl(item.fileId) + '" allow="autoplay"></iframe>';
-    } else {
-      el.innerHTML = '<img src="' + largeUrl(item.fileId) + '" alt="">';
-    }
+
+    var mediaHtml = item.type === 'video'
+      ? '<iframe src="' + previewUrl(item.fileId) + '" allow="autoplay"></iframe>'
+      : '<img src="' + largeUrl(item.fileId) + '" alt="">';
+
+    var eventOptions = Object.keys(galleryData).map(function(name){
+      var sel = name === item.eventName ? ' selected' : '';
+      return '<option value="' + esc(name) + '"' + sel + '>' + esc(name) + '</option>';
+    }).join('');
+
+    el.innerHTML =
+      '<div class="lightbox-inner">' +
+        mediaHtml +
+        '<div class="lightbox-actions">' +
+          '<button onclick="toggleLightboxForm(\'edit\')">✏️ Edit</button>' +
+          '<button onclick="toggleLightboxForm(\'delete\')">🗑️ Delete</button>' +
+        '</div>' +
+
+        '<div class="lightbox-form" id="lb-edit-form">' +
+          '<p>To edit this item, confirm the name and unit number you submitted it with, then update the details below.</p>' +
+          '<label>Your name</label><input type="text" id="lb-edit-name" placeholder="Name used when submitting">' +
+          '<label>Unit number</label><input type="text" id="lb-edit-unit" placeholder="Unit used when submitting">' +
+          '<label>Photo credit</label><input type="text" id="lb-edit-credit" value="' + esc(item.uploader) + '">' +
+          '<label>Event</label><select id="lb-edit-event">' + eventOptions + '</select>' +
+          '<div class="lightbox-form-btns">' +
+            '<button class="btn-confirm-action" onclick="confirmEditMedia()">Save Changes</button>' +
+            '<button class="btn-cancel-action" onclick="toggleLightboxForm(\'edit\')">Cancel</button>' +
+          '</div>' +
+          '<div class="lightbox-status" id="lb-edit-status" style="margin-top:8px;"></div>' +
+        '</div>' +
+
+        '<div class="lightbox-form" id="lb-delete-form">' +
+          '<p>To delete this item, confirm the name and unit number you submitted it with.</p>' +
+          '<label>Your name</label><input type="text" id="lb-delete-name" placeholder="Name used when submitting">' +
+          '<label>Unit number</label><input type="text" id="lb-delete-unit" placeholder="Unit used when submitting">' +
+          '<div class="lightbox-form-btns">' +
+            '<button class="btn-confirm-action" onclick="confirmDeleteMedia()">Confirm Delete</button>' +
+            '<button class="btn-cancel-action" onclick="toggleLightboxForm(\'delete\')">Cancel</button>' +
+          '</div>' +
+          '<div class="lightbox-status" id="lb-delete-status" style="margin-top:8px;"></div>' +
+        '</div>' +
+      '</div>';
+
     document.getElementById('lightbox').classList.add('show');
   }
+
   function closeLightbox() {
     document.getElementById('lightbox').classList.remove('show');
     document.getElementById('lightboxContent').innerHTML = '';
+    lightboxItem = null;
   }
   document.getElementById('lightbox').addEventListener('click', function(e){
     if (e.target === this) closeLightbox();
   });
+
+  function toggleLightboxForm(which) {
+    var thisForm  = document.getElementById('lb-' + which + '-form');
+    var otherForm = document.getElementById('lb-' + (which === 'edit' ? 'delete' : 'edit') + '-form');
+    thisForm.classList.toggle('open');
+    otherForm.classList.remove('open');
+  }
 
   function toggleEvent(idx) {
     document.getElementById('grid-' + idx).classList.toggle('open');
     document.getElementById('toggle-' + idx).classList.toggle('open');
   }
 
+  function renderGallery() {
+    var wrap = document.getElementById('galleryWrap');
+    var eventNames = Object.keys(galleryData).filter(function(n){ return galleryData[n].length > 0; });
+
+    if (!eventNames.length) {
+      wrap.innerHTML = '<div class="empty-state">No event photos or videos have been shared yet — be the first!</div>';
+      return;
+    }
+
+    // Sort events by most recent item first
+    eventNames.sort(function(a, b){
+      var latestA = Math.max.apply(null, galleryData[a].map(function(i){ return new Date(i.date).getTime(); }));
+      var latestB = Math.max.apply(null, galleryData[b].map(function(i){ return new Date(i.date).getTime(); }));
+      return latestB - latestA;
+    });
+
+    var html = '';
+    eventNames.forEach(function(eventName, idx){
+      var items = galleryData[eventName].slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
+
+      html += '<div class="event-card">';
+      html += '  <div class="event-header" onclick="toggleEvent(' + idx + ')">';
+      html += '    <div><div class="event-title">' + esc(eventName) + '</div><div class="event-meta">' + items.length + ' item' + (items.length===1?'':'s') + '</div></div>';
+      html += '    <div class="event-toggle" id="toggle-' + idx + '">▾</div>';
+      html += '  </div>';
+      html += '  <div class="event-grid" id="grid-' + idx + '">';
+      items.forEach(function(item){
+        var itemWithEvent = Object.assign({ eventName: eventName }, item);
+        html += '<div class="thumb" onclick=\'openLightbox(' + jsonForAttr(itemWithEvent) + ')\'>';
+        html += '  <img src="' + thumbUrl(item.fileId) + '" loading="lazy" alt="">';
+        if (item.type === 'video') html += '<div class="play-icon">▶</div>';
+        if (item.uploader) html += '<div class="credit">' + esc(item.uploader) + '</div>';
+        html += '</div>';
+      });
+      html += '  </div>';
+      html += '</div>';
+    });
+
+    wrap.innerHTML = html;
+    // Open the most recent event by default
+    if (eventNames.length) { toggleEvent(0); }
+  }
+
+  function confirmDeleteMedia() {
+    var name   = document.getElementById('lb-delete-name').value.trim();
+    var unit   = document.getElementById('lb-delete-unit').value.trim();
+    var status = document.getElementById('lb-delete-status');
+
+    if (!name || !unit) {
+      status.className = 'lightbox-status err';
+      status.textContent = '⚠️ Please enter both your name and unit number.';
+      return;
+    }
+
+    status.className = 'lightbox-status';
+    status.textContent = 'Deleting…';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'deleteMedia', fileId: lightboxItem.fileId, name: name, unit: unit })
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data.status !== 'ok') {
+          status.className = 'lightbox-status err';
+          status.textContent = '❌ ' + (data.message || 'Something went wrong.');
+          return;
+        }
+        // Remove from local data and re-render
+        var list = galleryData[lightboxItem.eventName] || [];
+        galleryData[lightboxItem.eventName] = list.filter(function(i){ return i.fileId !== lightboxItem.fileId; });
+        status.className = 'lightbox-status ok';
+        status.textContent = 'Deleted ✅';
+        setTimeout(function(){ closeLightbox(); renderGallery(); }, 700);
+      })
+      .catch(function(){
+        status.className = 'lightbox-status err';
+        status.textContent = '❌ Something went wrong. Please try again.';
+      });
+  }
+
+  function confirmEditMedia() {
+    var name      = document.getElementById('lb-edit-name').value.trim();
+    var unit      = document.getElementById('lb-edit-unit').value.trim();
+    var newCredit = document.getElementById('lb-edit-credit').value.trim();
+    var newEvent  = document.getElementById('lb-edit-event').value;
+    var status    = document.getElementById('lb-edit-status');
+
+    if (!name || !unit) {
+      status.className = 'lightbox-status err';
+      status.textContent = '⚠️ Please enter both your name and unit number.';
+      return;
+    }
+    if (!newCredit) {
+      status.className = 'lightbox-status err';
+      status.textContent = '⚠️ Photo credit can\'t be blank.';
+      return;
+    }
+
+    status.className = 'lightbox-status';
+    status.textContent = 'Saving…';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'editMedia',
+        fileId: lightboxItem.fileId,
+        name: name,
+        unit: unit,
+        newUploaderName: newCredit,
+        newEventName: newEvent
+      })
+    })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data.status !== 'ok') {
+          status.className = 'lightbox-status err';
+          status.textContent = '❌ ' + (data.message || 'Something went wrong.');
+          return;
+        }
+        // Update local data and re-render
+        var oldList = galleryData[lightboxItem.eventName] || [];
+        galleryData[lightboxItem.eventName] = oldList.filter(function(i){ return i.fileId !== lightboxItem.fileId; });
+        var updated = Object.assign({}, lightboxItem, { uploader: newCredit });
+        delete updated.eventName;
+        if (!galleryData[newEvent]) galleryData[newEvent] = [];
+        galleryData[newEvent].push(updated);
+
+        status.className = 'lightbox-status ok';
+        status.textContent = 'Saved ✅';
+        setTimeout(function(){ closeLightbox(); renderGallery(); }, 700);
+      })
+      .catch(function(){
+        status.className = 'lightbox-status err';
+        status.textContent = '❌ Something went wrong. Please try again.';
+      });
+  }
+
   fetch(SCRIPT_URL + '?action=gallery')
     .then(function(r){ return r.json(); })
     .then(function(data){
-      var wrap = document.getElementById('galleryWrap');
       if (data.status !== 'ok' || !data.events || !Object.keys(data.events).length) {
-        wrap.innerHTML = '<div class="empty-state">No event photos or videos have been shared yet — be the first!</div>';
+        document.getElementById('galleryWrap').innerHTML = '<div class="empty-state">No event photos or videos have been shared yet — be the first!</div>';
         return;
       }
-
-      // Sort events by most recent item first
-      var eventNames = Object.keys(data.events);
-      eventNames.sort(function(a, b){
-        var latestA = Math.max.apply(null, data.events[a].map(function(i){ return new Date(i.date).getTime(); }));
-        var latestB = Math.max.apply(null, data.events[b].map(function(i){ return new Date(i.date).getTime(); }));
-        return latestB - latestA;
-      });
-
-      var html = '';
-      eventNames.forEach(function(eventName, idx){
-        var items = data.events[eventName].slice().sort(function(a,b){ return new Date(b.date) - new Date(a.date); });
-
-        html += '<div class="event-card">';
-        html += '  <div class="event-header" onclick="toggleEvent(' + idx + ')">';
-        html += '    <div><div class="event-title">' + eventName + '</div><div class="event-meta">' + items.length + ' item' + (items.length===1?'':'s') + '</div></div>';
-        html += '    <div class="event-toggle" id="toggle-' + idx + '">▾</div>';
-        html += '  </div>';
-        html += '  <div class="event-grid" id="grid-' + idx + '">';
-        items.forEach(function(item, i){
-          html += '<div class="thumb" onclick=\'openLightbox(' + JSON.stringify(item) + ')\'>';
-          html += '  <img src="' + thumbUrl(item.fileId) + '" loading="lazy" alt="">';
-          if (item.type === 'video') html += '<div class="play-icon">▶</div>';
-          if (item.uploader) html += '<div class="credit">' + item.uploader + '</div>';
-          html += '</div>';
-        });
-        html += '  </div>';
-        html += '</div>';
-      });
-
-      wrap.innerHTML = html;
-      // Open the most recent event by default
-      if (eventNames.length) { toggleEvent(0); }
+      galleryData = data.events;
+      renderGallery();
     })
     .catch(function(){
       document.getElementById('galleryWrap').innerHTML = '<div class="empty-state">Could not load the gallery right now — please try again shortly.</div>';
