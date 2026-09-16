@@ -338,7 +338,7 @@
   // ── BUILD SIDEBAR HTML ─────────────────────────────────────
   // Determine which accordion group should auto-open
   var whatsOnPages  = ['fireside-talks.html','concerts.html','sports-hub.html'];
-  var communityPages = ['classifieds.html','community-life.html','savings.html'];
+  var communityPages = ['classifieds.html','community-life.html','savings.html','travel-gallery.html','travel-photos-submit.html'];
   var worldNewsPages = ['news.html','whats-new.html'];
   var villagePages  = ['our-story.html','memories.html','village-map.html'];
   var infoPages      = ['info-sessions.html','useful-links.html','getting-around.html','how-to.html','contacts.html'];
@@ -403,6 +403,7 @@
             <li><a href="community-life.html"${isActive('community-life.html') ? ' class="sb-active"' : ''}>🎨 Artists &amp; Creators</a></li>
             <li><a href="classifieds.html"${isActive('classifieds.html') ? ' class="sb-active"' : ''}>📌 Classifieds</a></li>
             <li><a href="savings.html"${isActive('savings.html') ? ' class="sb-active"' : ''}>💲 Price Checker</a></li>
+            <li><a href="travel-gallery.html"${isActive('travel-gallery.html') ? ' class="sb-active"' : ''}>✈️ Travel Pics</a></li>
           </ul>
         </div>
 

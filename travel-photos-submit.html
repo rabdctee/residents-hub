@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Share Event Photos & Videos | Bridgeman Downs Residents Hub</title>
+  <title>Share Travel Pics | Bridgeman Downs Residents Hub</title>
   <style>
     :root {
       --hub-navy:       #263746;
@@ -118,7 +118,7 @@
 
 <div class="top-bar">
   <div>
-    <div class="top-bar-title">&#128248; Share Event Photos &amp; Videos</div>
+    <div class="top-bar-title">&#9992;&#65039; Share Travel Pics</div>
     <div class="top-bar-sub">Bridgeman Downs Residents Hub</div>
   </div>
   <button class="back-btn" onclick="history.back()">← Back</button>
@@ -127,11 +127,11 @@
 <div class="content">
 
   <div class="intro-box">
-    Captured some great photos or video at a recent event? Share them here and they'll appear in the
-    <strong>Event Photos &amp; Videos</strong> gallery for all residents to enjoy — no Facebook account needed.
+    Been on a trip you'd like to share? Add your photos or video here and they'll appear in the
+    <strong>Travel Pics</strong> gallery for all residents to enjoy.
     <br><br>
-    <strong>Please note:</strong> this gallery is for BDRV events only. Got holiday or travel photos to
-    share instead? Head to our <a href="travel-photos-submit.html" style="color:var(--hub-gold);">Travel Pics</a> page.
+    <strong>Please note:</strong> this page is for personal holiday and travel photos only. Got photos
+    from a BDRV event instead? Head to our <a href="event-photos-submit.html" style="color:var(--hub-gold);">Event Photos &amp; Videos</a> page.
   </div>
 
   <div class="card" id="uploadCard">
@@ -141,18 +141,8 @@
       <div id="alertMsg" class="alert"></div>
 
       <div class="form-group">
-        <label for="eventSelect">Which event? <span class="required">*</span></label>
-        <select id="eventSelect" onchange="toggleOtherEvent()">
-          <option value="">— Select an event —</option>
-          <!-- Rick: add/update event names here as new events come up -->
-          <option value="Fashion Parade">Fashion Parade</option>
-          <option value="__other__">Other (type below)</option>
-        </select>
-      </div>
-
-      <div class="form-group" id="otherEventGroup" style="display:none;">
-        <label for="otherEventName">Event name <span class="required">*</span></label>
-        <input type="text" id="otherEventName" placeholder="e.g. Melbourne Cup Lunch">
+        <label for="albumName">Album name <span class="required">*</span> <span class="optional">(a title for this trip, e.g. "My Travel in Egypt")</span></label>
+        <input type="text" id="albumName" placeholder="e.g. My Travel in Egypt">
       </div>
 
       <div class="form-group">
@@ -196,7 +186,7 @@
       <div class="success-icon">&#127881;</div>
       <p style="text-align:center;font-weight:700;color:var(--hub-gold);margin-bottom:6px;">Your photos &amp; videos have been shared!</p>
       <p style="text-align:center;font-size:0.88em;color:var(--hub-muted);margin-bottom:14px;">
-        They'll appear in the Event Photos &amp; Videos gallery on the Hub shortly.
+        They'll appear in the Travel Pics gallery on the Hub shortly.
       </p>
       <div class="success-detail" id="successDetail"></div>
       <button class="btn-another" onclick="resetForm()">&#128248; Share More</button>
@@ -207,72 +197,17 @@
 </div>
 
 <script>
-  // Replace with the /exec URL from the new, dedicated Event Media Apps Script deployment
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDvm1XBaqZXts2pzZrGsZcseoNXnORnxQi1w5FxOrPjqhbpl3N-nOfGNt5XBVMWU8jtA/exec';
+  // Replace with the /exec URL from the new, dedicated Travel Media Apps Script deployment
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-nlni14w2nA-OkJPEWmlSqjhkUBEZT8azX9LRUmKF2NrNDYo4F1_LAGLirrALPs0O/exec';
 
   var MAX_FILE_BYTES = 50 * 1024 * 1024; // 50MB
   var selectedFiles = []; // { file, status: 'pending'|'ok'|'err' }
 
-  function toggleOtherEvent() {
-    var isOther = document.getElementById('eventSelect').value === '__other__';
-    document.getElementById('otherEventGroup').style.display = isOther ? 'block' : 'none';
+  // Unlike the Events form, travel albums aren't tied to the Events
+  // calendar — residents just type whatever they'd like to call the trip.
+  function getAlbumName() {
+    return document.getElementById('albumName').value.trim();
   }
-
-  function getEventName() {
-    var sel = document.getElementById('eventSelect').value;
-    if (sel === '__other__') return document.getElementById('otherEventName').value.trim();
-    return sel;
-  }
-
-  // ── Populate the event dropdown from the SAME source manage-events.html
-  //    uses (EVENTS_URL, action=getEvents) — this is the actual "Manage
-  //    Events" list, separate from the small Events tab the homepage
-  //    sidebar widget reads. If this can't be reached, the manually-listed
-  //    options already in the HTML stay as a fallback.
-  var EVENTS_URL = 'https://script.google.com/macros/s/AKfycbxUcetKOKOyNwn1SSqI54xBIGTHV2YVTXcD1o2UTFo7uKGoqCts-nUqFSMEhLxXanK0CA/exec';
-
-  function parseDdMmYyyy(str) {
-    if (!str) return 0;
-    var p = str.split('/');
-    if (p.length !== 3) return 0;
-    return new Date(p[2], p[1]-1, p[0]).getTime();
-  }
-
-  function loadEventOptions() {
-    fetch(EVENTS_URL + '?action=getEvents').then(function(r){ return r.json(); }).then(function(data){
-      var events = data.events || [];
-      if (!events.length) return; // keep manual fallback
-
-      var byName = {};
-      events.forEach(function(ev){
-        var name = (ev.name || '').trim();
-        if (!name) return;
-        var sortKey = parseDdMmYyyy(ev.date || '');
-        if (!byName[name] || sortKey > byName[name].sortKey) {
-          byName[name] = { name: name, dateStr: ev.date || '', sortKey: sortKey };
-        }
-      });
-      var list = Object.keys(byName).map(function(k){ return byName[k]; })
-                   .sort(function(a,b){ return a.sortKey - b.sortKey; });
-      if (!list.length) return; // keep manual fallback
-
-      var sel = document.getElementById('eventSelect');
-      var currentValue = sel.value;
-      sel.innerHTML = '<option value="">— Select an event —</option>';
-      list.forEach(function(e){
-        var opt = document.createElement('option');
-        opt.value = e.name;
-        opt.textContent = e.name + (e.dateStr ? ' (' + e.dateStr + ')' : '');
-        sel.appendChild(opt);
-      });
-      var otherOpt = document.createElement('option');
-      otherOpt.value = '__other__';
-      otherOpt.textContent = 'Other (type below)';
-      sel.appendChild(otherOpt);
-      if (currentValue) sel.value = currentValue;
-    }).catch(function(){ /* keep manual fallback already in the HTML */ });
-  }
-  window.addEventListener('DOMContentLoaded', loadEventOptions);
 
   function handleFileSelect(fileListObj) {
     Array.prototype.forEach.call(fileListObj, function(file) {
@@ -330,12 +265,12 @@
   });
 
   function uploadAll() {
-    var eventName = getEventName();
+    var albumName = getAlbumName();
     var uploader  = document.getElementById('uploaderName').value.trim();
     var unit      = document.getElementById('uploaderUnit').value.trim();
     var toUpload  = selectedFiles.filter(function(e){ return e.status === 'pending'; });
 
-    if (!eventName)          { showAlert('error','Please select or type the event name.'); return; }
+    if (!albumName)          { showAlert('error','Please give this album a name.'); return; }
     if (!uploader)           { showAlert('error','Please enter your name.'); return; }
     if (!unit)               { showAlert('error','Please enter your unit number — this is kept private and only used to verify you if you ever need to edit or delete this later.'); return; }
     if (!toUpload.length)    { showAlert('error','Please choose at least one photo or video (under 50MB each).'); return; }
@@ -355,7 +290,7 @@
         btn.innerHTML = '&#128248; Share to the Hub';
         hideProgress();
         if (failed === 0) {
-          showSuccess(eventName, completed);
+          showSuccess(albumName, completed);
         } else {
           showAlert('error', completed + ' file(s) uploaded, ' + failed + ' failed. You can try sharing the failed ones again.');
           renderFileList();
@@ -373,8 +308,8 @@
           fetch(SCRIPT_URL, {
             method:'POST',
             body: JSON.stringify({
-              action:       'uploadEventMedia',
-              eventName:    eventName,
+              action:       'uploadTravelMedia',
+              albumName:    albumName,
               uploaderName: uploader,
               uploaderUnit: unit,
               fileName:     prepared.fileName,
@@ -443,10 +378,10 @@
     var el = document.getElementById('alertMsg');
     el.className = 'alert'; el.textContent = '';
   }
-  function showSuccess(eventName, count) {
+  function showSuccess(albumName, count) {
     document.getElementById('uploadCard').style.display = 'none';
     document.getElementById('successDetail').innerHTML =
-      '<strong>Event:</strong> ' + eventName + '<br>' +
+      '<strong>Album:</strong> ' + albumName + '<br>' +
       '<strong>Files shared:</strong> ' + count + '<br>' +
       '<strong>Status:</strong> Visible in the Hub gallery automatically';
     document.getElementById('successCard').classList.add('show');
@@ -455,9 +390,7 @@
   function resetForm() {
     document.getElementById('uploadCard').style.display = 'block';
     document.getElementById('successCard').classList.remove('show');
-    document.getElementById('eventSelect').value = '';
-    document.getElementById('otherEventName').value = '';
-    document.getElementById('otherEventGroup').style.display = 'none';
+    document.getElementById('albumName').value = '';
     document.getElementById('uploaderName').value = '';
     document.getElementById('uploaderUnit').value = '';
     selectedFiles = [];
