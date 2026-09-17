@@ -703,6 +703,18 @@ async function loadListings() {
   }
 }
 
+// Cleans up text before comparing it — fixes invisible mismatches like
+// non-breaking spaces, curly apostrophes, or accidental double spaces,
+// which can make two names LOOK identical but not match exactly.
+function normalize(str) {
+  return (str || '')
+    .replace(/[\u2018\u2019\u02BC]/g, "'")   // curly apostrophes -> straight apostrophe
+    .replace(/\u00A0/g, ' ')                 // non-breaking space -> normal space
+    .replace(/\s+/g, ' ')                    // collapse any run of spaces into one
+    .trim()
+    .toLowerCase();
+}
+
 function parseCSV(text) {
   const rows  = [];
   const cols  = splitCSV(text);   // returns array of rows, each an array of fields
@@ -1019,8 +1031,8 @@ function toggleEditForm(idx) {
 
 async function confirmEdit(idx) {
   const listing     = allListings[idx];
-  const enteredName = document.getElementById('edit-name-' + idx).value.trim().toLowerCase();
-  const enteredUnit = document.getElementById('edit-unit-' + idx).value.trim().toLowerCase();
+  const enteredName = normalize(document.getElementById('edit-name-' + idx).value);
+  const enteredUnit = normalize(document.getElementById('edit-unit-' + idx).value);
   const statusEl    = document.getElementById('edit-status-' + idx);
   const btn         = document.getElementById('edit-btn-' + idx);
 
@@ -1030,7 +1042,7 @@ async function confirmEdit(idx) {
     return;
   }
 
-  if (enteredName !== listing.name.toLowerCase() || enteredUnit !== listing.unit.toLowerCase()) {
+  if (enteredName !== normalize(listing.name) || enteredUnit !== normalize(listing.unit)) {
     statusEl.className = 'edit-status err';
     statusEl.textContent = '❌ Name or unit number didn\'t match. Please check and try again.';
     return;
@@ -1110,8 +1122,8 @@ async function confirmEdit(idx) {
 
 async function confirmRemove(idx) {
   const listing   = allListings[idx];
-  const enteredName = document.getElementById('remove-name-' + idx).value.trim().toLowerCase();
-  const enteredUnit = document.getElementById('remove-unit-' + idx).value.trim().toLowerCase();
+  const enteredName = normalize(document.getElementById('remove-name-' + idx).value);
+  const enteredUnit = normalize(document.getElementById('remove-unit-' + idx).value);
   const statusEl  = document.getElementById('remove-status-' + idx);
   const btn       = document.getElementById('remove-btn-' + idx);
 
@@ -1121,7 +1133,7 @@ async function confirmRemove(idx) {
     return;
   }
 
-  if (enteredName !== listing.name.toLowerCase() || enteredUnit !== listing.unit.toLowerCase()) {
+  if (enteredName !== normalize(listing.name) || enteredUnit !== normalize(listing.unit)) {
     statusEl.className = 'remove-status err';
     statusEl.textContent = '❌ Name or unit number didn\'t match. Please check and try again.';
     return;
