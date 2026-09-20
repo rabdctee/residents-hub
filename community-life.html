@@ -381,6 +381,62 @@
       border-top:1px solid var(--hub-charcoal);
     }
 
+    /* ===== Joke cards (mini-accordion, same pattern as Recipes) ===== */
+    .joke-card{
+      border:1px solid var(--hub-charcoal);
+      border-radius:8px;
+      overflow:hidden;
+      margin-bottom:16px;
+      background:var(--hub-navy-panel);
+    }
+    .joke-card-header{
+      background:var(--hub-navy);
+      padding:14px 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      cursor:pointer;
+      border-bottom:1px solid var(--hub-charcoal);
+    }
+    .joke-card-header:hover{ background:var(--hub-navy-hover); }
+    .joke-title{
+      font-weight:700;
+      color:var(--hub-cream);
+      font-size:1em;
+    }
+    .joke-meta{
+      font-size:0.78em;
+      color:var(--hub-muted);
+      margin-top:2px;
+    }
+    .joke-arrow{
+      color:var(--hub-gold);
+      font-weight:700;
+      transition:transform 0.3s;
+    }
+    .joke-arrow.open{ transform:rotate(180deg); }
+    .joke-body{
+      display:none;
+      padding:18px 20px;
+    }
+    .joke-body.open{ display:block; }
+    .joke-body .writing-body{
+      font-family:Georgia,'Times New Roman',serif;
+      font-size:0.95em;
+      line-height:1.9;
+      color:var(--hub-cream);
+      white-space:pre-line;
+    }
+    .joke-contributor{
+      font-size:0.82em;
+      font-weight:700;
+      color:var(--hub-muted);
+      margin-top:14px;
+      padding-top:10px;
+      border-top:1px solid var(--hub-charcoal);
+      text-align:right;
+    }
+
     /* ===== Responsive ===== */
     @media(max-width:768px){
       header h1{ font-size:1.6em; }
@@ -785,9 +841,32 @@ Its shade a borrowed room.</div>
       😂 Share a joke or funny story →
     </a>
 
-    <div class="writing-card">
-      <h4>Laughing Matters: Retired Grandparents</h4>
-      <div class="writing-body">After summer vacation, a teacher asked her young pupils how they spent their holiday away from school. One child wrote the following:
+    <!-- Add joke cards here as contributions arrive. Copy this block for each new one:
+    <div class="joke-card">
+      <div class="joke-card-header" onclick="toggleJoke(this)">
+        <div>
+          <div class="joke-title">Title of the joke</div>
+          <div class="joke-meta">contributed by Name, Unit 00</div>
+        </div>
+        <span class="joke-arrow">▼</span>
+      </div>
+      <div class="joke-body">
+        <div class="writing-body">The joke text goes here.</div>
+        <div class="joke-contributor">Shared by Name, Unit 00</div>
+      </div>
+    </div>
+    -->
+
+    <div class="joke-card">
+      <div class="joke-card-header" onclick="toggleJoke(this)">
+        <div>
+          <div class="joke-title">Laughing Matters: Retired Grandparents</div>
+          <div class="joke-meta">contributed by anonymous</div>
+        </div>
+        <span class="joke-arrow">▼</span>
+      </div>
+      <div class="joke-body">
+        <div class="writing-body">After summer vacation, a teacher asked her young pupils how they spent their holiday away from school. One child wrote the following:
 
 "We always used to spend summers with Grandma and Grandpa. They used to live in a big brick house, but Grandpa got retarded and they moved to Florida. They go to a building called a wrecked center, but they must have got it fixed because it is all okay now, and do exercises there. There is a swimming pool too where they all jump up and down with hats on.
 
@@ -796,7 +875,8 @@ At their gate, there is a doll's house with a little old man sitting in it. He w
 Some of the people can't get out past the man in the doll house. The ones who do get out, bring food back to the wrecked center and call it pot luck.
 
 My Grandma says that Grandpa worked all his life to his retardment, and says I should work hard so I can be retarded someday too. When I earn my retardment, I want to be the man in the doll house. Then I will let people out so they can visit their grandchildren."</div>
-      <div class="writing-author">— Contributed by anonymous</div>
+        <div class="joke-contributor">Contributed by anonymous</div>
+      </div>
     </div>
 
 
@@ -895,6 +975,17 @@ My Grandma says that Grandpa worked all his life to his retardment, and says I s
   function toggleRecipe(header) {
     var body  = header.nextElementSibling;
     var arrow = header.querySelector('.recipe-arrow');
+    var isOpen = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    if (arrow) arrow.classList.toggle('open', !isOpen);
+  }
+
+  /* ══════════════════════════════════════════
+     JOKE TOGGLE (same pattern as Recipes)
+  ══════════════════════════════════════════ */
+  function toggleJoke(header) {
+    var body  = header.nextElementSibling;
+    var arrow = header.querySelector('.joke-arrow');
     var isOpen = body.classList.contains('open');
     body.classList.toggle('open', !isOpen);
     if (arrow) arrow.classList.toggle('open', !isOpen);
