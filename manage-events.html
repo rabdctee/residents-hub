@@ -1103,7 +1103,7 @@
           '<button class="btn-edit" onclick="openWidgetEditModal(' + idx + ')">✏️ Edit</button>' +
           '<button class="btn-widget-edit' + (ev.link ? ' has-override' : '') + '" ' +
             'onclick="openWidgetLinkModal(' + idx + ')" title="Edit link">🔗</button>' +
-          '<button class="btn-delete" onclick="openDeleteWidget(' + ev.row + ',\'' + esc(ev.name) + '\')">🗑️</button>' +
+          '<button class="btn-delete" onclick="openDeleteWidget(' + idx + ',\'' + esc(ev.name) + '\')">🗑️</button>' +
         '</div>' +
       '</div>';
     });
@@ -1337,12 +1337,12 @@
     deleteWidgetRow = null;
   }
   function confirmDeleteWidget() {
-    if (!deleteWidgetRow) return;
+    if (deleteWidgetRow === null || deleteWidgetRow === undefined) return;
     var btn = document.getElementById('deleteWidgetBtn');
     btn.disabled = true; btn.textContent = 'Removing…';
-    // Remove the entry by row number, rebuild the rest
+    // Remove the entry by its position in the list, rebuild the rest
     var updated = widgetEvents
-      .filter(function(w){ return w.row != deleteWidgetRow; })
+      .filter(function(w, i){ return i != deleteWidgetRow; })
       .map(function(w){ return { name:w.name, date:w.date, link:w.link||'', displayFrom:w.displayFrom||'' }; });
     fetch(WIDGET_URL, {
       method:'POST',
