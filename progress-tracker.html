@@ -220,7 +220,7 @@
   <button class="font-btn sm" data-size="16">A−</button>
   <button class="font-btn md active" data-size="18">A</button>
   <button class="font-btn lg" data-size="21">A+</button>
-  <button class="print-btn" id="print-btn" onclick="printIssues(this)" title="Print or save all issues as PDF" style="margin-left:auto;">🖨️ Print / Save PDF</button>
+  <button class="print-btn" id="print-btn" onclick="printIssues(this, {status: activeFilter !== 'all' ? activeFilter : null})" title="Print or save the currently selected issues as PDF" style="margin-left:auto;">🖨️ Print / Save PDF</button>
 </div>
 
 <div class="last-updated" id="last-updated">Loading data… · Updates automatically every 5 minutes</div>
@@ -466,6 +466,20 @@ function buildAccordion(grouped) {
 
 function applyFilterAndSearch() {
   document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === activeFilter));
+
+  // Keep the top Print / Save PDF button's wording in sync with the
+  // currently selected "Show me" pill, so it's clear what will print
+  const printBtn = document.getElementById("print-btn");
+  if (printBtn) {
+    if (activeFilter === "all") {
+      printBtn.textContent = "🖨️ Print / Save PDF";
+      printBtn.title = "Print or save all issues as PDF";
+    } else {
+      const label = statusLabel(activeFilter);
+      printBtn.textContent = "🖨️ Print \"" + label + "\" only";
+      printBtn.title = "Print or save only the \"" + label + "\" issues as PDF";
+    }
+  }
   document.querySelectorAll(".dash-card").forEach(c => {
     c.style.outline = c.dataset.filter === activeFilter ? "3px solid #D4B860" : "none";
   });
