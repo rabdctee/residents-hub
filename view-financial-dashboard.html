@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Dashboard — Social Club Finances</title>
+<style>
+  :root {
+    --navy: #1F4E79;
+    --navy-light: #2a4f8f;
+    --gold: #c8a84b;
+    --green: #2e7d32;
+    --red: #c62828;
+    --bg: #f4f6f9;
+    --white: #ffffff;
+    --border: #d0d7e3;
+    --text: #222222;
+    --muted: #666666;
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 36px auto;
+    padding: 0 20px 60px;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+
+  .card-header {
+    background: var(--navy);
+    color: white;
+    padding: 16px 24px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .card-body { padding: 24px; }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  .row:last-child { border-bottom: none; }
+  .row-label { color: var(--muted); }
+  .row-value { font-weight: bold; }
+  .row-value.pos { color: var(--green); }
+  .row-value.neg { color: var(--red); }
+  .row.total { border-top: 2px solid var(--navy); margin-top: 4px; padding-top: 14px; }
+  .row.total .row-label { color: var(--navy); font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+  .row.total .row-value { font-size: 18px; }
+
+  table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 13px; }
+  th {
+    background: var(--navy); color: white; padding: 8px 10px;
+    text-align: right; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  th:first-child { text-align: left; }
+  td { padding: 7px 10px; border-bottom: 1px solid #e8e8e8; text-align: right; }
+  td:first-child { text-align: left; color: var(--muted); }
+  tr:nth-child(even) td { background: #f7f9fc; }
+  .neg-cell { color: var(--red); }
+  .pos-cell { color: var(--green); }
+
+  .headline {
+    text-align: center;
+    padding: 8px 0 4px;
+  }
+  .headline .amount {
+    font-size: 40px;
+    font-weight: bold;
+    color: var(--navy);
+    font-family: Georgia, serif;
+  }
+  .headline .amount.neg { color: var(--red); }
+  .headline .label {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  .loading, .error-state {
+    text-align: center;
+    padding: 60px 20px;
+    font-family: Arial, sans-serif;
+    color: var(--muted);
+  }
+  .error-state { color: var(--red); }
+  .spinner-big {
+    display: inline-block; width: 28px; height: 28px;
+    border: 3px solid var(--border); border-top-color: var(--navy);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin-bottom: 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* PIN overlay */
+  #pinOverlay {
+    position: fixed; inset: 0;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  .pin-box {
+    background: white; border-radius: 12px;
+    padding: 40px 36px; max-width: 360px; width: 90%;
+    text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .pin-box .pin-logo { font-size: 36px; margin-bottom: 12px; }
+  .pin-box h2 { font-size: 18px; color: var(--navy); margin-bottom: 6px; }
+  .pin-box p { font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+  .pin-input {
+    width: 100%; padding: 14px; font-size: 24px; letter-spacing: 10px;
+    text-align: center; border: 2px solid var(--border); border-radius: var(--radius);
+    font-family: Arial, sans-serif; margin-bottom: 16px; transition: border-color 0.2s;
+  }
+  .pin-input:focus { outline: none; border-color: var(--navy); }
+  .pin-btn {
+    width: 100%; padding: 14px; background: var(--navy); color: white;
+    border: none; border-radius: var(--radius);
+    font-family: Arial, sans-serif; font-size: 15px; font-weight: bold;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .pin-btn:hover { background: var(--navy-light); }
+ .pin-error {
+    color: var(--red); font-family: Arial, sans-serif;
+    font-size: 13px; margin-top: 12px; display: none;
+  }
+  .top-bar {
+    background: var(--navy); padding:12px 20px;
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:10px;
+  }
+  .top-bar-title { color:white; font-size:1em; font-weight:700; font-family:Arial,sans-serif; }
+  .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; font-family:Arial,sans-serif; }
+  .top-bar-actions { display: flex; gap: 8px; }
+.back-btn, .refresh-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #1F4E79; color: #fff; border: none;
+  border-radius: 6px; padding: 8px 16px;
+  font-size: 0.95rem; font-family: 'Segoe UI', Arial, sans-serif;
+  cursor: pointer; text-decoration: none;
+}
+.back-btn:hover, .refresh-btn:hover { background: #2E75B6; }
+</style>
+</head>
+<body>
+
+<!-- PIN OVERLAY -->
+<div id="pinOverlay">
+  <div class="pin-box">
+    <div class="pin-logo">🔒</div>
+    <h2>Authorised Access Only</h2>
+    <p>This page is for Social Club committee use only.<br>Please enter your PIN to continue.</p>
+    <input type="password" class="pin-input" id="pinInput" maxlength="4"
+           placeholder="••••" inputmode="numeric" onkeydown="if(event.key==='Enter')checkPin()">
+    <button class="pin-btn" onclick="checkPin()">Enter</button>
+    <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
+  </div>
+</div>
+
+<div class="top-bar">
+  <div>
+    <div class="top-bar-title">📊 Financial Dashboard</div>
+    <div class="top-bar-sub" id="topSub">Live summary from the Finance sheet</div>
+  </div>
+  <div class="top-bar-actions">
+    <button onclick="loadDashboard()" class="refresh-btn">🔄 Refresh</button>
+    <button onclick="history.back()" class="back-btn">← Back</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <div id="loadingState" class="loading">
+    <div class="spinner-big"></div><br>Loading the latest figures…
+  </div>
+
+  <div id="errorState" class="error-state" style="display:none;"></div>
+
+  <div id="dashboardContent" style="display:none;">
+
+    <div class="card">
+      <div class="card-body">
+        <div class="headline">
+          <div class="amount" id="netResultAmount"></div>
+          <div class="label" id="netResultLabel">Net Result — Year to Date</div>
+        </div>
+        <div class="row" style="margin-top:10px;">
+          <span class="row-label">Total Income</span>
+          <span class="row-value" id="totalIncome"></span>
+        </div>
+        <div class="row">
+          <span class="row-label">Total Expenditure</span>
+          <span class="row-value" id="totalExpenditure"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Cash Position</div>
+      <div class="card-body">
+        <div class="row"><span class="row-label">Opening Balance</span><span class="row-value" id="openingBalance"></span></div>
+        <div class="row"><span class="row-label">Cash Floats</span><span class="row-value" id="cashFloats"></span></div>
+        <div class="row"><span class="row-label">Year End Net Surplus</span><span class="row-value" id="yearEndNetSurplus"></span></div>
+        <div class="row"><span class="row-label">Year End Net Deficit</span><span class="row-value" id="yearEndNetDeficit"></span></div>
+        <div class="row"><span class="row-label">Closing Balance</span><span class="row-value" id="closingBalance"></span></div>
+        <div class="row"><span class="row-label">Cash On Hand — Awaiting Banking</span><span class="row-value" id="cashOnHand"></span></div>
+        <div class="row total"><span class="row-label">Total Cash Position</span><span class="row-value" id="totalCashPosition"></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Bank Balance &amp; Variance</div>
+      <div class="card-body">
+        <div class="row"><span class="row-label">Actual Bank Balance</span><span class="row-value" id="actualBankBalance"></span></div>
+        <div class="row"><span class="row-label">Variance vs Bank</span><span class="row-value" id="varianceVsBank"></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Month by Month</div>
+      <div class="card-body" style="padding:0;">
+        <table>
+          <thead><tr><th>Month</th><th>Income</th><th>Expenditure</th><th>Net</th></tr></thead>
+          <tbody id="monthsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytxHID43hrAGzXOxI98UPmROQVNILMVwmH-JfWV7lUIEA-vejQUv899dNRpFTejNrm/exec';
+
+// ── PIN ────────────────────────────────────────────────────────
+var COMMITTEE_SESSION_KEY = 'bdrv_committee_auth';
+
+function checkPin() {
+  var val = document.getElementById('pinInput').value;
+  if (val === '5304') {
+    sessionStorage.setItem(COMMITTEE_SESSION_KEY, 'true');
+    document.getElementById('pinOverlay').style.display = 'none';
+    loadDashboard();
+  } else {
+    var err = document.getElementById('pinError');
+    err.style.display = 'block';
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').focus();
+    setTimeout(function() { err.style.display = 'none'; }, 3000);
+  }
+}
+
+var alreadyAuthed = (sessionStorage.getItem(COMMITTEE_SESSION_KEY) === 'true');
+if (alreadyAuthed) {
+  document.getElementById('pinOverlay').style.display = 'none';
+}
+
+// ── Helpers ────────────────────────────────────────────────────
+function formatAUD(val) {
+  var n = parseFloat(val) || 0;
+  var sign = n < 0 ? '-' : '';
+  return sign + '$' + Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function setRow(id, val) {
+  var el = document.getElementById(id);
+  el.textContent = formatAUD(val);
+  el.classList.remove('pos', 'neg');
+  el.classList.add(val < 0 ? 'neg' : 'pos');
+}
+
+// ── Load dashboard data ──────────────────────────────────────
+function loadDashboard() {
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('errorState').style.display = 'none';
+  document.getElementById('dashboardContent').style.display = 'none';
+
+  fetch(APPS_SCRIPT_URL + '?action=getDashboardData')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.status !== 'ok') throw new Error(data.message || 'Could not load dashboard data');
+      render(data);
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('dashboardContent').style.display = 'block';
+    })
+    .catch(function(err) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+      document.getElementById('errorState').textContent =
+        'Could not load the dashboard: ' + err.message + '. Please try Refresh, or contact Rick.';
+    });
+}
+
+function render(data) {
+  document.getElementById('topSub').textContent = 'Live summary from the Finance sheet — ' + data.year;
+
+  var netAmountEl = document.getElementById('netResultAmount');
+  netAmountEl.textContent = formatAUD(data.netResult);
+  netAmountEl.classList.toggle('neg', data.netResult < 0);
+
+  setRow('totalIncome', data.totalIncome);
+  setRow('totalExpenditure', data.totalExpenditure);
+
+  setRow('openingBalance', data.openingBalance);
+  setRow('cashFloats', data.cashFloats);
+  setRow('yearEndNetSurplus', data.yearEndNetSurplus);
+  setRow('yearEndNetDeficit', data.yearEndNetDeficit);
+  setRow('closingBalance', data.closingBalance);
+  setRow('cashOnHand', data.cashOnHand);
+  setRow('totalCashPosition', data.totalCashPosition);
+
+  setRow('actualBankBalance', data.actualBankBalance);
+  setRow('varianceVsBank', data.varianceVsBank);
+
+  var body = document.getElementById('monthsBody');
+  body.innerHTML = '';
+  (data.months || []).forEach(function(m) {
+    var tr = document.createElement('tr');
+    var netClass = m.net < 0 ? 'neg-cell' : 'pos-cell';
+    tr.innerHTML =
+      '<td>' + m.month + '</td>' +
+      '<td>' + formatAUD(m.income) + '</td>' +
+      '<td>' + formatAUD(m.expenditure) + '</td>' +
+      '<td class="' + netClass + '">' + formatAUD(m.net) + '</td>';
+    body.appendChild(tr);
+  });
+}
+
+if (alreadyAuthed) {
+  loadDashboard();
+}
+</script>
+</body>
+</html>

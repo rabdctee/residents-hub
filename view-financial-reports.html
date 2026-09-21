@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Reports — Social Club Finances</title>
+<style>
+  :root {
+    --navy: #1F4E79;
+    --navy-light: #2a4f8f;
+    --gold: #c8a84b;
+    --green: #2e7d32;
+    --red: #c62828;
+    --bg: #f4f6f9;
+    --white: #ffffff;
+    --border: #d0d7e3;
+    --text: #222222;
+    --muted: #666666;
+    --radius: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 36px auto;
+    padding: 0 20px 60px;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+
+  .card-header {
+    background: var(--navy);
+    color: white;
+    padding: 16px 24px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .card-body { padding: 24px; }
+
+  .report-title {
+    text-align: center;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    color: var(--navy);
+    padding: 6px 0 2px;
+  }
+
+  .table-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 12.5px; min-width: 640px; }
+  th {
+    background: var(--navy); color: white; padding: 7px 9px;
+    text-align: right; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.4px;
+    white-space: nowrap;
+  }
+  th:first-child { text-align: left; }
+  td { padding: 6px 9px; border-bottom: 1px solid #e8e8e8; text-align: right; white-space: nowrap; }
+  td:first-child { text-align: left; color: var(--muted); white-space: normal; }
+  tr:nth-child(even) td { background: #f7f9fc; }
+  tr.total-row td { font-weight: bold; background: #dce6f5 !important; border-top: 2px solid var(--navy); }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+  }
+  .row:last-child { border-bottom: none; }
+  .row-label { color: var(--muted); }
+  .row-value { font-weight: bold; }
+  .row.total { border-top: 2px solid var(--navy); margin-top: 4px; padding-top: 14px; }
+  .row.total .row-label { color: var(--navy); font-weight: bold; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+  .row.total .row-value { font-size: 18px; }
+
+  .headline { text-align: center; padding: 8px 0 4px; }
+  .headline .amount { font-size: 40px; font-weight: bold; color: var(--navy); font-family: Georgia, serif; }
+  .headline .amount.neg { color: var(--red); }
+  .headline .label {
+    font-family: Arial, sans-serif; font-size: 12px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  .loading, .error-state {
+    text-align: center; padding: 60px 20px;
+    font-family: Arial, sans-serif; color: var(--muted);
+  }
+  .error-state { color: var(--red); }
+  .spinner-big {
+    display: inline-block; width: 28px; height: 28px;
+    border: 3px solid var(--border); border-top-color: var(--navy);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin-bottom: 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* PIN overlay */
+  #pinOverlay {
+    position: fixed; inset: 0;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  .pin-box {
+    background: white; border-radius: 12px;
+    padding: 40px 36px; max-width: 360px; width: 90%;
+    text-align: center; box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .pin-box .pin-logo { font-size: 36px; margin-bottom: 12px; }
+  .pin-box h2 { font-size: 18px; color: var(--navy); margin-bottom: 6px; }
+  .pin-box p { font-family: Arial, sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+  .pin-input {
+    width: 100%; padding: 14px; font-size: 24px; letter-spacing: 10px;
+    text-align: center; border: 2px solid var(--border); border-radius: var(--radius);
+    font-family: Arial, sans-serif; margin-bottom: 16px; transition: border-color 0.2s;
+  }
+  .pin-input:focus { outline: none; border-color: var(--navy); }
+  .pin-btn {
+    width: 100%; padding: 14px; background: var(--navy); color: white;
+    border: none; border-radius: var(--radius);
+    font-family: Arial, sans-serif; font-size: 15px; font-weight: bold;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .pin-btn:hover { background: var(--navy-light); }
+ .pin-error {
+    color: var(--red); font-family: Arial, sans-serif;
+    font-size: 13px; margin-top: 12px; display: none;
+  }
+  .top-bar {
+    background: var(--navy); padding:12px 20px;
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:10px;
+  }
+  .top-bar-title { color:white; font-size:1em; font-weight:700; font-family:Arial,sans-serif; }
+  .top-bar-sub   { color:rgba(255,255,255,0.72); font-size:0.8em; margin-top:2px; font-family:Arial,sans-serif; }
+  .top-bar-actions { display: flex; gap: 8px; }
+.back-btn, .refresh-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #1F4E79; color: #fff; border: none;
+  border-radius: 6px; padding: 8px 16px;
+  font-size: 0.95rem; font-family: 'Segoe UI', Arial, sans-serif;
+  cursor: pointer; text-decoration: none;
+}
+.back-btn:hover, .refresh-btn:hover { background: #2E75B6; }
+</style>
+</head>
+<body>
+
+<!-- PIN OVERLAY -->
+<div id="pinOverlay">
+  <div class="pin-box">
+    <div class="pin-logo">🔒</div>
+    <h2>Authorised Access Only</h2>
+    <p>This page is for Social Club committee use only.<br>Please enter your PIN to continue.</p>
+    <input type="password" class="pin-input" id="pinInput" maxlength="4"
+           placeholder="••••" inputmode="numeric" onkeydown="if(event.key==='Enter')checkPin()">
+    <button class="pin-btn" onclick="checkPin()">Enter</button>
+    <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
+  </div>
+</div>
+
+<div class="top-bar">
+  <div>
+    <div class="top-bar-title">🧾 Financial Reports</div>
+    <div class="top-bar-sub">Income &amp; expenditure by category, live from the Finance sheet</div>
+  </div>
+  <div class="top-bar-actions">
+    <button onclick="loadReport()" class="refresh-btn">🔄 Refresh</button>
+    <button onclick="history.back()" class="back-btn">← Back</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <div id="loadingState" class="loading">
+    <div class="spinner-big"></div><br>Loading the latest report…
+  </div>
+
+  <div id="errorState" class="error-state" style="display:none;"></div>
+
+  <div id="reportContent" style="display:none;">
+
+    <div class="card">
+      <div class="card-body">
+        <div class="report-title" id="reportTitle"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Income by Category</div>
+      <div class="card-body table-scroll">
+        <table id="incomeTable"></table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Expenditure by Category</div>
+      <div class="card-body table-scroll">
+        <table id="expendTable"></table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="headline">
+          <div class="amount" id="netResultAmount"></div>
+          <div class="label">Net Result</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-header">Annual Summary — Income</div>
+        <div class="card-body" id="summaryIncomeBody"></div>
+      </div>
+      <div class="card">
+        <div class="card-header">Annual Summary — Expenditure</div>
+        <div class="card-body" id="summaryExpendBody"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytxHID43hrAGzXOxI98UPmROQVNILMVwmH-JfWV7lUIEA-vejQUv899dNRpFTejNrm/exec';
+
+// ── PIN ────────────────────────────────────────────────────────
+var COMMITTEE_SESSION_KEY = 'bdrv_committee_auth';
+
+function checkPin() {
+  var val = document.getElementById('pinInput').value;
+  if (val === '5304') {
+    sessionStorage.setItem(COMMITTEE_SESSION_KEY, 'true');
+    document.getElementById('pinOverlay').style.display = 'none';
+    loadReport();
+  } else {
+    var err = document.getElementById('pinError');
+    err.style.display = 'block';
+    document.getElementById('pinInput').value = '';
+    document.getElementById('pinInput').focus();
+    setTimeout(function() { err.style.display = 'none'; }, 3000);
+  }
+}
+
+var alreadyAuthed = (sessionStorage.getItem(COMMITTEE_SESSION_KEY) === 'true');
+if (alreadyAuthed) {
+  document.getElementById('pinOverlay').style.display = 'none';
+}
+
+// ── Helpers ────────────────────────────────────────────────────
+function formatAUD(val) {
+  var n = parseFloat(val) || 0;
+  var sign = n < 0 ? '-' : '';
+  return sign + '$' + Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function buildTable(rows, totals, grandTotal, monthLabels, totalLabel) {
+  var html = '<thead><tr><th>Category</th>';
+  monthLabels.forEach(function(m) { html += '<th>' + m + '</th>'; });
+  html += '<th>Total</th></tr></thead><tbody>';
+
+  rows.forEach(function(row) {
+    html += '<tr><td>' + row.category + '</td>';
+    row.monthly.forEach(function(v) { html += '<td>' + formatAUD(v) + '</td>'; });
+    html += '<td>' + formatAUD(row.total) + '</td></tr>';
+  });
+
+  html += '<tr class="total-row"><td>' + totalLabel + '</td>';
+  totals.forEach(function(v) { html += '<td>' + formatAUD(v) + '</td>'; });
+  html += '<td>' + formatAUD(grandTotal) + '</td></tr>';
+
+  html += '</tbody>';
+  return html;
+}
+
+function buildSummaryRows(rows, totalLabel, totalAmount) {
+  var html = '';
+  rows.forEach(function(r) {
+    html += '<div class="row"><span class="row-label">' + r.category + '</span><span class="row-value">' + formatAUD(r.amount) + '</span></div>';
+  });
+  html += '<div class="row total"><span class="row-label">' + totalLabel + '</span><span class="row-value">' + formatAUD(totalAmount) + '</span></div>';
+  return html;
+}
+
+// ── Load report data ─────────────────────────────────────────
+function loadReport() {
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('errorState').style.display = 'none';
+  document.getElementById('reportContent').style.display = 'none';
+
+  fetch(APPS_SCRIPT_URL + '?action=getFinancialReportData')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.status !== 'ok') throw new Error(data.message || 'Could not load report data');
+      render(data);
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('reportContent').style.display = 'block';
+    })
+    .catch(function(err) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+      document.getElementById('errorState').textContent =
+        'Could not load the report: ' + err.message + '. Please try Refresh, or contact Rick.';
+    });
+}
+
+function render(data) {
+  document.getElementById('reportTitle').textContent = data.title || 'Financial Report';
+
+  document.getElementById('incomeTable').innerHTML = buildTable(
+    data.incomeRows, data.incomeTotals, data.incomeGrandTotal, data.monthLabels, 'TOTAL INCOME'
+  );
+  document.getElementById('expendTable').innerHTML = buildTable(
+    data.expendRows, data.expendTotals, data.expendGrandTotal, data.monthLabels, 'TOTAL EXPENDITURE'
+  );
+
+  var netEl = document.getElementById('netResultAmount');
+  netEl.textContent = formatAUD(data.netResult);
+  netEl.classList.toggle('neg', data.netResult < 0);
+
+  document.getElementById('summaryIncomeBody').innerHTML  = buildSummaryRows(data.summaryIncome, 'Total Income', data.summaryIncomeTotal);
+  document.getElementById('summaryExpendBody').innerHTML  = buildSummaryRows(data.summaryExpend, 'Total Expenditure', data.summaryExpendTotal);
+}
+
+if (alreadyAuthed) {
+  loadReport();
+}
+</script>
+</body>
+</html>
