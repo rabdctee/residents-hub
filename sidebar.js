@@ -307,6 +307,21 @@
       }
     }
 
+    /* Force plain black-on-white for printing, overriding the
+       on-screen navy/gold palette so pages don't waste toner
+       printing a dark background */
+    @media print {
+      .hub-sidebar, .sb-breadcrumb { display: none !important; }
+      body, .hub-wrapper, .hub-main, .container, .page-wrapper,
+      .sb-section, .sb-heading, .sb-acc-header, .sb-acc-body,
+      .hub-footer {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border-color: #999999 !important;
+      }
+      a { color: #000000 !important; }
+    }
+
 
   `;
 

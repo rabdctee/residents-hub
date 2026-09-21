@@ -1070,6 +1070,18 @@ margin-bottom:20px;
 padding-bottom:10px;
 border-bottom:2px solid #000;
 }
+
+/* Force plain black-on-white for printing, overriding the on-screen
+   navy/gold palette (added further down this file) so pages don't
+   waste toner printing a dark background */
+body, .container, .hub-wrapper, .hub-sidebar, .hub-main,
+.sb-section, .sb-heading, .sb-links li a, .sb-acc-header, .sb-acc-body,
+.menu-panel, .menu-item, .menu-bar, .nav-item, .quick-tile, .hub-footer{
+background:#ffffff !important;
+color:#000000 !important;
+border-color:#999999 !important;
+}
+a{ color:#000000 !important; }
 }
 
 
