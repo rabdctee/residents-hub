@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facility Calendar — BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef3f8; color: #222; font-size: 16px; line-height: 1.5; min-height: 100vh;
+  }
+
+  /* ── PIN OVERLAY (same pattern as members-area.html; separate PIN) ── */
+  #pin-overlay {
+    position: fixed; inset: 0; background: #1F4E79; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px; padding: 30px;
+  }
+  #pin-overlay h2 { color: white; font-size: 1.4em; text-align: center; }
+  #pin-overlay p  { color: rgba(255,255,255,0.75); font-size: 0.9em; text-align: center; max-width: 360px; }
+  #pin-input {
+    font-size: 1.6em; letter-spacing: 0.4em; text-align: center;
+    padding: 12px 20px; border-radius: 8px; border: none; width: 180px; outline: none;
+  }
+  #pin-error { color: #ffcccc; font-size: 0.85em; min-height: 1.2em; text-align: center; }
+
+  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee; }
+  .back-bar a {
+    color: #1F4E79; background: white; border: 2px solid #c5d8ee; border-radius: 10px;
+    padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 15px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  .page-wrap { max-width: 1000px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .dash-header {
+    border-radius: 12px; padding: 20px 26px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    color: white; background: #1F4E79;
+  }
+  .dash-header h1 { font-size: 1.3em; }
+  .dash-header p { font-size: 0.82em; opacity: 0.85; margin-top: 4px; }
+
+  .status-banner {
+    display: none; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px;
+    font-size: 0.92em; font-weight: 600;
+  }
+  .status-banner.ok   { display: block; background: #e6f4ea; color: #1e7a34; border: 1px solid #b7dfc2; }
+  .status-banner.err  { display: block; background: #fdeaea; color: #a12b2b; border: 1px solid #f3bcbc; }
+  .status-banner.busy { display: block; background: #fff6e0; color: #8a6d16; border: 1px solid #f0dfa0; }
+
+  .panel {
+    background: white; border-radius: 12px; border: 1px solid #c5d8ee;
+    padding: 18px 20px; margin-bottom: 20px;
+  }
+  .panel h2 { color: #1F4E79; font-size: 1.05em; margin-bottom: 12px; }
+
+  .sync-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .sync-desc { font-size: 0.85em; color: #555; max-width: 480px; }
+
+  .form-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 12px;
+  }
+  .form-grid label { display: block; font-size: 0.78em; font-weight: 700; color: #1F4E79; margin-bottom: 4px; }
+  .form-grid input {
+    width: 100%; padding: 8px 10px; border-radius: 7px; border: 1px solid #c5d8ee; font-size: 0.95em;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .btn {
+    display: inline-block; padding: 9px 16px; border-radius: 7px; font-size: 0.9em; font-weight: 700;
+    border: none; cursor: pointer; font-family: inherit; color: white;
+  }
+  .btn:hover { opacity: 0.88; }
+  .btn-navy   { background: #1F4E79; }
+  .btn-green  { background: #2e7d32; }
+  .btn-red    { background: #a12b2b; }
+  .btn-gold   { background: #C9A44A; }
+  .btn-small  { padding: 5px 10px; font-size: 0.8em; }
+
+  .filter-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+  .filter-row input { padding: 7px 10px; border-radius: 7px; border: 1px solid #c5d8ee; font-size: 0.9em; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.88em; }
+  th { background: #1F4E79; color: white; text-align: left; padding: 8px 10px; font-size: 0.82em; }
+  td { padding: 7px 10px; border-bottom: 1px solid #e0eaf4; vertical-align: top; }
+  tr.date-header td {
+    background: #f0f6ff; font-weight: 700; color: #1F4E79; padding-top: 12px;
+  }
+  .row-actions { display: flex; gap: 6px; }
+  .edit-cell input { width: 100%; padding: 5px 7px; border: 1px solid #c5d8ee; border-radius: 5px; font-size: 0.95em; }
+
+  #loading { text-align: center; padding: 30px; color: #888; }
+</style>
+</head>
+<body>
+
+<div id="pin-overlay">
+  <h2>🔒 Facility Calendar</h2>
+  <p>This tool is restricted to Rick and Kathy.</p>
+  <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="••••">
+  <div id="pin-error"></div>
+</div>
+
+<div class="back-bar"><a href="members-area.html">← Back to Members Area</a></div>
+
+<div class="page-wrap">
+  <div class="dash-header">
+    <div>
+      <h1>📅 Facility Calendar</h1>
+      <p>Add, edit or remove activities — the Hub's calendar updates automatically.</p>
+    </div>
+  </div>
+
+  <div id="status-banner" class="status-banner"></div>
+
+  <div class="panel">
+    <h2>🔁 Full Sync</h2>
+    <div class="sync-row">
+      <button class="btn btn-gold" onclick="runFullSync()">🔁 Run Full Sync Now</button>
+      <div class="sync-desc">Every add, edit or delete below already updates the calendar for that day automatically. Only use this if something looks out of step and you want to rebuild the whole calendar from the Sheet — it can take a few minutes for ~480 activities.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>➕ Add an Activity</h2>
+    <div class="form-grid">
+      <div><label>Date</label><input type="date" id="add-date"></div>
+      <div><label>Time (optional)</label><input type="text" id="add-time" placeholder="e.g. 9:30 AM"></div>
+      <div><label>Duration (optional)</label><input type="text" id="add-duration" placeholder="e.g. 60 mins"></div>
+      <div class="full"><label>Activity / Event</label><input type="text" id="add-activity" placeholder="e.g. Trivia"></div>
+      <div><label>Venue</label><input type="text" id="add-venue" placeholder="e.g. Games Area"></div>
+      <div><label>Contact</label><input type="text" id="add-contact" placeholder="e.g. Staff 3862 9020"></div>
+    </div>
+    <button class="btn btn-green" onclick="addActivity()">➕ Add Activity</button>
+  </div>
+
+  <div class="panel">
+    <h2>📋 Upcoming Activities</h2>
+    <div class="filter-row">
+      <input type="text" id="search-box" placeholder="Search by activity, venue or date…" oninput="renderTable()" style="flex:1;min-width:200px;">
+    </div>
+    <div id="loading">Loading…</div>
+    <div style="overflow-x:auto;">
+      <table id="activities-table" style="display:none;">
+        <thead>
+          <tr><th>Time</th><th>Duration</th><th>Activity</th><th>Venue</th><th>Contact</th><th></th></tr>
+        </thead>
+        <tbody id="activities-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── SET THIS AFTER DEPLOYING THE APPS SCRIPT AS A WEB APP ──
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzsMFnQXBPNfdXnKvU4lju_2LIU5QangsqQwq_NXFYu2r9GA1dhZp0x_H2sf9iFrHcHA/exec";
+const SECRET_KEY = "zwQQcGAflBHjDc91l3DZceVf"; // must match SECRET_KEY in the Apps Script
+const CAL_PIN = "7734"; // change this to whatever PIN you'd like — separate from the main Members Area PIN
+
+let allRows = [];
+let editingId = null;
+
+// ── PIN GATE ──
+document.getElementById("pin-input").addEventListener("input", function () {
+  if (this.value.length === CAL_PIN.length) checkPin(this.value);
+});
+function checkPin(val) {
+  if (val === CAL_PIN) {
+    document.getElementById("pin-overlay").style.display = "none";
+    loadRows();
+  } else {
+    document.getElementById("pin-error").textContent = "Incorrect PIN";
+    document.getElementById("pin-input").value = "";
+  }
+}
+
+function showStatus(msg, kind) {
+  const b = document.getElementById("status-banner");
+  b.textContent = msg;
+  b.className = "status-banner " + kind;
+  if (kind !== "busy") setTimeout(() => { b.style.display = "none"; }, 5000);
+}
+
+function apiGet(action, extra) {
+  const params = new URLSearchParams(Object.assign({ action, key: SECRET_KEY }, extra || {}));
+  return fetch(APPS_SCRIPT_URL + "?" + params.toString()).then(r => r.json());
+}
+function apiPost(action, extra) {
+  const body = new URLSearchParams(Object.assign({ action, key: SECRET_KEY }, extra || {}));
+  return fetch(APPS_SCRIPT_URL, { method: "POST", body }).then(r => r.json());
+}
+
+function loadRows() {
+  document.getElementById("loading").style.display = "block";
+  document.getElementById("activities-table").style.display = "none";
+  apiGet("list").then(res => {
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("activities-table").style.display = "table";
+    if (!res.success) { showStatus("Couldn't load: " + res.error, "err"); return; }
+    allRows = res.rows;
+    renderTable();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function renderTable() {
+  const q = document.getElementById("search-box").value.trim().toLowerCase();
+  const filtered = allRows.filter(r =>
+    !q || (r.activity + " " + r.venue + " " + r.date).toLowerCase().includes(q)
+  );
+
+  let lastDate = null;
+  const body = document.getElementById("activities-body");
+  body.innerHTML = "";
+
+  filtered.forEach(r => {
+    if (r.date !== lastDate) {
+      lastDate = r.date;
+      const tr = document.createElement("tr");
+      tr.className = "date-header";
+      tr.innerHTML = `<td colspan="6">${formatDateHeader(r.date)}</td>`;
+      body.appendChild(tr);
+    }
+    body.appendChild(rowElement(r));
+  });
+}
+
+function formatDateHeader(dateStr) {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+}
+
+function rowElement(r) {
+  const tr = document.createElement("tr");
+  tr.dataset.id = r.id;
+  if (editingId === r.id) {
+    tr.innerHTML = `
+      <td class="edit-cell"><input id="e-time" value="${escAttr(r.time)}"></td>
+      <td class="edit-cell"><input id="e-duration" value="${escAttr(r.duration)}"></td>
+      <td class="edit-cell"><input id="e-activity" value="${escAttr(r.activity)}"></td>
+      <td class="edit-cell"><input id="e-venue" value="${escAttr(r.venue)}"></td>
+      <td class="edit-cell"><input id="e-contact" value="${escAttr(r.contact)}"></td>
+      <td class="row-actions">
+        <button class="btn btn-green btn-small" onclick="saveEdit('${r.id}','${r.date}')">Save</button>
+        <button class="btn btn-navy btn-small" onclick="editingId=null;renderTable();">Cancel</button>
+      </td>`;
+  } else {
+    tr.innerHTML = `
+      <td>${esc(r.time)}</td>
+      <td>${esc(r.duration)}</td>
+      <td>${esc(r.activity)}</td>
+      <td>${esc(r.venue)}</td>
+      <td>${esc(r.contact)}</td>
+      <td class="row-actions">
+        <button class="btn btn-navy btn-small" onclick="editingId='${r.id}';renderTable();">✏️</button>
+        <button class="btn btn-red btn-small" onclick="deleteActivity('${r.id}')">🗑️</button>
+      </td>`;
+  }
+  return tr;
+}
+
+function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function escAttr(s) { return esc(s).replace(/"/g,"&quot;"); }
+
+function addActivity() {
+  const date = document.getElementById("add-date").value;
+  const activity = document.getElementById("add-activity").value.trim();
+  if (!date || !activity) { showStatus("Date and Activity are required.", "err"); return; }
+
+  const payload = {
+    date: date,
+    time: document.getElementById("add-time").value.trim(),
+    duration: document.getElementById("add-duration").value.trim(),
+    activity: activity,
+    venue: document.getElementById("add-venue").value.trim(),
+    contact: document.getElementById("add-contact").value.trim()
+  };
+  showStatus("Adding and updating the calendar…", "busy");
+  apiPost("add", payload).then(res => {
+    if (!res.success) { showStatus("Couldn't add: " + res.error, "err"); return; }
+    showStatus("Added — the calendar for that day has been updated.", "ok");
+    ["add-time","add-duration","add-activity","add-venue","add-contact"].forEach(id => document.getElementById(id).value = "");
+    loadRows();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function saveEdit(id, date) {
+  const payload = {
+    id: id,
+    date: date,
+    time: document.getElementById("e-time").value.trim(),
+    duration: document.getElementById("e-duration").value.trim(),
+    activity: document.getElementById("e-activity").value.trim(),
+    venue: document.getElementById("e-venue").value.trim(),
+    contact: document.getElementById("e-contact").value.trim()
+  };
+  showStatus("Saving and updating the calendar…", "busy");
+  apiPost("update", payload).then(res => {
+    if (!res.success) { showStatus("Couldn't save: " + res.error, "err"); return; }
+    showStatus("Saved — the calendar has been updated.", "ok");
+    editingId = null;
+    loadRows();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function deleteActivity(id) {
+  if (!confirm("Delete this activity? This also removes it from the calendar.")) return;
+  showStatus("Deleting and updating the calendar…", "busy");
+  apiPost("delete", { id: id }).then(res => {
+    if (!res.success) { showStatus("Couldn't delete: " + res.error, "err"); return; }
+    showStatus("Deleted — the calendar has been updated.", "ok");
+    loadRows();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function runFullSync() {
+  if (!confirm("Run a full sync? This rebuilds the whole calendar from the Sheet and can take a few minutes.")) return;
+  showStatus("Running full sync — this can take several minutes for ~480 activities…", "busy");
+  apiPost("sync").then(res => {
+    if (!res.success) { showStatus("Sync error: " + res.error, "err"); return; }
+    showStatus(res.message, "ok");
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+</script>
+</body>
+</html>
