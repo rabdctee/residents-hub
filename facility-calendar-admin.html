@@ -399,14 +399,14 @@ function rowElement(r, showDateCol) {
   const dateCell = showDateCol ? `<td>${esc(r.date)}</td>` : "";
   if (editingId === r.id) {
     tr.innerHTML = `
-      ${showDateCol ? `<td>${esc(r.date)}</td>` : ""}
+      <td class="edit-cell"><input type="date" id="e-date" value="${escAttr(r.date)}"></td>
       <td class="edit-cell"><input id="e-time" list="dl-time" value="${escAttr(r.time)}"></td>
       <td class="edit-cell"><input id="e-duration" list="dl-duration" value="${escAttr(r.duration)}"></td>
       <td class="edit-cell"><input id="e-activity" list="dl-activity" value="${escAttr(r.activity)}"></td>
       <td class="edit-cell"><input id="e-venue" list="dl-venue" value="${escAttr(r.venue)}"></td>
       <td class="edit-cell"><input id="e-contact" list="dl-contact" value="${escAttr(r.contact)}"></td>
       <td class="row-actions">
-        <button class="btn btn-green btn-small" onclick="saveEdit('${r.id}','${r.date}')">Save</button>
+        <button class="btn btn-green btn-small" onclick="saveEdit('${r.id}')">Save</button>
         <button class="btn btn-navy btn-small" onclick="editingId=null;renderAll();">Cancel</button>
       </td>`;
   } else {
@@ -450,16 +450,17 @@ function addActivity() {
   }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
 }
 
-function saveEdit(id, date) {
+function saveEdit(id) {
   const payload = {
     id: id,
-    date: date,
+    date: document.getElementById("e-date").value,
     time: document.getElementById("e-time").value.trim(),
     duration: document.getElementById("e-duration").value.trim(),
     activity: document.getElementById("e-activity").value.trim(),
     venue: document.getElementById("e-venue").value.trim(),
     contact: document.getElementById("e-contact").value.trim()
   };
+  if (!payload.date) { showStatus("Date can't be blank.", "err"); return; }
   showStatus("Saving and updating the calendar…", "busy");
   apiPost("update", payload).then(res => {
     if (!res.success) { showStatus("Couldn't save: " + res.error, "err"); return; }
