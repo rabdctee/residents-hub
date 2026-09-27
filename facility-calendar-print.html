@@ -142,12 +142,16 @@
     .mode-week table.day-table td { padding: 10px 16px; }
     .mode-week .day-block { break-inside: avoid; }
   }
-  @page { size: landscape; margin: 10mm; }
+  /* Week prints portrait (a stacked list reads better tall); Month prints
+     landscape (needs the width for 7 columns) via a named page. */
+  @page { size: portrait; margin: 10mm; }
+  @page monthpage { size: landscape; margin: 10mm; }
+  .sheet.mode-month { page: monthpage; }
 </style>
 </head>
 <body>
 
-<div class="back-bar"><a href="members-area.html">← Back to Members Area</a></div>
+<div class="back-bar"><a href="index.html">← Back to Home</a></div>
 
 <div class="controls">
   <h1>🖨️ Printable Calendar</h1>
@@ -283,7 +287,7 @@ function renderWeekList() {
       const tbody = table.querySelector("tbody");
       dayRows.forEach(r => {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${esc(r.time)}</td><td>${esc(r.duration)}</td><td>${esc(r.activity)}</td><td>${esc(r.venue)}</td><td>${esc(r.contact)}</td>`;
+        tr.innerHTML = `<td>${esc(fmtTime(r.time))}</td><td>${esc(r.duration)}</td><td>${esc(r.activity)}</td><td>${esc(r.venue)}</td><td>${esc(r.contact)}</td>`;
         tbody.appendChild(tr);
       });
       block.appendChild(table);
@@ -341,7 +345,7 @@ function buildCell(d, todayStr, maxLines, blank) {
 
   let html = `<div class="daynum">${d.getDate()}</div>`;
   shown.forEach(r => {
-    const timePart = r.time ? esc(r.time) + " " : "";
+    const timePart = r.time ? esc(fmtTime(r.time)) + " " : "";
     const venuePart = (mode === "week" && r.venue) ? ` <span class="venue">— ${esc(r.venue)}</span>` : "";
     html += `<div class="entry">${timePart}${esc(r.activity)}${venuePart}</div>`;
   });
@@ -361,7 +365,7 @@ function openModal(d, rows) {
   body.innerHTML = rows.map(r => `
     <div class="modal-entry">
       <div class="m-activity">${esc(r.activity)}</div>
-      <div class="m-meta">${[r.time, r.duration].filter(Boolean).join(" · ")}</div>
+      <div class="m-meta">${[fmtTime(r.time), r.duration].filter(Boolean).join(" · ")}</div>
       <div class="m-meta">${[r.venue, r.contact].filter(Boolean).join(" · ")}</div>
     </div>`).join("");
   document.getElementById("modal-overlay").classList.add("open");
@@ -372,6 +376,10 @@ function closeModal(e) {
 }
 
 function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+// This page always shows times in lowercase am/pm, regardless of how the
+// underlying Sheet/API text is cased (the admin page keeps its own casing).
+function fmtTime(t) { return String(t || "").replace(/AM/gi, "am").replace(/PM/gi, "pm"); }
 
 loadAndRender();
 </script>
