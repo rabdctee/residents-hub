@@ -65,7 +65,7 @@
     color: var(--hub-navy); padding: 4px 0; letter-spacing: 0.03em;
   }
 
-  .week-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+  .week-row { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: 1fr; gap: 4px; margin-bottom: 4px; }
 
   .cal-cell {
     border: 1px solid #c5d8ee; border-radius: 6px; padding: 5px 6px; background: white;
@@ -114,6 +114,25 @@
     .week-row { break-inside: avoid; }
     .cal-cell { cursor: default; }
     .cal-cell:hover { background: inherit; }
+
+    /* Printing shows every activity in full — no "+N more" summaries, since
+       that's not clickable on paper. Cells grow to fit whatever they need. */
+    .cal-cell { overflow: visible; }
+    .cal-cell .entry { white-space: normal; overflow: visible; text-overflow: clip; }
+    .cal-cell .more { display: none; }
+
+    /* Week view stretches to fill the printed page, for noticeboard display */
+    html, body { height: 100%; }
+    .mode-week .sheet { display: flex; flex-direction: column; height: 100%; }
+    .mode-week #sheet-body { flex: 1 1 auto; display: flex; }
+    .mode-week .week-row { flex: 1 1 auto; }
+    .mode-week .cal-cell { min-height: 100%; padding: 14px; }
+    .mode-week .sheet-title { font-size: 2em; }
+    .mode-week .sheet-subtitle { font-size: 1.1em; margin-bottom: 20px; }
+    .mode-week .weekday-header div { font-size: 1.2em; }
+    .mode-week .cal-cell .daynum { font-size: 1.9em; margin-bottom: 8px; }
+    .mode-week .cal-cell .entry { font-size: 1.08em; line-height: 1.5; margin-bottom: 5px; }
+    .mode-week .cal-cell .venue { font-size: 0.95em; }
   }
   @page { size: landscape; margin: 10mm; }
 </style>
@@ -161,6 +180,10 @@ let allRows = [];
 let rowsByDate = {};
 let mode = "week"; // "week" | "month"
 let anchor = new Date();
+let printing = false; // true only while the print dialog is open — shows every entry, no "+N more"
+
+window.addEventListener("beforeprint", () => { printing = true; render(); });
+window.addEventListener("afterprint", () => { printing = false; render(); });
 
 function apiGet(action, extra) {
   const params = new URLSearchParams(Object.assign({ action, key: SECRET_KEY }, extra || {}));
@@ -268,7 +291,8 @@ function buildCell(d, todayStr, maxLines, blank) {
 
   cell.className = "cal-cell" + (isWeekend ? " weekend" : "") + (dateStr === todayStr ? " today" : "");
   const rows = (rowsByDate[dateStr] || []).slice();
-  const shown = rows.slice(0, maxLines);
+  const effectiveMax = printing ? rows.length : maxLines;
+  const shown = rows.slice(0, effectiveMax);
   const extra = rows.length - shown.length;
 
   let html = `<div class="daynum">${d.getDate()}</div>`;
