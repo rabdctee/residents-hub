@@ -64,6 +64,23 @@
     text-align: center; font-weight: 700; font-size: 0.78em; text-transform: uppercase;
     color: var(--hub-navy); padding: 4px 0; letter-spacing: 0.03em;
   }
+  .mode-week .weekday-header { display: none; }
+
+  /* ── Week mode: stacked day-by-day list ── */
+  .day-block { margin-bottom: 16px; border: 1px solid #c5d8ee; border-radius: 8px; overflow: hidden; }
+  .day-heading {
+    background: #D9E1F2; color: #1F4E79; font-weight: 700; padding: 10px 14px; font-size: 1.15em;
+  }
+  .day-heading.weekend { background: #FCE4D6; }
+  .day-heading.today { outline: 2px solid #a12b2b; outline-offset: -2px; }
+  table.day-table { width: 100%; border-collapse: collapse; font-size: 1em; }
+  table.day-table th {
+    text-align: left; padding: 7px 14px; font-size: 0.75em; text-transform: uppercase;
+    letter-spacing: 0.03em; color: #666; border-bottom: 1px solid #e0eaf4; font-style: italic;
+  }
+  table.day-table td { padding: 8px 14px; border-bottom: 1px solid #eef3f8; }
+  table.day-table tr:last-child td { border-bottom: none; }
+  .no-activities { padding: 12px 14px; color: #999; font-style: italic; font-size: 0.95em; }
 
   .week-row { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: 1fr; gap: 4px; margin-bottom: 4px; }
 
@@ -80,11 +97,6 @@
     font-size: 0.66em; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .cal-cell .more { font-size: 0.64em; color: #888; font-style: italic; margin-top: 1px; }
-
-  /* Week mode gets taller, roomier cells with more visible detail per entry */
-  .mode-week .cal-cell { min-height: 230px; }
-  .mode-week .cal-cell .entry { font-size: 0.78em; white-space: normal; }
-  .mode-week .cal-cell .venue { color: #777; font-size: 0.92em; }
 
   /* Month mode: compact cells, one row per week, several weeks per page */
   .mode-month .cal-cell { min-height: 92px; }
@@ -115,24 +127,20 @@
     .cal-cell { cursor: default; }
     .cal-cell:hover { background: inherit; }
 
-    /* Printing shows every activity in full — no "+N more" summaries, since
-       that's not clickable on paper. Cells grow to fit whatever they need. */
+    /* Month printing shows every activity in full — no "+N more" summaries,
+       since that's not clickable on paper. Cells grow to fit whatever they need. */
     .cal-cell { overflow: visible; }
     .cal-cell .entry { white-space: normal; overflow: visible; text-overflow: clip; }
     .cal-cell .more { display: none; }
 
-    /* Week view stretches to fill the printed page, for noticeboard display */
-    html, body { height: 100%; }
-    .mode-week .sheet { display: flex; flex-direction: column; height: 100%; }
-    .mode-week #sheet-body { flex: 1 1 auto; display: flex; }
-    .mode-week .week-row { flex: 1 1 auto; }
-    .mode-week .cal-cell { min-height: 100%; padding: 14px; }
+    /* Week view (stacked list) prints larger and bolder for noticeboard reading */
     .mode-week .sheet-title { font-size: 2em; }
     .mode-week .sheet-subtitle { font-size: 1.1em; margin-bottom: 20px; }
-    .mode-week .weekday-header div { font-size: 1.2em; }
-    .mode-week .cal-cell .daynum { font-size: 1.9em; margin-bottom: 8px; }
-    .mode-week .cal-cell .entry { font-size: 1.08em; line-height: 1.5; margin-bottom: 5px; }
-    .mode-week .cal-cell .venue { font-size: 0.95em; }
+    .mode-week .day-heading { font-size: 1.4em; padding: 12px 16px; }
+    .mode-week table.day-table { font-size: 1.15em; }
+    .mode-week table.day-table th { font-size: 0.8em; padding: 8px 16px; }
+    .mode-week table.day-table td { padding: 10px 16px; }
+    .mode-week .day-block { break-inside: avoid; }
   }
   @page { size: landscape; margin: 10mm; }
 </style>
@@ -152,6 +160,7 @@
   <button class="nav-btn" onclick="navigate(1)">▶</button>
   <button class="nav-btn" onclick="goToday()">Today</button>
   <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+  <div class="print-hint">Tip: in the print dialog, open "More settings" and untick "Headers and footers" to drop the browser's own URL/date line.</div>
 </div>
 
 <div id="loading">Loading…</div>
@@ -227,54 +236,90 @@ function startOfWeek(d) {
   return r;
 }
 
+function fmtLong(d) {
+  return d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+}
+
 function render() {
   const sheet = document.getElementById("sheet");
   sheet.classList.toggle("mode-week", mode === "week");
   sheet.classList.toggle("mode-month", mode === "month");
 
+  if (mode === "week") renderWeekList();
+  else renderMonthGrid();
+}
+
+// ── Week mode: stacked day-by-day list ──
+function renderWeekList() {
   const body = document.getElementById("sheet-body");
   body.innerHTML = "";
   const todayStr = toDateStr(new Date());
 
-  if (mode === "week") {
-    const start = startOfWeek(anchor);
-    const days = [];
-    for (let i = 0; i < 7; i++) { const d = new Date(start); d.setDate(d.getDate() + i); days.push(d); }
-    const end = days[6];
-    const title = "Week of " + start.toLocaleDateString(undefined,{day:"numeric",month:"short"}) +
-                  " – " + end.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});
-    document.getElementById("range-label").textContent = title;
-    document.getElementById("sheet-title").textContent = title;
+  const start = startOfWeek(anchor);
+  const days = [];
+  for (let i = 0; i < 7; i++) { const d = new Date(start); d.setDate(d.getDate() + i); days.push(d); }
+  const end = days[6];
+  const title = "Week of " + start.toLocaleDateString(undefined,{day:"numeric",month:"short"}) +
+                " – " + end.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});
+  document.getElementById("range-label").textContent = title;
+  document.getElementById("sheet-title").textContent = title;
 
+  days.forEach(d => {
+    const dateStr = toDateStr(d);
+    const dayRows = (rowsByDate[dateStr] || []).slice();
+    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+    const isToday = dateStr === todayStr;
+
+    const block = document.createElement("div");
+    block.className = "day-block";
+    block.innerHTML = `<div class="day-heading ${isWeekend ? "weekend" : ""} ${isToday ? "today" : ""}">${fmtLong(d)}</div>`;
+
+    if (dayRows.length === 0) {
+      block.innerHTML += `<div class="no-activities">Nothing scheduled</div>`;
+    } else {
+      const table = document.createElement("table");
+      table.className = "day-table";
+      table.innerHTML = `<thead><tr><th>Time</th><th>Duration</th><th>Activity / Event</th><th>Venue</th><th>Contact</th></tr></thead><tbody></tbody>`;
+      const tbody = table.querySelector("tbody");
+      dayRows.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${esc(r.time)}</td><td>${esc(r.duration)}</td><td>${esc(r.activity)}</td><td>${esc(r.venue)}</td><td>${esc(r.contact)}</td>`;
+        tbody.appendChild(tr);
+      });
+      block.appendChild(table);
+    }
+    body.appendChild(block);
+  });
+}
+
+// ── Month mode: boxed calendar grid ──
+function renderMonthGrid() {
+  const body = document.getElementById("sheet-body");
+  body.innerHTML = "";
+  const todayStr = toDateStr(new Date());
+
+  const y = anchor.getFullYear(), m = anchor.getMonth();
+  const first = new Date(y, m, 1);
+  const title = first.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+  document.getElementById("range-label").textContent = title;
+  document.getElementById("sheet-title").textContent = title;
+
+  const gridStart = startOfWeek(first);
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const last = new Date(y, m, daysInMonth);
+  const gridEnd = new Date(last);
+  gridEnd.setDate(gridEnd.getDate() + (6 - last.getDay()));
+
+  let cur = new Date(gridStart);
+  while (cur <= gridEnd) {
     const row = document.createElement("div");
     row.className = "week-row";
-    days.forEach(d => row.appendChild(buildCell(d, todayStr, 6)));
-    body.appendChild(row);
-
-  } else {
-    const y = anchor.getFullYear(), m = anchor.getMonth();
-    const first = new Date(y, m, 1);
-    const title = first.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-    document.getElementById("range-label").textContent = title;
-    document.getElementById("sheet-title").textContent = title;
-
-    const gridStart = startOfWeek(first);
-    const daysInMonth = new Date(y, m + 1, 0).getDate();
-    const last = new Date(y, m, daysInMonth);
-    const gridEnd = new Date(last);
-    gridEnd.setDate(gridEnd.getDate() + (6 - last.getDay()));
-
-    let cur = new Date(gridStart);
-    while (cur <= gridEnd) {
-      const row = document.createElement("div");
-      row.className = "week-row";
-      for (let i = 0; i < 7; i++) {
-        const inMonth = cur.getMonth() === m;
-        row.appendChild(buildCell(new Date(cur), todayStr, 3, !inMonth));
-        cur.setDate(cur.getDate() + 1);
-      }
-      body.appendChild(row);
+    for (let i = 0; i < 7; i++) {
+      const inMonth = cur.getMonth() === m;
+      row.appendChild(buildCell(new Date(cur), todayStr, 3, !inMonth));
+      cur.setDate(cur.getDate() + 1);
     }
+    body.appendChild(row);
   }
 }
 
