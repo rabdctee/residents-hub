@@ -239,16 +239,39 @@ function populateDatalists() {
     if (r.venue) sets.venue.add(r.venue);
     if (r.contact) sets.contact.add(r.contact);
   });
-  fillDatalist("dl-time", sets.time);
-  fillDatalist("dl-duration", sets.duration);
+  fillDatalist("dl-time", sets.time, compareTimeStrings);
+  fillDatalist("dl-duration", sets.duration, compareDurationStrings);
   fillDatalist("dl-activity", sets.activity);
   fillDatalist("dl-venue", sets.venue);
   fillDatalist("dl-contact", sets.contact);
 }
-function fillDatalist(id, set) {
+function fillDatalist(id, set, compareFn) {
+  const values = Array.from(set).sort(compareFn); // default: plain alphabetical
   document.getElementById(id).innerHTML =
-    Array.from(set).sort().map(v => `<option value="${escAttr(v)}">`).join("");
+    values.map(v => `<option value="${escAttr(v)}">`).join("");
 }
+
+// "9:30 AM" / "12:00 PM" etc, sorted by time of day rather than as text
+// (a plain text sort would put "10:00 AM" before "9:30 AM")
+function timeStringToMinutes(s) {
+  const m = String(s).match(/(\d+):(\d+)\s*([AP]M)/i);
+  if (!m) return 99999; // unparseable — push to the end rather than break the sort
+  let h = parseInt(m[1], 10);
+  const mins = parseInt(m[2], 10);
+  const ap = m[3].toUpperCase();
+  if (ap === "PM" && h !== 12) h += 12;
+  if (ap === "AM" && h === 12) h = 0;
+  return h * 60 + mins;
+}
+function compareTimeStrings(a, b) { return timeStringToMinutes(a) - timeStringToMinutes(b); }
+
+// "30 mins" / "120 mins" etc, sorted by the actual number of minutes
+// (a plain text sort would put "120 mins" before "30 mins")
+function durationStringToMinutes(s) {
+  const m = String(s).match(/(\d+)/);
+  return m ? parseInt(m[1], 10) : 99999;
+}
+function compareDurationStrings(a, b) { return durationStringToMinutes(a) - durationStringToMinutes(b); }
 
 function todayStr() {
   const d = new Date();
