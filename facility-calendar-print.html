@@ -66,21 +66,19 @@
   }
   .mode-week .weekday-header { display: none; }
 
-  /* ── Week mode: stacked day-by-day list ── */
-  .day-block { margin-bottom: 16px; border: 1px solid #c5d8ee; border-radius: 8px; overflow: hidden; }
-  .day-heading {
-    background: #D9E1F2; color: #1F4E79; font-weight: 700; padding: 10px 14px; font-size: 1.15em;
+  /* ── Week mode: one shared table with a slim date-divider between days ── */
+  table.week-table { width: 100%; border-collapse: collapse; font-size: 0.86em; }
+  table.week-table thead th {
+    text-align: left; padding: 5px 10px; font-size: 0.7em; text-transform: uppercase;
+    letter-spacing: 0.03em; color: #666; border-bottom: 2px solid var(--hub-navy);
+    background: #F2F6FF; font-style: italic;
   }
-  .day-heading.weekend { background: #FCE4D6; }
-  .day-heading.today { outline: 2px solid #a12b2b; outline-offset: -2px; }
-  table.day-table { width: 100%; border-collapse: collapse; font-size: 1em; }
-  table.day-table th {
-    text-align: left; padding: 7px 14px; font-size: 0.75em; text-transform: uppercase;
-    letter-spacing: 0.03em; color: #666; border-bottom: 1px solid #e0eaf4; font-style: italic;
-  }
-  table.day-table td { padding: 8px 14px; border-bottom: 1px solid #eef3f8; }
-  table.day-table tr:last-child td { border-bottom: none; }
-  .no-activities { padding: 12px 14px; color: #999; font-style: italic; font-size: 0.95em; }
+  table.week-table tbody { break-inside: avoid; }
+  table.week-table .day-divider td { background: #D9E1F2; color: var(--hub-navy); font-weight: 700; padding: 5px 10px; font-size: 0.92em; }
+  table.week-table .day-divider.weekend td { background: #FCE4D6; }
+  table.week-table .day-divider.today td { color: #a12b2b; }
+  table.week-table td { padding: 4px 10px; border-bottom: 1px solid #eef3f8; }
+  .no-activities td { color: #999; font-style: italic; }
 
   .week-row { display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: 1fr; gap: 4px; margin-bottom: 4px; }
 
@@ -133,14 +131,10 @@
     .cal-cell .entry { white-space: normal; overflow: visible; text-overflow: clip; }
     .cal-cell .more { display: none; }
 
-    /* Week view (stacked list) prints larger and bolder for noticeboard reading */
-    .mode-week .sheet-title { font-size: 2em; }
-    .mode-week .sheet-subtitle { font-size: 1.1em; margin-bottom: 20px; }
-    .mode-week .day-heading { font-size: 1.4em; padding: 12px 16px; }
-    .mode-week table.day-table { font-size: 1.15em; }
-    .mode-week table.day-table th { font-size: 0.8em; padding: 8px 16px; }
-    .mode-week table.day-table td { padding: 10px 16px; }
-    .mode-week .day-block { break-inside: avoid; }
+    /* Week view: keep it compact so a full week fits one printed page */
+    .mode-week .sheet-title { font-size: 1.5em; }
+    .mode-week .sheet-subtitle { margin-bottom: 10px; }
+    table.week-table thead { display: table-header-group; }
   }
   /* Week prints portrait (a stacked list reads better tall); Month prints
      landscape (needs the width for 7 columns) via a named page. */
@@ -252,7 +246,7 @@ function render() {
   else renderMonthGrid();
 }
 
-// ── Week mode: stacked day-by-day list ──
+// ── Week mode: one table, shared header, slim day-divider rows ──
 function renderWeekList() {
   const body = document.getElementById("sheet-body");
   body.innerHTML = "";
@@ -267,32 +261,30 @@ function renderWeekList() {
   document.getElementById("range-label").textContent = title;
   document.getElementById("sheet-title").textContent = title;
 
+  const table = document.createElement("table");
+  table.className = "week-table";
+  table.innerHTML = `<thead><tr><th>Time</th><th>Duration</th><th>Activity / Event</th><th>Venue</th><th>Contact</th></tr></thead>`;
+
   days.forEach(d => {
     const dateStr = toDateStr(d);
     const dayRows = (rowsByDate[dateStr] || []).slice();
     const isWeekend = d.getDay() === 0 || d.getDay() === 6;
     const isToday = dateStr === todayStr;
 
-    const block = document.createElement("div");
-    block.className = "day-block";
-    block.innerHTML = `<div class="day-heading ${isWeekend ? "weekend" : ""} ${isToday ? "today" : ""}">${fmtLong(d)}</div>`;
+    const tbody = document.createElement("tbody");
+    tbody.innerHTML = `<tr class="day-divider ${isWeekend ? "weekend" : ""} ${isToday ? "today" : ""}"><td colspan="5">${fmtLong(d)}</td></tr>`;
 
     if (dayRows.length === 0) {
-      block.innerHTML += `<div class="no-activities">Nothing scheduled</div>`;
+      tbody.innerHTML += `<tr class="no-activities"><td colspan="5">Nothing scheduled</td></tr>`;
     } else {
-      const table = document.createElement("table");
-      table.className = "day-table";
-      table.innerHTML = `<thead><tr><th>Time</th><th>Duration</th><th>Activity / Event</th><th>Venue</th><th>Contact</th></tr></thead><tbody></tbody>`;
-      const tbody = table.querySelector("tbody");
       dayRows.forEach(r => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${esc(fmtTime(r.time))}</td><td>${esc(r.duration)}</td><td>${esc(r.activity)}</td><td>${esc(r.venue)}</td><td>${esc(r.contact)}</td>`;
-        tbody.appendChild(tr);
+        tbody.innerHTML += `<tr><td>${esc(fmtTime(r.time))}</td><td>${esc(r.duration)}</td><td>${esc(r.activity)}</td><td>${esc(r.venue)}</td><td>${esc(r.contact)}</td></tr>`;
       });
-      block.appendChild(table);
     }
-    body.appendChild(block);
+    table.appendChild(tbody);
   });
+
+  body.appendChild(table);
 }
 
 // ── Month mode: boxed calendar grid ──

@@ -144,6 +144,14 @@
   </div>
 
   <div class="panel">
+    <h2>📅 Recurring Activities</h2>
+    <div class="sync-row">
+      <button class="btn btn-gold" onclick="runGenerateNext()">📅 Generate Recurring (Next Months)</button>
+      <div class="sync-desc">Fills in the standing weekly/fortnightly activities (from the Recurring Template tab) for the next few months, skipping anything already there. This also runs automatically once a month — use this if you want it brought up to date sooner. One-off events still need to be added by hand.</div>
+    </div>
+  </div>
+
+  <div class="panel">
     <h2>➕ Add an Activity</h2>
     <div class="form-grid">
       <div><label>Date</label><input type="date" id="add-date"></div>
@@ -477,6 +485,15 @@ function runFullSync() {
   apiPost("sync").then(res => {
     if (!res.success) { showStatus("Sync error: " + res.error, "err"); return; }
     showStatus(res.message, "ok");
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function runGenerateNext() {
+  showStatus("Generating recurring activities for the next few months…", "busy");
+  apiPost("generateNext").then(res => {
+    if (!res.success) { showStatus("Couldn't generate: " + res.error, "err"); return; }
+    showStatus(res.message, "ok");
+    loadRows();
   }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
 }
 </script>
