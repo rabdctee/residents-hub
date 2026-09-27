@@ -365,7 +365,7 @@ function renderAccordion(rows) {
 
         if (dayOpen) {
           const table = document.createElement("table");
-          table.innerHTML = `<thead><tr><th>Time</th><th>Duration</th><th>Activity</th><th>Venue</th><th>Contact</th><th></th></tr></thead><tbody></tbody>`;
+          table.innerHTML = `<thead><tr><th>Date</th><th>Time</th><th>Duration</th><th>Activity</th><th>Venue</th><th>Contact</th><th></th></tr></thead><tbody></tbody>`;
           const tbody = table.querySelector("tbody");
           dayRows.forEach(r => tbody.appendChild(rowElement(r, false)));
           dayDiv.querySelector(".day-body").appendChild(table);
@@ -396,7 +396,7 @@ function formatDateHeader(dateStr) {
 function rowElement(r, showDateCol) {
   const tr = document.createElement("tr");
   tr.dataset.id = r.id;
-  const dateCell = showDateCol ? `<td>${esc(r.date)}</td>` : "";
+  const dateCell = `<td>${esc(r.date)}</td>`;
   if (editingId === r.id) {
     tr.innerHTML = `
       <td class="edit-cell"><input type="date" id="e-date" value="${escAttr(r.date)}"></td>
