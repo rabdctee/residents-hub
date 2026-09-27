@@ -11,7 +11,6 @@
     background: #eef3f8; color: #222; font-size: 16px; line-height: 1.5; min-height: 100vh;
   }
 
-  /* ── PIN OVERLAY (same pattern as members-area.html; separate PIN) ── */
   #pin-overlay {
     position: fixed; inset: 0; background: #1F4E79; z-index: 9999;
     display: flex; align-items: center; justify-content: center;
@@ -79,19 +78,40 @@
   .btn-gold   { background: #C9A44A; }
   .btn-small  { padding: 5px 10px; font-size: 0.8em; }
 
-  .filter-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
-  .filter-row input { padding: 7px 10px; border-radius: 7px; border: 1px solid #c5d8ee; font-size: 0.9em; }
+  .filter-row { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+  .filter-row input[type="text"] { padding: 7px 10px; border-radius: 7px; border: 1px solid #c5d8ee; font-size: 0.9em; }
+  .show-all-toggle { display: flex; align-items: center; gap: 6px; font-size: 0.88em; color: #1F4E79; font-weight: 600; }
 
   table { width: 100%; border-collapse: collapse; font-size: 0.88em; }
   th { background: #1F4E79; color: white; text-align: left; padding: 8px 10px; font-size: 0.82em; }
   td { padding: 7px 10px; border-bottom: 1px solid #e0eaf4; vertical-align: top; }
-  tr.date-header td {
-    background: #f0f6ff; font-weight: 700; color: #1F4E79; padding-top: 12px;
-  }
   .row-actions { display: flex; gap: 6px; }
   .edit-cell input { width: 100%; padding: 5px 7px; border: 1px solid #c5d8ee; border-radius: 5px; font-size: 0.95em; }
 
   #loading { text-align: center; padding: 30px; color: #888; }
+
+  .month-block { border: 1px solid #c5d8ee; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .month-header {
+    background: #1F4E79; color: white; padding: 10px 14px; cursor: pointer;
+    font-weight: 700; display: flex; justify-content: space-between; align-items: center; font-size: 0.95em;
+  }
+  .month-header .chev { transition: transform 0.15s; }
+  .month-header.open .chev { transform: rotate(90deg); }
+  .month-body { display: none; padding: 8px; background: #f7fafd; }
+  .month-body.open { display: block; }
+
+  .day-block { border: 1px solid #dfe9f5; border-radius: 8px; margin-bottom: 6px; background: white; overflow: hidden; }
+  .day-header {
+    padding: 8px 12px; cursor: pointer; font-weight: 600; color: #1F4E79;
+    display: flex; justify-content: space-between; align-items: center; font-size: 0.9em;
+  }
+  .day-header .chev { transition: transform 0.15s; font-size: 0.85em; color: #888; }
+  .day-header.open .chev { transform: rotate(90deg); }
+  .day-body { display: none; padding: 0 8px 8px; }
+  .day-body.open { display: block; }
+  .day-count { font-weight: 400; color: #888; font-size: 0.85em; margin-left: 8px; }
+
+  #flat-results { display: none; }
 </style>
 </head>
 <body>
@@ -118,7 +138,7 @@
   <div class="panel">
     <h2>🔁 Full Sync</h2>
     <div class="sync-row">
-      <button class="btn btn-gold" onclick="runFullSync()">🔁 Run Full Sync Now</button>
+      <button class="btn btn-red" onclick="runFullSync()">🔁 Run Full Sync Now</button>
       <div class="sync-desc">Every add, edit or delete below already updates the calendar for that day automatically. Only use this if something looks out of step and you want to rebuild the whole calendar from the Sheet — it can take a few minutes for ~480 activities.</div>
     </div>
   </div>
@@ -127,11 +147,11 @@
     <h2>➕ Add an Activity</h2>
     <div class="form-grid">
       <div><label>Date</label><input type="date" id="add-date"></div>
-      <div><label>Time (optional)</label><input type="text" id="add-time" placeholder="e.g. 9:30 AM"></div>
-      <div><label>Duration (optional)</label><input type="text" id="add-duration" placeholder="e.g. 60 mins"></div>
-      <div class="full"><label>Activity / Event</label><input type="text" id="add-activity" placeholder="e.g. Trivia"></div>
-      <div><label>Venue</label><input type="text" id="add-venue" placeholder="e.g. Games Area"></div>
-      <div><label>Contact</label><input type="text" id="add-contact" placeholder="e.g. Staff 3862 9020"></div>
+      <div><label>Time</label><input type="text" id="add-time" list="dl-time" placeholder="e.g. 9:30 AM"></div>
+      <div><label>Duration</label><input type="text" id="add-duration" list="dl-duration" placeholder="e.g. 60 mins"></div>
+      <div class="full"><label>Activity / Event</label><input type="text" id="add-activity" list="dl-activity" placeholder="e.g. Trivia"></div>
+      <div><label>Venue</label><input type="text" id="add-venue" list="dl-venue" placeholder="e.g. Games Area"></div>
+      <div><label>Contact</label><input type="text" id="add-contact" list="dl-contact" placeholder="e.g. Staff 3862 9020"></div>
     </div>
     <button class="btn btn-green" onclick="addActivity()">➕ Add Activity</button>
   </div>
@@ -139,30 +159,36 @@
   <div class="panel">
     <h2>📋 Upcoming Activities</h2>
     <div class="filter-row">
-      <input type="text" id="search-box" placeholder="Search by activity, venue or date…" oninput="renderTable()" style="flex:1;min-width:200px;">
+      <input type="text" id="search-box" placeholder="Search by activity, venue or date…" oninput="renderAll()" style="flex:1;min-width:200px;">
+      <label class="show-all-toggle"><input type="checkbox" id="show-all-toggle" onchange="renderAll()"> Show all (include past dates)</label>
     </div>
     <div id="loading">Loading…</div>
-    <div style="overflow-x:auto;">
-      <table id="activities-table" style="display:none;">
-        <thead>
-          <tr><th>Time</th><th>Duration</th><th>Activity</th><th>Venue</th><th>Contact</th><th></th></tr>
-        </thead>
-        <tbody id="activities-body"></tbody>
+    <div id="accordion-wrap" style="display:none;"></div>
+    <div id="flat-results" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Date</th><th>Time</th><th>Duration</th><th>Activity</th><th>Venue</th><th>Contact</th><th></th></tr></thead>
+        <tbody id="flat-results-body"></tbody>
       </table>
     </div>
   </div>
 </div>
 
+<datalist id="dl-time"></datalist>
+<datalist id="dl-duration"></datalist>
+<datalist id="dl-activity"></datalist>
+<datalist id="dl-venue"></datalist>
+<datalist id="dl-contact"></datalist>
+
 <script>
-// ── SET THIS AFTER DEPLOYING THE APPS SCRIPT AS A WEB APP ──
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzsMFnQXBPNfdXnKvU4lju_2LIU5QangsqQwq_NXFYu2r9GA1dhZp0x_H2sf9iFrHcHA/exec";
-const SECRET_KEY = "zwQQcGAflBHjDc91l3DZceVf"; // must match SECRET_KEY in the Apps Script
-const CAL_PIN = "5304"; // change this to whatever PIN you'd like — separate from the main Members Area PIN
+const SECRET_KEY = "zwQQcGAflBHjDc91l3DZceVf";
+const CAL_PIN = "5304";
 
 let allRows = [];
 let editingId = null;
+let openMonths = {};
+let openDays = {};
 
-// ── PIN GATE ──
 document.getElementById("pin-input").addEventListener("input", function () {
   if (this.value.length === CAL_PIN.length) checkPin(this.value);
 });
@@ -194,66 +220,174 @@ function apiPost(action, extra) {
 
 function loadRows() {
   document.getElementById("loading").style.display = "block";
-  document.getElementById("activities-table").style.display = "none";
+  document.getElementById("accordion-wrap").style.display = "none";
   apiGet("list").then(res => {
     document.getElementById("loading").style.display = "none";
-    document.getElementById("activities-table").style.display = "table";
     if (!res.success) { showStatus("Couldn't load: " + res.error, "err"); return; }
     allRows = res.rows;
-    renderTable();
+    populateDatalists();
+    renderAll();
   }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
 }
 
-function renderTable() {
+function populateDatalists() {
+  const sets = { time: new Set(), duration: new Set(), activity: new Set(), venue: new Set(), contact: new Set() };
+  allRows.forEach(r => {
+    if (r.time) sets.time.add(r.time);
+    if (r.duration) sets.duration.add(r.duration);
+    if (r.activity) sets.activity.add(r.activity);
+    if (r.venue) sets.venue.add(r.venue);
+    if (r.contact) sets.contact.add(r.contact);
+  });
+  fillDatalist("dl-time", sets.time);
+  fillDatalist("dl-duration", sets.duration);
+  fillDatalist("dl-activity", sets.activity);
+  fillDatalist("dl-venue", sets.venue);
+  fillDatalist("dl-contact", sets.contact);
+}
+function fillDatalist(id, set) {
+  document.getElementById(id).innerHTML =
+    Array.from(set).sort().map(v => `<option value="${escAttr(v)}">`).join("");
+}
+
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+
+function renderAll() {
   const q = document.getElementById("search-box").value.trim().toLowerCase();
-  const filtered = allRows.filter(r =>
-    !q || (r.activity + " " + r.venue + " " + r.date).toLowerCase().includes(q)
-  );
+  const showAll = document.getElementById("show-all-toggle").checked;
+  const today = todayStr();
 
-  let lastDate = null;
-  const body = document.getElementById("activities-body");
+  let rows = showAll ? allRows.slice() : allRows.filter(r => r.date >= today);
+
+  const accordionWrap = document.getElementById("accordion-wrap");
+  const flatWrap = document.getElementById("flat-results");
+
+  if (q) {
+    accordionWrap.style.display = "none";
+    flatWrap.style.display = "block";
+    const filtered = rows.filter(r =>
+      (r.activity + " " + r.venue + " " + r.date + " " + r.contact).toLowerCase().includes(q)
+    );
+    renderFlat(filtered);
+  } else {
+    flatWrap.style.display = "none";
+    accordionWrap.style.display = "block";
+    renderAccordion(rows);
+  }
+}
+
+function renderFlat(rows) {
+  const body = document.getElementById("flat-results-body");
   body.innerHTML = "";
+  rows.forEach(r => body.appendChild(rowElement(r, true)));
+}
 
-  filtered.forEach(r => {
-    if (r.date !== lastDate) {
-      lastDate = r.date;
-      const tr = document.createElement("tr");
-      tr.className = "date-header";
-      tr.innerHTML = `<td colspan="6">${formatDateHeader(r.date)}</td>`;
-      body.appendChild(tr);
+function renderAccordion(rows) {
+  const byMonth = {};
+  rows.forEach(r => {
+    const monthKey = r.date.slice(0,7);
+    (byMonth[monthKey] = byMonth[monthKey] || {})[r.date] = (byMonth[monthKey][r.date] || []).concat(r);
+  });
+
+  const monthKeys = Object.keys(byMonth).sort();
+  const wrap = document.getElementById("accordion-wrap");
+  wrap.innerHTML = "";
+
+  if (!monthKeys.length) {
+    wrap.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">No activities to show.</div>';
+    return;
+  }
+
+  monthKeys.forEach(monthKey => {
+    const dayMap = byMonth[monthKey];
+    const dayKeys = Object.keys(dayMap).sort();
+    const monthLabel = formatMonthHeader(monthKey);
+    const isOpen = !!openMonths[monthKey];
+
+    const monthDiv = document.createElement("div");
+    monthDiv.className = "month-block";
+    monthDiv.innerHTML = `
+      <div class="month-header ${isOpen ? "open" : ""}" onclick="toggleMonth('${monthKey}')">
+        <span>${monthLabel} <span class="day-count">(${dayKeys.length} day${dayKeys.length===1?"":"s"})</span></span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="month-body ${isOpen ? "open" : ""}" id="month-body-${monthKey}"></div>`;
+    wrap.appendChild(monthDiv);
+
+    if (isOpen) {
+      const monthBody = monthDiv.querySelector(".month-body");
+      dayKeys.forEach(dateStr => {
+        const dayRows = dayMap[dateStr];
+        const dayOpen = !!openDays[dateStr];
+        const dayDiv = document.createElement("div");
+        dayDiv.className = "day-block";
+        dayDiv.innerHTML = `
+          <div class="day-header ${dayOpen ? "open" : ""}" onclick="toggleDay('${dateStr}')">
+            <span>${formatDateHeader(dateStr)} <span class="day-count">(${dayRows.length})</span></span>
+            <span class="chev">▶</span>
+          </div>
+          <div class="day-body ${dayOpen ? "open" : ""}" id="day-body-${dateStr}"></div>`;
+        monthBody.appendChild(dayDiv);
+
+        if (dayOpen) {
+          const table = document.createElement("table");
+          table.innerHTML = `<thead><tr><th>Time</th><th>Duration</th><th>Activity</th><th>Venue</th><th>Contact</th><th></th></tr></thead><tbody></tbody>`;
+          const tbody = table.querySelector("tbody");
+          dayRows.forEach(r => tbody.appendChild(rowElement(r, false)));
+          dayDiv.querySelector(".day-body").appendChild(table);
+        }
+      });
     }
-    body.appendChild(rowElement(r));
   });
 }
 
+function toggleMonth(monthKey) {
+  openMonths[monthKey] = !openMonths[monthKey];
+  renderAll();
+}
+function toggleDay(dateStr) {
+  openDays[dateStr] = !openDays[dateStr];
+  renderAll();
+}
+
+function formatMonthHeader(monthKey) {
+  const d = new Date(monthKey + "-01T00:00:00");
+  return d.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+}
 function formatDateHeader(dateStr) {
   const d = new Date(dateStr + "T00:00:00");
   return d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 }
 
-function rowElement(r) {
+function rowElement(r, showDateCol) {
   const tr = document.createElement("tr");
   tr.dataset.id = r.id;
+  const dateCell = showDateCol ? `<td>${esc(r.date)}</td>` : "";
   if (editingId === r.id) {
     tr.innerHTML = `
-      <td class="edit-cell"><input id="e-time" value="${escAttr(r.time)}"></td>
-      <td class="edit-cell"><input id="e-duration" value="${escAttr(r.duration)}"></td>
-      <td class="edit-cell"><input id="e-activity" value="${escAttr(r.activity)}"></td>
-      <td class="edit-cell"><input id="e-venue" value="${escAttr(r.venue)}"></td>
-      <td class="edit-cell"><input id="e-contact" value="${escAttr(r.contact)}"></td>
+      ${showDateCol ? `<td>${esc(r.date)}</td>` : ""}
+      <td class="edit-cell"><input id="e-time" list="dl-time" value="${escAttr(r.time)}"></td>
+      <td class="edit-cell"><input id="e-duration" list="dl-duration" value="${escAttr(r.duration)}"></td>
+      <td class="edit-cell"><input id="e-activity" list="dl-activity" value="${escAttr(r.activity)}"></td>
+      <td class="edit-cell"><input id="e-venue" list="dl-venue" value="${escAttr(r.venue)}"></td>
+      <td class="edit-cell"><input id="e-contact" list="dl-contact" value="${escAttr(r.contact)}"></td>
       <td class="row-actions">
         <button class="btn btn-green btn-small" onclick="saveEdit('${r.id}','${r.date}')">Save</button>
-        <button class="btn btn-navy btn-small" onclick="editingId=null;renderTable();">Cancel</button>
+        <button class="btn btn-navy btn-small" onclick="editingId=null;renderAll();">Cancel</button>
       </td>`;
   } else {
     tr.innerHTML = `
+      ${dateCell}
       <td>${esc(r.time)}</td>
       <td>${esc(r.duration)}</td>
       <td>${esc(r.activity)}</td>
       <td>${esc(r.venue)}</td>
       <td>${esc(r.contact)}</td>
       <td class="row-actions">
-        <button class="btn btn-navy btn-small" onclick="editingId='${r.id}';renderTable();">✏️</button>
+        <button class="btn btn-navy btn-small" onclick="editingId='${r.id}';renderAll();">✏️</button>
         <button class="btn btn-red btn-small" onclick="deleteActivity('${r.id}')">🗑️</button>
       </td>`;
   }
