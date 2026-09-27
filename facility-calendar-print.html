@@ -27,7 +27,7 @@
   }
 
   .controls {
-    max-width: 900px; margin: 20px auto 0; padding: 16px 20px;
+    max-width: 1100px; margin: 20px auto 0; padding: 16px 20px;
     background: var(--hub-navy-panel); border-radius: 12px; border: 1px solid var(--hub-charcoal);
     display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
   }
@@ -47,47 +47,75 @@
     background: #a12b2b; color: white; border: none; border-radius: 8px;
     padding: 9px 18px; font-weight: 700; cursor: pointer; font-family: inherit; font-size: 0.95em;
   }
+  .print-hint { font-size: 0.78em; color: var(--hub-cream); opacity: 0.7; width: 100%; }
 
   #loading { text-align: center; padding: 40px; color: var(--hub-cream); opacity: 0.7; }
 
   /* The "paper" preview stays white/light regardless of the page's own navy
      theme — same idea as the black-on-white print override already used
-     elsewhere on the Hub, so nothing here wastes toner when printed. */
-  .sheet { max-width: 900px; margin: 20px auto 60px; background: white; color: #222; border-radius: 12px; border: 1px solid #c5d8ee; padding: 24px 26px; }
+     elsewhere on the Hub, so nothing wastes toner when printed. */
+  .sheet { max-width: 1100px; margin: 20px auto 60px; background: white; color: #222; border-radius: 12px; border: 1px solid #c5d8ee; padding: 20px 22px; }
 
-  .sheet-title { text-align: center; color: var(--hub-navy); font-size: 1.3em; font-weight: 800; margin-bottom: 4px; }
-  .sheet-subtitle { text-align: center; color: #777; font-size: 0.85em; margin-bottom: 18px; }
+  .sheet-title { text-align: center; color: var(--hub-navy); font-size: 1.3em; font-weight: 800; margin-bottom: 2px; }
+  .sheet-subtitle { text-align: center; color: #777; font-size: 0.85em; margin-bottom: 14px; }
 
-  .week-divider {
-    background: #1F4E79; color: white; font-weight: 700; font-size: 0.9em;
-    padding: 6px 12px; border-radius: 6px; margin: 18px 0 10px;
+  .weekday-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+  .weekday-header div {
+    text-align: center; font-weight: 700; font-size: 0.78em; text-transform: uppercase;
+    color: var(--hub-navy); padding: 4px 0; letter-spacing: 0.03em;
   }
-  .week-divider:first-child { margin-top: 0; }
 
-  .day-block { margin-bottom: 14px; border: 1px solid #c5d8ee; border-radius: 8px; overflow: hidden; }
-  .day-heading {
-    background: #D9E1F2; color: #1F4E79; font-weight: 700; padding: 7px 12px; font-size: 0.98em;
-  }
-  .day-heading.weekend { background: #FCE4D6; }
-  .day-heading.today { outline: 2px solid #a12b2b; outline-offset: -2px; }
+  .week-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
 
-  table.day-table { width: 100%; border-collapse: collapse; font-size: 0.88em; }
-  table.day-table th {
-    text-align: left; padding: 5px 10px; font-size: 0.75em; text-transform: uppercase;
-    letter-spacing: 0.03em; color: #666; border-bottom: 1px solid #e0eaf4; font-style: italic;
+  .cal-cell {
+    border: 1px solid #c5d8ee; border-radius: 6px; padding: 5px 6px; background: white;
+    cursor: pointer; overflow: hidden; display: flex; flex-direction: column;
   }
-  table.day-table td { padding: 5px 10px; border-bottom: 1px solid #eef3f8; }
-  table.day-table tr:last-child td { border-bottom: none; }
-  .no-activities { padding: 10px 12px; color: #999; font-style: italic; font-size: 0.88em; }
+  .cal-cell:hover { background: #f4f8fd; }
+  .cal-cell.empty { background: #f7f7f7; cursor: default; border-style: dashed; }
+  .cal-cell.weekend { background: #fdf5ea; }
+  .cal-cell.today { border: 2px solid #a12b2b; }
+  .cal-cell .daynum { font-weight: 800; font-size: 0.85em; color: var(--hub-navy); margin-bottom: 2px; }
+  .cal-cell .entry {
+    font-size: 0.66em; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .cal-cell .more { font-size: 0.64em; color: #888; font-style: italic; margin-top: 1px; }
+
+  /* Week mode gets taller, roomier cells with more visible detail per entry */
+  .mode-week .cal-cell { min-height: 230px; }
+  .mode-week .cal-cell .entry { font-size: 0.78em; white-space: normal; }
+  .mode-week .cal-cell .venue { color: #777; font-size: 0.92em; }
+
+  /* Month mode: compact cells, one row per week, several weeks per page */
+  .mode-month .cal-cell { min-height: 92px; }
+
+  /* ── Click-for-detail modal (screen only, never printed) ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+    align-items: center; justify-content: center; z-index: 999; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: white; border-radius: 10px; max-width: 480px; width: 100%; max-height: 80vh; overflow-y: auto; }
+  .modal-header {
+    background: var(--hub-navy); color: white; padding: 12px 16px; border-radius: 10px 10px 0 0;
+    display: flex; justify-content: space-between; align-items: center; font-weight: 700;
+  }
+  .modal-header button { background: none; border: none; color: white; font-size: 1.2em; cursor: pointer; }
+  .modal-body { padding: 12px 16px; }
+  .modal-entry { padding: 8px 0; border-bottom: 1px solid #eef3f8; font-size: 0.92em; }
+  .modal-entry:last-child { border-bottom: none; }
+  .modal-entry .m-activity { font-weight: 700; color: var(--hub-navy); }
+  .modal-entry .m-meta { color: #777; font-size: 0.9em; }
 
   @media print {
     body { background: white; }
-    .back-bar, .controls { display: none !important; }
+    .back-bar, .controls, .modal-overlay { display: none !important; }
     .sheet { border: none; box-shadow: none; margin: 0; padding: 0; max-width: 100%; }
-    .week-divider { break-before: page; }
-    .week-divider:first-child { break-before: auto; }
-    .day-block { break-inside: avoid; }
+    .week-row { break-inside: avoid; }
+    .cal-cell { cursor: default; }
+    .cal-cell:hover { background: inherit; }
   }
+  @page { size: landscape; margin: 10mm; }
 </style>
 </head>
 <body>
@@ -105,13 +133,24 @@
   <button class="nav-btn" onclick="navigate(1)">▶</button>
   <button class="nav-btn" onclick="goToday()">Today</button>
   <button class="print-btn" onclick="window.print()">🖨️ Print</button>
+  <div class="print-hint">Tip: in the print dialog, open "More settings" and untick "Headers and footers" to drop the browser's own URL/date line.</div>
 </div>
 
 <div id="loading">Loading…</div>
 <div class="sheet" id="sheet" style="display:none;">
   <div class="sheet-title" id="sheet-title"></div>
   <div class="sheet-subtitle">Bridgeman Downs Retirement Village</div>
+  <div class="weekday-header">
+    <div>Sunday</div><div>Monday</div><div>Tuesday</div><div>Wednesday</div><div>Thursday</div><div>Friday</div><div>Saturday</div>
+  </div>
   <div id="sheet-body"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header"><span id="modal-title"></span><button onclick="closeModal()">✕</button></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
 </div>
 
 <script>
@@ -119,8 +158,9 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzsMFnQXBPNfdX
 const SECRET_KEY = "zwQQcGAflBHjDc91l3DZceVf";
 
 let allRows = [];
+let rowsByDate = {};
 let mode = "week"; // "week" | "month"
-let anchor = new Date(); // any date within the currently-shown week/month
+let anchor = new Date();
 
 function apiGet(action, extra) {
   const params = new URLSearchParams(Object.assign({ action, key: SECRET_KEY }, extra || {}));
@@ -135,6 +175,8 @@ function loadAndRender() {
     document.getElementById("sheet").style.display = "block";
     if (!res.success) { document.getElementById("sheet-body").innerHTML = "Couldn't load: " + res.error; return; }
     allRows = res.rows;
+    rowsByDate = {};
+    allRows.forEach(r => { (rowsByDate[r.date] = rowsByDate[r.date] || []).push(r); });
     render();
   }).catch(err => {
     document.getElementById("loading").textContent = "Couldn't reach the calendar service: " + err;
@@ -159,81 +201,106 @@ function toDateStr(d) {
 }
 function startOfWeek(d) {
   const r = new Date(d);
-  r.setDate(r.getDate() - r.getDay()); // back to Sunday
+  r.setDate(r.getDate() - r.getDay());
   return r;
-}
-function fmtLong(d) {
-  return d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 }
 
 function render() {
-  const rowsByDate = {};
-  allRows.forEach(r => { (rowsByDate[r.date] = rowsByDate[r.date] || []).push(r); });
+  const sheet = document.getElementById("sheet");
+  sheet.classList.toggle("mode-week", mode === "week");
+  sheet.classList.toggle("mode-month", mode === "month");
 
-  let days = [];
-  let title = "";
+  const body = document.getElementById("sheet-body");
+  body.innerHTML = "";
+  const todayStr = toDateStr(new Date());
 
   if (mode === "week") {
     const start = startOfWeek(anchor);
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(start); d.setDate(d.getDate() + i);
-      days.push(d);
-    }
+    const days = [];
+    for (let i = 0; i < 7; i++) { const d = new Date(start); d.setDate(d.getDate() + i); days.push(d); }
     const end = days[6];
-    title = "Week of " + start.toLocaleDateString(undefined,{day:"numeric",month:"short"}) +
-            " – " + end.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});
+    const title = "Week of " + start.toLocaleDateString(undefined,{day:"numeric",month:"short"}) +
+                  " – " + end.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});
     document.getElementById("range-label").textContent = title;
+    document.getElementById("sheet-title").textContent = title;
+
+    const row = document.createElement("div");
+    row.className = "week-row";
+    days.forEach(d => row.appendChild(buildCell(d, todayStr, 6)));
+    body.appendChild(row);
+
   } else {
     const y = anchor.getFullYear(), m = anchor.getMonth();
     const first = new Date(y, m, 1);
-    const daysInMonth = new Date(y, m + 1, 0).getDate();
-    for (let i = 0; i < daysInMonth; i++) days.push(new Date(y, m, i + 1));
-    title = first.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+    const title = first.toLocaleDateString(undefined, { month: "long", year: "numeric" });
     document.getElementById("range-label").textContent = title;
+    document.getElementById("sheet-title").textContent = title;
+
+    const gridStart = startOfWeek(first);
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    const last = new Date(y, m, daysInMonth);
+    const gridEnd = new Date(last);
+    gridEnd.setDate(gridEnd.getDate() + (6 - last.getDay()));
+
+    let cur = new Date(gridStart);
+    while (cur <= gridEnd) {
+      const row = document.createElement("div");
+      row.className = "week-row";
+      for (let i = 0; i < 7; i++) {
+        const inMonth = cur.getMonth() === m;
+        row.appendChild(buildCell(new Date(cur), todayStr, 3, !inMonth));
+        cur.setDate(cur.getDate() + 1);
+      }
+      body.appendChild(row);
+    }
+  }
+}
+
+function buildCell(d, todayStr, maxLines, blank) {
+  const dateStr = toDateStr(d);
+  const cell = document.createElement("div");
+  const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+
+  if (blank) {
+    cell.className = "cal-cell empty";
+    return cell;
   }
 
-  document.getElementById("sheet-title").textContent = title;
+  cell.className = "cal-cell" + (isWeekend ? " weekend" : "") + (dateStr === todayStr ? " today" : "");
+  const rows = (rowsByDate[dateStr] || []).slice();
+  const shown = rows.slice(0, maxLines);
+  const extra = rows.length - shown.length;
 
-  const todayStr = toDateStr(new Date());
-  const body = document.getElementById("sheet-body");
-  body.innerHTML = "";
-
-  days.forEach((d, idx) => {
-    // In month mode, drop a week divider every 7 days so printing paginates one week per page
-    if (mode === "month" && idx % 7 === 0) {
-      const div = document.createElement("div");
-      div.className = "week-divider";
-      const weekEnd = days[Math.min(idx + 6, days.length - 1)];
-      div.textContent = "Week of " + d.toLocaleDateString(undefined,{day:"numeric",month:"short"}) +
-                         " – " + weekEnd.toLocaleDateString(undefined,{day:"numeric",month:"short"});
-      body.appendChild(div);
-    }
-
-    const dateStr = toDateStr(d);
-    const dayRows = (rowsByDate[dateStr] || []).slice();
-    const isWeekend = d.getDay() === 0 || d.getDay() === 6;
-    const isToday = dateStr === todayStr;
-
-    const block = document.createElement("div");
-    block.className = "day-block";
-    block.innerHTML = `<div class="day-heading ${isWeekend ? "weekend" : ""} ${isToday ? "today" : ""}">${fmtLong(d)}</div>`;
-
-    if (dayRows.length === 0) {
-      block.innerHTML += `<div class="no-activities">Nothing scheduled</div>`;
-    } else {
-      const table = document.createElement("table");
-      table.className = "day-table";
-      table.innerHTML = `<thead><tr><th>Time</th><th>Duration</th><th>Activity / Event</th><th>Venue</th><th>Contact</th></tr></thead><tbody></tbody>`;
-      const tbody = table.querySelector("tbody");
-      dayRows.forEach(r => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${esc(r.time)}</td><td>${esc(r.duration)}</td><td>${esc(r.activity)}</td><td>${esc(r.venue)}</td><td>${esc(r.contact)}</td>`;
-        tbody.appendChild(tr);
-      });
-      block.appendChild(table);
-    }
-    body.appendChild(block);
+  let html = `<div class="daynum">${d.getDate()}</div>`;
+  shown.forEach(r => {
+    const timePart = r.time ? esc(r.time) + " " : "";
+    const venuePart = (mode === "week" && r.venue) ? ` <span class="venue">— ${esc(r.venue)}</span>` : "";
+    html += `<div class="entry">${timePart}${esc(r.activity)}${venuePart}</div>`;
   });
+  if (extra > 0) html += `<div class="more">+${extra} more</div>`;
+  cell.innerHTML = html;
+
+  if (rows.length > 0) {
+    cell.onclick = () => openModal(d, rows);
+  }
+  return cell;
+}
+
+function openModal(d, rows) {
+  document.getElementById("modal-title").textContent =
+    d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  const body = document.getElementById("modal-body");
+  body.innerHTML = rows.map(r => `
+    <div class="modal-entry">
+      <div class="m-activity">${esc(r.activity)}</div>
+      <div class="m-meta">${[r.time, r.duration].filter(Boolean).join(" · ")}</div>
+      <div class="m-meta">${[r.venue, r.contact].filter(Boolean).join(" · ")}</div>
+    </div>`).join("");
+  document.getElementById("modal-overlay").classList.add("open");
+}
+function closeModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById("modal-overlay").classList.remove("open");
 }
 
 function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
