@@ -112,6 +112,26 @@
   .day-count { font-weight: 400; color: #888; font-size: 0.85em; margin-left: 8px; }
 
   #flat-results { display: none; }
+
+  /* ── "Make this recurring" controls ── */
+  .recur-box { margin: 2px 0 14px; }
+  .recur-toggle { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #1F4E79; font-size: 0.9em; cursor: pointer; }
+  .recur-options {
+    margin-top: 8px; padding: 10px 12px; background: #f0f6ff; border: 1px solid #c5d8ee; border-radius: 8px;
+    font-size: 0.88em; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+  }
+  .recur-options select { padding: 6px 8px; border-radius: 6px; border: 1px solid #c5d8ee; font-size: 0.95em; margin-left: 4px; }
+  .recur-options .occ { margin-left: 8px; white-space: nowrap; }
+  .recur-summary { width: 100%; color: #444; }
+  .recur-note { width: 100%; color: #777; font-size: 0.9em; font-style: italic; }
+  /* ── Clash check ── */
+  .clash-item { border: 1px solid #f0dfa0; background: #fffaf0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.9em; }
+  .clash-when { font-weight: 700; color: #8a6d16; margin-bottom: 4px; }
+  .clash-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 3px 0; }
+  .clash-none { padding: 10px 12px; background: #e6f4ea; color: #1e7a34; border: 1px solid #b7dfc2; border-radius: 8px; font-weight: 600; }
+  .ok-list { margin-top: 14px; font-size: 0.85em; color: #555; }
+  .ok-item { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
+  tr.recur-row td { background: #f7fafd; padding: 8px 14px; border-bottom: 1px solid #c5d8ee; }
 </style>
 </head>
 <body>
@@ -161,7 +181,17 @@
       <div><label>Venue</label><input type="text" id="add-venue" list="dl-venue" placeholder="e.g. Games Area"></div>
       <div><label>Contact</label><input type="text" id="add-contact" list="dl-contact" placeholder="e.g. Staff 3862 9020"></div>
     </div>
+    <div id="add-recur-mount"></div>
     <button class="btn btn-green" onclick="addActivity()">➕ Add Activity</button>
+  </div>
+
+  <div class="panel">
+    <h2>⚠️ Clash Check</h2>
+    <div class="sync-row">
+      <button class="btn btn-navy" onclick="runClashCheck()">⚠️ Check for clashes</button>
+      <div class="sync-desc">Looks through all upcoming activities for two things booked in the same venue at overlapping times. You'll also get a warning when you save an activity that clashes. If two activities are meant to overlap, mark them as OK and they won't be flagged again.</div>
+    </div>
+    <div id="clash-results" style="margin-top:12px;"></div>
   </div>
 
   <div class="panel">
@@ -204,17 +234,21 @@ function checkPin(val) {
   if (val === CAL_PIN) {
     document.getElementById("pin-overlay").style.display = "none";
     loadRows();
+    loadOkPairs();
   } else {
     document.getElementById("pin-error").textContent = "Incorrect PIN";
     document.getElementById("pin-input").value = "";
   }
 }
 
+let statusTimer = null;
 function showStatus(msg, kind) {
   const b = document.getElementById("status-banner");
+  clearTimeout(statusTimer);
+  b.style.display = "";
   b.textContent = msg;
   b.className = "status-banner " + kind;
-  if (kind !== "busy") setTimeout(() => { b.style.display = "none"; }, 5000);
+  if (kind !== "busy") statusTimer = setTimeout(() => { b.style.display = "none"; }, msg.length > 90 ? 15000 : 5000);
 }
 
 function apiGet(action, extra) {
@@ -393,13 +427,310 @@ function formatDateHeader(dateStr) {
   return d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 }
 
+// ── "Make this recurring" controls (used by both the Add form and the Edit row) ──
+function ordinalJS(n) { return ["", "1st", "2nd", "3rd", "4th", "5th"][n] || (n + "th"); }
+function joinWordsJS(list) {
+  if (list.length <= 1) return list.join("");
+  return list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
+}
+function ymdLocal(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+function recurHTML(prefix) {
+  const label = prefix === "add" ? "🔁 Make this a recurring activity" : "🔁 Also make this a recurring activity";
+  const note = prefix === "add" ? "" :
+    '<div class="recur-note">This adds a new repeating rule starting from this date — it doesn\'t change any other existing dates.</div>';
+  return `
+    <div class="recur-box">
+      <label class="recur-toggle"><input type="checkbox" id="${prefix}-recur" onchange="toggleRecur('${prefix}')"> ${label}</label>
+      <div class="recur-options" id="${prefix}-recur-options" style="display:none;">
+        <label>Repeats
+          <select id="${prefix}-cadence" onchange="updateRecur('${prefix}')">
+            <option value="Weekly">Every week</option>
+            <option value="Fortnightly">Every 2 weeks</option>
+            <option value="Monthly">Certain weeks of each month</option>
+          </select>
+        </label>
+        <span id="${prefix}-occ-wrap" style="display:none;">on the
+          <label class="occ"><input type="checkbox" id="${prefix}-occ-1" onchange="updateRecur('${prefix}')"> 1st</label>
+          <label class="occ"><input type="checkbox" id="${prefix}-occ-2" onchange="updateRecur('${prefix}')"> 2nd</label>
+          <label class="occ"><input type="checkbox" id="${prefix}-occ-3" onchange="updateRecur('${prefix}')"> 3rd</label>
+          <label class="occ"><input type="checkbox" id="${prefix}-occ-4" onchange="updateRecur('${prefix}')"> 4th</label>
+        </span>
+        <div class="recur-summary" id="${prefix}-recur-summary"></div>
+        ${note}
+      </div>
+    </div>`;
+}
+
+function toggleRecur(prefix) {
+  const on = document.getElementById(prefix + "-recur").checked;
+  document.getElementById(prefix + "-recur-options").style.display = on ? "flex" : "none";
+  updateRecur(prefix);
+}
+
+function selectedOccurrences(prefix) {
+  const out = [];
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById(prefix + "-occ-" + i);
+    if (el && el.checked) out.push(i);
+  }
+  return out;
+}
+
+// The next few dates after the start date, worked out the same way the server does it
+function nextRecurDates(startStr, cadence, occ, n) {
+  const out = [];
+  const start = new Date(startStr + "T00:00:00");
+  for (let i = 1; i <= 400 && out.length < n; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    const ok = cadence === "Weekly" ? i % 7 === 0
+             : cadence === "Fortnightly" ? i % 14 === 0
+             : (d.getDay() === start.getDay() && occ.indexOf(Math.ceil(d.getDate() / 7)) !== -1);
+    if (ok) out.push(ymdLocal(d));
+  }
+  return out;
+}
+
+function describeRecurrence(prefix, dateStr) {
+  if (!dateStr) return "Choose a date first — that will be the first date it repeats from.";
+  const cadence = document.getElementById(prefix + "-cadence").value;
+  const occ = selectedOccurrences(prefix);
+  if (cadence === "Monthly" && !occ.length) return "Tick which weeks of the month it happens (1st, 2nd, 3rd, 4th).";
+  const d = new Date(dateStr + "T00:00:00");
+  const dayName = d.toLocaleDateString(undefined, { weekday: "long" });
+  const first = d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  let what = "every " + dayName;
+  if (cadence === "Fortnightly") what = "every second " + dayName;
+  if (cadence === "Monthly") what = "the " + joinWordsJS(occ.map(ordinalJS)) + " " + dayName + " of each month";
+  const next = nextRecurDates(dateStr, cadence, occ, 4)
+    .map(s => new Date(s + "T00:00:00").toLocaleDateString(undefined, { day: "numeric", month: "short" }));
+  return "Repeats " + what + ", starting " + first + (next.length ? " — then " + next.join(", ") + "…" : ".");
+}
+
+function updateRecur(prefix) {
+  const cadence = document.getElementById(prefix + "-cadence");
+  if (!cadence) return;
+  document.getElementById(prefix + "-occ-wrap").style.display = cadence.value === "Monthly" ? "inline" : "none";
+  const dateEl = document.getElementById(prefix + "-date");
+  document.getElementById(prefix + "-recur-summary").textContent = describeRecurrence(prefix, dateEl ? dateEl.value : "");
+}
+
+// Returns {on:false}, {on:true, error}, or {on:true, cadence, occurrences}
+function readRecurrence(prefix) {
+  const box = document.getElementById(prefix + "-recur");
+  if (!box || !box.checked) return { on: false };
+  const cadence = document.getElementById(prefix + "-cadence").value;
+  const occ = selectedOccurrences(prefix);
+  if (cadence === "Monthly" && !occ.length) {
+    return { on: true, error: "Tick which weeks of the month it repeats on (1st, 2nd, 3rd, 4th)." };
+  }
+  return { on: true, cadence: cadence, occurrences: occ.join(",") };
+}
+
+function resetRecurrence(prefix) {
+  const box = document.getElementById(prefix + "-recur");
+  if (!box) return;
+  box.checked = false;
+  document.getElementById(prefix + "-cadence").value = "Weekly";
+  for (let i = 1; i <= 4; i++) document.getElementById(prefix + "-occ-" + i).checked = false;
+  toggleRecur(prefix);
+}
+
+// Put the controls into the Add form, and keep the summary in step with the date
+document.getElementById("add-recur-mount").innerHTML = recurHTML("add");
+document.getElementById("add-date").addEventListener("change", () => updateRecur("add"));
+
+// ── Clash checking: two activities in the same venue at overlapping times ──
+let okPairs = []; // pairs of activity names marked "fine to overlap": [{a, b}]
+
+function normName(s) { return String(s || "").trim().toLowerCase(); }
+function pairKey(a, b) { const x = normName(a), y = normName(b); return x < y ? x + "||" + y : y + "||" + x; }
+function isKnownOk(a, b) { const k = pairKey(a, b); return okPairs.some(p => pairKey(p.a, p.b) === k); }
+
+// Start and end in minutes-since-midnight (60 minutes if no duration is given, same as the calendar sync)
+function timeSpan(r) {
+  const start = timeStringToMinutes(r.time);
+  if (start === 99999) return null; // no usable time, so it can't clash
+  const d = durationStringToMinutes(r.duration);
+  return { start: start, end: start + (d === 99999 ? 60 : d) };
+}
+function minsLabel(m) {
+  const h = Math.floor(m / 60) % 24, mm = m % 60;
+  return ((h % 12) || 12) + ":" + String(mm).padStart(2, "0") + (h < 12 ? "am" : "pm");
+}
+function spanLabel(r) { const s = timeSpan(r); return s ? minsLabel(s.start) + "–" + minsLabel(s.end) : ""; }
+function overlaps(a, b) {
+  const x = timeSpan(a), y = timeSpan(b);
+  return !!(x && y && x.start < y.end && y.start < x.end); // back-to-back is fine
+}
+function shortDate(ds) {
+  return new Date(ds + "T00:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+}
+
+// Existing activities that clash with a candidate ({date, time, duration, venue, activity})
+function clashesFor(cand, ignoreId) {
+  if (!timeSpan(cand) || !normName(cand.venue)) return [];
+  return allRows.filter(r =>
+    r.date === cand.date && r.id !== ignoreId &&
+    normName(r.venue) === normName(cand.venue) &&
+    overlaps(cand, r) && !isKnownOk(cand.activity, r.activity));
+}
+
+// Dates after the start date that a repeating rule would land on, up to endStr
+function recurrenceDates(startStr, cadence, occ, endStr) {
+  const out = [];
+  const start = new Date(startStr + "T00:00:00");
+  for (let i = 1; i <= 800; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    const ds = ymdLocal(d);
+    if (ds > endStr) break;
+    const ok = cadence === "Weekly" ? i % 7 === 0
+             : cadence === "Fortnightly" ? i % 14 === 0
+             : (d.getDay() === start.getDay() && occ.indexOf(Math.ceil(d.getDate() / 7)) !== -1);
+    if (ok) out.push(ds);
+  }
+  return out;
+}
+function endOfSheetMonth() {
+  let last = "";
+  allRows.forEach(r => { if (r.date > last) last = r.date; });
+  if (!last) return ymdLocal(new Date());
+  const d = new Date(last + "T00:00:00");
+  return ymdLocal(new Date(d.getFullYear(), d.getMonth() + 1, 0));
+}
+
+// Asks before saving if the activity clashes (on its own date, and on any later
+// dates a repeating rule would create). Returns true if it's fine to go ahead.
+function confirmClashes(cand, ignoreId, rec) {
+  const lines = [];
+  clashesFor(cand, ignoreId).forEach(o =>
+    lines.push(shortDate(cand.date) + ": " + o.activity + " (" + spanLabel(o) + ") in " + o.venue));
+  if (rec && rec.on) {
+    const occ = String(rec.occurrences || "").split(",").filter(Boolean).map(Number);
+    recurrenceDates(cand.date, rec.cadence, occ, endOfSheetMonth()).forEach(ds => {
+      clashesFor(Object.assign({}, cand, { date: ds }), ignoreId).forEach(o => {
+        // the same activity at the same time is already there — the script skips it, so it isn't a real clash
+        if (normName(o.activity) === normName(cand.activity) && timeStringToMinutes(o.time) === timeStringToMinutes(cand.time)) return;
+        lines.push(shortDate(ds) + ": " + o.activity + " (" + spanLabel(o) + ") in " + o.venue);
+      });
+    });
+  }
+  if (!lines.length) return true;
+  const own = spanLabel(cand);
+  const more = lines.length > 6 ? "\n…and " + (lines.length - 6) + " more." : "";
+  return confirm("⚠️ CLASH — " + cand.activity + (own ? " (" + own + ")" : "") + " in " + cand.venue +
+    " overlaps with:\n\n• " + lines.slice(0, 6).join("\n• ") + more +
+    "\n\nPress OK to save anyway, or Cancel to go back and change it.");
+}
+
+// Every clash in the upcoming activities
+function findAllClashes() {
+  const today = todayStr();
+  const groups = {};
+  allRows.forEach(r => {
+    if (r.date < today || !timeSpan(r) || !normName(r.venue)) return;
+    const k = r.date + "|" + normName(r.venue);
+    (groups[k] = groups[k] || []).push(r);
+  });
+  const out = [];
+  Object.keys(groups).sort().forEach(k => {
+    const items = groups[k].slice().sort((x, y) => timeSpan(x).start - timeSpan(y).start);
+    for (let i = 0; i < items.length; i++) {
+      for (let j = i + 1; j < items.length; j++) {
+        if (overlaps(items[i], items[j]) && !isKnownOk(items[i].activity, items[j].activity)) {
+          out.push({ a: items[i], b: items[j] });
+        }
+      }
+    }
+  });
+  return out;
+}
+
+function loadOkPairs() {
+  apiGet("listOk").then(res => { if (res.success) okPairs = res.pairs; }).catch(() => {});
+}
+
+function runClashCheck() {
+  const box = document.getElementById("clash-results");
+  box.innerHTML = '<div class="clash-none" style="background:#fff6e0;color:#8a6d16;border-color:#f0dfa0;">Checking…</div>';
+  Promise.all([apiGet("list"), apiGet("listOk")]).then(results => {
+    if (results[0].success) { allRows = results[0].rows; populateDatalists(); renderAll(); }
+    if (results[1].success) okPairs = results[1].pairs;
+    renderClashResults();
+  }).catch(err => { box.innerHTML = ""; showStatus("Couldn't reach the calendar service: " + err, "err"); });
+}
+
+function renderClashResults() {
+  const box = document.getElementById("clash-results");
+  const clashes = findAllClashes();
+  let html = "";
+  if (!clashes.length) {
+    html += '<div class="clash-none">✅ No clashes found in the upcoming activities.</div>';
+  } else {
+    html += '<div style="margin-bottom:8px;font-weight:700;color:#8a6d16;">' + clashes.length + " clash" + (clashes.length === 1 ? "" : "es") + " found:</div>";
+    clashes.forEach(c => {
+      html += `<div class="clash-item">
+        <div class="clash-when">${esc(shortDate(c.a.date))} — ${esc(c.a.venue)}</div>
+        <div class="clash-row">${esc(c.a.activity)} (${esc(spanLabel(c.a))})
+          <button class="btn btn-navy btn-small" onclick="jumpToEdit('${c.a.id}','${c.a.date}')">✏️ Edit</button></div>
+        <div class="clash-row">overlaps ${esc(c.b.activity)} (${esc(spanLabel(c.b))})
+          <button class="btn btn-navy btn-small" onclick="jumpToEdit('${c.b.id}','${c.b.date}')">✏️ Edit</button></div>
+        <div class="clash-row"><button class="btn btn-gold btn-small" data-a="${escAttr(c.a.activity)}" data-b="${escAttr(c.b.activity)}" onclick="markOkBtn(this)">Mark as OK — these are meant to overlap</button></div>
+      </div>`;
+    });
+  }
+  if (okPairs.length) {
+    html += '<div class="ok-list"><b>Marked as OK</b> (never flagged, on any date):' +
+      okPairs.map(p => `<div class="ok-item">${esc(p.a)} &amp; ${esc(p.b)}
+        <button class="btn btn-navy btn-small" data-a="${escAttr(p.a)}" data-b="${escAttr(p.b)}" onclick="unOkBtn(this)">Stop ignoring</button></div>`).join("") + "</div>";
+  }
+  box.innerHTML = html;
+}
+
+function okError(res) {
+  return res.error === "Unknown action"
+    ? "the Apps Script needs its new version published first (Deploy > Manage deployments > New version)."
+    : res.error;
+}
+function markOkBtn(btn) {
+  apiPost("addOk", { a: btn.dataset.a, b: btn.dataset.b }).then(res => {
+    if (!res.success) { showStatus("Couldn't save that — " + okError(res), "err"); return; }
+    okPairs = res.pairs;
+    showStatus("Done — \"" + btn.dataset.a + "\" and \"" + btn.dataset.b + "\" won't be flagged as a clash again.", "ok");
+    renderClashResults();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+function unOkBtn(btn) {
+  apiPost("removeOk", { a: btn.dataset.a, b: btn.dataset.b }).then(res => {
+    if (!res.success) { showStatus("Couldn't change that — " + okError(res), "err"); return; }
+    okPairs = res.pairs;
+    showStatus("Done — they'll be checked for clashes again.", "ok");
+    renderClashResults();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+// Opens an activity for editing in the list below
+function jumpToEdit(id, dateStr) {
+  document.getElementById("search-box").value = "";
+  editingId = id;
+  openMonths[dateStr.slice(0, 7)] = true;
+  openDays[dateStr] = true;
+  renderAll();
+  const row = document.querySelector('tr[data-id="' + id + '"]');
+  if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
 function rowElement(r, showDateCol) {
   const tr = document.createElement("tr");
   tr.dataset.id = r.id;
   const dateCell = `<td>${esc(r.date)}</td>`;
   if (editingId === r.id) {
     tr.innerHTML = `
-      <td class="edit-cell"><input type="date" id="e-date" value="${escAttr(r.date)}"></td>
+      <td class="edit-cell"><input type="date" id="e-date" value="${escAttr(r.date)}" onchange="updateRecur('e')"></td>
       <td class="edit-cell"><input id="e-time" list="dl-time" value="${escAttr(r.time)}"></td>
       <td class="edit-cell"><input id="e-duration" list="dl-duration" value="${escAttr(r.duration)}"></td>
       <td class="edit-cell"><input id="e-activity" list="dl-activity" value="${escAttr(r.activity)}"></td>
@@ -409,6 +740,14 @@ function rowElement(r, showDateCol) {
         <button class="btn btn-green btn-small" onclick="saveEdit('${r.id}')">Save</button>
         <button class="btn btn-navy btn-small" onclick="editingId=null;renderAll();">Cancel</button>
       </td>`;
+    // A second row underneath, holding the "make this recurring" option
+    const recurTr = document.createElement("tr");
+    recurTr.className = "recur-row";
+    recurTr.innerHTML = `<td colspan="7">${recurHTML("e")}</td>`;
+    const frag = document.createDocumentFragment();
+    frag.appendChild(tr);
+    frag.appendChild(recurTr);
+    return frag;
   } else {
     tr.innerHTML = `
       ${dateCell}
@@ -441,11 +780,16 @@ function addActivity() {
     venue: document.getElementById("add-venue").value.trim(),
     contact: document.getElementById("add-contact").value.trim()
   };
-  showStatus("Adding and updating the calendar…", "busy");
+  const rec = readRecurrence("add");
+  if (rec.error) { showStatus(rec.error, "err"); return; }
+  if (rec.on) { payload.recurring = "1"; payload.cadence = rec.cadence; payload.occurrences = rec.occurrences; }
+  if (!confirmClashes({ date: date, time: payload.time, duration: payload.duration, venue: payload.venue, activity: activity }, null, rec)) return;
+  showStatus(rec.on ? "Adding, setting up the repeat and updating the calendar — this can take a minute…" : "Adding and updating the calendar…", "busy");
   apiPost("add", payload).then(res => {
     if (!res.success) { showStatus("Couldn't add: " + res.error, "err"); return; }
-    showStatus("Added — the calendar for that day has been updated.", "ok");
+    showStatus("Added — the calendar for that day has been updated." + (res.recurringMessage ? " " + res.recurringMessage : ""), "ok");
     ["add-time","add-duration","add-activity","add-venue","add-contact"].forEach(id => document.getElementById(id).value = "");
+    resetRecurrence("add");
     loadRows();
   }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
 }
@@ -461,10 +805,14 @@ function saveEdit(id) {
     contact: document.getElementById("e-contact").value.trim()
   };
   if (!payload.date) { showStatus("Date can't be blank.", "err"); return; }
-  showStatus("Saving and updating the calendar…", "busy");
+  const rec = readRecurrence("e");
+  if (rec.error) { showStatus(rec.error, "err"); return; }
+  if (rec.on) { payload.recurring = "1"; payload.cadence = rec.cadence; payload.occurrences = rec.occurrences; }
+  if (!confirmClashes({ date: payload.date, time: payload.time, duration: payload.duration, venue: payload.venue, activity: payload.activity }, id, rec)) return;
+  showStatus(rec.on ? "Saving, setting up the repeat and updating the calendar — this can take a minute…" : "Saving and updating the calendar…", "busy");
   apiPost("update", payload).then(res => {
     if (!res.success) { showStatus("Couldn't save: " + res.error, "err"); return; }
-    showStatus("Saved — the calendar has been updated.", "ok");
+    showStatus("Saved — the calendar has been updated." + (res.recurringMessage ? " " + res.recurringMessage : ""), "ok");
     editingId = null;
     loadRows();
   }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
