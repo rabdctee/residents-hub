@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asset Register – Admin | BDRV Residents Hub</title>
+<style>
+  :root{
+    --navy:#263746; --navy-deep:#1c2a36; --panel:#2e4254; --gold:#D4B860;
+    --cream:#F6F2E7; --charcoal:#3F4143; --muted:#b9c2ca;
+    --red:#e07b6e; --amber:#e8b64c; --green:#7fbf8e;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--navy);color:var(--cream);
+       font-family:Aptos,"Segoe UI",Calibri,Arial,sans-serif;font-size:18px;line-height:1.5}
+  a{color:var(--gold)}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 18px 60px}
+  h1{color:var(--gold);margin:0 0 4px;font-size:1.8rem}
+  h2{color:var(--gold);font-size:1.3rem;margin:0 0 12px}
+  .sub{color:var(--muted);margin:0 0 24px}
+  button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--gold);
+         padding:9px 16px;background:transparent;color:var(--gold)}
+  button.primary{background:var(--gold);color:var(--navy-deep);font-weight:600}
+  button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+         outline:3px solid var(--gold);outline-offset:2px}
+  input,select,textarea{font:inherit;width:100%;padding:9px 10px;border-radius:6px;
+         border:1px solid var(--charcoal);background:var(--cream);color:#222}
+  label{display:block;font-size:.9rem;color:var(--muted);margin-bottom:4px}
+
+  /* PIN screen */
+  #login{max-width:380px;margin:60px auto;background:var(--panel);padding:28px;border-radius:12px;
+         border-top:4px solid var(--gold)}
+  #login .field{margin-bottom:14px}
+  .err{color:var(--red);min-height:1.4em;margin:6px 0 0}
+
+  /* Dashboard figures */
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:26px}
+  .stat{background:var(--panel);padding:14px 16px;border-left:4px solid var(--gold);border-radius:6px}
+  .stat b{display:block;font-size:1.6rem;color:var(--cream)}
+  .stat span{color:var(--muted);font-size:.95rem}
+  .stat.warn{border-left-color:var(--amber)} .stat.bad{border-left-color:var(--red)}
+
+  /* Tabs */
+  .tabs{display:flex;gap:6px;border-bottom:2px solid var(--charcoal);margin-bottom:18px;flex-wrap:wrap}
+  .tabs button{border:none;border-radius:8px 8px 0 0;color:var(--muted);padding:10px 18px}
+  .tabs button.on{background:var(--panel);color:var(--gold);font-weight:600}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  .toolbar input,.toolbar select{width:auto;flex:1;min-width:170px}
+
+  /* Lists */
+  .row{background:var(--panel);border-radius:8px;padding:12px 16px;margin-bottom:10px;
+       display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .row .main{flex:1;min-width:230px}
+  .row .title{font-weight:600;color:var(--cream)}
+  .row .meta{color:var(--muted);font-size:.92rem}
+  .row.disposed{opacity:.6}
+  .pill{display:inline-block;font-size:.8rem;padding:2px 10px;border-radius:20px;
+        border:1px solid currentColor;margin-left:6px;vertical-align:middle}
+  .p-ok{color:var(--green)} .p-soon{color:var(--amber)} .p-over{color:var(--red)} .p-grey{color:var(--muted)}
+  .empty{color:var(--muted);padding:20px;text-align:center;border:1px dashed var(--charcoal);border-radius:8px}
+
+  /* Pop-up form */
+  #modal{position:fixed;inset:0;background:rgba(10,18,25,.75);display:none;
+         align-items:flex-start;justify-content:center;overflow:auto;padding:30px 12px;z-index:50}
+  #modal.show{display:flex}
+  .box{background:var(--navy-deep);border:1px solid var(--gold);border-radius:12px;
+       width:100%;max-width:720px;padding:22px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+  .grid .full{grid-column:1/-1}
+  fieldset{border:1px solid var(--charcoal);border-radius:8px;padding:12px 14px;margin:14px 0 0}
+  legend{color:var(--gold);padding:0 6px}
+  .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+  #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--gold);
+         color:var(--navy-deep);padding:10px 20px;border-radius:8px;font-weight:600;display:none;z-index:60}
+  @media (max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== PIN SCREEN ===== -->
+  <div id="login">
+    <h2>Asset Register – Admin</h2>
+    <p class="sub" style="margin-bottom:16px">For Social Club and Residents Committee use.</p>
+    <div class="field"><label for="uName">Your name</label><input id="uName" autocomplete="name"></div>
+    <div class="field"><label for="uPin">PIN</label><input id="uPin" type="password" inputmode="numeric"></div>
+    <button class="primary" onclick="login()">Open the register</button>
+    <p class="err" id="loginErr"></p>
+  </div>
+
+  <!-- ===== MAIN AREA (hidden until PIN accepted) ===== -->
+  <div id="app" hidden>
+    <h1>Asset Register</h1>
+    <p class="sub">Items bought with residents' funds, and the care they receive. <a href="asset-register.html">View the residents' page</a></p>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="tabs" role="tablist">
+      <button class="on" data-tab="assets"   onclick="showTab('assets')">Assets</button>
+      <button data-tab="schedule" onclick="showTab('schedule')">Maintenance schedule</button>
+      <button data-tab="log"      onclick="showTab('log')">Maintenance log</button>
+    </div>
+
+    <section id="tab-assets">
+      <div class="toolbar">
+        <button class="primary" onclick="assetForm()">Add an asset</button>
+        <input id="aSearch" placeholder="Search by name, location or ID" oninput="drawAssets()">
+        <select id="aFilter" onchange="drawAssets()">
+          <option value="current">Current items</option><option value="Disposed">Disposed items</option><option value="">All items</option>
+        </select>
+      </div>
+      <div id="assetList"></div>
+    </section>
+
+    <section id="tab-schedule" hidden>
+      <div class="toolbar"><button class="primary" onclick="taskForm()">Add a maintenance task</button></div>
+      <div id="taskList"></div>
+    </section>
+
+    <section id="tab-log" hidden>
+      <div class="toolbar"><button class="primary" onclick="logForm()">Record work done</button></div>
+      <div id="logList"></div>
+    </section>
+  </div>
+</div>
+
+<div id="modal"><div class="box" id="modalBox"></div></div>
+<div id="toast"></div>
+
+<script>
+/* ============ SETTINGS – paste your web app URL here ============ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbyMuPYlG5tY-v-6LOM0dazDWZVEz_gLDCwfckSZmPjwr129uqi6BOSAOXY0zaDOnvFf/exec';
+
+/* Picklists – edit these to suit */
+const CATEGORIES = ['Furniture','Kitchen & Catering','Audio-Visual & Electronics','Games & Recreation',
+                    'Garden & Outdoor','Tools & Equipment','Decorations & Seasonal','Other'];
+const OWNERS     = ['Social Club','Residents Committee'];
+const FUNDING    = ['Social Club funds','Residents Committee funds','Fundraising','Donation','Grant','Other'];
+const CONDITIONS = ['New','Good','Fair','Poor','Unserviceable'];
+const STATUSES   = ['In Use','In Storage','On Loan','Under Repair','Disposed'];
+const DISPOSALS  = ['Sold','Donated','Scrapped / Recycled','Lost or Stolen','Traded In','Returned to Supplier'];
+const FREQS      = ['Weekly','Fortnightly','Monthly','Quarterly','6-Monthly','Annually','Every 2 Years','As Needed'];
+
+let PIN = '', USER = '', DATA = { assets:[], schedule:[], log:[] };
+
+/* ---------- Helpers ---------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = v => (v === '' || v == null || isNaN(v)) ? '' :
+  Number(v).toLocaleString('en-AU', { style:'currency', currency:'AUD' });
+function fmtDate(s){ if(!s) return ''; const [y,m,d]=s.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}); }
+function today(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function inDays(n){ const d=new Date(); d.setDate(d.getDate()+n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function assetName(id){ const a = DATA.assets.find(x => x['Asset ID'] === id); return a ? a.Name : id; }
+function taskStatus(t){
+  if (!t['Next Due']) return ['No fixed date','p-grey'];
+  if (t['Next Due'] < today())   return ['Overdue','p-over'];
+  if (t['Next Due'] <= inDays(30)) return ['Due soon','p-soon'];
+  return ['Up to date','p-ok'];
+}
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2600); }
+function options(list, sel){ return list.map(o => `<option${o===sel?' selected':''}>${esc(o)}</option>`).join(''); }
+
+/* ---------- Login & loading ---------- */
+async function login(){
+  USER = $('uName').value.trim(); PIN = $('uPin').value.trim();
+  if (!USER || !PIN){ $('loginErr').textContent = 'Please enter your name and the PIN.'; return; }
+  $('loginErr').textContent = 'Checking…';
+  const ok = await loadData();
+  if (ok){ $('login').hidden = true; $('app').hidden = false; }
+}
+
+async function loadData(){
+  try{
+    const r = await fetch(`${API_URL}?action=admin&pin=${encodeURIComponent(PIN)}`);
+    const j = await r.json();
+    if (!j.ok){ $('loginErr').textContent = j.error; return false; }
+    DATA = j; drawAll(); return true;
+  }catch(e){ $('loginErr').textContent = 'Could not reach the register. Check the internet connection and try again.'; return false; }
+}
+
+async function send(action, record){
+  const r = await fetch(API_URL, { method:'POST', body: JSON.stringify({ action, record, pin:PIN, user:USER }) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error);
+  return j;
+}
+
+/* ---------- Drawing ---------- */
+function drawAll(){ drawStats(); drawAssets(); drawTasks(); drawLog(); }
+
+function drawStats(){
+  const current = DATA.assets.filter(a => a.Status !== 'Disposed');
+  const value = current.reduce((s,a) => s + (Number(a['Purchase Cost']) || 0), 0);
+  const active = DATA.schedule.filter(t => t.Active !== 'No');
+  const over = active.filter(t => taskStatus(t)[0] === 'Overdue').length;
+  const soon = active.filter(t => taskStatus(t)[0] === 'Due soon').length;
+  $('stats').innerHTML = `
+    <div class="stat"><b>${current.length}</b><span>items currently held</span></div>
+    <div class="stat"><b>${money(value)}</b><span>original cost of current items</span></div>
+    <div class="stat ${over?'bad':''}"><b>${over}</b><span>maintenance jobs overdue</span></div>
+    <div class="stat ${soon?'warn':''}"><b>${soon}</b><span>jobs due in the next 30 days</span></div>`;
+}
+
+function drawAssets(){
+  const q = $('aSearch').value.toLowerCase(), f = $('aFilter').value;
+  let list = DATA.assets.filter(a =>
+    (f === '' || (f === 'current' ? a.Status !== 'Disposed' : a.Status === f)) &&
+    [a.Name,a.Location,a['Asset ID'],a.Category].join(' ').toLowerCase().includes(q));
+  list.sort((a,b) => String(a.Name).localeCompare(String(b.Name)));
+  $('assetList').innerHTML = list.length ? list.map(a => `
+    <div class="row ${a.Status==='Disposed'?'disposed':''}">
+      <div class="main">
+        <div class="title">${esc(a.Name)} <span class="pill p-grey">${esc(a.Status)}</span></div>
+        <div class="meta">${esc(a['Asset ID'])} &nbsp;|&nbsp; ${esc(a.Category)} &nbsp;|&nbsp; ${esc(a.Location)}
+          &nbsp;|&nbsp; Bought ${fmtDate(a['Date Acquired'])} for ${money(a['Purchase Cost']) || 'n/a'}</div>
+      </div>
+      <button onclick="assetForm('${esc(a['Asset ID'])}')">Edit</button>
+    </div>`).join('') : '<div class="empty">No items to show. Use "Add an asset" to record the first one.</div>';
+}
+
+function drawTasks(){
+  const list = DATA.schedule.filter(t => t.Active !== 'No')
+    .sort((a,b) => (a['Next Due']||'9999').localeCompare(b['Next Due']||'9999'));
+  $('taskList').innerHTML = list.length ? list.map(t => { const [label,cls] = taskStatus(t); return `
+    <div class="row">
+      <div class="main">
+        <div class="title">${esc(t.Task)} <span class="pill ${cls}">${label}</span></div>
+        <div class="meta">${esc(assetName(t['Asset ID']))} &nbsp;|&nbsp; ${esc(t.Frequency)}
+          &nbsp;|&nbsp; Last done: ${fmtDate(t['Last Done']) || 'not yet'}
+          &nbsp;|&nbsp; Next due: ${fmtDate(t['Next Due']) || 'n/a'}
+          ${t.Responsible ? '&nbsp;|&nbsp; ' + esc(t.Responsible) : ''}</div>
+      </div>
+      <button class="primary" onclick="logForm('${esc(t['Task ID'])}')">Mark as done</button>
+      <button onclick="taskForm('${esc(t['Task ID'])}')">Edit</button>
+    </div>`; }).join('') : '<div class="empty">No maintenance tasks yet. Add one for anything that needs regular care, such as servicing the urn.</div>';
+}
+
+function drawLog(){
+  const list = DATA.log.slice().sort((a,b) => (b['Date Done']||'').localeCompare(a['Date Done']||''));
+  $('logList').innerHTML = list.length ? list.map(l => `
+    <div class="row">
+      <div class="main">
+        <div class="title">${fmtDate(l['Date Done'])} – ${esc(assetName(l['Asset ID']))}</div>
+        <div class="meta">${esc(l['Work Done'])}${l['Done By'] ? ' &nbsp;|&nbsp; by ' + esc(l['Done By']) : ''}
+          ${l.Cost !== '' && l.Cost != null ? ' &nbsp;|&nbsp; ' + money(l.Cost) : ''}
+          &nbsp;|&nbsp; recorded by ${esc(l['Recorded By'])}</div>
+      </div>
+    </div>`).join('') : '<div class="empty">No work recorded yet.</div>';
+}
+
+function showTab(name){
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+  ['assets','schedule','log'].forEach(n => $('tab-'+n).hidden = n !== name);
+}
+
+/* ---------- Pop-up forms ---------- */
+function openModal(html){ $('modalBox').innerHTML = html; $('modal').classList.add('show'); window.scrollTo(0,0); }
+function closeModal(){ $('modal').classList.remove('show'); }
+function val(id){ const el = $(id.replace(/^([ftl]_)(.*)$/, (m,a,b) => a + b.replace(/[^A-Za-z]/g,''))); return el ? el.value.trim() : ''; }
+
+function assetForm(id){
+  const a = DATA.assets.find(x => x['Asset ID'] === id) || { Status:'In Use', Condition:'Good', 'Owned By':'Social Club' };
+  openModal(`
+    <h2>${id ? 'Edit ' + esc(a.Name) : 'Add an asset'}</h2>
+    <div class="grid">
+      <div class="full"><label>Item name *</label><input id="f_Name" value="${esc(a.Name)}"></div>
+      <div><label>Category</label><select id="f_Category">${options(CATEGORIES,a.Category)}</select></div>
+      <div><label>Owned by</label><select id="f_OwnedBy">${options(OWNERS,a['Owned By'])}</select></div>
+      <div class="full"><label>Description</label><textarea id="f_Description" rows="2">${esc(a.Description)}</textarea></div>
+      <div><label>Where it is kept</label><input id="f_Location" value="${esc(a.Location)}"></div>
+      <div><label>Date acquired</label><input type="date" id="f_DateAcquired" value="${esc(a['Date Acquired'])}"></div>
+      <div><label>Purchase cost ($)</label><input type="number" step="0.01" min="0" id="f_PurchaseCost" value="${esc(a['Purchase Cost'])}"></div>
+      <div><label>Paid for by</label><select id="f_FundingSource">${options(FUNDING,a['Funding Source'])}</select></div>
+      <div><label>Supplier</label><input id="f_Supplier" value="${esc(a.Supplier)}"></div>
+      <div><label>Serial or model number</label><input id="f_SerialModel" value="${esc(a['Serial / Model'])}"></div>
+      <div><label>Condition</label><select id="f_Condition">${options(CONDITIONS,a.Condition)}</select></div>
+      <div><label>Status</label><select id="f_Status" onchange="$('disp').hidden = this.value !== 'Disposed'">${options(STATUSES,a.Status)}</select></div>
+      <div class="full"><label>Notes (admin only)</label><textarea id="f_Notes" rows="2">${esc(a.Notes)}</textarea></div>
+    </div>
+    <fieldset id="disp" ${a.Status === 'Disposed' ? '' : 'hidden'}>
+      <legend>Disposal details</legend>
+      <div class="grid">
+        <div><label>Date disposed</label><input type="date" id="f_DisposalDate" value="${esc(a['Disposal Date'])}"></div>
+        <div><label>How</label><select id="f_DisposalMethod">${options(DISPOSALS,a['Disposal Method'])}</select></div>
+        <div><label>Amount received ($)</label><input type="number" step="0.01" min="0" id="f_DisposalAmount" value="${esc(a['Disposal Amount'])}"></div>
+        <div><label>Approved by</label><input id="f_ApprovedBy" value="${esc(a['Approved By'])}"></div>
+        <div class="full"><label>Reason</label><input id="f_DisposalReason" value="${esc(a['Disposal Reason'])}"></div>
+      </div>
+    </fieldset>
+    <p class="err" id="formErr"></p>
+    <div class="actions"><button onclick="closeModal()">Cancel</button>
+      <button class="primary" onclick="submitAsset('${esc(id||'')}')">Save asset</button></div>`);
+}
+
+async function submitAsset(id){
+  const fields = ['Name','Category','Owned By','Description','Location','Date Acquired','Purchase Cost',
+    'Funding Source','Supplier','Serial / Model','Condition','Status','Notes',
+    'Disposal Date','Disposal Method','Disposal Amount','Disposal Reason','Approved By'];
+  const rec = { 'Asset ID': id };
+  fields.forEach(f => rec[f] = val('f_' + f));
+  if (!rec.Name){ $('formErr').textContent = 'Please give the item a name.'; return; }
+  if (rec.Status === 'Disposed' && !rec['Disposal Date']){ $('formErr').textContent = 'Please enter the date the item was disposed of.'; return; }
+  await saveAndReload('saveAsset', rec, 'Asset saved');
+}
+
+function taskForm(id){
+  const t = DATA.schedule.find(x => x['Task ID'] === id) || { Frequency:'Annually' };
+  const current = DATA.assets.filter(a => a.Status !== 'Disposed');
+  openModal(`
+    <h2>${id ? 'Edit maintenance task' : 'Add a maintenance task'}</h2>
+    <div class="grid">
+      <div class="full"><label>Which item *</label><select id="t_AssetID">
+        ${current.map(a => `<option value="${esc(a['Asset ID'])}"${a['Asset ID']===t['Asset ID']?' selected':''}>${esc(a.Name)} (${esc(a['Asset ID'])})</option>`).join('')}
+      </select></div>
+      <div class="full"><label>What needs doing *</label><input id="t_Task" value="${esc(t.Task)}" placeholder="e.g. Descale and safety-check the urn"></div>
+      <div><label>How often</label><select id="t_Frequency">${options(FREQS,t.Frequency)}</select></div>
+      <div><label>Last done (if known)</label><input type="date" id="t_LastDone" value="${esc(t['Last Done'])}"></div>
+      <div><label>Who looks after it</label><input id="t_Responsible" value="${esc(t.Responsible)}"></div>
+      <div><label>Next due (only if no "last done" date)</label><input type="date" id="t_NextDue" value="${esc(t['Next Due'])}"></div>
+      <div class="full"><label>Notes</label><textarea id="t_Notes" rows="2">${esc(t.Notes)}</textarea></div>
+    </div>
+    <p class="err" id="formErr"></p>
+    <div class="actions">
+      ${id ? `<button onclick="retireTask('${esc(id)}')">Stop this task</button>` : ''}
+      <button onclick="closeModal()">Cancel</button>
+      <button class="primary" onclick="submitTask('${esc(id||'')}')">Save task</button></div>`);
+}
+
+async function submitTask(id){
+  const rec = { 'Task ID': id, Active:'Yes' };
+  ['Asset ID','Task','Frequency','Last Done','Responsible','Next Due','Notes'].forEach(f => rec[f] = val('t_' + f));
+  if (!rec['Asset ID'] || !rec.Task){ $('formErr').textContent = 'Please choose an item and describe the task.'; return; }
+  await saveAndReload('saveTask', rec, 'Task saved');
+}
+
+async function retireTask(id){
+  if (!confirm('Stop this task? It will no longer appear on the schedule. Past work stays in the log.')) return;
+  const rec = Object.assign({}, DATA.schedule.find(x => x['Task ID'] === id), { Active:'No' });
+  await saveAndReload('saveTask', rec, 'Task stopped');
+}
+
+function logForm(taskId){
+  const t = DATA.schedule.find(x => x['Task ID'] === taskId);
+  const current = DATA.assets.filter(a => a.Status !== 'Disposed');
+  openModal(`
+    <h2>Record work done</h2>
+    ${t ? `<p class="sub">${esc(t.Task)} – ${esc(assetName(t['Asset ID']))}</p>` : ''}
+    <div class="grid">
+      ${t ? `<input type="hidden" id="l_AssetID" value="${esc(t['Asset ID'])}">` : `
+      <div class="full"><label>Which item *</label><select id="l_AssetID">
+        ${current.map(a => `<option value="${esc(a['Asset ID'])}">${esc(a.Name)} (${esc(a['Asset ID'])})</option>`).join('')}
+      </select></div>`}
+      <div><label>Date done *</label><input type="date" id="l_DateDone" value="${today()}"></div>
+      <div><label>Done by</label><input id="l_DoneBy"></div>
+      <div class="full"><label>Work done *</label><input id="l_WorkDone" value="${t ? esc(t.Task) : ''}"></div>
+      <div><label>Cost ($, if any)</label><input type="number" step="0.01" min="0" id="l_Cost"></div>
+      <div class="full"><label>Notes</label><textarea id="l_Notes" rows="2"></textarea></div>
+    </div>
+    <p class="err" id="formErr"></p>
+    <div class="actions"><button onclick="closeModal()">Cancel</button>
+      <button class="primary" onclick="submitLog('${esc(taskId||'')}')">Save record</button></div>`);
+}
+
+async function submitLog(taskId){
+  const rec = { 'Task ID': taskId };
+  ['Asset ID','Date Done','Done By','Work Done','Cost','Notes'].forEach(f => rec[f] = val('l_' + f));
+  if (!rec['Asset ID'] || !rec['Date Done'] || !rec['Work Done']){ $('formErr').textContent = 'Please fill in the item, date and work done.'; return; }
+  await saveAndReload('logMaintenance', rec, 'Work recorded');
+}
+
+async function saveAndReload(action, rec, msg){
+  $('formErr').textContent = 'Saving…';
+  try{ await send(action, rec); closeModal(); toast(msg); await loadData(); }
+  catch(e){ $('formErr').textContent = 'Not saved: ' + e.message; }
+}
+
+$('uPin').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+</script>
+</body>
+</html>

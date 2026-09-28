@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asset Register | BDRV Residents Hub</title>
+<!-- If your other Hub pages load sidebar.js, copy that same line in here -->
+<style>
+  :root{ --navy:#263746; --panel:#2e4254; --gold:#D4B860; --cream:#F6F2E7;
+         --charcoal:#3F4143; --muted:#b9c2ca; --red:#e07b6e; --amber:#e8b64c; --green:#7fbf8e; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--navy);color:var(--cream);
+       font-family:Aptos,"Segoe UI",Calibri,Arial,sans-serif;font-size:19px;line-height:1.55}
+  .wrap{max-width:960px;margin:0 auto;padding:28px 18px 60px}
+  h1{color:var(--gold);font-size:2rem;margin:0 0 6px}
+  h2{color:var(--gold);font-size:1.35rem;margin:34px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--charcoal)}
+  .intro{max-width:70ch;margin:0 0 24px}
+  .muted{color:var(--muted);font-size:.9rem}
+
+  .totals{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--charcoal);border-radius:10px;overflow:hidden}
+  .totals div{flex:1;min-width:190px;padding:16px 18px;border-right:1px solid var(--charcoal)}
+  .totals div:last-child{border-right:none}
+  .totals b{display:block;font-size:1.7rem;color:var(--gold)}
+
+  input#search{font:inherit;width:100%;padding:11px 14px;border-radius:8px;border:1px solid var(--charcoal);
+       background:var(--cream);color:#222;margin:26px 0 6px}
+  input:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+  details{background:var(--panel);border-radius:8px;margin-bottom:10px}
+  summary{cursor:pointer;padding:14px 18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";color:var(--gold);font-size:1.3rem;line-height:1}
+  details[open] summary::after{content:"–"}
+  summary .count{color:var(--muted);font-weight:400;margin-left:auto;margin-right:12px}
+  .item{padding:12px 18px;border-top:1px solid var(--charcoal)}
+  .item .name{font-weight:600}
+  .item .desc{margin:2px 0}
+  .item .facts{color:var(--muted);font-size:.92rem}
+  .pill{display:inline-block;font-size:.8rem;padding:1px 10px;border-radius:20px;border:1px solid currentColor;margin-left:6px}
+  .p-ok{color:var(--green)} .p-soon{color:var(--amber)} .p-over{color:var(--red)}
+
+  .log{list-style:none;padding:0;margin:0}
+  .log li{padding:10px 0;border-bottom:1px solid var(--charcoal)}
+  .log .date{color:var(--gold);display:inline-block;min-width:120px}
+  .note{background:var(--panel);border-left:4px solid var(--gold);padding:12px 16px;border-radius:6px;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Asset Register</h1>
+  <p class="intro">A record of the items the Social Club and Residents Committee have bought with residents' funds, where they are kept, and how they are being looked after.</p>
+
+  <div class="totals" id="totals"><div>Loading the register…</div></div>
+
+  <input id="search" type="search" placeholder="Search for an item, e.g. urn, chairs, projector" oninput="drawItems()" aria-label="Search items">
+  <p class="muted" id="updated"></p>
+
+  <h2>Items we hold</h2>
+  <div id="items"></div>
+
+  <h2>Recent maintenance</h2>
+  <ul class="log" id="recent"></ul>
+
+  <h2>Items no longer held</h2>
+  <div id="disposed"></div>
+
+  <div class="note">Questions about an item, or noticed something that needs attention? Please speak to a Social Club or Residents Committee member.</div>
+</div>
+
+<script>
+/* ============ SETTINGS – paste the same web app URL as the admin page ============ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbyMuPYlG5tY-v-6LOM0dazDWZVEz_gLDCwfckSZmPjwr129uqi6BOSAOXY0zaDOnvFf/exec';
+const SHOW_COSTS = true;   // change to false to hide dollar amounts from residents
+
+let ASSETS = [];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = v => (!SHOW_COSTS || v === '' || v == null || isNaN(v)) ? '' :
+  Number(v).toLocaleString('en-AU', { style:'currency', currency:'AUD' });
+function fmtDate(s){ if(!s) return ''; const [y,m,d]=s.split('-').map(Number);
+  return new Date(y,m-1,d).toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}); }
+const pill = s => s ? `<span class="pill ${s==='Overdue'?'p-over':s==='Due soon'?'p-soon':'p-ok'}">Maintenance ${s.toLowerCase()}</span>` : '';
+
+async function load(){
+  try{
+    const j = await (await fetch(API_URL)).json();
+    ASSETS = j.assets || [];
+    $('updated').textContent = 'Information as at ' + fmtDate(j.updated) + '.';
+    drawTotals(); drawItems(); drawRecent(j.recentMaintenance || []); drawDisposed();
+  }catch(e){
+    $('totals').innerHTML = '<div>The register could not be loaded just now. Please try again later.</div>';
+  }
+}
+
+function drawTotals(){
+  const held = ASSETS.filter(a => a.status !== 'Disposed');
+  const now = new Date(), fyYear = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
+  const fyStart = fyYear + '-07-01';
+  const thisFY = ASSETS.filter(a => a.acquired && a.acquired >= fyStart);
+  const sum = list => list.reduce((s,a) => s + (Number(a.cost) || 0), 0);
+  $('totals').innerHTML = `
+    <div><b>${held.length}</b>items currently held</div>
+    ${SHOW_COSTS ? `<div><b>${money(sum(held))}</b>original cost of those items</div>` : ''}
+    <div><b>${thisFY.length}</b>bought since 1 July ${fyYear}${SHOW_COSTS && thisFY.length ? ' (' + money(sum(thisFY)) + ')' : ''}</div>`;
+}
+
+function itemHtml(a, disposed){
+  const facts = disposed
+    ? [a.disposalDate && 'Disposed ' + fmtDate(a.disposalDate), a.disposalMethod,
+       money(a.disposalAmount) && 'received ' + money(a.disposalAmount), a.disposalReason]
+    : [a.location && 'Kept at ' + a.location, a.acquired && 'Bought ' + fmtDate(a.acquired),
+       money(a.cost), a.funding, a.condition && 'Condition: ' + a.condition,
+       a.status !== 'In Use' && a.status, a.lastServiced && 'Last serviced ' + fmtDate(a.lastServiced)];
+  return `<div class="item">
+    <div class="name">${esc(a.name)} ${disposed ? '' : pill(a.maintenance)}</div>
+    ${a.description ? `<div class="desc">${esc(a.description)}</div>` : ''}
+    <div class="facts">${facts.filter(Boolean).map(esc).join(' &nbsp;|&nbsp; ')}</div></div>`;
+}
+
+function drawItems(){
+  const q = $('search').value.toLowerCase();
+  const held = ASSETS.filter(a => a.status !== 'Disposed' &&
+    [a.name,a.description,a.location,a.category].join(' ').toLowerCase().includes(q));
+  const cats = [...new Set(held.map(a => a.category || 'Other'))].sort();
+  $('items').innerHTML = cats.length ? cats.map(c => {
+    const list = held.filter(a => (a.category || 'Other') === c).sort((x,y) => String(x.name).localeCompare(String(y.name)));
+    return `<details ${q ? 'open' : ''}><summary>${esc(c)}<span class="count">${list.length} item${list.length>1?'s':''}</span></summary>
+      ${list.map(a => itemHtml(a,false)).join('')}</details>`;
+  }).join('') : '<p class="muted">No items match your search.</p>';
+}
+
+function drawRecent(list){
+  $('recent').innerHTML = list.length
+    ? list.map(l => `<li><span class="date">${fmtDate(l.date)}</span> ${esc(l.asset)} – ${esc(l.work)}</li>`).join('')
+    : '<li class="muted">No maintenance has been recorded yet.</li>';
+}
+
+function drawDisposed(){
+  const list = ASSETS.filter(a => a.status === 'Disposed').sort((x,y) => (y.disposalDate||'').localeCompare(x.disposalDate||''));
+  $('disposed').innerHTML = list.length
+    ? `<details><summary>Show items sold, donated or retired<span class="count">${list.length}</span></summary>${list.map(a => itemHtml(a,true)).join('')}</details>`
+    : '<p class="muted">None so far.</p>';
+}
+
+load();
+</script>
+</body>
+</html>
