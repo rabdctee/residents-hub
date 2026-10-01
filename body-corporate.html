@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Body Corporate — BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* Body Corporate colour family: burgundy (kept distinct from RC blue, SC green, Manor purple) */
+  :root {
+    --bc-main:   #7B1F3A;
+    --bc-deep:   #4F1326;
+    --bc-tint:   #FBF1F4;
+    --bc-border: #E6C3CF;
+    --gold:      #C9A44A;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f6eef1; color: #222; font-size: 17px;
+    line-height: 1.6; min-height: 100vh;
+  }
+
+  /* ── PIN OVERLAY ── */
+  #pin-overlay {
+    position: fixed; inset: 0; background: var(--bc-main); z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px; padding: 30px;
+  }
+  #pin-overlay h2 { color: white; font-size: 1.4em; text-align: center; }
+  #pin-overlay p  { color: rgba(255,255,255,0.8); font-size: 0.9em; text-align: center; max-width: 360px; }
+  #pin-input {
+    font-size: 1.6em; letter-spacing: 0.4em; text-align: center;
+    padding: 12px 20px; border-radius: 8px; border: none; width: 180px; outline: none;
+  }
+  #pin-error { color: #ffd6df; font-size: 0.85em; min-height: 1.2em; text-align: center; }
+
+  /* ── ROLE SELECTOR OVERLAY ── */
+  #role-overlay {
+    position: fixed; inset: 0; background: var(--bc-deep); z-index: 9998;
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 28px; padding: 30px; overflow-y: auto;
+  }
+  #role-overlay.visible { display: flex; }
+  #role-overlay h2 { color: white; font-size: 1.7em; text-align: center; font-weight: 700; }
+  #role-overlay p  { color: rgba(255,255,255,0.8); font-size: 1em; text-align: center; max-width: 480px; }
+
+  .role-group {
+    width: 100%; max-width: 780px;
+    background: rgba(123,31,58,0.55); border-radius: 14px; padding: 18px 20px;
+    border: 2px solid rgba(230,195,207,0.4);
+  }
+  .role-group-label {
+    font-size: 0.9em; font-weight: 800; letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 12px; padding-left: 2px; color: #f3cdd9;
+  }
+  .role-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;
+  }
+  .role-btn {
+    background: white; border: none; border-radius: 12px; border-top: 5px solid var(--bc-main);
+    padding: 20px 14px; cursor: pointer; text-align: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .role-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .role-btn .rb-icon { font-size: 2em; display: block; margin-bottom: 8px; }
+  .role-btn .rb-org  { display: block; font-size: 0.72em; font-weight: 700; letter-spacing: 0.1em;
+                       text-transform: uppercase; margin-bottom: 4px; color: var(--bc-main); }
+  .role-btn .rb-name { display: block; font-size: 1em; font-weight: 700; color: var(--bc-main); }
+
+  /* ── BACK BAR ── */
+  .back-bar {
+    background: var(--bc-tint); padding: 10px 20px; border-bottom: 2px solid var(--bc-border);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .back-btn {
+    background: var(--bc-main); color: white; border: none; border-radius: 10px;
+    padding: 7px 16px; font-weight: 700; font-size: 16px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;
+  }
+  .back-btn:hover { opacity: 0.85; }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 960px; margin: 0 auto; padding: 30px 20px 60px; }
+
+  /* ── HEADER ── */
+  .dash-header {
+    border-radius: 12px; padding: 24px 28px; margin-bottom: 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px; color: white; background: var(--bc-main);
+  }
+  .dash-header-left h1 { font-size: 1.4em; font-weight: 700; }
+  .dash-header-left p  { font-size: 0.82em; opacity: 0.85; margin-top: 4px; }
+  .dash-greeting { font-size: 0.88em; opacity: 0.9; }
+
+  /* ── SECTION ── */
+  .section-header-bc {
+    background: var(--bc-main); color: white;
+    border-radius: 10px 10px 0 0; padding: 12px 20px; margin-top: 32px;
+    font-size: 1em; font-weight: 700; letter-spacing: 0.05em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-body-bc {
+    background: var(--bc-tint); border: 2px solid var(--bc-border); border-top: none;
+    border-radius: 0 0 10px 10px; padding: 18px; margin-bottom: 8px;
+  }
+  .section-label {
+    font-size: 0.78em; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--bc-main); border-bottom: 2px solid var(--bc-border);
+    padding-bottom: 6px; margin: 0 0 14px;
+  }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px;
+  }
+  .info-card {
+    background: white; border-radius: 12px; border: 1px solid var(--bc-border);
+    border-left: 5px solid var(--bc-main); padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: box-shadow 0.2s;
+  }
+  .info-card:hover { box-shadow: 0 4px 16px rgba(123,31,58,0.14); }
+  .card-top { display: flex; align-items: flex-start; gap: 14px; }
+  .card-icon { font-size: 1.6em; line-height: 1; flex-shrink: 0; }
+  .card-title { font-weight: 700; color: var(--bc-main); font-size: 1em; }
+  .card-desc  { font-size: 0.84em; color: #555; margin-top: 2px; line-height: 1.4; }
+  .card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .btn-action {
+    display: inline-block; padding: 7px 14px; border-radius: 7px;
+    font-size: 0.84em; font-weight: 600; text-decoration: none;
+    border: none; cursor: pointer; font-family: 'Segoe UI', sans-serif;
+    transition: opacity 0.15s;
+  }
+  .btn-action:hover { opacity: 0.85; }
+  .btn-bc { background: var(--bc-main); color: white; }
+
+  .coming-soon {
+    color: #777; font-style: italic; font-size: 0.92em;
+    background: white; border: 1px dashed var(--bc-border); border-radius: 12px;
+    padding: 18px 20px;
+  }
+
+  @media(max-width:600px) { .card-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<!-- ── PIN OVERLAY ── -->
+<div id="pin-overlay">
+  <h2>🔒 Body Corporate Area</h2>
+  <p>This area is for Body Corporate office holders. Enter the Body Corporate PIN to continue.</p>
+  <input type="password" id="pin-input" maxlength="6" placeholder="••••"
+         inputmode="numeric" autocomplete="off">
+  <button type="button" onclick="checkPin()"
+          style="background:#C9A44A;color:#4F1326;border:none;border-radius:8px;
+                 padding:10px 28px;font-size:1.05em;font-weight:700;cursor:pointer;">
+    Submit
+  </button>
+  <div id="pin-error"></div>
+  <a href="index.html" style="color: rgba(255,255,255,0.75); font-size: 0.85em; text-decoration: none;">
+    🏠 Back to Home
+  </a>
+</div>
+
+<!-- ── ROLE SELECTOR OVERLAY ── -->
+<div id="role-overlay">
+  <h2>Welcome — Please click on your role</h2>
+  <p>This shows the tools set up for your Body Corporate role.</p>
+
+  <div class="role-group">
+    <div class="role-group-label">🏛️ Body Corporate</div>
+    <div class="role-grid">
+      <button class="role-btn" onclick="selectRole('Chair')">
+        <span class="rb-icon">👤</span>
+        <span class="rb-org">Body Corporate</span>
+        <span class="rb-name">Chair</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('Manager')">
+        <span class="rb-icon">🗂️</span>
+        <span class="rb-org">Body Corporate</span>
+        <span class="rb-name">Manager</span>
+      </button>
+      <button class="role-btn" onclick="selectRole('Secretary')">
+        <span class="rb-icon">📝</span>
+        <span class="rb-org">Body Corporate</span>
+        <span class="rb-name">Secretary</span>
+      </button>
+    </div>
+  </div>
+
+  <div style="margin-top: 8px;">
+    <a href="index.html" style="color: rgba(255,255,255,0.7); font-size: 0.85em; text-decoration: none;">
+      🏠 Back to Home
+    </a>
+  </div>
+</div>
+
+<!-- ── BACK BAR ── -->
+<div class="back-bar">
+  <button onclick="goToRoleSelector()" class="back-btn">👤 Back to Body Corporate Roles</button>
+</div>
+
+<!-- ── MAIN CONTENT ── -->
+<div class="page-wrap" id="main-content" style="display:none;">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <div class="dash-header-left">
+      <h1>🏛️ Body Corporate</h1>
+      <p>Bridgeman Downs Retirement Village</p>
+    </div>
+    <span class="dash-greeting" id="greeting-text"></span>
+  </div>
+
+  <!-- ── CHAIR'S WORKBENCH (shown only to the Chair) ── -->
+  <div id="bc-chair-section" style="display:none;">
+    <div class="section-header-bc">👤 Chair's Workbench</div>
+    <div class="section-body-bc">
+      <div class="card-grid">
+
+        <div class="info-card">
+          <div class="card-top">
+            <div class="card-icon">💬</div>
+            <div>
+              <div class="card-title">Text Updates</div>
+              <div class="card-desc">Send a short text message update to residents who have opted in.</div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <a href="text-updates.html" class="btn-action btn-bc">💬 Send Text Update</a>
+          </div>
+        </div>
+
+        <!-- More Chair tiles will be added here over time -->
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MANAGER (placeholder for now) ── -->
+  <div id="bc-manager-section" style="display:none;">
+    <div class="section-header-bc">🗂️ Manager's Workbench</div>
+    <div class="section-body-bc">
+      <div class="coming-soon">Tools for the Body Corporate Manager are coming soon.</div>
+    </div>
+  </div>
+
+  <!-- ── SECRETARY (placeholder for now) ── -->
+  <div id="bc-secretary-section" style="display:none;">
+    <div class="section-header-bc">📝 Secretary's Workbench</div>
+    <div class="section-body-bc">
+      <div class="coming-soon">Tools for the Body Corporate Secretary are coming soon.</div>
+    </div>
+  </div>
+
+</div><!-- /.page-wrap -->
+
+<script>
+const BC_PIN      = "4217";
+// Separate keys from the Members Area, so each PIN only opens its own page
+const SESSION_KEY = "bdrv_bc_auth";
+const ROLE_KEY    = "bdrv_bc_role";
+
+let currentRole = null;
+
+// ── PIN ───────────────────────────────────────────────────────────────────────
+function checkPin() {
+  const input = document.getElementById("pin-input");
+  if (input.value.trim() === BC_PIN) {
+    sessionStorage.setItem(SESSION_KEY, "true");
+    showRoleOverlay();
+  } else {
+    document.getElementById("pin-error").textContent = "Incorrect PIN. Please try again.";
+    input.value = "";
+    input.focus();
+  }
+}
+document.getElementById("pin-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") checkPin();
+});
+
+function showRoleOverlay() {
+  document.getElementById("pin-overlay").style.display = "none";
+  document.getElementById("main-content").style.display = "none";
+  document.getElementById("role-overlay").classList.add("visible");
+}
+
+// ── ROLE SELECTION ────────────────────────────────────────────────────────────
+function selectRole(role) {
+  currentRole = role;
+  sessionStorage.setItem(ROLE_KEY, role);
+  document.getElementById("role-overlay").classList.remove("visible");
+  showApp();
+}
+
+function goToRoleSelector() {
+  sessionStorage.removeItem(ROLE_KEY);
+  currentRole = null;
+  showRoleOverlay();
+}
+
+function showApp() {
+  document.getElementById("main-content").style.display = "block";
+  document.getElementById("greeting-text").textContent =
+    "Hello — signed in as Body Corporate " + currentRole;
+
+  // Show only the workbench that matches the chosen role
+  document.getElementById("bc-chair-section").style.display     = (currentRole === "Chair")     ? "" : "none";
+  document.getElementById("bc-manager-section").style.display   = (currentRole === "Manager")   ? "" : "none";
+  document.getElementById("bc-secretary-section").style.display = (currentRole === "Secretary") ? "" : "none";
+}
+
+// ── ON LOAD ───────────────────────────────────────────────────────────────────
+window.onload = function() {
+  if (sessionStorage.getItem(SESSION_KEY) === "true") {
+    const savedRole = sessionStorage.getItem(ROLE_KEY);
+    if (savedRole) {
+      currentRole = savedRole;
+      document.getElementById("pin-overlay").style.display = "none";
+      showApp();
+      return;
+    }
+    showRoleOverlay();
+  }
+};
+</script>
+</body>
+</html>
