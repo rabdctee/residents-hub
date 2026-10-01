@@ -307,7 +307,7 @@ function goToRoleSelector() {
 function showApp() {
   document.getElementById("main-content").style.display = "block";
   document.getElementById("greeting-text").textContent =
-    "Hello — signed in as Body Corporate " + currentRole;
+    "Hello Mike — signed in as Body Corporate " + currentRole;
 
   // Show only the workbench that matches the chosen role
   document.getElementById("bc-chair-section").style.display     = (currentRole === "Chair")     ? "" : "none";
