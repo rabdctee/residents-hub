@@ -268,7 +268,7 @@
 
     <div id="data-section" style="display:none;">
       <div class="search-wrap">
-        <input type="text" id="search-input" placeholder="Search by name or unit number…" oninput="doSearch()">
+        <input type="text" id="search-input" placeholder="Search by name, unit number, or phone…" oninput="doSearch()">
         <button class="clear-btn" onclick="clearSearch()">Clear</button>
         <span class="result-count" id="result-count"></span>
       </div>
@@ -389,6 +389,7 @@ function renderTable(contacts) {
     const tr = document.createElement('tr');
     tr.dataset.unit = r.unit.toLowerCase();
     tr.dataset.name = r.name.toLowerCase();
+    tr.dataset.phone = r.phone.toLowerCase();
     tr.innerHTML = `
       <td class="unit">${r.unit}</td>
       <td>${r.name}</td>
@@ -403,10 +404,16 @@ function renderTable(contacts) {
 // ── SEARCH ──
 function doSearch() {
   const q = document.getElementById('search-input').value.trim().toLowerCase();
+  const qDigits = q.replace(/\D/g, '');
   const rows = document.querySelectorAll('#table-body tr');
   let visible = 0;
   rows.forEach(tr => {
-    const match = !q || tr.dataset.unit.includes(q) || tr.dataset.name.includes(q);
+    const phoneDigits = tr.dataset.phone.replace(/\D/g, '');
+    const match = !q
+      || tr.dataset.unit.includes(q)
+      || tr.dataset.name.includes(q)
+      || tr.dataset.phone.includes(q)
+      || (qDigits && phoneDigits.includes(qDigits));
     tr.style.display = match ? '' : 'none';
     if (match) visible++;
   });
