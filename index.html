@@ -2155,6 +2155,7 @@ files.forEach(function(f) {
       // Skip header row (index 0)
       var existingIds = (MEETING_FILES[key] || []).map(function(f) { return f.id; });
       var newFiles = [];
+      var statusCol = findStatusColumn(lines[0]);
 
       for (var i = 1; i < lines.length; i++) {
         var line = lines[i].trim();
@@ -2168,7 +2169,7 @@ files.forEach(function(f) {
 
         // Only show files for this folder, not already hardcoded
         if (rowFolder === folderName && fileId && existingIds.indexOf(fileId) === -1) {
-          newFiles.push({ name: fileName, id: fileId });
+          newFiles.push({ name: fileName, id: fileId, draft: isDraftRow(cols, statusCol) });
         }
       }
 
@@ -2178,8 +2179,8 @@ files.forEach(function(f) {
       var newHtml = '';
       newFiles.forEach(function(f) {
         newHtml += '<li><a href="view-document.html?id=' + encodeURIComponent(f.id) +
-          '&title=' + encodeURIComponent(f.name) +
-          '&back=community-info" target="_blank">📄 ' + f.name + '</a></li>';
+          '&title=' + encodeURIComponent(docTitle(f)) +
+          '&back=community-info" target="_blank">📄 ' + f.name + '</a>' + draftBadge(f.draft) + '</li>';
       });
 
 // Rebuild the list with registry files (newest first) + hardcoded files at bottom
@@ -2208,6 +2209,26 @@ files.forEach(function(f) {
       }
     });
 }
+// ── Draft label for meeting documents ────────────────────────────────
+// In the document registry sheet, a column headed "Status" can say "Draft".
+// Those documents get a gold DRAFT label. Clear the cell once approved.
+function findStatusColumn(headerLine) {
+  var headers = parseCSVLine(headerLine || '');
+  for (var h = 0; h < headers.length; h++) {
+    if (headers[h].trim().toLowerCase() === 'status') return h;
+  }
+  return -1; // no Status column — no labels shown, nothing breaks
+}
+function isDraftRow(cols, statusCol) {
+  return statusCol > -1 && /draft/i.test(cols[statusCol] || '');
+}
+function draftBadge(isDraft) {
+  return isDraft ? ' <span class="draft-badge">DRAFT</span>' : '';
+}
+function docTitle(f) {
+  return f.draft ? f.name + ' (Draft)' : f.name;
+}
+
 // Simple CSV line parser — handles quoted fields
 function parseCSVLine(line) {
   var cols = [];
@@ -4017,6 +4038,9 @@ a[href="welcome.html"]{ background:var(--hub-gold) !important; border-color:var(
 .folder-contents{ background:var(--hub-navy); border-color:var(--hub-charcoal); }
 .doc-list li{ border-bottom-color:var(--hub-charcoal); }
 .doc-list a{ color:var(--hub-gold); }
+.draft-badge{ display:inline-block; margin-left:6px; padding:1px 7px; border-radius:4px;
+              background:var(--hub-gold); color:#263746; font-size:0.72em; font-weight:700;
+              letter-spacing:0.05em; vertical-align:middle; }
 
 /* ---- Events page cards (Calendar / Events List) ---- */
 .evc-card{ background:var(--hub-navy-panel); border-color:var(--hub-charcoal); box-shadow:none; }

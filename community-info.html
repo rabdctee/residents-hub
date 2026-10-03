@@ -268,6 +268,9 @@
     .doc-list li:last-child{ border-bottom:none; }
     .doc-list a{ text-decoration:none; color:var(--hub-cream); font-weight:600; font-size:0.9em; }
     .doc-list a:hover{ text-decoration:underline; color:var(--hub-gold); }
+    .draft-badge{ display:inline-block; margin-left:6px; padding:1px 7px; border-radius:4px;
+                  background:var(--hub-gold); color:#263746; font-size:0.72em; font-weight:700;
+                  letter-spacing:0.05em; vertical-align:middle; }
 
     /* ===== Quarterly sub-folder styles ===== */
     .subfolder-section{ margin-bottom:6px; }
@@ -916,6 +919,7 @@
       .then(function(csvText) {
         var lines = csvText.split('\n');
         var byQuarter = {}; // quarter -> [{name,id}]
+        var statusCol = findStatusColumn(lines[0]);
 
         for (var i = 1; i < lines.length; i++) {
           var line = lines[i].trim();
@@ -930,7 +934,7 @@
             rowFolder === 'Residents Committee - Quarterly Meetings'; // older naming, kept for older rows
           if (isQuarterlyFolder && rowSubfolder && fileId) {
             if (!byQuarter[rowSubfolder]) byQuarter[rowSubfolder] = [];
-            byQuarter[rowSubfolder].push({ name: fileName, id: fileId });
+            byQuarter[rowSubfolder].push({ name: fileName, id: fileId, draft: isDraftRow(cols, statusCol) });
           }
         }
 
@@ -1007,8 +1011,8 @@
     files.forEach(function(f) {
       if (f.id) {
         var href = 'view-document.html?id=' + encodeURIComponent(f.id) +
-                   '&title=' + encodeURIComponent(f.name) + '&back=community-info.html';
-        html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a></li>';
+                   '&title=' + encodeURIComponent(docTitle(f)) + '&back=community-info.html';
+        html += '<li><a href="' + href + '" target="_blank">📄 ' + f.name + '</a>' + draftBadge(f.draft) + '</li>';
       }
     });
     ul.innerHTML = html || '<li style="color:var(--hub-muted);font-style:italic;">No documents yet.</li>';
@@ -1067,6 +1071,7 @@
         var lines = csvText.split('\n');
         var existingIds = (MEETING_FILES[key] || []).map(function(f) { return f.id; });
         var newItems = [];
+        var statusCol = findStatusColumn(lines[0]);
         for (var i = 1; i < lines.length; i++) {
           var line = lines[i].trim();
           if (!line) continue;
@@ -1079,6 +1084,7 @@
             newItems.push({
               name: formatMeetingDisplayName(fileName, rowSubfolder),
               id: fileId,
+              draft: isDraftRow(cols, statusCol),
               sortKey: extractSortKey(rowSubfolder, fileName)
             });
           }
@@ -1091,7 +1097,7 @@
         var newHtml = '';
         newItems.forEach(function(f) {
           newHtml += '<li><a href="view-document.html?id=' + encodeURIComponent(f.id) +
-            '&title=' + encodeURIComponent(f.name) + '&back=community-info.html" target="_blank">📄 ' + f.name + '</a></li>';
+            '&title=' + encodeURIComponent(docTitle(f)) + '&back=community-info.html" target="_blank">📄 ' + f.name + '</a>' + draftBadge(f.draft) + '</li>';
         });
         var baseHtml = '';
         files.forEach(function(f) {
@@ -1111,6 +1117,26 @@
             '<li style="color:var(--hub-muted);font-style:italic;">No documents available yet.</li>';
         }
       });
+  }
+
+  // ── Draft label for meeting documents ────────────────────────────────
+  // In the document registry sheet, a column headed "Status" can say "Draft".
+  // Those documents get a gold DRAFT label. Clear the cell once approved.
+  function findStatusColumn(headerLine) {
+    var headers = parseCSVLine(headerLine || '');
+    for (var h = 0; h < headers.length; h++) {
+      if (headers[h].trim().toLowerCase() === 'status') return h;
+    }
+    return -1; // no Status column — no labels shown, nothing breaks
+  }
+  function isDraftRow(cols, statusCol) {
+    return statusCol > -1 && /draft/i.test(cols[statusCol] || '');
+  }
+  function draftBadge(isDraft) {
+    return isDraft ? ' <span class="draft-badge">DRAFT</span>' : '';
+  }
+  function docTitle(f) {
+    return f.draft ? f.name + ' (Draft)' : f.name;
   }
 
   function parseCSVLine(line) {
