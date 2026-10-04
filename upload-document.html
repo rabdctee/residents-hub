@@ -108,6 +108,22 @@
   cursor: pointer; text-decoration: none;
 }
 .back-btn:hover { background: #2E75B6; }
+/* Draft option and drafts list */
+.draft-option { display:flex; align-items:flex-start; gap:10px; background:#fff8e6; border:1px solid #ecd9a4;
+  border-radius:8px; padding:12px 14px; cursor:pointer; font-weight:400; color:#333; }
+.draft-option input { width:20px; height:20px; margin-top:1px; flex-shrink:0; cursor:pointer; }
+.draft-option strong { color:var(--navy); }
+.draft-hint { display:block; font-size:0.85em; color:var(--grey); margin-top:2px; }
+.draft-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--navy-light); flex-wrap:wrap; }
+.draft-row:last-child { border-bottom:none; }
+.draft-info { flex:1; min-width:180px; font-size:0.88em; color:#333; line-height:1.45; }
+.draft-info strong { color:var(--navy); }
+.draft-where { color:var(--grey); font-size:0.92em; }
+.btn-approve { background:var(--green); color:#fff; border:none; border-radius:6px; padding:9px 14px;
+  font-weight:700; font-size:0.85em; cursor:pointer; font-family:inherit; }
+.btn-approve:hover { background:#145530; }
+.btn-approve:disabled { background:#aaa; cursor:not-allowed; }
+.drafts-empty { font-size:0.88em; color:var(--grey); font-style:italic; }
 </style>
 </head>
 <body>
@@ -196,6 +212,15 @@
         <input type="email" id="docUploader" placeholder="e.g. rabd.secretary@gmail.com">
       </div>
 
+      <div class="form-group" id="draftGroup" style="display:none;">
+        <label class="draft-option" for="docDraft">
+          <input type="checkbox" id="docDraft">
+          <span><strong>Mark as Draft</strong>
+            <span class="draft-hint">Tick this for minutes that haven't been approved yet. The Hub will show a DRAFT label until it's approved below.</span>
+          </span>
+        </label>
+      </div>
+
       <div class="progress-wrap" id="progressWrap">
         <div class="progress-bar" id="progressBar"></div>
       </div>
@@ -205,6 +230,18 @@
         &#128228; Upload Document
       </button>
 
+    </div>
+  </div>
+
+  <div class="card" id="draftsCard">
+    <div class="card-header">&#128221; Drafts Awaiting Approval</div>
+    <div class="card-body">
+      <div id="draftsAlert" class="alert"></div>
+      <div id="draftsList"><p class="drafts-empty">Loading&#8230;</p></div>
+      <p style="font-size:0.8em;color:var(--grey);margin-top:12px;line-height:1.5;">
+        Once minutes are approved at a meeting, click <strong>Approved</strong> to remove the DRAFT label.
+        Changes can take a few minutes to show on the Hub.
+      </p>
     </div>
   </div>
 
@@ -251,6 +288,124 @@
   function updateFolderFields() {
     updateNamingGuide();
     updateSubfolderField();
+    updateDraftField();
+  }
+
+  // ── Draft option ─────────────────────────────────────────────────────────
+  // Only meeting folders can be marked as Draft.
+  var DRAFT_FOLDERS = [
+    'Annual General Meetings',
+    'Residents Committee - Monthly Meetings',
+    'Residents Quarterly Meetings',
+    'Social Club Committee - Monthly Meetings'
+  ];
+  function updateDraftField() {
+    var folder = document.getElementById('docFolder').value;
+    var show   = DRAFT_FOLDERS.indexOf(folder) > -1;
+    document.getElementById('draftGroup').style.display = show ? 'block' : 'none';
+    if (!show) document.getElementById('docDraft').checked = false;
+  }
+
+  // ── Drafts awaiting approval ─────────────────────────────────────────────
+  // Reads the published document registry and lists rows whose Status says Draft.
+  var REGISTRY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
+  var approvedThisVisit = {}; // hides items just approved while the published sheet catches up
+
+  function parseCSVLine(line) {
+    var cols = [], current = '', inQuotes = false;
+    for (var i = 0; i < line.length; i++) {
+      var ch = line[i];
+      if (ch === '"')                   { inQuotes = !inQuotes; }
+      else if (ch === ',' && !inQuotes) { cols.push(current); current = ''; }
+      else                              { current += ch; }
+    }
+    cols.push(current);
+    return cols;
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, function(c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  function loadDrafts() {
+    var list = document.getElementById('draftsList');
+    fetch(REGISTRY_CSV_URL + '&t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(csvText) {
+        var lines = csvText.split('\n');
+        var headers = parseCSVLine(lines[0] || '');
+        var statusCol = -1;
+        headers.forEach(function(h, i) { if (h.trim().toLowerCase() === 'status') statusCol = i; });
+        if (statusCol === -1) {
+          list.innerHTML = '<p class="drafts-empty">The registry sheet has no Status column yet.</p>';
+          return;
+        }
+        var drafts = [];
+        for (var i = 1; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (!line) continue;
+          var cols = parseCSVLine(line);
+          var id   = (cols[2] || '').trim();
+          if (id && /draft/i.test(cols[statusCol] || '') && !approvedThisVisit[id]) {
+            drafts.push({
+              name: (cols[1] || '').trim(), id: id,
+              folder: (cols[3] || '').trim(), subfolder: (cols[4] || '').trim()
+            });
+          }
+        }
+        if (drafts.length === 0) {
+          list.innerHTML = '<p class="drafts-empty">No drafts at the moment.</p>';
+          return;
+        }
+        list.innerHTML = drafts.reverse().map(function(d) {
+          return '<div class="draft-row" id="draft-' + escapeHtml(d.id) + '">' +
+                   '<div class="draft-info"><strong>' + escapeHtml(d.name) + '</strong><br>' +
+                     '<span class="draft-where">' + escapeHtml(d.folder) + (d.subfolder ? ' &#8250; ' + escapeHtml(d.subfolder) : '') + '</span></div>' +
+                   '<button class="btn-approve" onclick="approveDraft(\'' + escapeHtml(d.id) + '\', this)">&#10003; Approved</button>' +
+                 '</div>';
+        }).join('');
+      })
+      .catch(function() {
+        list.innerHTML = '<p class="drafts-empty">Could not load drafts right now.</p>';
+      });
+  }
+
+  function approveDraft(fileId, btn) {
+    var name = btn.parentNode.querySelector('strong').textContent;
+    if (!confirm('Mark "' + name + '" as approved?\n\nThe DRAFT label will be removed from the Hub.')) return;
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'setDocumentStatus', fileId: fileId, status: '' })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        approvedThisVisit[fileId] = true;
+        var row = document.getElementById('draft-' + fileId);
+        if (row) row.parentNode.removeChild(row);
+        if (!document.querySelector('#draftsList .draft-row')) {
+          document.getElementById('draftsList').innerHTML = '<p class="drafts-empty">No drafts at the moment.</p>';
+        }
+        showDraftsAlert('success', '"' + name + '" is now marked as approved.');
+      } else {
+        btn.disabled = false; btn.innerHTML = '&#10003; Approved';
+        showDraftsAlert('error', 'Could not update: ' + (data.message || 'please try again or contact Rick.'));
+      }
+    })
+    .catch(function() {
+      btn.disabled = false; btn.innerHTML = '&#10003; Approved';
+      showDraftsAlert('error', 'Could not update. Please check your connection and try again.');
+    });
+  }
+
+  function showDraftsAlert(type, msg) {
+    var el = document.getElementById('draftsAlert');
+    el.className = 'alert alert-' + type + ' show';
+    el.textContent = msg;
   }
 
   function updateSubfolderField() {
@@ -314,6 +469,7 @@
   }
 
   window.addEventListener('DOMContentLoaded', function() {
+    loadDrafts();
     var dz = document.getElementById('dropZone');
     dz.addEventListener('dragover',  function(e){ e.preventDefault(); dz.classList.add('dragover'); });
     dz.addEventListener('dragleave', function(){ dz.classList.remove('dragover'); });
@@ -370,7 +526,8 @@
           mimeType:   'application/pdf',
           folder:     folder,
           subfolder:  subfolder,
-          uploader:   uploader
+          uploader:   uploader,
+          status:     document.getElementById('docDraft').checked ? 'Draft' : ''
         })
       })
       .then(function(r){ return r.json(); })
@@ -380,7 +537,7 @@
       btn.disabled = false;
         btn.innerHTML = '&#128228; Upload Document';
         hideProgress();
-        if (data.status === 'ok') { showSuccess(nameClean, folder, subfolder); }
+        if (data.status === 'ok') { showSuccess(nameClean, folder, subfolder, document.getElementById('docDraft').checked); }
         else { showAlert('error','Upload failed: ' + (data.message || 'Please try again or contact Rick.')); }
       })
       .catch(function(){
@@ -414,19 +571,25 @@
     var el = document.getElementById('alertMsg');
     el.className = 'alert'; el.textContent = '';
   }
-  function showSuccess(name, folder, subfolder) {
+  function showSuccess(name, folder, subfolder, isDraft) {
     document.getElementById('uploadCard').style.display = 'none';
+    document.getElementById('draftsCard').style.display = 'none';
     var loc = folder + (subfolder ? ' › ' + subfolder : '');
     document.getElementById('successDetail').innerHTML =
       '<strong>File:</strong> ' + name + '<br>' +
       '<strong>Saved to:</strong> ' + loc + '<br>' +
+      (isDraft ? '<strong>Marked as:</strong> Draft<br>' : '') +
       '<strong>Status:</strong> Shared with residents &#8212; visible on the Hub automatically';
     document.getElementById('successCard').classList.add('show');
     window.scrollTo(0,0);
   }
   function resetForm() {
     document.getElementById('uploadCard').style.display = 'block';
+    document.getElementById('draftsCard').style.display = 'block';
     document.getElementById('successCard').classList.remove('show');
+    document.getElementById('docDraft').checked = false;
+    document.getElementById('draftGroup').style.display = 'none';
+    loadDrafts();
     document.getElementById('docFolder').value = '';
     document.getElementById('docName').value = '';
     document.getElementById('docUploader').value = '';
