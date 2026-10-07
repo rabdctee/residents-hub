@@ -85,7 +85,9 @@
     .lightbox iframe { width:80vw; height:70vh; }
     @media(max-width:600px){
       .lightbox img { max-height:55vh; }
-      .lightbox iframe { height:45vh; }
+      /* Phones: tall, narrow video box to suit upright phone videos, so the
+         picture fills more of the screen and Drive's buttons cover less of it */
+      .lightbox iframe { width:min(86vw, 36.5vh); height:auto; aspect-ratio:9/16; max-height:65vh; }
     }
     .lightbox-close {
       position:fixed; top:18px; right:24px; color:white; font-size:2em;
