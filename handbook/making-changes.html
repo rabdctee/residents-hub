@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Repo, Hosting &amp; Making Changes | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 2</div>
+  <h1>Repo, Hosting &amp; Making Changes</h1>
+  <p class="hb-lead">Where the website files live, how they reach bdrv.au, and the safe way to change them.</p>
+
+  <div class="hb-toc"><strong>On this page</strong>
+    <ol>
+      <li><a href="#repo">The repository</a></li>
+      <li><a href="#hosting">Hosting and the bdrv.au address</a></li>
+      <li><a href="#layout">What is in the repository</a></li>
+      <li><a href="#desktop">Making a change with GitHub Desktop</a></li>
+      <li><a href="#web">Small edits on the GitHub website</a></li>
+      <li><a href="#undo">Undoing a change</a></li>
+      <li><a href="#new">Adding a new page</a></li>
+      <li><a href="#limits">Size limits</a></li>
+    </ol>
+  </div>
+
+  <h2 id="repo">1. The repository</h2>
+  <p>A <strong>repository</strong> (“repo”) is a folder of files that GitHub keeps together with a full history of every change. The Hub’s repo is:</p>
+  <p><code>github.com/rabdctee/residents-hub</code> — branch <code>main</code></p>
+  <ul>
+    <li>It is <strong>public</strong>: anyone can browse the files. That is required for free GitHub Pages hosting, and it is why nothing secret may ever be stored in it.</li>
+    <li>Every saved change (“commit”) is recorded with a date and a short note, so any earlier version of any page can be recovered.</li>
+    <li>The GitHub account is <code>rabdctee</code>. Who can sign in to it, and its recovery details, are recorded in the Hub Secrets Register.</li>
+  </ul>
+
+  <h2 id="hosting">2. Hosting and the bdrv.au address</h2>
+  <p><strong>GitHub Pages</strong> publishes the <code>main</code> branch as a website automatically. A minute or two after a change is pushed to GitHub, it is live at bdrv.au. There is nothing else to “upload”.</p>
+  <ul>
+    <li>The <code>CNAME</code> file in the repo contains <code>bdrv.au</code>; this tells GitHub which address to answer to.</li>
+    <li>The domain name itself is registered with a domain registrar, whose settings point bdrv.au at GitHub. <em>Registrar, account holder and renewal date: to confirm and record in the Secrets Register.</em> If the domain lapses, the Hub disappears from bdrv.au even though nothing else has changed.</li>
+    <li>GitHub Pages settings are under the repo’s <strong>Settings → Pages</strong>. Leave “Enforce HTTPS” switched on.</li>
+  </ul>
+  <div class="box tip"><span class="box-title">If a change doesn’t appear</span>Wait two minutes, then reload the page. On an iPhone or iPad, the browser may keep the old copy; closing the tab and opening the page again usually fixes it. The repo’s <strong>Actions</strong> tab on GitHub shows whether the latest publish succeeded.</div>
+
+  <h2 id="layout">3. What is in the repository</h2>
+  <p>Everything sits in one flat folder, apart from three sub-folders:</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Item</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td>About 85 <code>.html</code> files</td><td>The pages. Resident pages, admin pages and committee pages all sit side by side. The <a href="page-directory.html">Page Directory</a> lists them all.</td></tr>
+      <tr><td><code>bridgeman-times-<em>month</em>-2026.html</code></td><td>One self-contained file per month of the Bridgeman Times newsletter.</td></tr>
+      <tr><td><code>sidebar.js</code>, <code>print-issues.js</code></td><td>Shared scripts (see <a href="how-it-works.html#shared">Chapter 1</a>).</td></tr>
+      <tr><td><code>images/</code></td><td>Pictures used by pages (e.g. <code>images/village-life/</code>).</td></tr>
+      <tr><td><code>videos/</code></td><td>Event videos hosted on the Hub itself (see <a href="events.html#videos">Chapter 4</a>).</td></tr>
+      <tr><td><code>handbook/</code></td><td>This handbook.</td></tr>
+      <tr><td>Loose images and PDFs</td><td>e.g. the village map image, the calendar image, a sing-along programme PDF.</td></tr>
+      <tr><td><code>CNAME</code>, <code>README.md</code>, <code>quotes.txt</code></td><td>Address setting, a one-line description, and Home-page quotes.</td></tr>
+      <tr><td><code>styles.css</code>, <code>search-index.json</code></td><td>Left-overs that no page currently uses. Safe to leave; see <a href="routines.html#loose">loose ends</a>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="desktop">4. Making a change with GitHub Desktop (recommended)</h2>
+  <p><strong>GitHub Desktop</strong> is a free Mac and Windows app that keeps a copy of the repo on your computer and sends your changes up to GitHub. It handles large files (up to 100 MB) that the GitHub website will not accept.</p>
+  <ol class="steps">
+    <li><strong>Bring your copy up to date first.</strong> Open GitHub Desktop, check “Current Repository” says <em>residents-hub</em>, and click <strong>Fetch origin</strong> (then <strong>Pull origin</strong> if it appears). This picks up any edits made on the GitHub website, so nothing is overwritten.</li>
+    <li><strong>Open the folder.</strong> Menu <em>Repository → Show in Finder</em> (or Explorer on Windows).</li>
+    <li><strong>Make the change.</strong> Edit the page in a text editor (Visual Studio Code is used for the Hub), or drag in a replacement file and choose <em>Replace</em>.</li>
+    <li><strong>Check it before publishing.</strong> Double-click the changed page in Finder to open it in a browser. Most layout can be checked this way; parts that fetch Google data may only work once live.</li>
+    <li><strong>Commit.</strong> Back in GitHub Desktop the changed files are listed on the left. Type a short note in the <em>Summary</em> box (e.g. “Add Fashion Parade video”) and click <strong>Commit to main</strong>.</li>
+    <li><strong>Push.</strong> Click <strong>Push origin</strong> at the top. The site updates within a couple of minutes.</li>
+    <li><strong>Check the live page</strong>, on a phone as well as a computer if the change affects layout.</li>
+  </ol>
+  <p>First time on a new computer: install GitHub Desktop, sign in as <code>rabdctee</code>, then <em>File → Clone Repository → rabdctee/residents-hub</em>.</p>
+
+  <h2 id="web">5. Small edits on the GitHub website</h2>
+  <p>For a quick text fix you can edit directly on github.com: open the file, click the pencil icon, make the change, then <strong>Commit changes</strong>. This is how the monthly City Hall Concerts update is done (Hub Admin has a direct “✏️ Concerts” button). Remember to <strong>Fetch origin</strong> in GitHub Desktop before your next change there.</p>
+  <div class="box warn"><span class="box-title">The website’s upload limit</span>Files over 25 MB cannot be uploaded through the GitHub website. Use GitHub Desktop for videos and large PDFs.</div>
+
+  <h2 id="undo">6. Undoing a change</h2>
+  <ul>
+    <li><strong>Before committing:</strong> in GitHub Desktop, right-click the file and choose <em>Discard changes</em>.</li>
+    <li><strong>After pushing:</strong> in GitHub Desktop open the <em>History</em> tab, right-click the commit and choose <em>Revert changes in commit</em>, then push. This adds a new commit that reverses the old one; nothing is lost.</li>
+    <li><strong>Getting an old version of one page:</strong> on github.com open the file, click <em>History</em>, pick the date, and view or copy that version.</li>
+  </ul>
+
+  <h2 id="new">7. Adding a new page</h2>
+  <ol>
+    <li>Copy an existing page with a similar layout and rename it, using lower-case words joined by hyphens (e.g. <code>garden-club.html</code>).</li>
+    <li>Keep the palette block at the top of the styles, and include <code>&lt;script src="sidebar.js"&gt;&lt;/script&gt;</code> if it is a resident page that should show the menu.</li>
+    <li>Add the link to the menu in <code>sidebar.js</code> <em>and</em> in the menu copy inside <code>index.html</code>; for an admin page, add a card to <code>hub-admin.html</code> instead.</li>
+    <li>If it needs a Google Sheet or script, record them in <a href="google-services.html">Google Services</a>.</li>
+    <li>Add the page to the <a href="page-directory.html">Page Directory</a>.</li>
+  </ol>
+
+  <h2 id="limits">8. Size limits</h2>
+  <ul>
+    <li><strong>One file:</strong> up to 100 MB through GitHub Desktop; 25 MB through the website. The Hub keeps videos under 50 MB.</li>
+    <li><strong>Whole site:</strong> GitHub Pages sites are limited to about 1 GB. In October 2026 the repo was about 150 MB, most of it the six Dance Party videos. Review the <code>videos</code> folder every few months and remove or move older videos to Drive when it grows large.</li>
+  </ul>
+
+  <footer class="hb-foot"><span><a href="how-it-works.html">← How the Hub Works</a> · <a href="google-services.html">Next: Google Services →</a></span><span>Last reviewed: 7 October 2026</span></footer>
+</main>
+</body>
+</html>

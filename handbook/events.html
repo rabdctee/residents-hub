@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Events, Calendar &amp; Galleries | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 4</div>
+  <h1>Events, Calendar &amp; Galleries</h1>
+  <p class="hb-lead">Everything to do with what’s happening in the village: the events list and registrations, Home-page announcements, the Village Calendar, and the photo and video galleries.</p>
+
+  <div class="hb-toc"><strong>On this page</strong>
+    <ol>
+      <li><a href="#events">The events system</a></li>
+      <li><a href="#reg">Registrations</a></li>
+      <li><a href="#home">Home-page boxes: Upcoming Events and Announcements</a></li>
+      <li><a href="#cal">The Village Calendar</a></li>
+      <li><a href="#gallery">Event Photos &amp; Videos</a></li>
+      <li><a href="#videos">Hub-hosted videos</a></li>
+      <li><a href="#travel">Travel Pics</a></li>
+    </ol>
+  </div>
+
+  <h2 id="events">1. The events system</h2>
+  <div class="box"><span class="box-title">In one sentence</span>Events are added in <strong>Manage Events</strong>, stored in the <em>Event Registration (Responses)</em> Sheet through the Events script, and shown to residents on the Events page, the Register page and the Event Photos upload form.</div>
+  <h3>Pages</h3>
+  <ul>
+    <li><code>manage-events.html</code> (Hub Admin → What’s On) — add, edit, delete and reorder events. The admin list is sorted by date. Uploading a flyer after adding an event is optional. (<code>manage-upcoming-events.html</code> just redirects here.)</li>
+    <li><code>index.html#events-list</code> — the resident <strong>Events</strong> page: every upcoming event with date, time, location and labels.</li>
+    <li><code>upload-event-document.html</code> — attaches a flyer: the <em>Event Document Upload Handler</em> script saves it to the Drive folder “Events Management” (replacing any file of the same name) and shares it; the page then writes its link into the Events Sheet (column F) and the Home-page box.</li>
+  </ul>
+  <h3>What each event records</h3>
+  <p>Events tab columns: A name, B date, C time, D location, E coordinator email(s) for reminders, F flyer link, then G–L (added August–September 2026):</p>
+  <ul>
+    <li><strong>Category</strong> — <em>Social Club</em> or <em>Manor</em>. Manor events are run by Aveo; they are listed for information only, with no Register button. Both kinds appear together.</li>
+    <li><strong>Registration</strong> — <em>Required</em> or <em>Not required</em>.</li>
+    <li><strong>Cost</strong> — free text such as “$15” or “Meal at own cost”. Registration and Cost are deliberately independent: an event can need registration and still be free.</li>
+    <li><strong>Register by</strong> (J), <strong>payment type</strong> (K, default “On the day”) and <strong>pay by</strong> date (L).</li>
+  </ul>
+  <p>Older rows with these columns blank are treated as Social Club, Registration Required, payment on the day.</p>
+  <div class="box warn"><span class="box-title">Two event lists — on purpose</span>
+    <p>The Hub has two separate event sources, which has caused confusion before:</p>
+    <ul>
+      <li><strong>The Events script</strong> (<code>xUcetKOK</code>, Event Registration Sheet) — the full list. Used by the Events page, Register page, registrations, and the photo upload form.</li>
+      <li><strong>The Upcoming Events box on the Home page</strong> — a separate, hand-picked short list from the Upcoming Events Manager script (<code>z7Zi9xPa</code>) and the <em>Bridgeman Downs Upcoming Events</em> Sheet (A date as text, e.g. “Tue, Jul 21”; B event; C link). Managed in the lower part of Manage Events, where it can be reordered by dragging. Kept separate by choice so the Home page can feature selected events.</li>
+    </ul>
+    <p>In addition, a small events widget in the Home page’s side column reads the <em>Events</em> tab of the <em>Web Content Manager</em> Sheet directly (using the API key). An event added in Manage Events will not appear in either of these Home-page boxes unless it is added there too; that is expected.</p>
+  </div>
+
+  <h2 id="reg">2. Registrations</h2>
+  <ul>
+    <li><code>register-for-event.html</code> — residents choose an event and give name, unit, number attending and (optionally) email. Only <strong>Social Club</strong> events marked <strong>Registration Required</strong> are offered.</li>
+    <li><code>manage-registrations.html</code> — the organiser’s view for one event: sorted by unit, duplicate units highlighted, add/edit/delete entries, summary totals.</li>
+    <li><code>view-registrations.html</code> — read-only list across events, split into current and past using each event’s real date.</li>
+    <li><strong>Reminder emails:</strong> every day the Events script checks for events exactly <strong>seven days</strong> away and emails the event’s coordinator(s) — the address or addresses in column E of the Events tab, separated by commas. The email gives the online, paper and total numbers, with a PDF of the <em>Summary</em> tab attached. An event with no coordinator email gets no reminder.</li>
+  </ul>
+  <h3>Where registrations are kept</h3>
+  <p>The <em>Form Responses 1</em> tab of the Event Registration (Responses) Sheet: A timestamp (or the word <em>Paper</em> for a paper registration typed in by hand), B event, C name, D number attending, E unit, F email, G dietary needs, H paid (tick box). New online registrations re-sort the tab by event, then name. The <em>Summary</em> tab is rebuilt automatically and shows each event’s totals and dietary needs.</p>
+  <div class="box tip"><span class="box-title">Event names must match exactly</span>Registrations are linked to an event by its name. Renaming an event after people have registered separates them from it — correct the name in column B of the registrations as well.</div>
+  <p>An older Google Form for registrations still exists; the Events script keeps its event drop-down list up to date whenever events change.</p>
+
+  <h2 id="home">3. Home-page boxes: Upcoming Events and Announcements</h2>
+  <ul>
+    <li><strong>Upcoming Events box</strong> and <strong>side-column events widget</strong> — see the “two event lists” note above. Both curated by hand.</li>
+    <li><strong>Latest Announcements</strong> — managed in <code>manage-announcements.html</code> (committee PIN). There are three slots; each announcement has “Display From” and “Display Until” dates, and the page warns when slots are full or an announcement has expired. Drag to reorder. Every morning at 8 am a script checks for announcements due to expire within three days and emails rabd.ctee@gmail.com.</li>
+    <li><strong>Calendar</strong> (<code>index.html#events</code>) — an embedded Google Calendar (agenda view) belonging to <code>rabd.ctee@gmail.com</code>, filled automatically from the Village Calendar Sheet.</li>
+  </ul>
+
+  <h2 id="cal">4. The Village Calendar</h2>
+  <div class="box"><span class="box-title">In one sentence</span>The <em>BDRV Facility Calendar — Master Schedule</em> Sheet is the single source of truth for every regular and one-off activity; the Facility Calendar Sync script copies it into the Google Calendar residents see, and the same data feeds the printable calendar and the Bridgeman Times.</div>
+  <h3>Pages</h3>
+  <ul>
+    <li><code>facility-calendar-admin.html</code> (own PIN; for the RC Chair and SC Convenor) — add, edit and delete activities using pick-lists, with a month/day accordion view. Each add, edit or delete updates that day on the Google Calendar within seconds. Other features: “make this recurring” (weekly, fortnightly, or monthly on chosen weeks such as the 1st and 3rd Thursday), <strong>clash checking</strong> (same venue, overlapping times, with a shared list of pairs that are “fine to overlap”), times sorted properly, a full <em>Sync</em> button, and <em>Generate</em> to fill in recurring activities ahead.</li>
+    <li><code>facility-calendar-print.html</code> — public printable calendar in the familiar paper format: week list (prints portrait) or month grid (prints landscape); click an entry for detail on screen.</li>
+  </ul>
+  <h3>Recurring activities</h3>
+  <p>The regular weekly pattern lives in the Sheet’s <strong>Recurring Template</strong> tab: weekday, time, duration, activity, venue, contact, cadence (Weekly, Fortnightly or Monthly), an anchor date for fortnightly items or the weeks of the month for monthly ones (e.g. “1,3”), and an optional start date. The script keeps <strong>three months</strong> of recurring activities filled in ahead of today, never duplicating a date+time+activity that already exists, and remembers how far it has filled. One-off events are always added by hand. To change a regular activity from now on, edit its line in the template; dates already filled in are not changed, so edit or delete those individually.</p>
+  <p>A <strong>full sync</strong> (Sync button) replaces every synced calendar entry and works through roughly 450 rows in short bursts, resuming itself every minute; it can take 10–15 minutes. Only one sync runs at a time.</p>
+  <h3>Rules worth knowing</h3>
+  <ul>
+    <li>Only two people can edit the Sheet: <code>rabd.ctee@gmail.com</code> and the SC Convenor (<code>bdsc.convenor@gmail.com</code>). Everyone else uses the admin page.</li>
+    <li>An activity with no duration is treated as 60 minutes for clash checking and for the Google Calendar; one with no time becomes an all-day entry (e.g. “Shopping Bus”).</li>
+    <li>Every row has a permanent ID in column H, so the Sheet can be sorted safely. Columns: A date, B day, C time, D duration, E activity, F venue, G contact, H RowID.</li>
+    <li>The sync only touches calendar entries it created itself (marked “[BDRV-Sync]” in their description). Anything typed straight into the Google Calendar is left alone — but it won’t appear on the printable calendar or in the newsletter, and may duplicate a synced entry. Always add through the admin page.</li>
+    <li>The Bridgeman Times’ monthly events table is built from a CSV export of this Sheet.</li>
+  </ul>
+
+  <h2 id="gallery">5. Event Photos &amp; Videos</h2>
+  <div class="box"><span class="box-title">In one sentence</span>Residents upload photos and videos for a BDRV event; the Event Media script saves each file into that event’s sub-folder in the <em>Event Photos &amp; Videos</em> Drive folder and logs it in the <em>Event Media Registry</em>; the gallery shows them grouped by event, newest first. There is no moderation queue — uploads appear straight away.</div>
+  <ul>
+    <li><code>event-photos-submit.html</code> — the upload form. The event list comes from the Events script. <strong>Photos</strong> are shrunk on the resident’s device to a maximum of 2048 pixels before sending, so size never matters. <strong>Videos</strong> are sent as they are and must be under <strong>50 MB</strong> (checked on the page and again by the script).</li>
+    <li>The script saves each file in the event’s sub-folder (created automatically) as “<em>Event – Name – original file name</em>”, shares it “anyone with the link”, and adds a row to the <em>EventMedia</em> tab: date, event, file name, file ID, photo/video, submitted by, unit.</li>
+    <li><code>event-gallery.html</code> — the gallery. Tap an item to open it; arrows move through the event. <strong>Edit</strong> (credit, or move to another event) and <strong>Delete</strong> require the name and unit number the item was submitted with. The unit number is never sent to the gallery; the script checks it privately. Deleted files go to Drive’s bin, recoverable for 30 days. Items uploaded before unit numbers were recorded can only be removed by the administrator, in the Sheet and Drive.</li>
+    <li><strong>“New” notices</strong> — a gold banner on the Home page and a badge beside the menu link appear when there is something new since the resident’s last visit (remembered on their device).</li>
+    <li><strong>Gallery is for BDRV events only.</strong> Holiday photos go to Travel Pics.</li>
+  </ul>
+  <div class="box warn"><span class="box-title">Videos from Drive play in Google’s player</span>Videos residents upload play through Google Drive’s own player, whose large buttons cover much of the picture on phones. Nothing on the Hub can change that player. For important videos, use a Hub-hosted video instead (next section).</div>
+
+  <h2 id="videos">6. Hub-hosted videos</h2>
+  <p>Since October 2026, videos prepared by the Hub administrator are kept in the repo’s <code>videos</code> folder and play in the phone’s or computer’s own video player (full picture, small buttons, full screen on iPhone and Android).</p>
+  <ol class="steps">
+    <li>Export from iMovie under 50 MB (540p, Low and “Better Quality” compression work well; about 2½ minutes per file). Split longer videos into parts.</li>
+    <li>Name each file in lower case with hyphens, e.g. <code>fashion-parade-part-1.mp4</code>, and put it in the <code>videos</code> folder.</li>
+    <li>In <code>event-gallery.html</code>, find the <code>HUB_VIDEOS</code> list near the top and add one line per file: the event name exactly as it appears in the gallery, the file path, the credit and the date.</li>
+    <li>Commit and push with GitHub Desktop (the GitHub website will not take files over 25 MB).</li>
+  </ol>
+  <p>Hub videos have no Edit or Delete buttons; remove a line from <code>HUB_VIDEOS</code> (and the file) to take one down. Keep an eye on the 1 GB site limit (<a href="making-changes.html#limits">Chapter 2</a>).</p>
+
+  <h2 id="travel">7. Travel Pics</h2>
+  <p>A copy of the event gallery system for holiday photos, grouped by <strong>album</strong> (a name the resident types) instead of event: <code>travel-photos-submit.html</code>, <code>travel-gallery.html</code>, the Travel Media script, its own Drive folder and the <em>Travel Media Registry</em> Sheet. Listed in the menu under <em>Our Community</em>. It records each visit on the resident’s device, ready for a “new” badge, but nothing shows one yet. Its script includes a one-off repair tool, <code>fixMissingSharing</code>, that re-shares any file in the Travel Pics folder that has lost its “anyone with the link” setting (useful after moving files in by hand).</p>
+
+  <footer class="hb-foot"><span><a href="google-services.html">← Google Services</a> · <a href="finance.html">Next: Finance &amp; Asset Register →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+</main>
+</body>
+</html>

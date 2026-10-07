@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Page Directory | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 9</div>
+  <h1>Page Directory</h1>
+  <p class="hb-lead">Every page and shared script on the website, as of 7 October 2026. Type in the box to filter — for example a file name, “Finance”, “Admin” or a script ID.</p>
+
+  <p><strong>Lock:</strong> <span class="tag pin">PIN</span> asks for a PIN before showing content (see <a href="how-it-works.html#locks">what PINs protect</a>); <span class="tag pub">open</span> no PIN.
+  <strong>Connects to:</strong> the Apps Scripts it calls (first characters after <code>AKfycb</code>, as listed in <a href="google-services.html#scripts">Google Services</a>) and how many published Sheet feeds it reads.</p>
+
+  <input class="filter" id="filter" type="search" placeholder="Filter the table…" aria-label="Filter the table">
+  <p id="count" style="font-size:0.85em;color:var(--hub-muted);"></p>
+
+  <div class="tbl-wrap"><table id="dir">
+    <thead><tr><th>File</th><th>Area</th><th>What it is</th><th>For</th><th>Lock</th><th>Connects to</th></tr></thead>
+    <tbody>
+<tr><td><code>action-register.html</code></td><td>Committee</td><td>RC Action Register</td><td>RC</td><td><span class="tag pin">PIN</span></td><td><code>wG6RXWVp</code> <span class="tag own">2 feeds</span></td></tr>
+<tr><td><code>admin-how-to.html</code></td><td>Information</td><td>Help &amp; How To editor (downloads updated how-to.html)</td><td>Admin</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>asset-register-admin.html</code></td><td>Finance</td><td>Manage assets, maintenance, work done</td><td>Committee</td><td><span class="tag pin">PIN</span></td><td><code>yMuPYlG5</code></td></tr>
+<tr><td><code>asset-register.html</code></td><td>Finance</td><td>Asset Register summary</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>yMuPYlG5</code></td></tr>
+<tr><td><code>body-corporate.html</code></td><td>Committee</td><td>Body Corporate area (Chair, Manager, Secretary) — shared by address</td><td>Body Corporate</td><td><span class="tag pin">PIN</span></td><td>—</td></tr>
+<tr><td><code>bridgeman-times-august-2026.html</code></td><td>Documents</td><td>Bridgeman Times newsletter — August 2026</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>bridgeman-times-october-2026.html</code></td><td>Documents</td><td>Bridgeman Times newsletter — October 2026</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>bridgeman-times-september-2026.html</code></td><td>Documents</td><td>Bridgeman Times newsletter — September 2026</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>chair-submissions.html</code></td><td>Issues</td><td>Read concerns — not connected, not linked</td><td>RC Chair</td><td><span class="tag pin">PIN</span></td><td>—</td></tr>
+<tr><td><code>classifieds-admin.html</code></td><td>Community</td><td>Moderate Classifieds</td><td>Admin</td><td><span class="tag pub">open</span></td><td><code>x3ShlYfY</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>classifieds.html</code></td><td>Community</td><td>Classifieds: post, browse, edit or remove own listing</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>x3ShlYfY</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>cm-update.html</code></td><td>Issues</td><td>CM notes and status on issues</td><td>Community Manager</td><td><span class="tag pin">PIN</span></td><td><code>zJBsVGUu</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>committee.html</code></td><td>Committee</td><td>Committee entry page (RC or SC)</td><td>Committee</td><td><span class="tag pin">PIN</span></td><td>—</td></tr>
+<tr><td><code>community-info.html</code></td><td>Documents</td><td>Residents Only: documents, reports, statements, budgets</td><td>Residents</td><td><span class="tag pin">PIN</span></td><td><span class="tag own">2 feeds</span></td></tr>
+<tr><td><code>community-life.html</code></td><td>Community</td><td>Life in Our Community (email contributions, edited by hand)</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>concerts.html</code></td><td>Information</td><td>City Hall Concerts (updated monthly by hand)</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>correct-transaction.html</code></td><td>Finance</td><td>Correct a transaction (with reason)</td><td>SC Treasurer, Admin</td><td><span class="tag pin">PIN</span></td><td><code>ytxHID43</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>delete-transaction.html</code></td><td>Finance</td><td>Delete a transaction</td><td>SC Treasurer, Admin</td><td><span class="tag pin">PIN</span></td><td><code>ytxHID43</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>event-gallery.html</code></td><td>Events</td><td>Event Photos &amp; Videos gallery (incl. Hub-hosted videos list)</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>yDvm1XBa</code></td></tr>
+<tr><td><code>event-photos-submit.html</code></td><td>Events</td><td>Upload event photos and videos</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>xUcetKOK</code> <code>yDvm1XBa</code></td></tr>
+<tr><td><code>facility-calendar-admin.html</code></td><td>Calendar</td><td>Village Calendar editor: recurring, clash checks, sync</td><td>RC Chair, SC Convenor</td><td><span class="tag pin">PIN</span></td><td><code>zzsMFnQX</code></td></tr>
+<tr><td><code>facility-calendar-print.html</code></td><td>Calendar</td><td>Printable week/month Village Calendar</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>zzsMFnQX</code></td></tr>
+<tr><td><code>fireside-talks-admin.html</code></td><td>Community</td><td>Manage talks and volunteers</td><td>Admin</td><td><span class="tag pin">PIN</span></td><td><code>w4Zic9NS</code></td></tr>
+<tr><td><code>fireside-talks-submit.html</code></td><td>Community</td><td>Volunteer to give a Fireside Talk</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>w4Zic9NS</code></td></tr>
+<tr><td><code>fireside-talks.html</code></td><td>Community</td><td>Fireside Talks — upcoming and past talks</td><td>Residents</td><td><span class="tag pin">PIN</span></td><td><code>w4Zic9NS</code></td></tr>
+<tr><td><code>getting-around.html</code></td><td>Information</td><td>Transport and concessions</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>how-to-admin.html</code></td><td>Information</td><td>Older Help &amp; How To editor — not linked</td><td>—</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>how-to.html</code></td><td>Information</td><td>Help &amp; How To (technology help)</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>wmqaHurZ</code></td></tr>
+<tr><td><code>hub-admin.html</code></td><td>Admin</td><td>Hub Admin control panel and daily checklist</td><td>Admin</td><td><span class="tag pin">PIN</span></td><td><code>zJBsVGUu</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>hub-raise-a-concern.html</code></td><td>Issues</td><td>Older copy of Raise a Concern — not linked</td><td>—</td><td><span class="tag pin">PIN</span></td><td><code>zaoV8H-1</code></td></tr>
+<tr><td><code>index.html</code></td><td>Home</td><td>Home page and single-page app: Home, About, Newsletters, Calendar, Events, Activities &amp; Contacts, Noticeboard, Village Info, Useful Links, Contacts</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>wEz5REE0</code> <code>wmqaHurZ</code> <code>xUcetKOK</code> <code>yDvm1XBa</code> <code>z7Zi9xPa</code> <span class="tag own">4 feeds</span></td></tr>
+<tr><td><code>info-sessions.html</code></td><td>Information</td><td>Information Sessions</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>ken-update.html</code></td><td>Issues</td><td>Manor issues</td><td>Manor Advisor</td><td><span class="tag pin">PIN</span></td><td><code>yzLxgp_7</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>manage-announcements.html</code></td><td>Events</td><td>Home-page Latest Announcements (3 slots)</td><td>Committee</td><td><span class="tag pin">PIN</span></td><td><code>xmyqDFP8</code></td></tr>
+<tr><td><code>manage-events.html</code></td><td>Events</td><td>Add, edit, delete and reorder events</td><td>Admin</td><td><span class="tag pub">open</span></td><td><code>xUcetKOK</code> <code>z7Zi9xPa</code></td></tr>
+<tr><td><code>manage-info-sessions.html</code></td><td>Information</td><td>Plan information sessions</td><td>Admin</td><td><span class="tag pub">open</span></td><td><code>yMqimkKk</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>manage-registrations.html</code></td><td>Events</td><td>Registrations for one event: edit, add, delete, totals</td><td>Organisers</td><td><span class="tag pub">open</span></td><td><code>xUcetKOK</code></td></tr>
+<tr><td><code>manage-upcoming-events.html</code></td><td>Events</td><td>Redirects to manage-events.html</td><td>—</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>members-area.html</code></td><td>Committee</td><td>Members Area: tiles by name and role</td><td>Committee</td><td><span class="tag pin">PIN</span></td><td><code>wG6RXWVp</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>memories-admin.html</code></td><td>Our Village</td><td>Publish or reject memories</td><td>Admin</td><td><span class="tag pub">open</span></td><td><code>xfA7kQVf</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>memories.html</code></td><td>Our Village</td><td>Down Memory Lane: submit and read memories</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>xfA7kQVf</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>news.html</code></td><td>Community</td><td>Major Media Outlets — links to news sites</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>our-story-admin.html</code></td><td>Our Village</td><td>Review stories; copy story-card code</td><td>Admin</td><td><span class="tag pin">PIN</span></td><td><code>wkQm8cCT</code></td></tr>
+<tr><td><code>our-story-submit.html</code></td><td>Our Village</td><td>Share a village memory</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>wkQm8cCT</code></td></tr>
+<tr><td><code>our-story.html</code></td><td>Our Village</td><td>Village history, community stories, From the Vault</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>print-issues.js</code></td><td>Shared</td><td>Print / Save PDF for issues</td><td>—</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>progress-tracker.html</code></td><td>Issues</td><td>What We’re Working On (Issues Tracker)</td><td>Residents</td><td><span class="tag pub">open</span></td><td><span class="tag own">1 feed</span></td></tr>
+<tr><td><code>raise-a-concern.html</code></td><td>Issues</td><td>Raise a private concern or suggestion</td><td>Residents</td><td><span class="tag pin">PIN</span></td><td><code>zaoV8H-1</code></td></tr>
+<tr><td><code>rc-admin.html</code></td><td>Committee</td><td>RC role dashboard</td><td>RC office bearers</td><td><span class="tag pin">PIN</span></td><td>—</td></tr>
+<tr><td><code>rc-issues.html</code></td><td>Issues</td><td>Date-stamped responses to issues</td><td>RC / SC / Manor Advisor</td><td><span class="tag pin">PIN</span></td><td><code>zJBsVGUu</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>rc-notices-admin.html</code></td><td>Documents</td><td>Post, edit and archive RC Notices</td><td>RC</td><td><span class="tag pub">open</span></td><td><code>yvm8OvQ2</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>rc-notices.html</code></td><td>Documents</td><td>RC Notices (public and residents-only)</td><td>Residents</td><td><span class="tag pub">open</span></td><td><span class="tag own">1 feed</span></td></tr>
+<tr><td><code>record-transaction.html</code></td><td>Finance</td><td>Record a transaction</td><td>SC Treasurer, Admin</td><td><span class="tag pin">PIN</span></td><td><code>ytxHID43</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>register-for-event.html</code></td><td>Events</td><td>Register for a Social Club event</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>xUcetKOK</code></td></tr>
+<tr><td><code>residents-contact-list.html</code></td><td>Documents</td><td>Residents Contact List</td><td>Residents</td><td><span class="tag pin">PIN</span></td><td><span class="tag own">1 feed</span></td></tr>
+<tr><td><code>role-admin.html</code></td><td>Committee</td><td>Older combined role dashboard — not linked</td><td>—</td><td><span class="tag pin">PIN</span></td><td>—</td></tr>
+<tr><td><code>savings.html</code></td><td>Community</td><td>Price Checker</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>yrA1HsUC</code></td></tr>
+<tr><td><code>sc-action-register.html</code></td><td>Committee</td><td>SC Action Register</td><td>SC</td><td><span class="tag pin">PIN</span></td><td><code>wG6RXWVp</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>sc-admin.html</code></td><td>Committee</td><td>SC role dashboard</td><td>SC office bearers</td><td><span class="tag pin">PIN</span></td><td>—</td></tr>
+<tr><td><code>search-admin.html</code></td><td>Admin</td><td>Search index, keyword mappings, search log</td><td>Admin</td><td><span class="tag pub">open</span></td><td><code>wEz5REE0</code></td></tr>
+<tr><td><code>sidebar.js</code></td><td>Shared</td><td>Builds the menu on resident pages; Google Analytics</td><td>—</td><td><span class="tag pub">open</span></td><td><span class="tag own">2 feeds</span></td></tr>
+<tr><td><code>sports-hub.html</code></td><td>Information</td><td>Sports Hub</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>survey-admin.html</code></td><td>Community</td><td>Survey results and survey builder</td><td>Admin</td><td><span class="tag pub">open</span></td><td><span class="tag own">1 feed</span></td></tr>
+<tr><td><code>survey.html</code></td><td>Community</td><td>Current survey</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>yvm8OvQ2</code></td></tr>
+<tr><td><code>text-updates.html</code></td><td>Committee</td><td>Text Updates composer — not yet sending</td><td>RC Chair, SC Convenor</td><td><span class="tag pin">PIN</span></td><td>—</td></tr>
+<tr><td><code>travel-gallery.html</code></td><td>Events</td><td>Travel Pics gallery</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>x8SRC9F3</code></td></tr>
+<tr><td><code>travel-photos-submit.html</code></td><td>Events</td><td>Upload travel photos</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>x8SRC9F3</code></td></tr>
+<tr><td><code>update-bank-balance.html</code></td><td>Finance</td><td>Record bank balance</td><td>SC Treasurer, Admin</td><td><span class="tag pin">PIN</span></td><td><code>ytxHID43</code></td></tr>
+<tr><td><code>update-cash-on-hand.html</code></td><td>Finance</td><td>Record cash on hand</td><td>SC Treasurer</td><td><span class="tag pin">PIN</span></td><td><code>ywdH4fh9</code></td></tr>
+<tr><td><code>upload-bank-statement.html</code></td><td>Finance</td><td>Upload a bank statement PDF</td><td>SC Treasurer</td><td><span class="tag pub">open</span></td><td><code>ywdH4fh9</code></td></tr>
+<tr><td><code>upload-document.html</code></td><td>Documents</td><td>Upload minutes, newsletters, reports; approve drafts</td><td>Committee</td><td><span class="tag pub">open</span></td><td><code>wya128sa</code> <span class="tag own">1 feed</span></td></tr>
+<tr><td><code>upload-event-document.html</code></td><td>Events</td><td>Attach a flyer to an event</td><td>Admin</td><td><span class="tag pub">open</span></td><td><code>xUcetKOK</code> <code>z7Zi9xPa</code> <code>zxnjVJ0P</code></td></tr>
+<tr><td><code>useful-links.html</code></td><td>Information</td><td>Useful Links</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>view-document.html</code></td><td>Documents</td><td>Shows a Drive document inside the Hub</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>view-financial-dashboard.html</code></td><td>Finance</td><td>Live Dashboard view</td><td>SC Treasurer</td><td><span class="tag pin">PIN</span></td><td><code>ywdH4fh9</code></td></tr>
+<tr><td><code>view-financial-reports.html</code></td><td>Finance</td><td>Live Financial Reports view</td><td>SC Treasurer</td><td><span class="tag pin">PIN</span></td><td><code>ywdH4fh9</code></td></tr>
+<tr><td><code>view-registrations.html</code></td><td>Events</td><td>Read-only registrations, current and past</td><td>Organisers</td><td><span class="tag pub">open</span></td><td><code>xUcetKOK</code></td></tr>
+<tr><td><code>view-transactions.html</code></td><td>Finance</td><td>Transaction list (no PIN)</td><td>Committee</td><td><span class="tag pub">open</span></td><td><span class="tag own">1 feed</span></td></tr>
+<tr><td><code>village-map.html</code></td><td>Our Village</td><td>Village map</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>welcome.html</code></td><td>Information</td><td>Welcome to BDRV, for new residents</td><td>Residents</td><td><span class="tag pub">open</span></td><td>—</td></tr>
+<tr><td><code>whats-new-add.html</code></td><td>Community</td><td>Add or delete Roundup items</td><td>Admin</td><td><span class="tag pub">open</span></td><td><code>zDIMmLd_</code></td></tr>
+<tr><td><code>whats-new.html</code></td><td>Community</td><td>The Roundup — six tabs of live headlines and added items</td><td>Residents</td><td><span class="tag pub">open</span></td><td><code>zDIMmLd_</code></td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:0.88em;color:var(--hub-muted);">Not listed: images, the <code>videos</code> folder, <code>CNAME</code>, <code>README.md</code>, <code>quotes.txt</code>, the unused <code>styles.css</code> and <code>search-index.json</code>, and this handbook. Pages marked “not linked” can only be reached by typing their address.</p>
+
+  <footer class="hb-foot"><span><a href="community.html">← Community Content</a> · <a href="routines.html">Next: Routines, Troubleshooting &amp; Risks →</a></span><span>Last reviewed: 7 October 2026</span></footer>
+</main>
+<script>
+  (function(){
+    var input = document.getElementById('filter');
+    var rows  = Array.prototype.slice.call(document.querySelectorAll('#dir tbody tr'));
+    var count = document.getElementById('count');
+    function apply(){
+      var q = input.value.trim().toLowerCase(), shown = 0;
+      rows.forEach(function(r){
+        var hit = !q || r.textContent.toLowerCase().indexOf(q) !== -1;
+        r.style.display = hit ? '' : 'none';
+        if (hit) shown++;
+      });
+      count.textContent = 'Showing ' + shown + ' of ' + rows.length + ' files';
+    }
+    input.addEventListener('input', apply);
+    apply();
+  })();
+</script>
+</body>
+</html>

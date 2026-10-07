@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Finance &amp; Asset Register | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 5</div>
+  <h1>Finance &amp; Asset Register</h1>
+  <p class="hb-lead">How the Social Club’s money is recorded and reported on the Hub, and how items bought with residents’ funds are tracked.</p>
+
+  <div class="hb-toc"><strong>On this page</strong>
+    <ol>
+      <li><a href="#overview">How the finance system fits together</a></li>
+      <li><a href="#txn">Recording, correcting and deleting transactions</a></li>
+      <li><a href="#bal">Bank balance and cash on hand</a></li>
+      <li><a href="#reports">Dashboard, reports and statements</a></li>
+      <li><a href="#who">Who uses which page</a></li>
+      <li><a href="#assets">The Asset Register</a></li>
+    </ol>
+  </div>
+
+  <h2 id="overview">1. How the finance system fits together</h2>
+  <div class="box"><span class="box-title">In one sentence</span>All Social Club money movements live in one Google Sheet, <em>Residents_Financial_Position_CORRECTED</em>; the Hub’s finance pages send entries to the <em>Finances</em> Apps Script project, the Sheet’s own formulas produce the Dashboard and Financial Reports, and timed jobs apply corrections and produce a monthly PDF report.</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Tab in the Sheet</th><th>What it holds</th></tr></thead>
+    <tbody>
+      <tr><td><em>Form Responses 1</em></td><td>The transactions: A timestamp, B type (income/expense), C date, D month, E year, F category, G description, H amount</td></tr>
+      <tr><td><em>Form Responses 3</em></td><td>Correction and deletion <strong>requests</strong> waiting to be applied (column L shows DONE once processed)</td></tr>
+      <tr><td><em>Correction Log</em></td><td>The result of every correction or deletion, including “NO MATCH FOUND”</td></tr>
+      <tr><td><em>Form Responses 4</em> and <em>Bank Balance Log</em></td><td>Bank balances entered, with statement date</td></tr>
+      <tr><td><em>Cash On Hand Log</em></td><td>Every cash-on-hand figure entered</td></tr>
+      <tr><td><em>Dashboard</em></td><td>Year totals, opening/closing balances, cash on hand (cell C14), bank balance (C18), variance, and month-by-month figures</td></tr>
+      <tr><td><em>Financial Reports</em></td><td>Income (rows 7–10) and expenditure (rows 17–23) by category and month, with totals and an annual summary</td></tr>
+      <tr><td><em>Data List</em></td><td>The list of categories</td></tr>
+    </tbody>
+  </table></div>
+  <h3>The Finances Apps Script project</h3>
+  <p>One project (owned by rabd.ctee) holds two parts:</p>
+  <ul>
+    <li><strong>Hub Form Handler</strong> — the web app the pages talk to: record a transaction, request a correction or deletion, update the bank balance and cash on hand, upload a bank statement, and supply the Dashboard and Financial Reports figures for display.</li>
+    <li><strong>Code.gs</strong> — the background jobs: applying corrections every 15 minutes, and the monthly report.</li>
+  </ul>
+  <div class="box warn"><span class="box-title">Two web addresses for one project</span>Record, Correct and Delete a Transaction and Update Bank Balance use the address beginning <code>ytxHID43</code>; Cash on Hand, Bank Statement upload, Dashboard and Reports use <code>ywdH4fh9</code>. Both are almost certainly deployments of this same project, one older than the other. Check under <em>Deploy → Manage deployments</em>. When the Hub Form Handler is changed, publish a new version of <strong>both</strong> deployments (or, better, point all eight pages at one address).</div>
+  <div class="box warn"><span class="box-title">The spreadsheet is the record</span>The Hub pages are a convenient way in, but the Sheet is the authoritative record. Make a copy (<em>File → Make a copy</em>) before changing its layout or formulas.</div>
+
+  <h2 id="txn">2. Recording, correcting and deleting transactions</h2>
+  <ul>
+    <li><code>record-transaction.html</code> — Date, Type, Category, Description, Amount. A review screen comes first, and a background check warns of a possible duplicate (it does not block the save). The entry is added to <em>Form Responses 1</em> straight away.</li>
+    <li><code>view-transactions.html</code> — a read-only list with income/expense colouring and totals.</li>
+  </ul>
+  <h3>Corrections and deletions are not instant</h3>
+  <p><code>correct-transaction.html</code> and <code>delete-transaction.html</code> do not change the transaction themselves. They add a <em>request</em> to <em>Form Responses 3</em>. A timer runs every <strong>15 minutes</strong>, finds the original transaction by matching its <strong>date, description and amount</strong>, applies the change (or deletes the row), writes the outcome to the <em>Correction Log</em> and marks the request DONE.</p>
+  <div class="box tip"><span class="box-title">If a correction didn’t happen</span>Wait 15 minutes, then look at the <em>Correction Log</em>. “NO MATCH FOUND” means the date, description or amount in the request did not exactly match the original — for example the description had been edited. Submit the request again with the exact original details, or correct the row in the Sheet directly.</div>
+  <div class="box warn"><span class="box-title">Categories are written into the page</span>The category list on Record a Transaction is typed into the page itself. If a category is added to the Sheet’s <em>Data List</em>, add it to <code>record-transaction.html</code> too — and the Financial Reports tab must have a row for it, or it will not be reported.</div>
+
+  <h2 id="bal">3. Bank balance and cash on hand</h2>
+  <ul>
+    <li><code>update-bank-balance.html</code> — statement date and closing balance; recorded in <em>Form Responses 4</em> and the <em>Bank Balance Log</em>.</li>
+    <li><code>update-cash-on-hand.html</code> — writes the figure into Dashboard cell C14 and adds a line to the <em>Cash On Hand Log</em>.</li>
+  </ul>
+  <p>Entries made through the Hub are logged as “Hub form”, because residents and committee members are not signed in to Google when they use the pages.</p>
+
+  <h2 id="reports">4. Dashboard, reports and statements</h2>
+  <ul>
+    <li><code>view-financial-dashboard.html</code> and <code>view-financial-reports.html</code> — live, read-only views of the Dashboard and Financial Reports tabs.</li>
+    <li><code>upload-bank-statement.html</code> — uploads a statement PDF for a chosen month into the Community Finances folder and records it in the Document Registry as “<em>Month Year</em>”. Uploading a file with the same name again replaces the earlier one.</li>
+    <li><code>community-info.html</code> (Residents Only) — residents see monthly financial reports and bank statements there, grouped by quarter.</li>
+  </ul>
+  <div class="box danger"><span class="box-title">Fixed cell addresses</span>The Dashboard and Reports views, and the monthly report, read <strong>fixed cells</strong>: Dashboard C2–C19 and B22:E33; Financial Reports rows 7–10, 12, 17–23, 25, 30–47. Inserting or moving rows or columns on those tabs will make the Hub show wrong figures. If the layout must change, update the addresses in the Finances script at the same time.</div>
+  <h3>The automatic monthly financial report</h3>
+  <p>Every morning at 6 am a timer checks whether it is the <strong>third Sunday of the month</strong>. If so, it builds a PDF report for the current month — opening and closing bank balances, income and expenditure by category for the quarter so far, year-to-date totals and net result — saves it to the Community Finances folder (shared “anyone with the link”) and lists it in the Document Registry, replacing any earlier report for the same month. It then appears on the Residents Only page without anyone uploading it.</p>
+  <p>The project also still contains one-off functions used to produce the January–June 2026 reports by hand. They are not run automatically and should not be run again.</p>
+
+  <h2 id="who">5. Who uses which page</h2>
+  <ul>
+    <li><strong>SC Treasurer</strong> — in the Members Area, the Treasurer sees her own panel with three tiles: Update Cash On Hand, Financial Dashboard and Financial Reports, so the Sheet itself need not be touched. These were added in September 2026 to make the monthly work easier.</li>
+    <li><strong>Hub administrator</strong> — Hub Admin’s gold “Finance” section links to every finance page.</li>
+    <li><strong>Residents</strong> — reports and statements via Residents Only; transaction list via View Transactions.</li>
+  </ul>
+
+  <h2 id="assets">6. The Asset Register</h2>
+  <div class="box"><span class="box-title">In one sentence</span>A record of items the Social Club has acquired with residents’ funds — what was bought, where it is, who looks after it, its maintenance, and when it was disposed of — kept in the <em>BDRV Asset Register</em> Sheet through its own script.</div>
+  <h3>Pages</h3>
+  <ul>
+    <li><code>asset-register-admin.html</code> — for SC and RC committee members. Three kinds of record:
+      <ul>
+        <li><strong>Assets:</strong> name, category, description, serial/model, date acquired, supplier, purchase cost, paid for by, approved by, owned by, where kept, who looks after it, condition, status, notes (plus admin-only notes); and on disposal: date, how, reason, amount received.</li>
+        <li><strong>Maintenance tasks:</strong> which item, what needs doing, how often, last done, next due.</li>
+        <li><strong>Work done:</strong> which item, date, done by, cost, notes.</li>
+      </ul>
+    </li>
+    <li><code>asset-register.html</code> — the residents’ summary: items held, recent maintenance, and items no longer held. A setting at the top of this page (<code>SHOW_COSTS</code>) controls whether dollar amounts are shown to residents; it is currently <strong>on</strong>.</li>
+  </ul>
+  <h3>How the script keeps the records</h3>
+  <ul>
+    <li>Three tabs in the <em>BDRV Asset Register</em> Sheet: <strong>Assets</strong> (IDs AST-001…), <strong>Maintenance Schedule</strong> (MT-001…) and <strong>Maintenance Log</strong> (ML-001…). Each record is found by its ID, so sorting the Sheet is safe.</li>
+    <li>Maintenance frequencies: Weekly, Fortnightly, Monthly, Quarterly, 6-Monthly, Annually, Every 2 Years, or As Needed. The next due date is worked out from the last-done date.</li>
+    <li>Recording work done against a scheduled task automatically moves that task’s “last done” and “next due” dates forward.</li>
+    <li>Marking an asset <em>Disposed</em> switches its maintenance tasks off and keeps the disposal details; other statuses clear them.</li>
+    <li>Each save records who made it (the name typed on the admin page) and the date.</li>
+    <li>The residents’ page receives only a safe summary: name, category, description, location, owner, date acquired, cost and funding, condition, status, disposal details, when last serviced, and whether maintenance is up to date, due within 30 days, or overdue — plus the ten most recent maintenance jobs. Supplier, serial numbers and admin notes stay private.</li>
+  </ul>
+  <div class="box tip"><span class="box-title">The best-protected system on the Hub</span>The Asset Register’s PIN is kept only inside its Apps Script, never in the web page. The script checks it before releasing admin data or accepting any change, and handles one save at a time so two people can’t overwrite each other. This is the model to copy when strengthening other pages.</div>
+  <div class="box todo"><span class="box-title">To confirm</span>Whether the Asset Register is fully in use, and who enters records.</div>
+
+  <footer class="hb-foot"><span><a href="events.html">← Events</a> · <a href="issues.html">Next: Issues, Actions &amp; Concerns →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+</main>
+</body>
+</html>

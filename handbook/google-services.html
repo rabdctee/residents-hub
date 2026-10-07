@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Google Services | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 3</div>
+  <h1>Google Services</h1>
+  <p class="hb-lead">The Google accounts, Apps Scripts, Sheets and Drive folders behind the Hub — what each one is for, which pages use it, and who owns it.</p>
+
+  <div class="hb-toc"><strong>On this page</strong>
+    <ol>
+      <li><a href="#accounts">Google accounts</a></li>
+      <li><a href="#scripts">The Apps Scripts</a></li>
+      <li><a href="#deploy">Changing a script safely</a></li>
+      <li><a href="#sheets">The Google Sheets</a></li>
+      <li><a href="#drive">Drive folders, Calendar and other Google pieces</a></li>
+    </ol>
+  </div>
+
+  <h2 id="accounts">1. Google accounts</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Account</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><code>rabd.ctee@gmail.com</code></td><td>The <strong>committee account</strong> and main owner of the Hub’s Google pieces: most Sheets and Scripts, the Drive folders, and the Google Calendar shown on the Hub’s Calendar page.</td></tr>
+      <tr><td><code>rick.vanhaeften@gmail.com</code></td><td>The Hub builder’s <strong>personal account</strong>. Several important Sheets and Scripts were created here and are <em>shared with</em> the committee account rather than owned by it (marked <span class="tag own">personal</span> below).</td></tr>
+      <tr><td><code>rabd.secretary@</code>, <code>rabd.treasurer@</code></td><td>RC Secretary and Treasurer mailboxes (linked from the RC role dashboard).</td></tr>
+      <tr><td><code>bdsc.convenor@</code>, <code>bdsc.secret@</code>, <code>bdsc.treas@</code></td><td>Social Club Convenor, Secretary and Treasurer mailboxes. The Convenor account is also one of the two editors of the Village Calendar Sheet.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box danger"><span class="box-title">Ownership risk</span>Anything owned by a personal account stops working for the Hub if that account is closed, loses access, or its owner can no longer manage it. Transferring ownership of those items to <code>rabd.ctee@gmail.com</code> is recommended (see <a href="routines.html#risks">Risks</a>). A Sheet’s owner is shown under <em>Share</em>; a Script’s under <em>Overview</em> in the Apps Script editor.</div>
+
+  <h2 id="scripts">2. The Apps Scripts</h2>
+  <p>The pages call <strong>25 Apps Script web apps</strong>. Each has an address of the form <code>script.google.com/macros/s/AKfycb…/exec</code>; the table identifies them by the first characters after <code>AKfycb</code>, which you can search for in the page code. The full project list can be seen at <strong>script.google.com → My Projects</strong> (check both Google accounts). Scripts attached to a Sheet are opened from that Sheet’s <em>Extensions → Apps Script</em> menu.</p>
+  <div class="box tip"><span class="box-title">Checked against the code</span>Every script below was read in October 2026. Two details remain to confirm: which Issues script each issues page uses, and whether the two finance addresses are deployments of the same project.</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Script (ID starts)</th><th>Purpose</th><th>Called by</th><th>Requests it handles</th><th>Data</th></tr></thead>
+    <tbody>
+      <tr><td><code>xUcetKOK</code><br><strong>Event Registration Reminder Script</strong> (10 Sep 2026 copy) <em>(“EVENTS_URL”)</em></td><td>The main events list (columns A–L) and registrations; flyer uploads; keeps the old Google Form’s event list in step; daily 7-day reminder emails with a PDF summary</td><td>manage-events, register-for-event, manage-registrations, view-registrations, upload-event-document, event-photos-submit, index</td><td>getEvents, getRegistrations, addEvent, editEvent, deleteEvent, addRegistration, updateRegistration, deleteRegistration, updateEventLink, uploadEventDoc</td><td>Event Registration (Responses): <em>Events</em>, <em>Form Responses 1</em> and <em>Summary</em> tabs; Drive folder “Events Management”</td></tr>
+      <tr><td><code>z7Zi9xPa</code><br><strong>Upcoming Events Manager Web App</strong> <span class="tag own">personal</span></td><td>The hand-picked “Upcoming Events” box on the Home page; dates kept as text such as “Tue, Jul 21”</td><td>index, manage-events, upload-event-document</td><td>read, addEvent, editEvent, deleteEvent, reorderEvents</td><td>Bridgeman Downs Upcoming Events <span class="tag own">personal</span> (<em>Sheet1</em>: A date, B event, C link)</td></tr>
+      <tr><td><code>zxnjVJ0P</code><br><strong>Event Document Upload Handler</strong> <span class="tag own">personal</span></td><td>Saves an event flyer to the “Events Management” Drive folder (replacing one of the same name) and shares it</td><td>upload-event-document</td><td>uploadEventDocument</td><td>Drive only</td></tr>
+      <tr><td><code>xmyqDFP8</code><br><strong>Web Content Manager — Announcements &amp; Events Handler</strong></td><td>Latest Announcements on the Home page (three slots, display dates). A daily 8 am check emails rabd.ctee if an announcement expires within 3 days</td><td>manage-announcements</td><td>getAnnouncements, add/edit/delete/reorderAnnouncements (its event functions are left over and unused)</td><td>Web Content Manager: <em>Announcements</em> tab (A–H, H = order) and <em>Events</em> tab</td></tr>
+      <tr><td><code>zzsMFnQX</code><br><strong>Facility Calendar Sync</strong></td><td>Village Calendar: edits the Master Schedule, updates the Google Calendar day by day, full sync in self-resuming bursts, recurring template and “fine to overlap” list; every request must carry the key</td><td>facility-calendar-admin, facility-calendar-print</td><td>list, add, update, delete, sync, generateNext, listOk, addOk, removeOk</td><td>BDRV Facility Calendar — Master Schedule (<em>Sheet1</em>, <em>Recurring Template</em>, <em>Known Overlaps</em>); rabd.ctee’s Google Calendar</td></tr>
+      <tr><td><code>yDvm1XBa</code><br><strong>Event Media</strong></td><td>Event Photos &amp; Videos: saves each file into a per-event sub-folder, enforces 50 MB, lets residents edit or delete their own items after a private name + unit check</td><td>event-gallery, event-photos-submit, index</td><td>gallery, uploadEventMedia, editMedia, deleteMedia</td><td>Event Media Registry: <em>EventMedia</em> tab; “Event Photos &amp; Videos” Drive folder</td></tr>
+      <tr><td><code>x8SRC9F3</code><br><strong>Travel Pics</strong></td><td>A copy of Event Media using albums; includes the <code>fixMissingSharing</code> repair tool</td><td>travel-gallery, travel-photos-submit</td><td>gallery, uploadTravelMedia, editMedia, deleteMedia</td><td>Travel Media Registry: <em>TravelMedia</em> tab; Travel Pics Drive folder</td></tr>
+      <tr><td><code>ytxHID43</code><br><strong>Finances — Hub Form Handler</strong> (older deployment, probably)</td><td>Records transactions; queues corrections and deletions; bank balance</td><td>record-, correct-, delete-transaction, update-bank-balance</td><td>recordTransaction, correctTransaction, deleteTransaction, updateBankBalance</td><td>Residents_Financial_Position_CORRECTED</td></tr>
+      <tr><td><code>ywdH4fh9</code><br><strong>Finances — Hub Form Handler</strong> (newer deployment, probably)</td><td>Cash on hand, statement upload, and the Dashboard and Reports figures. The same project also runs the 15-minute corrections job and the monthly PDF report</td><td>update-cash-on-hand, upload-bank-statement, view-financial-dashboard, view-financial-reports</td><td>updateCashOnHand, uploadDocument, getDashboardData, getFinancialReportData (also handles all the actions above)</td><td>Residents_Financial_Position_CORRECTED; Community Finances folder; Document Registry</td></tr>
+      <tr><td><code>yMuPYlG5</code><br><strong>Asset Register</strong></td><td>Assets, maintenance tasks and work log; the PIN is kept only in the script and checked there; one save at a time</td><td>asset-register-admin, asset-register</td><td>admin (with PIN), saveAsset, saveTask, logMaintenance; public summary</td><td>BDRV Asset Register: <em>Assets</em>, <em>Maintenance Schedule</em>, <em>Maintenance Log</em></td></tr>
+      <tr><td><code>wya128sa</code><br><strong>Document Upload Web App</strong> (4 Oct 2026 copy)</td><td>Uploads minutes, newsletters, reports etc., shares them, records them in the registry; Draft status and approval</td><td>upload-document</td><td>uploadDocument, setDocumentStatus</td><td>Residents_Hub_-_Document_Registry (<em>Documents</em> tab); nine Drive folders</td></tr>
+      <tr><td><code>zJBsVGUu</code><br><strong>Issues Tracker</strong></td><td>Adds issues (next ISS-number automatically) and records notes and status, stamping column G “Last Updated”. Finds the row to update by its <em>category and topic</em>, not its number</td><td>hub-admin, cm-update, rc-issues</td><td>add, update</td><td>progress-tracker-data <span class="tag own">personal</span></td></tr>
+      <tr><td><code>yzLxgp_7</code><br>Issues (second script) — probably <strong>Progress Tracker Email Notification</strong> <span class="tag own">personal</span> (to confirm)</td><td>Same job as Issues Tracker, plus an email to rabd.ctee on every add or update and a status message in cell J1 of the Sheet. Numbers new issues by counting rows</td><td>ken-update</td><td>add, update</td><td>progress-tracker-data <span class="tag own">personal</span></td></tr>
+      <tr><td><code>wG6RXWVp</code><br><strong>RC Action Register</strong></td><td>RC and SC action boards (one script; <code>board=sc</code> selects the SC tab). References A-001… for RC and S-001… for SC; statuses Open, In Progress, Done, Deferred; refuses row 1</td><td>action-register, sc-action-register, members-area</td><td>addAction, updateAction, updateStatus, updateNote</td><td>BDRV RC Action Register: <em>Actions</em> and <em>SC-Actions</em> tabs (A–K)</td></tr>
+      <tr><td><code>zaoV8H-1</code><br><strong>Resident Submissions</strong></td><td>Private resident concerns and suggestions; status, chair notes, date discussed and linked issue can be updated, and the list read, only with the chair key</td><td>raise-a-concern, hub-raise-a-concern (chair-submissions not connected)</td><td>newSubmission, updateSubmission (key), read (key)</td><td>Resident Concerns: <em>ResidentSubmissions</em> tab</td></tr>
+      <tr><td><code>yvm8OvQ2</code><br><strong>RC-Notices</strong> <span class="tag own">personal</span></td><td>RC Notices (add, edit, archive) and survey responses. No key check</td><td>rc-notices-admin, survey</td><td>add, update, archive, survey</td><td>RC Notices <span class="tag own">personal</span>: <em>Notices</em> tab; survey answers in <em>BusSurvey</em> (an earlier survey is in <em>Survey</em>)</td></tr>
+      <tr><td><code>x3ShlYfY</code><br><strong>BDRV Classifieds</strong> <span class="tag own">personal</span></td><td>Listings with optional photo; emails rabd.ctee and the personal account when one arrives; publish/reject; residents edit their own. No key check</td><td>classifieds, classifieds-admin</td><td>submit, editListing, setStatus</td><td>BDRV Classifieds <span class="tag own">personal</span>: <em>Submissions</em> tab; Classifieds photos Drive folder</td></tr>
+      <tr><td><code>xfA7kQVf</code><br><strong>Residents Hub Memories</strong></td><td>Memory submissions and publishing; emails rabd.ctee and the personal account when one arrives</td><td>memories, memories-admin</td><td>submission, setMemoryStatus</td><td>Residents Hub — Down Memory Lane: <em>Memories</em> tab (status in Q)</td></tr>
+      <tr><td><code>wkQm8cCT</code><br><strong>Our Story Handler</strong></td><td>Village history submissions; reading all submissions and changing status need the admin key</td><td>our-story-submit, our-story-admin</td><td>submission, updateStatus</td><td>Residents Hub — Our Story: <em>Stories</em> tab (status in F)</td></tr>
+      <tr><td><code>w4Zic9NS</code><br><strong>Fireside Talks</strong></td><td>Talks schedule and archive (public; cancelled talks hidden) and speaker volunteers (admin key only)</td><td>fireside-talks, -submit, -admin</td><td>read, addTalk, updateTalk, updateVolunteerStatus (key); volunteer submissions</td><td>Residents Hub — Fireside Talks: <em>Talks</em> and <em>Volunteers</em> tabs</td></tr>
+      <tr><td><code>zDIMmLd_</code><br><strong>What’s New — Add an Item</strong></td><td>The Roundup’s added items. No PIN or key check</td><td>whats-new, whats-new-add</td><td>read, addItem, deleteItem</td><td>BDRV What’s New Submissions (first tab)</td></tr>
+      <tr><td><code>wEz5REE0</code><br><strong>Search Term Logger &amp; Index Manager</strong> <span class="tag own">personal</span></td><td>Logs every search; serves keyword mappings and the page list to the search box and Search Admin. No key check</td><td>index, search-admin</td><td>log, getIndex, getLog, getPages, addMapping, deleteMapping, toggleMapping, addPage, deletePage</td><td>Hub Search Logger <span class="tag own">personal</span>: <em>Search Log</em>, <em>Search Index</em>, <em>Pages</em></td></tr>
+      <tr><td><code>wmqaHurZ</code><br><strong>Residents Hub Questions</strong></td><td>“Share your thoughts” on the Home page and questions from Help &amp; How To</td><td>index, how-to</td><td>submission (name, question)</td><td>Residents Hub - Questions Submitted (first tab)</td></tr>
+      <tr><td><code>yMqimkKk</code><br><strong>BDRV Info Sessions</strong></td><td>Planned information sessions; emails both accounts when one is added. <strong>See the warning below the table.</strong></td><td>manage-info-sessions</td><td>addSession, setSessionStatus</td><td>Code points at the RC Notices spreadsheet, tab “info-sessions” — but the page reads BDRV Info Sessions</td></tr>
+      <tr><td><code>yrA1HsUC</code><br><strong>Best Buys Proxy</strong> <span class="tag own">personal</span></td><td>Price Checker: asks Anthropic’s Claude AI, with web search, for the cheapest current Australian price at major stores. <strong>Paid per search</strong>; the API key is kept in the script’s <em>Script Properties</em>, not in the code. No key check</td><td>savings</td><td>search (query and the resident’s tracked items)</td><td>None — residents’ tracked items are kept on their own device</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box danger"><span class="box-title">Information Sessions: adding a session probably fails</span>The <em>BDRV Info Sessions</em> script saves to a tab called “info-sessions” in the <strong>RC Notices</strong> spreadsheet, which has no such tab, while the Manage Info Sessions page reads the separate <em>BDRV Info Sessions</em> Sheet (which is still empty). The fix is a one-line change in the script: point it at the BDRV Info Sessions Sheet, then publish a new version. (The live deployment could differ from the saved code; a quick test after the fix will confirm.)</div>
+
+  <h3 id="projects">Every project, and whether it is in use</h3>
+  <p>From the <em>My Projects</em> lists in both accounts, October 2026.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Project</th><th>Account</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Asset Register · Facility Calendar Sync · Finances (Code.gs + Hub Form Handler) · Event Media · Fireside Talks · RC Action Register · Our Story Handler · Issues Tracker · BDRV Info Sessions · Residents Hub Memories · Web Content Manager — Announcements &amp; Events Handler · Residents Hub Questions · Resident Submissions</td><td>rabd.ctee</td><td>In use (see the table above)</td></tr>
+      <tr><td>Document Upload Web App — <strong>4 Oct 2026</strong></td><td>rabd.ctee</td><td>In use: the current upload page with Draft/Approved</td></tr>
+      <tr><td>Document Upload Web App — 22 Apr 2026</td><td>rabd.ctee</td><td>Earlier version (no Draft/Approved). Not used by any page; can be retired</td></tr>
+      <tr><td>Event Registration Reminder Script — <strong>10 Sep 2026</strong></td><td>rabd.ctee</td><td>In use: the live Events script (columns A–L)</td></tr>
+      <tr><td>Event Registration Reminder Script — 20 Jun 2026</td><td>rabd.ctee</td><td>Earlier version (events columns A–F only). Check its triggers before retiring, so reminder emails are not sent twice</td></tr>
+      <tr><td>Travel Pics · What’s New — Add an Item (previously “Untitled”)</td><td>rabd.ctee</td><td>In use</td></tr>
+      <tr><td>Any remaining “Untitled” projects (green icons)</td><td>rabd.ctee</td><td>To identify — possibly the second Issues copy</td></tr>
+      <tr><td>Untitled projects of 2 Mar, 29 Mar (×4) and 1 Apr (×3) — purple icons</td><td>rabd.ctee</td><td>Attached to early Google Forms (e.g. the form-based document uploads that wrote to the old Document Registry). Not used by the Hub</td></tr>
+      <tr><td>Upcoming Events Manager Web App · RC-Notices · BDRV Classifieds · Search Term Logger &amp; Index Manager · Event Document Upload Handler · Best Buys Proxy · Progress Tracker Email Notification (previously “Untitled”)</td><td>personal</td><td>In use — candidates for transfer to rabd.ctee</td></tr>
+      <tr><td>Community Price Hub Backend</td><td>personal</td><td>An early, unfinished version of the Price Checker (its search does nothing). Not used; can be retired with its <em>Prices</em> Sheet</td></tr>
+    </tbody>
+  </table></div>
+  <div class="box tip"><span class="box-title">Retiring an old project safely</span>Rather than deleting, first open it, check <em>Triggers</em> (clock icon) and remove any, then <em>Deploy → Manage deployments → Archive</em>. Leave it a month; if nothing has broken, it can be moved to the bin. Keep a text copy of its code in Drive.</div>
+
+  <h3 id="keys">Keys inside scripts</h3>
+  <p>Our Story, Fireside Talks, Resident Submissions, the Asset Register and Facility Calendar Sync check a key or PIN before handing out private data or accepting changes, and Event Media and Travel Pics check name and unit privately. That is the right design, but for all except the Asset Register (and the gallery unit checks) the same key is also written in a public page, so it offers the same “curtain” protection as the PINs. Keys are recorded in the Hub Secrets Register, never here.</p>
+
+  <h2 id="deploy">3. Changing a script safely</h2>
+  <ol class="steps">
+    <li>Open the project (from <em>My Projects</em>, or the Sheet’s <em>Extensions → Apps Script</em>). Before editing, copy the whole code into a text file as a backup.</li>
+    <li>Make the change and click the save icon.</li>
+    <li><strong>Publish it without changing the address:</strong> <em>Deploy → Manage deployments</em> → pencil icon on the existing web app → Version: <strong>New version</strong> → <em>Deploy</em>. The <code>/exec</code> address stays the same, so no page needs changing.</li>
+  </ol>
+  <div class="box warn"><span class="box-title">Avoid “New deployment”</span><em>Deploy → New deployment</em> creates a brand-new address. Every page that uses the old address would then have to be edited. Only do this deliberately, and search the repo for the old ID first.</div>
+  <p>For residents to use a page without signing in to Google, its web app must be deployed with <em>Execute as: Me</em> (the owner) and <em>Who has access: Anyone</em> (to confirm for each script). That is what allows residents to use the pages without signing in to Google — and also why a script should check a key or PIN itself before handing out private data.</p>
+  <p>Some scripts also run on a timer or event (“trigger”). Triggers are listed under the clock icon in the Apps Script editor (or <em>My Triggers</em> on the projects page) and run as the account that created them. Known triggers:</p>
+  <ul>
+    <li><strong>Event Registration Reminder Script</strong> — daily <code>checkUpcomingEvents</code> (reminder emails 7 days before an event) and <code>updateSummary</code> when the registration form is submitted.</li>
+    <li><strong>Web Content Manager</strong> — daily at 8 am, <code>checkExpiringAnnouncements</code>.</li>
+    <li><strong>Finances</strong> — <code>processNewCorrections</code> every 15 minutes; <code>checkAndGenerateReport</code> daily at 6 am (makes the report on the third Sunday).</li>
+    <li><strong>Facility Calendar Sync</strong> — a monthly run of <code>autoGenerateRecurringMonths</code> (to confirm), and short-lived “resume” timers that a full sync creates and removes itself.</li>
+  </ul>
+
+  <h2 id="sheets">4. The Google Sheets</h2>
+  <p>Owner is <code>rabd.ctee@gmail.com</code> unless marked <span class="tag own">personal</span>.</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Sheet</th><th>Holds</th><th>Used by</th></tr></thead>
+    <tbody>
+      <tr><td>Event Registration (Responses)</td><td>Events list (with Category, Registration, Cost columns G–I) and registrations</td><td>Events pages; reminder emails</td></tr>
+      <tr><td>Bridgeman Downs Upcoming Events <span class="tag own">personal</span></td><td>Home page’s hand-picked Upcoming Events box</td><td>index, manage-events</td></tr>
+      <tr><td>Web Content Manager</td><td>Home page content: Events tab (read via API key) and announcements</td><td>index</td></tr>
+      <tr><td>BDRV Facility Calendar — Master Schedule</td><td>Every recurring and one-off activity; editors: rabd.ctee and the SC Convenor only</td><td>Village Calendar pages; Bridgeman Times monthly table</td></tr>
+      <tr><td>Event Media Registry / Travel Media Registry</td><td>One row per shared photo or video</td><td>Galleries</td></tr>
+      <tr><td>Residents_Financial_Position_CORRECTED</td><td>Social Club transactions, Data List (categories), Dashboard, Financial Reports, Cash On Hand Log</td><td>Finance pages</td></tr>
+      <tr><td>BDRV Asset Register</td><td>Assets, maintenance schedule, work log</td><td>Asset Register pages</td></tr>
+      <tr><td>Residents_Hub_-_Document_Registry</td><td>Every uploaded document, its folder, Drive ID and Draft/Approved status</td><td>Upload a Document, Residents Only, Hub Admin</td></tr>
+      <tr><td>Document Registry (OLD - do not use)</td><td>Earlier registry, superseded</td><td>Only an unused setting in index.html</td></tr>
+      <tr><td>progress-tracker-data <span class="tag own">personal</span></td><td>Issues: number, category, topic, notes, status, source</td><td>Issues Tracker, CM Update, RC Issues, Manor Issues, Action Register</td></tr>
+      <tr><td>Progress Tracker - Archive 28 April 2026</td><td>Snapshot of earlier issues</td><td>Reference only</td></tr>
+      <tr><td>BDRV RC Action Register</td><td>RC actions tab and SC-Actions tab</td><td>Action Registers, Members Area</td></tr>
+      <tr><td>Resident Concerns</td><td>Raise a Concern submissions (private)</td><td>Raise a Concern</td></tr>
+      <tr><td>RC Notices <span class="tag own">personal</span></td><td>Notices (public and residents-only) and survey results tabs</td><td>RC Notices pages, sidebar badge, surveys, Residents Only</td></tr>
+      <tr><td>BDRV Classifieds <span class="tag own">personal</span></td><td>Listings and their status</td><td>Classifieds pages</td></tr>
+      <tr><td>Residents Hub — Down Memory Lane / — Our Story / — Fireside Talks</td><td>Submissions for each</td><td>Those pages</td></tr>
+      <tr><td>BDRV What’s New Submissions</td><td>The Roundup’s resident-added items</td><td>The Roundup</td></tr>
+      <tr><td>Hub Search Logger <span class="tag own">personal</span></td><td>Search index, keyword mappings, search log</td><td>Search</td></tr>
+      <tr><td>Activities</td><td>Activities &amp; Contacts list</td><td>index (Activities &amp; Contacts)</td></tr>
+      <tr><td>BDRV Info Sessions</td><td>Planned information sessions</td><td>Info Sessions pages</td></tr>
+      <tr><td>Prices <span class="tag own">personal</span></td><td>Left over from an early Price Checker</td><td>Not used</td></tr>
+      <tr><td>Residents Hub - Questions Submitted</td><td>Questions sent from the Hub</td><td>Help &amp; How To (?)</td></tr>
+      <tr><td>Residents Contact List / residents-contact-list</td><td>Residents’ contact details. <strong>Two copies exist</strong>; only one is published to the Hub (see <a href="routines.html#trouble">Troubleshooting</a>)</td><td>residents-contact-list</td></tr>
+      <tr><td>Members list (Sheet ID beginning <code>1npGgVH6</code>)</td><td>Committee members list, opened from “Manage List” buttons</td><td>hub-admin, members-area</td></tr>
+      <tr><td>Older form-response Sheets</td><td>Resident Feedback, NOTICEBOARD, Transaction Entry, Quarterly Report template</td><td>Early 2026; reference</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="drive">5. Drive folders, Calendar and other Google pieces</h2>
+  <ul>
+    <li><strong>Meeting and document folders</strong> (Upload a Document): Annual General Meetings, RC Monthly Meetings, Residents Quarterly Meetings, SC Monthly Meetings, Newsletters, Community Contributions, Monthly Financial Reports, Bank Statements, Aveo Documents. The Residents Only page groups financial documents into quarterly sub-folders automatically.</li>
+    <li><strong>Event Photos &amp; Videos</strong> — one sub-folder per event; <strong>Travel Pics</strong> — one sub-folder per album. Each script is locked to its own folder.</li>
+    <li><strong>Documents shown on the Hub</strong> open through <code>view-document.html?id=…</code>, which displays a Drive file inside the Hub. The file must be shared “Anyone with the link can view”.</li>
+    <li><strong>Google Calendar</strong> of <code>rabd.ctee@gmail.com</code> is embedded on the Calendar page; it is filled automatically from the Master Schedule Sheet.</li>
+    <li><strong>Google Sheets API key</strong> (written in index.html) lets the Home page read the Web Content Manager Sheet. It should be restricted, in Google Cloud Console, to the Sheets API and to bdrv.au.</li>
+  </ul>
+
+  <footer class="hb-foot"><span><a href="making-changes.html">← Making Changes</a> · <a href="events.html">Next: Events, Calendar &amp; Galleries →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+</main>
+</body>
+</html>

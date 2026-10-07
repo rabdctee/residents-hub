@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Community Content | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 8</div>
+  <h1>Community Content</h1>
+  <p class="hb-lead">The pages residents contribute to and browse: Classifieds, memories and history, talks, news, help pages, search, surveys and the information pages.</p>
+
+  <div class="box tip"><span class="box-title">Three ways content gets published</span>
+    <ul>
+      <li><strong>Automatic</strong> — the resident’s entry appears straight away (Event Photos, Travel Pics, Price Checker).</li>
+      <li><strong>Moderated</strong> — entries wait in a Sheet with a status, and an admin page publishes or rejects them (Classifieds, Down Memory Lane, Fireside Talks volunteers, Our Story review).</li>
+      <li><strong>By editing the page</strong> — content is written into the HTML file itself, either by hand or with a helper that produces the code to paste (Our Story cards, Help &amp; How To, surveys, Life in Our Community, City Hall Concerts, Sports Hub). These need a GitHub change to update.</li>
+    </ul>
+  </div>
+
+  <h2 id="classifieds">Classifieds</h2>
+  <ul>
+    <li><code>classifieds.html</code> — residents post a listing (name, unit, phone, category, headline, details, optional photo shrunk before sending). Categories, each with its own colour: For Sale, Wanted, Free to Good Home, Services, Lost &amp; Found, General Notice. Residents can edit or remove their own listing by giving the same name and unit (spacing and curly-apostrophe differences are ignored when matching).</li>
+    <li><code>classifieds-admin.html</code> — moderation tabs: pending, published, rejected. Publish, reject, unpublish or delete (delete just sets the status to “deleted”).</li>
+    <li>Data: <em>Submissions</em> tab of the <em>BDRV Classifieds</em> Sheet (personal account): A timestamp, B name, C unit, D phone (kept as text so a leading 0 isn’t lost), E category, F headline, G details, H status (pending, published, rejected, deleted), I photo link. Photos go to a Classifieds photos folder in Drive. Each new listing emails rabd.ctee and the RC Chair’s personal address.</li>
+    <li><strong>Matching by headline:</strong> publishing or rejecting finds the listing by its <em>headline</em>; residents’ edits match headline, name and unit together. Two listings with exactly the same headline could be confused.</li>
+    <li><code>classifieds-admin.html</code> has no PIN of its own.</li>
+  </ul>
+
+  <h2 id="prices">Price Checker</h2>
+  <ul>
+    <li><code>savings.html</code> — a resident types a product; the <em>Best Buys Proxy</em> script asks Anthropic’s Claude AI to search the web for the cheapest current price at Woolworths, Coles, Aldi, Chemist Warehouse, Priceline, Big W, Amazon, eBay and iHerb, and returns a short summary and a table of prices. Each resident’s list of tracked items is kept on their own device, not in a Sheet.</li>
+    <li><strong>Costs money:</strong> each search is charged to the Anthropic account whose key is stored in the script (<em>Project Settings → Script Properties → ANTHROPIC_API_KEY</em>). The script accepts searches from anyone who has its address. Set a monthly spending limit in the Anthropic console.</li>
+    <li>The script names a specific Claude model. Anthropic retires older models from time to time; if searches start failing with an API error, the model name in the script needs updating.</li>
+  </ul>
+
+  <h2 id="memories">Down Memory Lane</h2>
+  <ul>
+    <li><code>memories.html</code> — residents answer a set of reminiscence questions (keepsake, childhood, teenage years, music, events, advice and more); published memories are shown from the Sheet.</li>
+    <li><code>memories-admin.html</code> — review and publish or reject.</li>
+    <li>Data: <em>Residents Hub — Down Memory Lane</em> Sheet, <em>Memories</em> tab; new entries start as “pending” (status in column Q). Each new memory triggers an email to rabd.ctee and the RC Chair’s personal address.</li>
+  </ul>
+
+  <h2 id="ourstory">Our Story (village history)</h2>
+  <ul>
+    <li><code>our-story.html</code> — the village history project: question accordion, community stories with search (newest first, one open at a time), and a “From the Vault” historical section with original scans.</li>
+    <li><code>our-story-submit.html</code> — residents share memories of the village.</li>
+    <li><code>our-story-admin.html</code> (PIN) — review submissions; <strong>Copy Story Card HTML</strong> produces the code for an approved story, which is then pasted into <code>our-story.html</code> and pushed. Publishing is therefore a manual GitHub step.</li>
+  </ul>
+
+  <h2 id="fireside">Fireside Talks</h2>
+  <ul>
+    <li><code>fireside-talks.html</code> (Residents PIN) — upcoming talks and a searchable archive of past talks; recordings play from Drive.</li>
+    <li><code>fireside-talks-submit.html</code> — residents volunteer to give a talk.</li>
+    <li><code>fireside-talks-admin.html</code> (PIN) — add and update talks (date, time, speaker, title, description, location, recording, status) and review volunteers; paste a Drive link or ID and the page extracts the file ID. Talk times are stored as plain text so Sheets can’t turn “10:00 AM” into a date. Talks marked <em>Cancelled</em> are hidden from residents.</li>
+  </ul>
+
+  <h2 id="roundup">The Roundup (What’s New)</h2>
+  <ul>
+    <li><code>whats-new.html</code> — six tabs: Health &amp; Wellbeing, Technology, Books/Film/TV, Local Brisbane, Science &amp; Nature, Nostalgia. Each mixes live headlines with items added by the Hub. Listed in the menu under <em>World News</em>, with “Major Media Outlets” (<code>news.html</code>).</li>
+    <li>Live feeds: ABC News (Lifestyle feed for Health, topic feed 2298 for Technology, Entertainment &amp; Culture feed for Books/Film/TV), Brisbane Times (Local), NASA (Science &amp; Nature), Wikipedia “On This Day” (Nostalgia, events 5–100 years ago). ABC, Brisbane Times and NASA go through rss2json.com because browsers cannot read news feeds directly.</li>
+    <li><code>whats-new-add.html</code> — add or delete an item (linked only from Hub Admin); saved to the first tab of <em>BDRV What’s New Submissions</em> (timestamp, category, title, blurb, link, added by). Use it for CSIRO stories and Brisbane-specific nostalgia, which have no automatic feed. The page has no PIN and its script does not check one, so anyone who found the page could add or delete items.</li>
+    <li>If a feed address stops working (ABC changed its rules in August 2026), the page quietly shows only the added items for that tab.</li>
+  </ul>
+
+  <h2 id="life">Life in Our Community</h2>
+  <p><code>community-life.html</code> — Arts &amp; Crafts, Recipes, Village Life, Poetry &amp; Writing, Music &amp; Dance, Trivia &amp; Quizzes and Humour. Residents contribute by email (“Share yours” buttons open an email); the administrator reviews and adds items to the page by hand. The <strong>Trivia</strong> block is marked in the code to be updated each week. Tall photos are shown in full rather than cropped.</p>
+
+  <h2 id="help">Help &amp; How To</h2>
+  <ul>
+    <li><code>how-to.html</code> — the largest help page: categories (getting started, apps and services, photos, home, staying safe, new technology) with Android/iPhone tabs and searchable questions. Residents can send a question.</li>
+    <li><code>admin-how-to.html</code> — an editor: browse, add and edit questions, then <strong>Download Updated how-to.html</strong> and upload that file to GitHub. <code>how-to-admin.html</code> is an older version that nothing links to.</li>
+  </ul>
+
+  <h2 id="search">Site search</h2>
+  <p>The search box on the Home page and Help pages uses an index served by the Search script (<em>Hub Search Logger</em> Sheet, personal account) and logs every search — term, number of results and page — in the <em>Search Log</em> tab. <code>search-admin.html</code> manages the <em>Pages</em> list and the keyword mappings in <em>Search Index</em> (keyword, page, section, display title, active), and shows the latest 200 searches and statistics — useful for spotting what residents look for but cannot find. Neither the page nor the script asks for a PIN.</p>
+
+  <h2 id="surveys">Surveys</h2>
+  <ul>
+    <li><code>survey.html</code> — the current survey (the Village Bus Replacement survey with multi-choice questions; a paper version was also used). Responses go through the RC-Notices script into the <em>BusSurvey</em> tab of the RC Notices Sheet (timestamp, name/unit, first and second choice, comment). A new survey with different questions needs the script’s survey section updated too.</li>
+    <li><code>survey-admin.html</code> — results (from published result tabs, with a registry of past surveys) and a <strong>survey builder</strong> that generates the code for a new <code>survey.html</code>, which is then uploaded to GitHub.</li>
+  </ul>
+
+  <h2 id="info">Information Sessions</h2>
+  <p><code>info-sessions.html</code> lists sessions (upcoming ones are written into the page and sorted by date automatically). <code>manage-info-sessions.html</code> is meant to record planned sessions in the <em>BDRV Info Sessions</em> Sheet, but its script currently points at the wrong spreadsheet, so additions probably fail (see <a href="google-services.html#scripts">Google Services</a>). The manage page also has no PIN. The info page’s interest-registration form is not yet connected to a script.</p>
+
+  <h2 id="static">Information pages updated by hand</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Page</th><th>Content</th><th>Updating</th></tr></thead>
+    <tbody>
+      <tr><td><code>concerts.html</code></td><td>Lord Mayor’s City Hall Concerts</td><td>Monthly. Source: the official list on Councillor Sarah Hutton’s website (local updates → City Hall Concerts). Edit on GitHub (Hub Admin has a direct button).</td></tr>
+      <tr><td><code>sports-hub.html</code></td><td>Sports links and results (built for the 2026 FIFA World Cup; also AFL, NRL, football)</td><td>As events require</td></tr>
+      <tr><td><code>news.html</code></td><td>Links to major news outlets</td><td>Rarely</td></tr>
+      <tr><td><code>savings.html</code></td><td>Price Checker: shop links and an AI price search (see below)</td><td>Rarely</td></tr>
+      <tr><td><code>getting-around.html</code></td><td>Transport, concessions, Council Cabs, taxi subsidy</td><td>Check links yearly</td></tr>
+      <tr><td><code>useful-links.html</code></td><td>Government, retirement-village law, safety and support links</td><td>Check links yearly</td></tr>
+      <tr><td><code>village-map.html</code></td><td>Zoomable village map image</td><td>When the map changes</td></tr>
+      <tr><td><code>welcome.html</code></td><td>Welcome page for new residents</td><td>As needed</td></tr>
+      <tr><td><code>index.html</code> sections</td><td>About, Contacts (including Emergency Services), Useful Links, Noticeboard, Village Info</td><td>As needed</td></tr>
+    </tbody>
+  </table></div>
+
+  <footer class="hb-foot"><span><a href="documents.html">← Documents</a> · <a href="page-directory.html">Next: Page Directory →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+</main>
+</body>
+</html>

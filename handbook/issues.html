@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Issues, Actions &amp; Concerns | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 6</div>
+  <h1>Issues, Actions &amp; Concerns</h1>
+  <p class="hb-lead">How village issues are logged and followed up with Village Management, how committee actions are tracked, and how residents raise private concerns.</p>
+
+  <div class="hb-toc"><strong>On this page</strong>
+    <ol>
+      <li><a href="#tracker">The Issues Tracker</a></li>
+      <li><a href="#flow">How an issue moves through the system</a></li>
+      <li><a href="#actions">RC and SC Action Registers</a></li>
+      <li><a href="#concern">Raise a Concern</a></li>
+    </ol>
+  </div>
+
+  <h2 id="tracker">1. The Issues Tracker</h2>
+  <div class="box"><span class="box-title">In one sentence</span>Every village issue raised with Village Management is one row in the <em>progress-tracker-data</em> Sheet; the Community Manager, Manor Advisor and RC each add their notes through their own page, and residents see progress on the public “What We’re Working On” page.</div>
+  <h3>The Sheet</h3>
+  <p><em>progress-tracker-data</em> (owned by the personal account — see <a href="google-services.html#accounts">ownership risk</a>). Columns: A issue number (ISS-01, ISS-02… assigned automatically), B category, C topic, D notes, E status (new issues start “Not Started”), F source, G last updated (Brisbane time, set by the script). The tab is published as a CSV feed and read by all the issue pages.</p>
+  <h3>Two scripts update the same Sheet</h3>
+  <p>The <em>Issues Tracker</em> script (committee account) and the <em>Progress Tracker Email Notification</em> script (personal account) both add and update rows. The second also emails rabd.ctee each time and writes a ✅/⚠️/❌ message in cell <strong>J1</strong> of the Sheet describing its last save — the first place to look if an update didn’t stick. Which page uses which script is still to be confirmed (probably the Manor Advisor’s page uses the second).</p>
+  <div class="box warn"><span class="box-title">Issue numbers</span>The Issues Tracker script numbers a new issue one higher than the highest existing number. The email-notification script numbers it by counting rows, so if a row has ever been deleted it can repeat a number already in use. Check new numbers occasionally, and avoid deleting rows — set a status instead.</div>
+  <div class="box warn"><span class="box-title">How the script finds an issue</span>When a note or status is saved, the Issues Tracker script finds the row by its <strong>category and topic together</strong>, not by its ISS number. Keep every issue’s topic distinct within its category; two issues with the same category and topic would be confused, and only the first would be updated.</div>
+  <h3>Pages</h3>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Page</th><th>For</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>progress-tracker.html</code></td><td>Residents</td><td>“What We’re Working On”: dashboard of counts by status, “Show me” filters, search, issues grouped by resident-friendly categories, and Print / Save PDF. No PIN.</td></tr>
+      <tr><td><code>hub-admin.html</code> → Add New Issue</td><td>Hub administrator</td><td>Adds a new issue row (Issues script <code>zJBsVGUu</code>).</td></tr>
+      <tr><td><code>cm-update.html</code></td><td>Community Manager</td><td>Inline editor for the CM’s notes and status: dashboard cards, progress bars, filter pills, search. Own PIN.</td></tr>
+      <tr><td><code>ken-update.html</code></td><td>Manor Advisor</td><td>Manor issues in purple: view, and add new issues with a similar-issue check. Own script (<code>yzLxgp_7</code>) and own PIN.</td></tr>
+      <tr><td><code>rc-issues.html</code></td><td>RC / SC / Manor Advisor</td><td>Adds date-stamped responses to an issue. Own PIN.</td></tr>
+      <tr><td><code>print-issues.js</code></td><td>(shared)</td><td>Produces the printable report, using the same category grouping as the tracker.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="flow">2. How an issue moves through the system</h2>
+  <ol class="steps">
+    <li>An issue is added (Hub Admin, or the Manor Advisor’s page) and given a number and category.</li>
+    <li>The Community Manager records progress and changes the status in CM Update.</li>
+    <li>The RC (or SC or Manor Advisor) adds responses in RC Issues. Each response is tagged and dated and is <em>added</em> to the Notes cell, so the history builds up; the pages split it into separate, labelled entries for easy reading. Untagged text in older rows is the CM’s own early notes.</li>
+    <li>Residents follow it on the public tracker; it can be printed for meetings.</li>
+  </ol>
+  <div class="box tip"><span class="box-title">Categories and the resident view</span>The public tracker maps the Sheet’s categories to friendlier group names and ignores stray capitals or double spaces, so a typo does not create a duplicate group. If you add a new category, add it to the mapping in both <code>progress-tracker.html</code> and <code>print-issues.js</code> so the screen and the printout match.</div>
+  <p>An archive copy of earlier issues was taken on 28 April 2026 (<em>Progress Tracker - Archive 28 April 2026</em>).</p>
+
+  <h2 id="actions">3. RC and SC Action Registers</h2>
+  <div class="box"><span class="box-title">In one sentence</span>Committee action items (“who will do what by when”) are kept in the <em>BDRV RC Action Register</em> Sheet — one tab for the RC and one for the SC — managed by a single script (<code>wG6RXWVp</code>) that is told which board to use.</div>
+  <ul>
+    <li><code>action-register.html</code> — RC actions: add and edit inline, change status, link an action to an issue number (ISS-xx) with type-ahead search. Committee PIN. References run A-001, A-002…</li>
+    <li><code>sc-action-register.html</code> — the same for the Social Club, in SC green, with references S-001, S-002…</li>
+    <li><strong>Columns</strong> (both tabs): A ref, B meeting, C action, D owner, E due, F issue number, G status (Open, In Progress, Done or Deferred), H notes, I added by, J added date, K outcome (filled in when marked Done).</li>
+    <li><code>members-area.html</code> — after choosing their name, committee members can update the status and notes of actions.</li>
+  </ul>
+  <div class="box warn"><span class="box-title">Two lessons learned (2026)</span>
+    <ul>
+      <li><strong>Row numbers:</strong> the script expects real sheet row numbers (header = row 1, first action = row 2) and refuses row 1. An earlier off-by-one error wrote edits onto the previous action; it was fixed, but edits made before the fix may sit on the wrong row.</li>
+      <li><strong>Feed delay:</strong> the page no longer re-reads the published feed straight after a save, because the feed can lag several minutes and was making correct saves appear to revert.</li>
+    </ul>
+  </div>
+
+  <h2 id="concern">4. Raise a Concern</h2>
+  <ul>
+    <li><code>raise-a-concern.html</code> — residents enter the Residents PIN, then submit a concern or suggestion privately. The <em>Resident Submissions</em> script (<code>zaoV8H-1</code>) saves it to the <em>ResidentSubmissions</em> tab of the <em>Resident Concerns</em> Sheet with status “New”. Columns: Timestamp, Name, Unit, Contact, Category, Description, Status, Chair Notes, Date Discussed, Linked Issue Ref. The menu shows it as an amber “members-only” link.</li>
+    <li><code>chair-submissions.html</code> — intended as the RC Chair’s private page for reading submissions and recording status, notes, date discussed and a linked issue. The script side is ready (it only answers when given the chair key), but the page’s script address was never filled in and no page links to it. Submissions are currently read and annotated in the Sheet itself. Connecting it is a one-line change.</li>
+    <li><code>hub-raise-a-concern.html</code> — an older, light-styled copy of the form that no page links to. Candidate for removal.</li>
+  </ul>
+  <div class="box warn"><span class="box-title">Privacy</span>Concerns can contain personal matters. The <em>Resident Concerns</em> Sheet must never be published to the web, and should be shared only with those who need to read it.</div>
+
+  <footer class="hb-foot"><span><a href="finance.html">← Finance</a> · <a href="documents.html">Next: Documents, Notices &amp; Committee Areas →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+</main>
+</body>
+</html>

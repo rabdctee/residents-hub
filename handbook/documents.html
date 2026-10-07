@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Documents, Notices &amp; Committee Areas | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 7</div>
+  <h1>Documents, Notices &amp; Committee Areas</h1>
+  <p class="hb-lead">Meeting documents and the newsletter, RC Notices, the private areas used by committee members, and the communication tools.</p>
+
+  <div class="hb-toc"><strong>On this page</strong>
+    <ol>
+      <li><a href="#docs">Meeting documents and the Document Registry</a></li>
+      <li><a href="#nl">The Bridgeman Times newsletter</a></li>
+      <li><a href="#notices">RC Notices</a></li>
+      <li><a href="#resonly">Residents Only and the Contact List</a></li>
+      <li><a href="#committee">Committee areas</a></li>
+      <li><a href="#admin">Hub Admin</a></li>
+      <li><a href="#text">Text Updates</a></li>
+    </ol>
+  </div>
+
+  <h2 id="docs">1. Meeting documents and the Document Registry</h2>
+  <div class="box"><span class="box-title">In one sentence</span><code>upload-document.html</code> saves a PDF into the right Drive folder and records it in the <em>Residents_Hub_-_Document_Registry</em> Sheet; the Residents Only page reads the published registry to list documents by folder and date.</div>
+  <ul>
+    <li><strong>Folders:</strong> Annual General Meetings · RC Monthly Meetings · Residents Quarterly Meetings · SC Monthly Meetings · Newsletters · Community Contributions · Monthly Financial Reports · Bank Statements · Aveo Documents.</li>
+    <li><strong>Draft and Approved:</strong> documents in the meeting folders can be uploaded as <em>Draft</em>. The Hub shows a “Draft” label; Upload a Document lists drafts awaiting approval, and one click marks them approved after the next meeting. (This replaced the earlier practice of watermarking and re-uploading.)</li>
+    <li><strong>Display:</strong> the Residents Only page sorts by the month a document is <em>about</em> (recognising month names in the file name), standardises names such as “Jun 2026 — Minutes”, and groups financial documents into quarterly sub-folders automatically. Older documents added before the registry existed are still listed from a hand-kept list inside the page.</li>
+    <li><strong>Viewing:</strong> documents open through <code>view-document.html?id=…&amp;back=…</code>, which shows the Drive file inside the Hub with a reliable Back button and a Print option.</li>
+    <li>Hub Admin links straight to the registry Sheet (“Document Registry”).</li>
+    <li>Uploaded files are shared “anyone with the link can view” automatically, so residents can open them.</li>
+    <li><strong>Registry columns</strong> (Documents tab): A date added, B display name, C Drive file ID, D folder, E sub-folder (e.g. “Apr 2026”), F committee, G description, H uploaded by, and a <em>Status</em> column (added automatically the first time a draft is uploaded). Approving a draft clears its status, found by file ID.</li>
+    <li>Monthly financial reports are also added to the registry automatically each month (see <a href="finance.html#reports">Chapter 5</a>).</li>
+    <li><strong>Old method, no longer used:</strong> in March–April 2026 documents were uploaded through Google Forms, whose attached scripts renamed each file (“04 April 2026 – Residents Committee – Minutes”), filed it, emailed a confirmation and logged it in the <em>old</em> Document Registry. Those scripts (the purple “Untitled” projects, and “Committee Upload Document”) are not used by the Hub and can be retired once the forms are confirmed closed.</li>
+  </ul>
+
+  <h2 id="nl">2. The Bridgeman Times newsletter</h2>
+  <p>Each month’s newsletter is a single self-contained web page in the repo, named <code>bridgeman-times-<em>month</em>-2026.html</code>. Since September 2026 the Social Club news is part of it rather than a separate newsletter, and it uses the Hub palette with these sections: Community Manager, Village News, Residents Committee, Social, Dining, Community Life, Calendar.</p>
+  <ol class="steps">
+    <li>Prepare the month’s content (the Monthly Events table comes from a CSV export of the Village Calendar Sheet).</li>
+    <li>Build the month’s HTML file from the previous month’s file (a reusable build approach turns the PDF version into the web page, keeping its real graphics and correcting any scrambled text).</li>
+    <li>Add the file to the repo and push.</li>
+    <li>In <code>index.html</code>, <strong>add a new entry</strong> to the newsletter list (<code>MEETING_FILES['nl-2026']</code>) with the month’s name and address. Add — do not overwrite the previous entry, or earlier months drop out of the archive.</li>
+  </ol>
+
+  <h2 id="notices">3. RC Notices</h2>
+  <ul>
+    <li><code>rc-notices-admin.html</code> — post, edit and archive notices; choose whether each is public or residents-only. Saved by the RC-Notices script to the <em>Notices</em> tab of the <em>RC Notices</em> Sheet (both owned by the personal account): A timestamp (with “(edited)” after a change), B date, C title, D body, E type (Public or Residents), F status (Active or Archived), G link. Archived notices are kept, not deleted.</li>
+    <li><code>rc-notices.html</code> — public notices, open to all. Residents-only notices (monthly RC summaries, budget matters, surveys) are shown inside the Residents Only page, behind the Residents PIN.</li>
+    <li>A gold banner on the Home page and a badge in the menu show when there is a notice newer than the resident’s last visit (remembered on their device).</li>
+  </ul>
+
+  <h2 id="resonly">4. Residents Only and the Contact List</h2>
+  <ul>
+    <li><code>community-info.html</code> (“Residents Only”, Residents PIN) — meeting documents, financial reports and bank statements, Village Budgets, and other resident-only information.</li>
+    <li><code>residents-contact-list.html</code> (own PIN) — residents’ contact details from a published Sheet.</li>
+  </ul>
+  <div class="box danger"><span class="box-title">The Contact List needs care</span>
+    <p>There are <strong>two</strong> contact-list Sheets. In 2026 an edit made to the wrong one (the July copy) did not appear on the Hub, because the Hub reads the other (the August copy, which is the one published to the web). Always edit the published copy, and consolidate to one Sheet when possible.</p>
+    <p>The published copy can be read by anyone who finds its address, whatever the page’s PIN — see <a href="routines.html#risks">Risks</a>.</p>
+  </div>
+
+  <h2 id="committee">5. Committee areas</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Page</th><th>Who</th><th>What it is</th></tr></thead>
+    <tbody>
+      <tr><td><code>committee.html</code></td><td>RC and SC members</td><td>Committee entry page (committee PIN): choose Residents Committee or Social Club, then the Members Area or the role dashboard. Not linked from the public menu; reached by its address or a bookmark.</td></tr>
+      <tr><td><code>members-area.html</code></td><td>All committee members</td><td>Choose your name; see the tiles for your role. RC panels in blue and SC panels in green. Special panels: the SC Treasurer’s finance tiles, the SC Convenor’s box, Manor Issues for the Manor Advisor, Text Updates for the RC Chair. Opened as <code>members-area.html?org=rc</code> or <code>?org=sc</code>.</td></tr>
+      <tr><td><code>rc-admin.html</code>, <code>sc-admin.html</code></td><td>Office bearers</td><td>Role dashboards (Chair, Secretary, Treasurer, Convenor, Events) with links to role mailboxes, documents, finance and events tasks.</td></tr>
+      <tr><td><code>role-admin.html</code></td><td>—</td><td>Older combined RC/SC role dashboard, replaced by the two above. Not linked from anywhere.</td></tr>
+      <tr><td><code>body-corporate.html</code></td><td>Body Corporate</td><td>Separate PIN; roles Chair, Manager, Secretary, in burgundy. The Chair’s area currently has one tile (Text Updates); Manager and Secretary areas are placeholders. Not linked from any page; shared by its address.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="admin">6. Hub Admin</h2>
+  <p><code>hub-admin.html</code> (Hub Admin PIN) is the administrator’s control panel, in colour-coded sections: What’s On (events, registrations, announcements, RC notices, surveys, info sessions and concerts, text updates, Village Calendar) · Issues (add an issue, tracker, CM Update, RC response) · Finance (all finance pages and the Asset Register) · Documents (upload, Members Area, registry, Action Register) · Resident-facing content (Classifieds, Contact List, Search, Help &amp; How To, Down Memory Lane, Our Story, Fireside Talks, The Roundup) · quick links (GitHub repo, committee email, Classifieds Sheet, Google Analytics, Classifieds script) · and a <strong>Daily Checklist</strong> that resets each day (using Brisbane time). This handbook is linked from here.</p>
+
+  <h2 id="text">7. Text Updates</h2>
+  <p><code>text-updates.html</code> (own PIN) lets the RC Chair and SC Convenor compose a short text message to residents who have opted in, with on-screen preview and confirmation.</p>
+  <div class="box warn"><span class="box-title">Not yet sending</span>The page is built, but the two settings it needs are still empty: the published list of residents who have signed up, and the Apps Script that would pass the message to an SMS service (such as Mobile Message or ClickSend). Until those are set up, pressing Send shows a friendly error and nothing is texted. An SMS service will charge per message.</div>
+
+  <footer class="hb-foot"><span><a href="issues.html">← Issues</a> · <a href="community.html">Next: Community Content →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+</main>
+</body>
+</html>

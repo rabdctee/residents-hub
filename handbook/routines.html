@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Routines, Troubleshooting &amp; Risks | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 10</div>
+  <h1>Routines, Troubleshooting &amp; Risks</h1>
+  <p class="hb-lead">The regular jobs that keep the Hub current, what to check when something goes wrong, and the known weak points with recommended fixes.</p>
+
+  <div class="hb-toc"><strong>On this page</strong>
+    <ol>
+      <li><a href="#routines">Regular routines</a></li>
+      <li><a href="#trouble">Troubleshooting</a></li>
+      <li><a href="#secrets">The Hub Secrets Register</a></li>
+      <li><a href="#risks">Risks and recommendations</a></li>
+      <li><a href="#loose">Loose ends</a></li>
+    </ol>
+  </div>
+
+  <h2 id="routines">1. Regular routines</h2>
+  <div class="box todo"><span class="box-title">To confirm</span>This list is drawn from how the Hub is built and used. Add any routines not yet recorded.</div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>When</th><th>Job</th><th>Where</th></tr></thead>
+    <tbody>
+      <tr><td>Daily</td><td>Work through the Daily Checklist (resets each day)</td><td>Hub Admin</td></tr>
+      <tr><td>Daily / as they arrive</td><td>Moderate new Classifieds, memories, story submissions and Fireside Talk volunteers; read new concerns</td><td>The admin pages; Resident Concerns Sheet</td></tr>
+      <tr><td>Weekly</td><td>Update the Trivia block on Life in Our Community; add any emailed contributions</td><td><code>community-life.html</code></td></tr>
+      <tr><td>Weekly</td><td>Check Latest Announcements have not expired and the Upcoming Events box is current</td><td>Manage Announcements; Manage Events</td></tr>
+      <tr><td>Monthly</td><td>Publish the Bridgeman Times and <em>add</em> it to the newsletter list</td><td><a href="documents.html#nl">Chapter 7</a></td></tr>
+      <tr><td>Monthly</td><td>Upload draft RC and SC minutes; mark the previous month’s approved after the meeting</td><td>Upload a Document</td></tr>
+      <tr><td>Monthly</td><td>Update City Hall Concerts from the official list</td><td><code>concerts.html</code> on GitHub</td></tr>
+      <tr><td>Monthly</td><td>Check recurring activities have been filled in three months ahead (automatic; <em>Generate</em> does it on demand) and the calendar looks right</td><td>Village Calendar admin</td></tr>
+      <tr><td>Monthly (3rd Sunday)</td><td>Check the automatic financial report appeared on Residents Only and looks right</td><td>Residents Only</td></tr>
+      <tr><td>Monthly</td><td>SC Treasurer: transactions, cash on hand, bank balance, statement upload, reports</td><td>Members Area Treasurer tiles</td></tr>
+      <tr><td>Quarterly</td><td>Check the size of the <code>videos</code> folder; review the search log for things residents could not find</td><td>GitHub; Search Admin</td></tr>
+      <tr><td>Yearly</td><td>Renew the bdrv.au domain; check links on Getting Around and Useful Links; review who holds PINs and change them if people have moved on</td><td>Registrar; pages; Secrets Register</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="trouble">2. Troubleshooting</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Symptom</th><th>Likely cause</th><th>What to do</th></tr></thead>
+    <tbody>
+      <tr><td>A change to a page doesn’t show</td><td>Not pushed yet, still publishing, or the browser kept an old copy</td><td>Check GitHub Desktop has nothing waiting to push; wait two minutes; close the tab and reopen.</td></tr>
+      <tr><td>A correction or deletion to a transaction hasn’t happened</td><td>They are applied every 15 minutes, by matching date, description and amount exactly</td><td>Wait 15 minutes; check the <em>Correction Log</em> tab for “NO MATCH FOUND” (<a href="finance.html#txn">details</a>).</td></tr>
+      <tr><td>Financial Dashboard or Reports show wrong figures</td><td>Rows or columns were moved on the Dashboard or Financial Reports tab</td><td>Undo the layout change, or update the fixed cell addresses in the Finances script.</td></tr>
+      <tr><td>A resident can’t edit or delete their gallery item</td><td>Name or unit doesn’t match what they entered, or the item pre-dates unit numbers</td><td>Remove it in the Event Media Registry and Drive yourself.</td></tr>
+      <tr><td>A save seemed to work but the data “reverted”</td><td>Published feed delay (up to about 5 minutes)</td><td>Look in the Sheet itself. If the change is there, wait; if not, the save failed.</td></tr>
+      <tr><td>A page says it “could not load”</td><td>The Apps Script failed, needs re-authorising, or its address changed</td><td>Open the script, run any function once to re-authorise, check <em>Executions</em> for errors. If a new deployment was made, update the address in every page that uses it.</td></tr>
+      <tr><td>A document or photo won’t open for residents</td><td>Drive file not shared publicly</td><td>In Drive, set sharing to “Anyone with the link can view”.</td></tr>
+      <tr><td>An edit to the Contact List doesn’t appear</td><td>The wrong one of the two contact-list Sheets was edited</td><td>Edit the copy that is published to the web.</td></tr>
+      <tr><td>A new event isn’t in the photo-upload or register list</td><td>It was added somewhere other than Manage Events, or it is a Manor event or not “Registration Required”</td><td>Add it in Manage Events and check its Category and Registration settings.</td></tr>
+      <tr><td>A new event isn’t in the Home-page box</td><td>The Home-page boxes are curated separately</td><td>See <a href="events.html#events">the two event lists</a>.</td></tr>
+      <tr><td>The Google Calendar is out of step with the Village Calendar</td><td>Sync hasn’t run, or something was added directly to the Google Calendar</td><td>Press Sync on the admin page; always add activities through the admin page.</td></tr>
+      <tr><td>A video won’t upload</td><td>Over 50 MB (resident upload) or over 25 MB (GitHub website)</td><td>Export smaller or in parts; use GitHub Desktop for Hub videos.</td></tr>
+      <tr><td>A Roundup tab shows no headlines</td><td>A news feed address changed or rss2json is unavailable</td><td>Check the feed address in <code>whats-new.html</code>; added items still show.</td></tr>
+      <tr><td>A page broke after an edit</td><td>An editing mistake</td><td>Revert the commit in GitHub Desktop (<a href="making-changes.html#undo">Chapter 2</a>), then retry the change carefully.</td></tr>
+      <tr><td>Stray “\n” text appears on a page</td><td>A find-and-replace in VS Code without regex mode</td><td><code>sidebar.js</code> removes these automatically on pages that load it; otherwise fix in the file.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="secrets">3. The Hub Secrets Register</h2>
+  <p>Everything sensitive belongs in one <strong>private Google Doc</strong>, owned by <code>rabd.ctee@gmail.com</code> and shared only with the Hub administrator and one trusted deputy. It should never be published, and never copied into the repo or this handbook. It should record:</p>
+  <ul>
+    <li>Each PIN, which pages it opens, and who holds it.</li>
+    <li>Sign-in and recovery details for the GitHub account <code>rabdctee</code> and the Google accounts (or where those are kept).</li>
+    <li>The domain registrar, account holder, renewal date and payment method for bdrv.au.</li>
+    <li>Any secret keys used between pages and scripts, and the Google API key’s settings.</li>
+    <li>SMS service account details, once Text Updates is connected.</li>
+  </ul>
+  <div class="box todo"><span class="box-title">To do</span>Create the Hub Secrets Register and record its location (not its contents) here.</div>
+
+  <h2 id="risks">4. Risks and recommendations</h2>
+  <p>In order of importance:</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>#</th><th>Risk</th><th>Recommendation</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><strong>One person knows how it all works.</strong> The Hub was built and is maintained single-handedly.</td><td>This handbook; the Secrets Register; give a deputy access to the GitHub and committee Google accounts; walk them through one routine change.</td></tr>
+      <tr><td>2</td><td><strong>Key parts are owned by a personal Google account:</strong> the Classifieds, RC Notices, progress-tracker-data, Upcoming Events, Hub Search Logger and Prices Sheets, and the Upcoming Events Manager and RC-Notices scripts.</td><td>Transfer ownership to <code>rabd.ctee@gmail.com</code>. For a script attached to a Sheet, transferring the Sheet moves the script too. Afterwards, re-check each affected page works; timed triggers may need re-creating under the new owner.</td></tr>
+      <tr><td>3</td><td><strong>PINs and some private data are visible to a determined person.</strong> PINs are written in public page code; the Contact List and other locked pages read published Sheets that anyone with the address can open; the transaction list has no PIN.</td><td>Move private data behind Apps Scripts that check the PIN themselves (the Asset Register already does this), starting with the Residents Contact List and finance pages; then un-publish those Sheets.</td></tr>
+      <tr><td>4</td><td><strong>Domain renewal</strong> — if bdrv.au lapses the Hub disappears from its address.</td><td>Record the renewal date; turn on auto-renew; add a reminder.</td></tr>
+      <tr><td>5</td><td><strong>Admin pages without a PIN.</strong> Several management pages have no PIN of their own and rely on not being found: Classifieds Admin, Manage Events, Manage Registrations, View Registrations, Upload a Document, Upload Event Document, Upload Bank Statement, Search Admin, Survey Admin, Memories Admin, Help &amp; How-To editor, The Roundup’s Add page and Manage Info Sessions. Their scripts mostly accept requests without a key. Their addresses are visible in the public repository.</td><td>Add the Hub Admin PIN check to each, starting with the upload pages; longer term, have their scripts check a key as the Asset Register does.</td></tr>
+      <tr><td>6</td><td><strong>Price Checker costs</strong> — each search is a paid AI request, and the script accepts searches from anyone with its address.</td><td>Set a monthly spending limit in the Anthropic console; consider a simple key or daily limit in the script.</td></tr>
+      <tr><td>7</td><td><strong>Google Sheets API key</strong> written in <code>index.html</code>.</td><td>Restrict it in Google Cloud Console to the Sheets API and to bdrv.au.</td></tr>
+      <tr><td>8</td><td><strong>Website size</strong> — videos count toward GitHub’s 1 GB limit.</td><td>Quarterly check of the <code>videos</code> folder.</td></tr>
+      <tr><td>9</td><td><strong>Free outside services</strong> (rss2json.com, Open-Meteo, Wikipedia) could change or stop.</td><td>Accept; the pages degrade gracefully. Check The Roundup occasionally.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="loose">5. Loose ends</h2>
+  <p>Found while preparing this handbook. None is urgent; each is harmless as it stands.</p>
+  <ul>
+    <li><strong>Not linked from anywhere:</strong> <code>role-admin.html</code>, <code>how-to-admin.html</code> and <code>hub-raise-a-concern.html</code> are older versions of current pages — candidates for removal. <code>chair-submissions.html</code> was never connected to its script. <code>body-corporate.html</code> is reached only by its address (intended).</li>
+    <li><strong>Not yet connected:</strong> Text Updates (no SMS service yet); the interest-registration form on Information Sessions; Chair Submissions (script ready, page not linked).</li>
+    <li><strong>Unused leftovers:</strong> the <em>Community Price Hub Backend</em> script and its <em>Prices</em> Sheet; the event functions in the Web Content Manager script.</li>
+    <li><strong>Two Issues scripts</strong> — confirm which page uses which, then consider moving all issue pages to the one that numbers issues safely, keeping the email notification.</li>
+    <li><strong>Finances</strong> — two web addresses for the one project (keep both deployments up to date, or merge); old one-off report functions for January–June 2026 should not be run again.</li>
+    <li><strong>Information Sessions saving</strong> — the script points at the wrong spreadsheet; a one-line fix (<a href="google-services.html#scripts">details</a>). Manage Info Sessions also has no PIN.</li>
+    <li><strong>Old and duplicate script projects</strong> — earlier copies of the Document Upload Web App and the Event Registration Reminder Script, and the form-attached “Untitled” projects. Retire them safely (<a href="google-services.html#projects">how</a>), checking triggers first so reminder emails are never sent twice.</li>
+    <li><strong>Unused files:</strong> <code>styles.css</code> and <code>search-index.json</code>; the <code>REGISTRY_SHEET_ID</code> setting in <code>index.html</code> still names the old Document Registry but nothing uses it.</li>
+    <li><strong>Two contact-list Sheets</strong> — consolidate to the published one.</li>
+    <li><strong>Action Register history</strong> — edits made before the 2026 row-number fix may sit on the wrong action; worth a one-off check against the minutes.</li>
+    <li><strong>Menu kept in two places</strong> — <code>sidebar.js</code> and a copy inside <code>index.html</code>. Change both, or in future make <code>index.html</code> use <code>sidebar.js</code>.</li>
+  </ul>
+
+  <footer class="hb-foot"><span><a href="page-directory.html">← Page Directory</a> · <a href="index.html">Contents</a></span><span>Last reviewed: 8 October 2026</span></footer>
+</main>
+</body>
+</html>
