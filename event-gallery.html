@@ -83,6 +83,8 @@
     .lightbox.show { display:flex; }
     .lightbox img, .lightbox iframe { max-width:100%; max-height:85vh; border-radius:6px; border:none; }
     .lightbox iframe { width:80vw; height:70vh; }
+    .lightbox video { max-width:100%; max-height:70vh; border-radius:6px; background:#000; }
+    @media(max-width:600px){ .lightbox video { max-width:90vw; max-height:65vh; } }
     @media(max-width:600px){
       .lightbox img { max-height:55vh; }
       /* Phones: tall, narrow video box to suit upright phone videos, so the
@@ -188,6 +190,15 @@
   function thumbUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w400'; }
   function largeUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1200'; }
   function previewUrl(fileId){ return 'https://drive.google.com/file/d/' + fileId + '/preview'; }
+  function directVideoUrl(fileId){ return 'https://drive.google.com/uc?export=download&id=' + fileId; }
+
+  // Fallback: if the built-in player can't load the video, use Drive's player instead
+  function swapToDrivePlayer(videoEl, fileId) {
+    var frame = document.createElement('iframe');
+    frame.src = previewUrl(fileId);
+    frame.setAttribute('allow', 'autoplay');
+    videoEl.parentNode.replaceChild(frame, videoEl);
+  }
 
   var galleryData        = {};   // { eventName: [item, ...] } — from the server, unsorted
   var sortedItemsByEvent = {};   // { eventName: [item, ...] } — same order shown in the grid
@@ -218,8 +229,13 @@
 
     function driveViewUrl(fileId) { return 'https://drive.google.com/file/d/' + fileId + '/view'; }
 
+    // Videos play in the phone/computer's own built-in player (its buttons fade away
+    // properly and full screen works). If Google won't hand the video over that way,
+    // swapToDrivePlayer() quietly falls back to Google Drive's player as before.
     var mediaHtml = item.type === 'video'
-      ? '<iframe src="' + previewUrl(item.fileId) + '" allow="autoplay"></iframe>'
+      ? '<video src="' + directVideoUrl(item.fileId) + '" controls playsinline preload="metadata"' +
+        ' poster="' + largeUrl(item.fileId) + '"' +
+        ' onerror="swapToDrivePlayer(this, \'' + esc(item.fileId) + '\')"></video>'
       : '<img src="' + largeUrl(item.fileId) + '" alt="" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';">' +
         '<div class="lightbox-img-fallback" style="display:none;">Sorry, this photo is taking too long to load. ' +
         '<a href="' + driveViewUrl(item.fileId) + '" target="_blank" rel="noopener">Open it in Google Drive instead</a>.</div>';
