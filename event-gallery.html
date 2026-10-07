@@ -65,7 +65,7 @@
       position:relative; border-radius:8px; overflow:hidden; cursor:pointer;
       aspect-ratio:1/1; background:#222;
     }
-    .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .thumb img, .thumb video { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
     .thumb .play-icon {
       position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
       font-size:2em; color:white; text-shadow:0 1px 4px rgba(0,0,0,0.6); pointer-events:none;
@@ -190,14 +190,30 @@
   function thumbUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w400'; }
   function largeUrl(fileId)  { return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w1200'; }
   function previewUrl(fileId){ return 'https://drive.google.com/file/d/' + fileId + '/preview'; }
-  function directVideoUrl(fileId){ return 'https://drive.google.com/uc?export=download&id=' + fileId; }
 
-  // Fallback: if the built-in player can't load the video, use Drive's player instead
-  function swapToDrivePlayer(videoEl, fileId) {
-    var frame = document.createElement('iframe');
-    frame.src = previewUrl(fileId);
-    frame.setAttribute('allow', 'autoplay');
-    videoEl.parentNode.replaceChild(frame, videoEl);
+  // ── HUB VIDEOS ─────────────────────────────────────────────────────────
+  // Videos kept in the Hub's own "videos" folder on GitHub (not Google Drive).
+  // These play in the phone's own video player — full-size picture, small
+  // buttons that fade away, and full screen on iPhone and Android.
+  // To add one: put the .mp4 file in the "videos" folder, then copy a line
+  // below and change the details. "event" must match the event name exactly
+  // as it appears in the gallery, so the video sits with that event's photos.
+  var HUB_VIDEOS = [
+    { event: 'Dance Party with Fortunato', file: 'videos/dance-night-part-1.mp4', credit: 'Rick', date: '2026-10-07' },
+    { event: 'Dance Party with Fortunato', file: 'videos/dance-night-part-2.mp4', credit: 'Rick', date: '2026-10-07' }
+  ];
+
+  // Adds the Hub videos above into the gallery alongside the Drive items
+  function addHubVideos() {
+    HUB_VIDEOS.forEach(function(v, i){
+      if (!galleryData[v.event]) galleryData[v.event] = [];
+      galleryData[v.event].push({
+        type: 'hubvideo', src: v.file, uploader: v.credit,
+        // later entries in the list sort just after earlier ones (Part 1 before Part 2)
+        date: new Date(new Date(v.date).getTime() - i * 1000).toISOString(),
+        fileId: 'hub-' + i
+      });
+    });
   }
 
   var galleryData        = {};   // { eventName: [item, ...] } — from the server, unsorted
@@ -229,13 +245,11 @@
 
     function driveViewUrl(fileId) { return 'https://drive.google.com/file/d/' + fileId + '/view'; }
 
-    // Videos play in the phone/computer's own built-in player (its buttons fade away
-    // properly and full screen works). If Google won't hand the video over that way,
-    // swapToDrivePlayer() quietly falls back to Google Drive's player as before.
-    var mediaHtml = item.type === 'video'
-      ? '<video src="' + directVideoUrl(item.fileId) + '" controls playsinline preload="metadata"' +
-        ' poster="' + largeUrl(item.fileId) + '"' +
-        ' onerror="swapToDrivePlayer(this, \'' + esc(item.fileId) + '\')"></video>'
+    // Hub videos play in the phone/computer's own player; Drive videos use Drive's player
+    var mediaHtml = item.type === 'hubvideo'
+      ? '<video src="' + esc(item.src) + '" controls playsinline preload="metadata"></video>'
+      : item.type === 'video'
+      ? '<iframe src="' + previewUrl(item.fileId) + '" allow="autoplay"></iframe>'
       : '<img src="' + largeUrl(item.fileId) + '" alt="" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'block\';">' +
         '<div class="lightbox-img-fallback" style="display:none;">Sorry, this photo is taking too long to load. ' +
         '<a href="' + driveViewUrl(item.fileId) + '" target="_blank" rel="noopener">Open it in Google Drive instead</a>.</div>';
@@ -249,10 +263,12 @@
       '<div class="lightbox-inner">' +
         mediaHtml +
         (items.length > 1 ? '<div class="lightbox-counter">' + (idx + 1) + ' of ' + items.length + '</div>' : '') +
+        // Hub videos are managed in the HUB_VIDEOS list, so no Edit/Delete for them
+        (item.type === 'hubvideo' ? '' :
         '<div class="lightbox-actions">' +
           '<button onclick="toggleLightboxForm(\'edit\')">✏️ Edit</button>' +
           '<button onclick="toggleLightboxForm(\'delete\')">🗑️ Delete</button>' +
-        '</div>' +
+        '</div>') +
 
         '<div class="lightbox-form" id="lb-edit-form">' +
           '<p>To edit this item, confirm the name and unit number you submitted it with, then update the details below.</p>' +
@@ -349,8 +365,12 @@
       html += '  <div class="event-grid" id="grid-' + idx + '">';
       items.forEach(function(item, i){
         html += '<div class="thumb" onclick=\'openLightbox(' + jsonForAttr(eventName) + ', ' + i + ')\'>';
-        html += '  <img src="' + thumbUrl(item.fileId) + '" loading="lazy" alt="">';
-        if (item.type === 'video') html += '<div class="play-icon">▶</div>';
+        if (item.type === 'hubvideo') {
+          html += '  <video src="' + esc(item.src) + '#t=0.5" muted playsinline preload="metadata"></video>';
+        } else {
+          html += '  <img src="' + thumbUrl(item.fileId) + '" loading="lazy" alt="">';
+        }
+        if (item.type === 'video' || item.type === 'hubvideo') html += '<div class="play-icon">▶</div>';
         if (item.uploader) html += '<div class="credit">' + esc(item.uploader) + '</div>';
         html += '</div>';
       });
@@ -461,14 +481,15 @@
   fetch(SCRIPT_URL + '?action=gallery')
     .then(function(r){ return r.json(); })
     .then(function(data){
-      if (data.status !== 'ok' || !data.events || !Object.keys(data.events).length) {
-        document.getElementById('galleryWrap').innerHTML = '<div class="empty-state">No event photos or videos have been shared yet — be the first!</div>';
-        return;
-      }
-      galleryData = data.events;
-      renderGallery();
+      galleryData = (data.status === 'ok' && data.events) ? data.events : {};
+      addHubVideos();
+      renderGallery(); // shows the "be the first" message itself if nothing at all
     })
     .catch(function(){
+      // Drive unreachable: still show the Hub videos if there are any
+      galleryData = {};
+      addHubVideos();
+      if (HUB_VIDEOS.length) { renderGallery(); return; }
       document.getElementById('galleryWrap').innerHTML = '<div class="empty-state">Could not load the gallery right now — please try again shortly.</div>';
     });
 </script>
