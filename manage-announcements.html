@@ -284,11 +284,20 @@
       <textarea class="form-textarea" id="editMessage" placeholder="e.g. Voting closes Friday 8 May at 4:00 pm…"></textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">Link URL <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
-      <div class="form-hint">Paste a URL to link to a document, page or external site</div>
-      <input class="form-input" type="text" id="editLink" placeholder="Paste a Google Drive link or web URL">
+      <label class="form-label">Link <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
+      <div class="form-hint">Choose a Hub document, a web page, or leave as "No link"</div>
+      <select class="form-input" id="editLinkChoice" onchange="onLinkChoiceChange()">
+        <option value="none">— No link —</option>
+        <option value="web">🌐 A web page (paste the address)</option>
+      </select>
+      <div class="form-hint" id="docsHint" style="margin-top:6px;">Loading Hub documents…</div>
     </div>
-    <div class="form-group">
+    <div class="form-group" id="webLinkGroup" style="display:none;">
+      <label class="form-label">Web address *</label>
+      <div class="form-hint">Paste the address of the web page</div>
+      <input class="form-input" type="text" id="editLink" placeholder="https://…">
+    </div>
+    <div class="form-group" id="linkLabelGroup" style="display:none;">
       <label class="form-label">Link label <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
       <div class="form-hint">Text shown on the link button e.g. "Read the Newsletter"</div>
       <input class="form-input" type="text" id="editLinkLabel" placeholder="e.g. Read the Newsletter">
@@ -334,6 +343,144 @@
   var editingRow = null;
   var deleteRow  = null;
 
+  // ── Hub documents (for the Link drop-down) ──────────────────
+  // Same published Document Registry that the Upload page reads.
+  var REGISTRY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
+  var hubDocs        = [];
+  var docsLoaded     = false;
+  var pendingLink    = null;  // link waiting to be matched once documents arrive
+  var lastAutoLabel  = '';    // label we filled in automatically
+
+  function parseCSVLine(line) {
+    var cols = [], cur = '', q = false;
+    for (var i = 0; i < line.length; i++) {
+      var ch = line[i];
+      if (ch === '"' && q && line[i+1] === '"') { cur += '"'; i++; }
+      else if (ch === '"')            { q = !q; }
+      else if (ch === ',' && !q)      { cols.push(cur); cur = ''; }
+      else                            { cur += ch; }
+    }
+    cols.push(cur);
+    return cols;
+  }
+
+  // Upload script — answers instantly with the up-to-date document list
+  var UPLOAD_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwya128saiqJPHdrUonuHXQnHfAUqlFwNuxcuPBOcSnpWl9wOaxgXCr9j5l-K8qt_HN/exec';
+
+  function loadHubDocs() {
+    fetch(UPLOAD_SCRIPT_URL, {
+      method:'POST', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({ action:'listDocuments' })
+    })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.status !== 'ok') throw new Error(data.message || 'failed');
+        docsReady(data.documents || [], true);
+      })
+      .catch(function() { loadHubDocsFromCSV(); });  // back-up: the published list
+  }
+
+  function docsReady(list, instant) {
+    hubDocs = list;
+    docsLoaded = true;
+    buildDocOptions();
+    document.getElementById('docsHint').textContent = instant
+      ? 'Showing all Hub documents, newest first.'
+      : 'Recently uploaded documents can take a few minutes to appear here.';
+    if (pendingLink !== null) setLinkChoiceFromLink(pendingLink);
+  }
+
+  function loadHubDocsFromCSV() {
+    fetch(REGISTRY_CSV_URL + '&t=' + Date.now())
+      .then(function(r) { return r.text(); })
+      .then(function(csv) {
+        var lines = csv.split('\n');
+        var headers = parseCSVLine(lines[0] || '');
+        var statusCol = -1;
+        headers.forEach(function(h, i) { if (h.trim().toLowerCase() === 'status') statusCol = i; });
+        var list = [];
+        for (var i = 1; i < lines.length; i++) {
+          if (!lines[i].trim()) continue;
+          var c  = parseCSVLine(lines[i].replace(/\r$/, ''));
+          var id = (c[2] || '').trim();
+          if (!id) continue;
+          list.push({
+            name:      (c[1] || '').trim(),
+            id:        id,
+            folder:    (c[3] || '').trim() || 'Other',
+            subfolder: (c[4] || '').trim(),
+            draft:     statusCol > -1 && /draft/i.test(c[statusCol] || '')
+          });
+        }
+        list.reverse(); // newest uploads first
+        docsReady(list, false);
+      })
+      .catch(function() {
+        document.getElementById('docsHint').textContent =
+          '⚠️ Could not load Hub documents. You can still choose "No link" or a web page.';
+      });
+  }
+
+  function buildDocOptions() {
+    var sel = document.getElementById('editLinkChoice');
+    var current = sel.value;
+    // Remove old document groups, keep "No link" and "Web page"
+    sel.querySelectorAll('optgroup').forEach(function(g) { g.parentNode.removeChild(g); });
+    var groups = {}, order = [];
+    hubDocs.forEach(function(d) {
+      if (!groups[d.folder]) { groups[d.folder] = []; order.push(d.folder); }
+      groups[d.folder].push(d);
+    });
+    var webOpt = sel.querySelector('option[value="web"]');
+    order.forEach(function(folder) {
+      var og = document.createElement('optgroup');
+      og.label = '📁 ' + folder;
+      groups[folder].forEach(function(d) {
+        var o = document.createElement('option');
+        o.value = 'doc:' + d.id;
+        o.textContent = d.name + (d.subfolder ? ' — ' + d.subfolder : '') + (d.draft ? ' (DRAFT)' : '');
+        og.appendChild(o);
+      });
+      sel.insertBefore(og, webOpt);
+    });
+    sel.value = current;
+    if (!sel.value) sel.value = 'none';
+  }
+
+  function onLinkChoiceChange() {
+    var choice = document.getElementById('editLinkChoice').value;
+    var labelBox = document.getElementById('editLinkLabel');
+    document.getElementById('webLinkGroup').style.display   = choice === 'web'  ? 'block' : 'none';
+    document.getElementById('linkLabelGroup').style.display = choice === 'none' ? 'none'  : 'block';
+    // Suggest a label for a document, unless the person typed their own
+    if (choice.indexOf('doc:') === 0) {
+      var id  = choice.slice(4);
+      var doc = hubDocs.filter(function(d) { return d.id === id; })[0];
+      if (doc && (labelBox.value.trim() === '' || labelBox.value === lastAutoLabel)) {
+        lastAutoLabel  = 'Read the ' + doc.name;
+        labelBox.value = lastAutoLabel;
+      }
+    }
+  }
+
+  // Sets the drop-down to match an existing announcement's link
+  function setLinkChoiceFromLink(link) {
+    var sel = document.getElementById('editLinkChoice');
+    document.getElementById('editLink').value = '';
+    pendingLink = null;
+    if (!link) { sel.value = 'none'; onLinkChoiceChange(); return; }
+    var m  = link.match(/view-document\.html\?id=([a-zA-Z0-9_-]+)/) || link.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    var id = m ? m[1] : null;
+    if (id && !docsLoaded) pendingLink = link;   // try again once the list arrives
+    if (id && sel.querySelector('option[value="doc:' + id + '"]')) {
+      sel.value = 'doc:' + id;
+    } else {
+      sel.value = 'web';
+      document.getElementById('editLink').value = link;
+    }
+    onLinkChoiceChange();
+  }
+
   function checkPin() {
     var val = document.getElementById('pinInput').value;
     if (val === '5304') {
@@ -341,6 +488,7 @@
       document.getElementById('pinOverlay').style.display = 'none';
       document.getElementById('pinInput').value = '';
       loadAnnouncements();
+      loadHubDocs();
     } else {
       var err = document.getElementById('pinError');
       err.style.display = 'block';
@@ -354,6 +502,7 @@
   if (sessionStorage.getItem('bdrv_committee_auth') === 'true') {
     document.getElementById('pinOverlay').style.display = 'none';
     loadAnnouncements();
+    loadHubDocs();
   }
 
   function loadAnnouncements() {
@@ -518,8 +667,10 @@
     document.getElementById('modalTitle').textContent    = '➕ Add Announcement';
     document.getElementById('editTitle').value           = '';
     document.getElementById('editMessage').value         = '';
-    document.getElementById('editLink').value            = '';
     document.getElementById('editLinkLabel').value       = '';
+    lastAutoLabel = '';
+    setLinkChoiceFromLink('');
+    loadHubDocs();
     document.getElementById('editDisplayFrom').value     = '';
     var d = new Date(); d.setDate(d.getDate() + 14);
     document.getElementById('editDisplayUntil').value =
@@ -535,8 +686,9 @@
     document.getElementById('modalTitle').textContent    = '✏️ Edit Announcement';
     document.getElementById('editTitle').value           = ann.title;
     document.getElementById('editMessage').value         = ann.message;
-    document.getElementById('editLink').value            = ann.link        || '';
     document.getElementById('editLinkLabel').value       = ann.linkLabel   || '';
+    lastAutoLabel = '';
+    setLinkChoiceFromLink(ann.link || '');
     document.getElementById('editDisplayFrom').value     = ann.displayFrom  || '';
     document.getElementById('editDisplayUntil').value    = ann.displayUntil || '';
     document.getElementById('saveBtn').textContent = '💾 Save Changes';
@@ -552,13 +704,22 @@
   function saveAnnouncement() {
     var title        = document.getElementById('editTitle').value.trim();
     var message      = document.getElementById('editMessage').value.trim();
-    var link         = toViewerUrl(document.getElementById('editLink').value.trim());
-    var linkLabel    = document.getElementById('editLinkLabel').value.trim();
+    var linkChoice   = document.getElementById('editLinkChoice').value;
+    var link         = '';
+    if (linkChoice.indexOf('doc:') === 0) {
+      link = 'https://bdrv.au/view-document.html?id=' + linkChoice.slice(4);
+    } else if (linkChoice === 'web') {
+      link = toViewerUrl(document.getElementById('editLink').value.trim());
+    }
+    var linkLabel    = linkChoice === 'none' ? '' : document.getElementById('editLinkLabel').value.trim();
     var displayFrom  = document.getElementById('editDisplayFrom').value;
     var displayUntil = document.getElementById('editDisplayUntil').value;
 
     if (!title)        { showToast('Please enter a title.', true); return; }
     if (!message)      { showToast('Please enter a message.', true); return; }
+    if (linkChoice === 'web' && !link) {
+      showToast('Please paste the web address, or choose "No link".', true); return;
+    }
     if (!displayUntil) { showToast('Please set a Display Until date.', true); return; }
 
     // ── Validation: Display From must be before Display Until ─
