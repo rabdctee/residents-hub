@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Village Calendar — BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef3f8; color: #222; font-size: 16px; line-height: 1.5; min-height: 100vh;
+  }
+
+  #pin-overlay {
+    position: fixed; inset: 0; background: #1F4E79; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 20px; padding: 30px;
+  }
+  #pin-overlay h2 { color: white; font-size: 1.4em; text-align: center; }
+  #pin-overlay p  { color: rgba(255,255,255,0.75); font-size: 0.9em; text-align: center; max-width: 360px; }
+  #pin-input {
+    font-size: 1.6em; letter-spacing: 0.4em; text-align: center;
+    padding: 12px 20px; border-radius: 8px; border: none; width: 180px; outline: none;
+  }
+  #pin-error { color: #ffcccc; font-size: 0.85em; min-height: 1.2em; text-align: center; }
+
+  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee; }
+  .back-bar a {
+    color: #1F4E79; background: white; border: 2px solid #c5d8ee; border-radius: 10px;
+    padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 15px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+
+  .page-wrap { max-width: 1000px; margin: 0 auto; padding: 24px 20px 60px; }
+
+  .dash-header {
+    border-radius: 12px; padding: 20px 26px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    color: white; background: #1F4E79;
+  }
+  .dash-header h1 { font-size: 1.3em; }
+  .dash-header p { font-size: 0.82em; opacity: 0.85; margin-top: 4px; }
+
+  .status-banner {
+    display: none; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px;
+    font-size: 0.92em; font-weight: 600;
+  }
+  .status-banner.ok   { display: block; background: #e6f4ea; color: #1e7a34; border: 1px solid #b7dfc2; }
+  .status-banner.err  { display: block; background: #fdeaea; color: #a12b2b; border: 1px solid #f3bcbc; }
+  .status-banner.busy { display: block; background: #fff6e0; color: #8a6d16; border: 1px solid #f0dfa0; }
+
+  .panel {
+    background: white; border-radius: 12px; border: 1px solid #c5d8ee;
+    padding: 18px 20px; margin-bottom: 20px;
+  }
+  .panel h2 { color: #1F4E79; font-size: 1.05em; margin-bottom: 12px; }
+
+  .sync-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .sync-desc { font-size: 0.85em; color: #555; max-width: 480px; }
+
+  .form-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 12px;
+  }
+  .form-grid label { display: block; font-size: 0.78em; font-weight: 700; color: #1F4E79; margin-bottom: 4px; }
+  .form-grid input {
+    width: 100%; padding: 8px 10px; border-radius: 7px; border: 1px solid #c5d8ee; font-size: 0.95em;
+  }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .btn {
+    display: inline-block; padding: 9px 16px; border-radius: 7px; font-size: 0.9em; font-weight: 700;
+    border: none; cursor: pointer; font-family: inherit; color: white;
+  }
+  .btn:hover { opacity: 0.88; }
+  .btn-navy   { background: #1F4E79; }
+  .btn-green  { background: #2e7d32; }
+  .btn-red    { background: #a12b2b; }
+  .btn-gold   { background: #C9A44A; }
+  .btn-small  { padding: 5px 10px; font-size: 0.8em; }
+
+  .filter-row { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+  .filter-row input[type="text"] { padding: 7px 10px; border-radius: 7px; border: 1px solid #c5d8ee; font-size: 0.9em; }
+  .show-all-toggle { display: flex; align-items: center; gap: 6px; font-size: 0.88em; color: #1F4E79; font-weight: 600; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.88em; }
+  th { background: #1F4E79; color: white; text-align: left; padding: 8px 10px; font-size: 0.82em; }
+  td { padding: 7px 10px; border-bottom: 1px solid #e0eaf4; vertical-align: top; }
+  .row-actions { display: flex; gap: 6px; }
+  .edit-cell input { width: 100%; padding: 5px 7px; border: 1px solid #c5d8ee; border-radius: 5px; font-size: 0.95em; }
+
+  #loading { text-align: center; padding: 30px; color: #888; }
+
+  .month-block { border: 1px solid #c5d8ee; border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+  .month-header {
+    background: #1F4E79; color: white; padding: 10px 14px; cursor: pointer;
+    font-weight: 700; display: flex; justify-content: space-between; align-items: center; font-size: 0.95em;
+  }
+  .month-header .chev { transition: transform 0.15s; }
+  .month-header.open .chev { transform: rotate(90deg); }
+  .month-body { display: none; padding: 8px; background: #f7fafd; }
+  .month-body.open { display: block; }
+
+  .day-block { border: 1px solid #dfe9f5; border-radius: 8px; margin-bottom: 6px; background: white; overflow: hidden; }
+  .day-header {
+    padding: 8px 12px; cursor: pointer; font-weight: 600; color: #1F4E79;
+    display: flex; justify-content: space-between; align-items: center; font-size: 0.9em;
+  }
+  .day-header .chev { transition: transform 0.15s; font-size: 0.85em; color: #888; }
+  .day-header.open .chev { transform: rotate(90deg); }
+  .day-body { display: none; padding: 0 8px 8px; }
+  .day-body.open { display: block; }
+  .day-count { font-weight: 400; color: #888; font-size: 0.85em; margin-left: 8px; }
+
+  #flat-results { display: none; }
+
+  /* ── "Make this recurring" controls ── */
+  .recur-box { margin: 2px 0 14px; }
+  .recur-toggle { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: #1F4E79; font-size: 0.9em; cursor: pointer; }
+  .recur-options {
+    margin-top: 8px; padding: 10px 12px; background: #f0f6ff; border: 1px solid #c5d8ee; border-radius: 8px;
+    font-size: 0.88em; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center;
+  }
+  .recur-options select { padding: 6px 8px; border-radius: 6px; border: 1px solid #c5d8ee; font-size: 0.95em; margin-left: 4px; }
+  .recur-options .occ { margin-left: 8px; white-space: nowrap; }
+  .recur-summary { width: 100%; color: #444; }
+  .recur-note { width: 100%; color: #777; font-size: 0.9em; font-style: italic; }
+  /* ── Clash check ── */
+  .clash-item { border: 1px solid #f0dfa0; background: #fffaf0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; font-size: 0.9em; }
+  .clash-when { font-weight: 700; color: #8a6d16; margin-bottom: 4px; }
+  .clash-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 3px 0; }
+  .clash-none { padding: 10px 12px; background: #e6f4ea; color: #1e7a34; border: 1px solid #b7dfc2; border-radius: 8px; font-weight: 600; }
+  .ok-list { margin-top: 14px; font-size: 0.85em; color: #555; }
+  .ok-item { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
+  tr.recur-row td { background: #f7fafd; padding: 8px 14px; border-bottom: 1px solid #c5d8ee; }
+</style>
+</head>
+<body>
+
+<!-- Sign-in screen now comes from hub-pin.js (personal PINs) — see the bottom of this file -->
+
+<div class="back-bar"><a href="members-area.html">← Back to Members Area</a></div>
+
+<div class="page-wrap">
+  <div class="dash-header">
+    <div>
+      <h1>🗓️ Village Calendar</h1>
+      <p>Add, edit or remove activities — the Hub's calendar updates automatically.</p>
+    </div>
+  </div>
+
+  <div id="status-banner" class="status-banner"></div>
+
+  <div class="panel">
+    <h2>🔁 Full Sync</h2>
+    <div class="sync-row">
+      <button class="btn btn-red" onclick="runFullSync()">🔁 Run Full Sync Now</button>
+      <div class="sync-desc">Every add, edit or delete below already updates the calendar for that day automatically. Only use this if something looks out of step and you want to rebuild the whole calendar — it can take a few minutes.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>🗓️ Recurring Activities</h2>
+    <div class="sync-row">
+      <button class="btn btn-gold" onclick="runGenerateNext()">🗓️ Generate Recurring (Next Months)</button>
+      <div class="sync-desc">Fills in the standing weekly/fortnightly activities (from the Recurring Template tab) for the next few months, skipping anything already there. This also runs automatically once a month — use this if you want it brought up to date sooner. One-off events still need to be added by hand.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>➕ Add an Activity</h2>
+    <div class="form-grid">
+      <div><label>Date</label><input type="date" id="add-date"></div>
+      <div><label>Time</label><input type="text" id="add-time" list="dl-time" placeholder="e.g. 9:30 AM"></div>
+      <div><label>Duration</label><input type="text" id="add-duration" list="dl-duration" placeholder="e.g. 60 mins"></div>
+      <div class="full"><label>Activity / Event</label><input type="text" id="add-activity" list="dl-activity" placeholder="e.g. Trivia"></div>
+      <div><label>Venue</label><input type="text" id="add-venue" list="dl-venue" placeholder="e.g. Games Area"></div>
+      <div><label>Contact</label><input type="text" id="add-contact" list="dl-contact" placeholder="e.g. Staff 3862 9020"></div>
+    </div>
+    <div id="add-recur-mount"></div>
+    <button class="btn btn-green" onclick="addActivity()">➕ Add Activity</button>
+  </div>
+
+  <div class="panel">
+    <h2>⚠️ Clash Check</h2>
+    <div class="sync-row">
+      <button class="btn btn-navy" onclick="runClashCheck()">⚠️ Check for clashes</button>
+      <div class="sync-desc">Looks through all upcoming activities for two things booked in the same venue at overlapping times. You'll also get a warning when you save an activity that clashes. If two activities are meant to overlap, mark them as OK and they won't be flagged again.</div>
+    </div>
+    <div id="clash-results" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="panel">
+    <h2>📋 Upcoming Activities</h2>
+    <div class="filter-row">
+      <input type="text" id="search-box" placeholder="Search by activity, venue or date…" oninput="renderAll()" style="flex:1;min-width:200px;">
+      <label class="show-all-toggle"><input type="checkbox" id="show-all-toggle" onchange="renderAll()"> Show all (include past dates)</label>
+    </div>
+    <div id="loading">Loading…</div>
+    <div id="accordion-wrap" style="display:none;"></div>
+    <div id="flat-results" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Date</th><th>Time</th><th>Duration</th><th>Activity</th><th>Venue</th><th>Contact</th><th></th></tr></thead>
+        <tbody id="flat-results-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<datalist id="dl-time"></datalist>
+<datalist id="dl-duration"></datalist>
+<datalist id="dl-activity"></datalist>
+<datalist id="dl-venue"></datalist>
+<datalist id="dl-contact"></datalist>
+
+<script src="hub-pin.js"></script>
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzsMFnQXBPNfdXnKvU4lju_2LIU5QangsqQwq_NXFYu2r9GA1dhZp0x_H2sf9iFrHcHA/exec";
+const SECRET_KEY = "zwQQcGAflBHjDc91l3DZceVf";
+
+let allRows = [];
+let editingId = null;
+let openMonths = {};
+let openDays = {};
+
+let statusTimer = null;
+function showStatus(msg, kind) {
+  const b = document.getElementById("status-banner");
+  clearTimeout(statusTimer);
+  b.style.display = "";
+  b.textContent = msg;
+  b.className = "status-banner " + kind;
+  if (kind !== "busy") statusTimer = setTimeout(() => { b.style.display = "none"; }, msg.length > 90 ? 15000 : 5000);
+}
+
+function apiGet(action, extra) {
+  const params = new URLSearchParams(Object.assign({ action, key: SECRET_KEY }, extra || {}));
+  return fetch(APPS_SCRIPT_URL + "?" + params.toString()).then(r => r.json());
+}
+function apiPost(action, extra) {
+  const body = new URLSearchParams(Object.assign({ action, key: SECRET_KEY }, extra || {}));
+  return fetch(APPS_SCRIPT_URL, { method: "POST", body }).then(r => r.json());
+}
+
+function loadRows() {
+  document.getElementById("loading").style.display = "block";
+  document.getElementById("accordion-wrap").style.display = "none";
+  apiGet("list").then(res => {
+    document.getElementById("loading").style.display = "none";
+    if (!res.success) { showStatus("Couldn't load: " + res.error, "err"); return; }
+    allRows = res.rows;
+    populateDatalists();
+    renderAll();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function populateDatalists() {
+  const sets = { time: new Set(), duration: new Set(), activity: new Set(), venue: new Set(), contact: new Set() };
+  allRows.forEach(r => {
+    if (r.time) sets.time.add(r.time);
+    if (r.duration) sets.duration.add(r.duration);
+    if (r.activity) sets.activity.add(r.activity);
+    if (r.venue) sets.venue.add(r.venue);
+    if (r.contact) sets.contact.add(r.contact);
+  });
+  fillDatalist("dl-time", sets.time, compareTimeStrings);
+  fillDatalist("dl-duration", sets.duration, compareDurationStrings);
+  fillDatalist("dl-activity", sets.activity);
+  fillDatalist("dl-venue", sets.venue);
+  fillDatalist("dl-contact", sets.contact);
+}
+function fillDatalist(id, set, compareFn) {
+  const values = Array.from(set).sort(compareFn); // default: plain alphabetical
+  document.getElementById(id).innerHTML =
+    values.map(v => `<option value="${escAttr(v)}">`).join("");
+}
+
+// "9:30 AM" / "12:00 PM" etc, sorted by time of day rather than as text
+// (a plain text sort would put "10:00 AM" before "9:30 AM")
+function timeStringToMinutes(s) {
+  const m = String(s).match(/(\d+):(\d+)\s*([AP]M)/i);
+  if (!m) return 99999; // unparseable — push to the end rather than break the sort
+  let h = parseInt(m[1], 10);
+  const mins = parseInt(m[2], 10);
+  const ap = m[3].toUpperCase();
+  if (ap === "PM" && h !== 12) h += 12;
+  if (ap === "AM" && h === 12) h = 0;
+  return h * 60 + mins;
+}
+function compareTimeStrings(a, b) { return timeStringToMinutes(a) - timeStringToMinutes(b); }
+
+// "30 mins" / "120 mins" etc, sorted by the actual number of minutes
+// (a plain text sort would put "120 mins" before "30 mins")
+function durationStringToMinutes(s) {
+  const m = String(s).match(/(\d+)/);
+  return m ? parseInt(m[1], 10) : 99999;
+}
+function compareDurationStrings(a, b) { return durationStringToMinutes(a) - durationStringToMinutes(b); }
+
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+
+function renderAll() {
+  const q = document.getElementById("search-box").value.trim().toLowerCase();
+  const showAll = document.getElementById("show-all-toggle").checked;
+  const today = todayStr();
+
+  let rows = showAll ? allRows.slice() : allRows.filter(r => r.date >= today);
+
+  const accordionWrap = document.getElementById("accordion-wrap");
+  const flatWrap = document.getElementById("flat-results");
+
+  if (q) {
+    accordionWrap.style.display = "none";
+    flatWrap.style.display = "block";
+    const filtered = rows.filter(r =>
+      (r.activity + " " + r.venue + " " + r.date + " " + r.contact).toLowerCase().includes(q)
+    );
+    renderFlat(filtered);
+  } else {
+    flatWrap.style.display = "none";
+    accordionWrap.style.display = "block";
+    renderAccordion(rows);
+  }
+}
+
+function renderFlat(rows) {
+  const body = document.getElementById("flat-results-body");
+  body.innerHTML = "";
+  rows.forEach(r => body.appendChild(rowElement(r, true)));
+}
+
+function renderAccordion(rows) {
+  const byMonth = {};
+  rows.forEach(r => {
+    const monthKey = r.date.slice(0,7);
+    (byMonth[monthKey] = byMonth[monthKey] || {})[r.date] = (byMonth[monthKey][r.date] || []).concat(r);
+  });
+
+  const monthKeys = Object.keys(byMonth).sort();
+  const wrap = document.getElementById("accordion-wrap");
+  wrap.innerHTML = "";
+
+  if (!monthKeys.length) {
+    wrap.innerHTML = '<div style="padding:20px;text-align:center;color:#888;">No activities to show.</div>';
+    return;
+  }
+
+  monthKeys.forEach(monthKey => {
+    const dayMap = byMonth[monthKey];
+    const dayKeys = Object.keys(dayMap).sort();
+    const monthLabel = formatMonthHeader(monthKey);
+    const isOpen = !!openMonths[monthKey];
+
+    const monthDiv = document.createElement("div");
+    monthDiv.className = "month-block";
+    monthDiv.innerHTML = `
+      <div class="month-header ${isOpen ? "open" : ""}" onclick="toggleMonth('${monthKey}')">
+        <span>${monthLabel} <span class="day-count">(${dayKeys.length} day${dayKeys.length===1?"":"s"})</span></span>
+        <span class="chev">▶</span>
+      </div>
+      <div class="month-body ${isOpen ? "open" : ""}" id="month-body-${monthKey}"></div>`;
+    wrap.appendChild(monthDiv);
+
+    if (isOpen) {
+      const monthBody = monthDiv.querySelector(".month-body");
+      dayKeys.forEach(dateStr => {
+        const dayRows = dayMap[dateStr];
+        const dayOpen = !!openDays[dateStr];
+        const dayDiv = document.createElement("div");
+        dayDiv.className = "day-block";
+        dayDiv.innerHTML = `
+          <div class="day-header ${dayOpen ? "open" : ""}" onclick="toggleDay('${dateStr}')">
+            <span>${formatDateHeader(dateStr)} <span class="day-count">(${dayRows.length})</span></span>
+            <span class="chev">▶</span>
+          </div>
+          <div class="day-body ${dayOpen ? "open" : ""}" id="day-body-${dateStr}"></div>`;
+        monthBody.appendChild(dayDiv);
+
+        if (dayOpen) {
+          const table = document.createElement("table");
+          table.innerHTML = `<thead><tr><th>Date</th><th>Time</th><th>Duration</th><th>Activity</th><th>Venue</th><th>Contact</th><th></th></tr></thead><tbody></tbody>`;
+          const tbody = table.querySelector("tbody");
+          dayRows.forEach(r => tbody.appendChild(rowElement(r, false)));
+          dayDiv.querySelector(".day-body").appendChild(table);
+        }
+      });
+    }
+  });
+}
+
+function toggleMonth(monthKey) {
+  openMonths[monthKey] = !openMonths[monthKey];
+  renderAll();
+}
+function toggleDay(dateStr) {
+  openDays[dateStr] = !openDays[dateStr];
+  renderAll();
+}
+
+function formatMonthHeader(monthKey) {
+  const d = new Date(monthKey + "-01T00:00:00");
+  return d.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+}
+function formatDateHeader(dateStr) {
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+}
+
+// ── "Make this recurring" controls (used by both the Add form and the Edit row) ──
+function ordinalJS(n) { return ["", "1st", "2nd", "3rd", "4th", "5th"][n] || (n + "th"); }
+function joinWordsJS(list) {
+  if (list.length <= 1) return list.join("");
+  return list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
+}
+function ymdLocal(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+
+function recurHTML(prefix) {
+  const label = prefix === "add" ? "🔁 Make this a recurring activity" : "🔁 Also make this a recurring activity";
+  const note = prefix === "add" ? "" :
+    '<div class="recur-note">This adds a new repeating rule starting from this date — it doesn\'t change any other existing dates.</div>';
+  return `
+    <div class="recur-box">
+      <label class="recur-toggle"><input type="checkbox" id="${prefix}-recur" onchange="toggleRecur('${prefix}')"> ${label}</label>
+      <div class="recur-options" id="${prefix}-recur-options" style="display:none;">
+        <label>Repeats
+          <select id="${prefix}-cadence" onchange="updateRecur('${prefix}')">
+            <option value="Weekly">Every week</option>
+            <option value="Fortnightly">Every 2 weeks</option>
+            <option value="Monthly">Certain weeks of each month</option>
+          </select>
+        </label>
+        <span id="${prefix}-occ-wrap" style="display:none;">on the
+          <label class="occ"><input type="checkbox" id="${prefix}-occ-1" onchange="updateRecur('${prefix}')"> 1st</label>
+          <label class="occ"><input type="checkbox" id="${prefix}-occ-2" onchange="updateRecur('${prefix}')"> 2nd</label>
+          <label class="occ"><input type="checkbox" id="${prefix}-occ-3" onchange="updateRecur('${prefix}')"> 3rd</label>
+          <label class="occ"><input type="checkbox" id="${prefix}-occ-4" onchange="updateRecur('${prefix}')"> 4th</label>
+        </span>
+        <div class="recur-summary" id="${prefix}-recur-summary"></div>
+        ${note}
+      </div>
+    </div>`;
+}
+
+function toggleRecur(prefix) {
+  const on = document.getElementById(prefix + "-recur").checked;
+  document.getElementById(prefix + "-recur-options").style.display = on ? "flex" : "none";
+  updateRecur(prefix);
+}
+
+function selectedOccurrences(prefix) {
+  const out = [];
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById(prefix + "-occ-" + i);
+    if (el && el.checked) out.push(i);
+  }
+  return out;
+}
+
+// The next few dates after the start date, worked out the same way the server does it
+function nextRecurDates(startStr, cadence, occ, n) {
+  const out = [];
+  const start = new Date(startStr + "T00:00:00");
+  for (let i = 1; i <= 400 && out.length < n; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    const ok = cadence === "Weekly" ? i % 7 === 0
+             : cadence === "Fortnightly" ? i % 14 === 0
+             : (d.getDay() === start.getDay() && occ.indexOf(Math.ceil(d.getDate() / 7)) !== -1);
+    if (ok) out.push(ymdLocal(d));
+  }
+  return out;
+}
+
+function describeRecurrence(prefix, dateStr) {
+  if (!dateStr) return "Choose a date first — that will be the first date it repeats from.";
+  const cadence = document.getElementById(prefix + "-cadence").value;
+  const occ = selectedOccurrences(prefix);
+  if (cadence === "Monthly" && !occ.length) return "Tick which weeks of the month it happens (1st, 2nd, 3rd, 4th).";
+  const d = new Date(dateStr + "T00:00:00");
+  const dayName = d.toLocaleDateString(undefined, { weekday: "long" });
+  const first = d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+  let what = "every " + dayName;
+  if (cadence === "Fortnightly") what = "every second " + dayName;
+  if (cadence === "Monthly") what = "the " + joinWordsJS(occ.map(ordinalJS)) + " " + dayName + " of each month";
+  const next = nextRecurDates(dateStr, cadence, occ, 4)
+    .map(s => new Date(s + "T00:00:00").toLocaleDateString(undefined, { day: "numeric", month: "short" }));
+  return "Repeats " + what + ", starting " + first + (next.length ? " — then " + next.join(", ") + "…" : ".");
+}
+
+function updateRecur(prefix) {
+  const cadence = document.getElementById(prefix + "-cadence");
+  if (!cadence) return;
+  document.getElementById(prefix + "-occ-wrap").style.display = cadence.value === "Monthly" ? "inline" : "none";
+  const dateEl = document.getElementById(prefix + "-date");
+  document.getElementById(prefix + "-recur-summary").textContent = describeRecurrence(prefix, dateEl ? dateEl.value : "");
+}
+
+// Returns {on:false}, {on:true, error}, or {on:true, cadence, occurrences}
+function readRecurrence(prefix) {
+  const box = document.getElementById(prefix + "-recur");
+  if (!box || !box.checked) return { on: false };
+  const cadence = document.getElementById(prefix + "-cadence").value;
+  const occ = selectedOccurrences(prefix);
+  if (cadence === "Monthly" && !occ.length) {
+    return { on: true, error: "Tick which weeks of the month it repeats on (1st, 2nd, 3rd, 4th)." };
+  }
+  return { on: true, cadence: cadence, occurrences: occ.join(",") };
+}
+
+function resetRecurrence(prefix) {
+  const box = document.getElementById(prefix + "-recur");
+  if (!box) return;
+  box.checked = false;
+  document.getElementById(prefix + "-cadence").value = "Weekly";
+  for (let i = 1; i <= 4; i++) document.getElementById(prefix + "-occ-" + i).checked = false;
+  toggleRecur(prefix);
+}
+
+// Put the controls into the Add form, and keep the summary in step with the date
+document.getElementById("add-recur-mount").innerHTML = recurHTML("add");
+document.getElementById("add-date").addEventListener("change", () => updateRecur("add"));
+
+// ── Clash checking: two activities in the same venue at overlapping times ──
+let okPairs = []; // pairs of activity names marked "fine to overlap": [{a, b}]
+
+function normName(s) { return String(s || "").trim().toLowerCase(); }
+function pairKey(a, b) { const x = normName(a), y = normName(b); return x < y ? x + "||" + y : y + "||" + x; }
+function isKnownOk(a, b) { const k = pairKey(a, b); return okPairs.some(p => pairKey(p.a, p.b) === k); }
+
+// Start and end in minutes-since-midnight (60 minutes if no duration is given, same as the calendar sync)
+function timeSpan(r) {
+  const start = timeStringToMinutes(r.time);
+  if (start === 99999) return null; // no usable time, so it can't clash
+  const d = durationStringToMinutes(r.duration);
+  return { start: start, end: start + (d === 99999 ? 60 : d) };
+}
+function minsLabel(m) {
+  const h = Math.floor(m / 60) % 24, mm = m % 60;
+  return ((h % 12) || 12) + ":" + String(mm).padStart(2, "0") + (h < 12 ? "am" : "pm");
+}
+function spanLabel(r) { const s = timeSpan(r); return s ? minsLabel(s.start) + "–" + minsLabel(s.end) : ""; }
+function overlaps(a, b) {
+  const x = timeSpan(a), y = timeSpan(b);
+  return !!(x && y && x.start < y.end && y.start < x.end); // back-to-back is fine
+}
+function shortDate(ds) {
+  return new Date(ds + "T00:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+}
+
+// Existing activities that clash with a candidate ({date, time, duration, venue, activity})
+function clashesFor(cand, ignoreId) {
+  if (!timeSpan(cand) || !normName(cand.venue)) return [];
+  return allRows.filter(r =>
+    r.date === cand.date && r.id !== ignoreId &&
+    normName(r.venue) === normName(cand.venue) &&
+    overlaps(cand, r) && !isKnownOk(cand.activity, r.activity));
+}
+
+// Dates after the start date that a repeating rule would land on, up to endStr
+function recurrenceDates(startStr, cadence, occ, endStr) {
+  const out = [];
+  const start = new Date(startStr + "T00:00:00");
+  for (let i = 1; i <= 800; i++) {
+    const d = new Date(start);
+    d.setDate(d.getDate() + i);
+    const ds = ymdLocal(d);
+    if (ds > endStr) break;
+    const ok = cadence === "Weekly" ? i % 7 === 0
+             : cadence === "Fortnightly" ? i % 14 === 0
+             : (d.getDay() === start.getDay() && occ.indexOf(Math.ceil(d.getDate() / 7)) !== -1);
+    if (ok) out.push(ds);
+  }
+  return out;
+}
+function endOfSheetMonth() {
+  let last = "";
+  allRows.forEach(r => { if (r.date > last) last = r.date; });
+  if (!last) return ymdLocal(new Date());
+  const d = new Date(last + "T00:00:00");
+  return ymdLocal(new Date(d.getFullYear(), d.getMonth() + 1, 0));
+}
+
+// Asks before saving if the activity clashes (on its own date, and on any later
+// dates a repeating rule would create). Returns true if it's fine to go ahead.
+function confirmClashes(cand, ignoreId, rec) {
+  const lines = [];
+  clashesFor(cand, ignoreId).forEach(o =>
+    lines.push(shortDate(cand.date) + ": " + o.activity + " (" + spanLabel(o) + ") in " + o.venue));
+  if (rec && rec.on) {
+    const occ = String(rec.occurrences || "").split(",").filter(Boolean).map(Number);
+    recurrenceDates(cand.date, rec.cadence, occ, endOfSheetMonth()).forEach(ds => {
+      clashesFor(Object.assign({}, cand, { date: ds }), ignoreId).forEach(o => {
+        // the same activity at the same time is already there — the script skips it, so it isn't a real clash
+        if (normName(o.activity) === normName(cand.activity) && timeStringToMinutes(o.time) === timeStringToMinutes(cand.time)) return;
+        lines.push(shortDate(ds) + ": " + o.activity + " (" + spanLabel(o) + ") in " + o.venue);
+      });
+    });
+  }
+  if (!lines.length) return true;
+  const own = spanLabel(cand);
+  const more = lines.length > 6 ? "\n…and " + (lines.length - 6) + " more." : "";
+  return confirm("⚠️ CLASH — " + cand.activity + (own ? " (" + own + ")" : "") + " in " + cand.venue +
+    " overlaps with:\n\n• " + lines.slice(0, 6).join("\n• ") + more +
+    "\n\nPress OK to save anyway, or Cancel to go back and change it.");
+}
+
+// Every clash in the upcoming activities
+function findAllClashes() {
+  const today = todayStr();
+  const groups = {};
+  allRows.forEach(r => {
+    if (r.date < today || !timeSpan(r) || !normName(r.venue)) return;
+    const k = r.date + "|" + normName(r.venue);
+    (groups[k] = groups[k] || []).push(r);
+  });
+  const out = [];
+  Object.keys(groups).sort().forEach(k => {
+    const items = groups[k].slice().sort((x, y) => timeSpan(x).start - timeSpan(y).start);
+    for (let i = 0; i < items.length; i++) {
+      for (let j = i + 1; j < items.length; j++) {
+        if (overlaps(items[i], items[j]) && !isKnownOk(items[i].activity, items[j].activity)) {
+          out.push({ a: items[i], b: items[j] });
+        }
+      }
+    }
+  });
+  return out;
+}
+
+function loadOkPairs() {
+  apiGet("listOk").then(res => { if (res.success) okPairs = res.pairs; }).catch(() => {});
+}
+
+function runClashCheck() {
+  const box = document.getElementById("clash-results");
+  box.innerHTML = '<div class="clash-none" style="background:#fff6e0;color:#8a6d16;border-color:#f0dfa0;">Checking…</div>';
+  Promise.all([apiGet("list"), apiGet("listOk")]).then(results => {
+    if (results[0].success) { allRows = results[0].rows; populateDatalists(); renderAll(); }
+    if (results[1].success) okPairs = results[1].pairs;
+    renderClashResults();
+  }).catch(err => { box.innerHTML = ""; showStatus("Couldn't reach the calendar service: " + err, "err"); });
+}
+
+function renderClashResults() {
+  const box = document.getElementById("clash-results");
+  const clashes = findAllClashes();
+  let html = "";
+  if (!clashes.length) {
+    html += '<div class="clash-none">✅ No clashes found in the upcoming activities.</div>';
+  } else {
+    html += '<div style="margin-bottom:8px;font-weight:700;color:#8a6d16;">' + clashes.length + " clash" + (clashes.length === 1 ? "" : "es") + " found:</div>";
+    clashes.forEach(c => {
+      html += `<div class="clash-item">
+        <div class="clash-when">${esc(shortDate(c.a.date))} — ${esc(c.a.venue)}</div>
+        <div class="clash-row">${esc(c.a.activity)} (${esc(spanLabel(c.a))})
+          <button class="btn btn-navy btn-small" onclick="jumpToEdit('${c.a.id}','${c.a.date}')">✏️ Edit</button></div>
+        <div class="clash-row">overlaps ${esc(c.b.activity)} (${esc(spanLabel(c.b))})
+          <button class="btn btn-navy btn-small" onclick="jumpToEdit('${c.b.id}','${c.b.date}')">✏️ Edit</button></div>
+        <div class="clash-row"><button class="btn btn-gold btn-small" data-a="${escAttr(c.a.activity)}" data-b="${escAttr(c.b.activity)}" onclick="markOkBtn(this)">Mark as OK — these are meant to overlap</button></div>
+      </div>`;
+    });
+  }
+  if (okPairs.length) {
+    html += '<div class="ok-list"><b>Marked as OK</b> (never flagged, on any date):' +
+      okPairs.map(p => `<div class="ok-item">${esc(p.a)} &amp; ${esc(p.b)}
+        <button class="btn btn-navy btn-small" data-a="${escAttr(p.a)}" data-b="${escAttr(p.b)}" onclick="unOkBtn(this)">Stop ignoring</button></div>`).join("") + "</div>";
+  }
+  box.innerHTML = html;
+}
+
+function okError(res) {
+  return res.error === "Unknown action"
+    ? "the Apps Script needs its new version published first (Deploy > Manage deployments > New version)."
+    : res.error;
+}
+function markOkBtn(btn) {
+  apiPost("addOk", { a: btn.dataset.a, b: btn.dataset.b }).then(res => {
+    if (!res.success) { showStatus("Couldn't save that — " + okError(res), "err"); return; }
+    okPairs = res.pairs;
+    showStatus("Done — \"" + btn.dataset.a + "\" and \"" + btn.dataset.b + "\" won't be flagged as a clash again.", "ok");
+    renderClashResults();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+function unOkBtn(btn) {
+  apiPost("removeOk", { a: btn.dataset.a, b: btn.dataset.b }).then(res => {
+    if (!res.success) { showStatus("Couldn't change that — " + okError(res), "err"); return; }
+    okPairs = res.pairs;
+    showStatus("Done — they'll be checked for clashes again.", "ok");
+    renderClashResults();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+// Opens an activity for editing in the list below
+function jumpToEdit(id, dateStr) {
+  document.getElementById("search-box").value = "";
+  editingId = id;
+  openMonths[dateStr.slice(0, 7)] = true;
+  openDays[dateStr] = true;
+  renderAll();
+  const row = document.querySelector('tr[data-id="' + id + '"]');
+  if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function rowElement(r, showDateCol) {
+  const tr = document.createElement("tr");
+  tr.dataset.id = r.id;
+  const dateCell = `<td>${esc(r.date)}</td>`;
+  if (editingId === r.id) {
+    tr.innerHTML = `
+      <td class="edit-cell"><input type="date" id="e-date" value="${escAttr(r.date)}" onchange="updateRecur('e')"></td>
+      <td class="edit-cell"><input id="e-time" list="dl-time" value="${escAttr(r.time)}"></td>
+      <td class="edit-cell"><input id="e-duration" list="dl-duration" value="${escAttr(r.duration)}"></td>
+      <td class="edit-cell"><input id="e-activity" list="dl-activity" value="${escAttr(r.activity)}"></td>
+      <td class="edit-cell"><input id="e-venue" list="dl-venue" value="${escAttr(r.venue)}"></td>
+      <td class="edit-cell"><input id="e-contact" list="dl-contact" value="${escAttr(r.contact)}"></td>
+      <td class="row-actions">
+        <button class="btn btn-green btn-small" onclick="saveEdit('${r.id}')">Save</button>
+        <button class="btn btn-navy btn-small" onclick="editingId=null;renderAll();">Cancel</button>
+      </td>`;
+    // A second row underneath, holding the "make this recurring" option
+    const recurTr = document.createElement("tr");
+    recurTr.className = "recur-row";
+    recurTr.innerHTML = `<td colspan="7">${recurHTML("e")}</td>`;
+    const frag = document.createDocumentFragment();
+    frag.appendChild(tr);
+    frag.appendChild(recurTr);
+    return frag;
+  } else {
+    tr.innerHTML = `
+      ${dateCell}
+      <td>${esc(r.time)}</td>
+      <td>${esc(r.duration)}</td>
+      <td>${esc(r.activity)}</td>
+      <td>${esc(r.venue)}</td>
+      <td>${esc(r.contact)}</td>
+      <td class="row-actions">
+        <button class="btn btn-navy btn-small" onclick="editingId='${r.id}';renderAll();">✏️</button>
+        <button class="btn btn-red btn-small" onclick="deleteActivity('${r.id}')">🗑️</button>
+      </td>`;
+  }
+  return tr;
+}
+
+function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function escAttr(s) { return esc(s).replace(/"/g,"&quot;"); }
+
+function addActivity() {
+  const date = document.getElementById("add-date").value;
+  const activity = document.getElementById("add-activity").value.trim();
+  if (!date || !activity) { showStatus("Date and Activity are required.", "err"); return; }
+
+  const payload = {
+    date: date,
+    time: document.getElementById("add-time").value.trim(),
+    duration: document.getElementById("add-duration").value.trim(),
+    activity: activity,
+    venue: document.getElementById("add-venue").value.trim(),
+    contact: document.getElementById("add-contact").value.trim()
+  };
+  const rec = readRecurrence("add");
+  if (rec.error) { showStatus(rec.error, "err"); return; }
+  if (rec.on) { payload.recurring = "1"; payload.cadence = rec.cadence; payload.occurrences = rec.occurrences; }
+  if (!confirmClashes({ date: date, time: payload.time, duration: payload.duration, venue: payload.venue, activity: activity }, null, rec)) return;
+  showStatus(rec.on ? "Adding, setting up the repeat and updating the calendar — this can take a minute…" : "Adding and updating the calendar…", "busy");
+  apiPost("add", payload).then(res => {
+    if (!res.success) { showStatus("Couldn't add: " + res.error, "err"); return; }
+    showStatus("Added — the calendar for that day has been updated." + (res.recurringMessage ? " " + res.recurringMessage : ""), "ok");
+    ["add-time","add-duration","add-activity","add-venue","add-contact"].forEach(id => document.getElementById(id).value = "");
+    resetRecurrence("add");
+    loadRows();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function saveEdit(id) {
+  const payload = {
+    id: id,
+    date: document.getElementById("e-date").value,
+    time: document.getElementById("e-time").value.trim(),
+    duration: document.getElementById("e-duration").value.trim(),
+    activity: document.getElementById("e-activity").value.trim(),
+    venue: document.getElementById("e-venue").value.trim(),
+    contact: document.getElementById("e-contact").value.trim()
+  };
+  if (!payload.date) { showStatus("Date can't be blank.", "err"); return; }
+  const rec = readRecurrence("e");
+  if (rec.error) { showStatus(rec.error, "err"); return; }
+  if (rec.on) { payload.recurring = "1"; payload.cadence = rec.cadence; payload.occurrences = rec.occurrences; }
+  if (!confirmClashes({ date: payload.date, time: payload.time, duration: payload.duration, venue: payload.venue, activity: payload.activity }, id, rec)) return;
+  showStatus(rec.on ? "Saving, setting up the repeat and updating the calendar — this can take a minute…" : "Saving and updating the calendar…", "busy");
+  apiPost("update", payload).then(res => {
+    if (!res.success) { showStatus("Couldn't save: " + res.error, "err"); return; }
+    showStatus("Saved — the calendar has been updated." + (res.recurringMessage ? " " + res.recurringMessage : ""), "ok");
+    editingId = null;
+    loadRows();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function deleteActivity(id) {
+  if (!confirm("Delete this activity? This also removes it from the calendar.")) return;
+  showStatus("Deleting and updating the calendar…", "busy");
+  apiPost("delete", { id: id }).then(res => {
+    if (!res.success) { showStatus("Couldn't delete: " + res.error, "err"); return; }
+    showStatus("Deleted — the calendar has been updated.", "ok");
+    loadRows();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function runFullSync() {
+  if (!confirm("Run a full sync? This rebuilds the whole calendar from the Sheet and can take a few minutes.")) return;
+  showStatus("Running full sync — this can take several minutes for ~480 activities…", "busy");
+  apiPost("sync").then(res => {
+    if (!res.success) { showStatus("Sync error: " + res.error, "err"); return; }
+    showStatus(res.message, "ok");
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+function runGenerateNext() {
+  showStatus("Generating recurring activities for the next few months…", "busy");
+  apiPost("generateNext").then(res => {
+    if (!res.success) { showStatus("Couldn't generate: " + res.error, "err"); return; }
+    showStatus(res.message, "ok");
+    loadRows();
+  }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
+}
+
+// ── Sign in with a personal PIN (hub-pin.js), then load the calendar ──
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: "calendar",
+  title: "🔒 Village Calendar",
+  subtitle: "This tool is for managing the Combined Village Calendar.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function () {
+  loadRows();
+  loadOkPairs();
+});
+</script>
+</body>
+</html>
