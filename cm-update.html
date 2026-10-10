@@ -180,20 +180,6 @@
 </head>
 <body>
 
-<!-- ── PIN OVERLAY ── -->
-<div id="pinOverlay">
-  <div class="pin-box">
-    <div class="pin-logo">🔒</div>
-    <h2>CM Update</h2>
-    <p>This page is for Community Manager use only.<br>Please enter your PIN to continue.</p>
-    <input type="password" class="pin-input" id="pinInput" maxlength="4"
-           placeholder="••••" inputmode="numeric"
-           onkeydown="if(event.key==='Enter')checkPin()">
-    <button class="pin-btn" onclick="checkPin()">Enter</button>
-    <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
-  </div>
-</div>
-
 <!-- ── HEADER ── -->
 <div class="page-header">
   <h1>📋 CM Update</h1>
@@ -285,36 +271,14 @@
 <div class="toast toast-success" id="toast-success">✅ Saved! Reloading to confirm…</div>
 <div class="toast toast-error"   id="toast-error">⚠️ Something went wrong — please try again</div>
 
+<script src="hub-pin.js"></script>
 <script>
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
 const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJBsVGUur5l7ixOFKqkDHGVsThkoRBINZr7YRc4fxy4Bb0K0ifT8cpoEtoO8uMD_dN7Q/exec";
-const CM_PIN = "CMUD";
 // ─────────────────────────────────────────────────────────────────────────────
 
 let issueData = [];
-
-// ── PIN ──────────────────────────────────────────────────────────────────────
-function checkPin() {
-  const val = document.getElementById("pinInput").value;
-  if (val === CM_PIN) {
-    sessionStorage.setItem("bdrv_cmupdate_auth", "true");
-    document.getElementById("pinOverlay").style.display = "none";
-    document.getElementById("pinInput").value = "";
-    loadIssues();
-  } else {
-    const err = document.getElementById("pinError");
-    err.style.display = "block";
-    setTimeout(() => err.style.display = "none", 3000);
-    document.getElementById("pinInput").value = "";
-  }
-}
-
-// Skip PIN if already authenticated this session
-if (sessionStorage.getItem("bdrv_cmupdate_auth") === "true") {
-  document.getElementById("pinOverlay").style.display = "none";
-  loadIssues();
-}
 
 // ── STATUS HELPERS ────────────────────────────────────────────────────────────
 function statusClass(s) {
@@ -569,11 +533,13 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
     category,
     topic: originalTopic,
     notes,
-    status
+    status,
+    token: HubPin.token()
   });
 
   try {
-    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+    const reply = await (await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload })).json();
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
 
     // Update local data and refresh the badge/preview in the DOM
     const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
@@ -625,11 +591,13 @@ async function submitCmUpdate(uid, originalCategory, originalTopic) {
     category: originalCategory,
     topic: originalTopic,
     notes: newNotes,
-    status
+    status,
+    token: HubPin.token()
   });
 
   try {
-    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+    const reply = await (await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload })).json();
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
 
     if (issue) { issue.notes = newNotes; }
     textarea.value = "";
@@ -831,6 +799,18 @@ function escHtml(s) {
   if (!s) return "";
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
+
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+// The old CM PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["community-manager", "admin"],
+  title: "🔒 CM Update",
+  subtitle: "For the Community Manager.",
+  legacyPin: "CMUD",
+  legacyUntil: "2026-11-30"
+}, loadIssues);
+// The old CM PIN has letters in it, so let the PIN box show a full keyboard
+(function () { var p = document.getElementById("hubpin-pin"); if (p) p.setAttribute("inputmode", "text"); })();
 </script>
 <script>
 (function(){

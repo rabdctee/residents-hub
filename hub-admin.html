@@ -331,15 +331,6 @@
 </head>
 <body>
 
-<!-- ── PIN OVERLAY ── -->
-<div id="pin-overlay">
-  <h2>🔒 Hub Admin Dashboard</h2>
-  <p>Enter the committee PIN to continue.</p>
-  <input type="password" id="pin-input" maxlength="6" placeholder="••••"
-         inputmode="numeric" autocomplete="off">
-  <div id="pin-error"></div>
-</div>
-
 <div class="back-bar" id="back-bar" style="display:none;">
   <a href="index.html">🏠 Home</a>
 </div>
@@ -1018,6 +1009,7 @@
 
 </div><!-- /page-wrap -->
 
+<script src="hub-pin.js"></script>
 <script>
 // ── ADD NEW ISSUE ────────────────────────────────────────────────────────────
 const ISSUES_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJBsVGUur5l7ixOFKqkDHGVsThkoRBINZr7YRc4fxy4Bb0K0ifT8cpoEtoO8uMD_dN7Q/exec";
@@ -1057,10 +1049,11 @@ async function submitNewIssue() {
   const tag   = `[Added by RC - ${stamp}]` + (addedBy ? ` (${addedBy})` : "");
   const notes = rawNotes ? `${tag} ${rawNotes}` : `${tag} New issue added.`;
 
-  const payload = JSON.stringify({ action: "add", category, topic, notes, status, source });
+  const payload = JSON.stringify({ action: "add", category, topic, notes, status, source, token: HubPin.token() });
 
   try {
-    await fetch(ISSUES_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+    const reply = await (await fetch(ISSUES_SCRIPT_URL, { method: "POST", body: payload })).json();
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
     // Clear fields
     document.getElementById("ai-category").value = "";
     document.getElementById("ai-category-new").value = "";
@@ -1089,41 +1082,11 @@ function showAiMsg(text, color) {
   el.style.display = "block";
 }
 
-// ── PIN ──────────────────────────────────────────────────────────────────────
-const CORRECT_PIN = '1957';   // ← change this to your actual PIN
-
-const pinInput  = document.getElementById('pin-input');
-const pinError  = document.getElementById('pin-error');
-const pinOverlay = document.getElementById('pin-overlay');
-const mainContent = document.getElementById('main-content');
-
-// Check if already authenticated this session
-if (sessionStorage.getItem('hub_admin_auth') === 'yes') {
-  pinOverlay.classList.add('hidden');
+// ── Sign in with a personal PIN (hub-pin.js) — set up at the end of this script ──
+function showDashboard() {
   document.getElementById('back-bar').style.display = '';
-  mainContent.style.display = '';
-  setTimeout(init, 0);
-}
-
-pinInput.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') checkPin();
-});
-pinInput.addEventListener('input', function() {
-  if (this.value.length >= 4) checkPin();
-});
-
-function checkPin() {
-  if (pinInput.value === CORRECT_PIN) {
-    sessionStorage.setItem('hub_admin_auth', 'yes');
-    pinOverlay.classList.add('hidden');
-    document.getElementById('back-bar').style.display = '';
-    mainContent.style.display = '';
-    init();
-  } else if (pinInput.value.length >= CORRECT_PIN.length) {
-    pinError.textContent = '⚠️ Incorrect PIN — please try again.';
-    pinInput.value = '';
-    setTimeout(() => { pinError.textContent = ''; }, 2500);
-  }
+  document.getElementById('main-content').style.display = '';
+  init();
 }
 
 // ── DATE ─────────────────────────────────────────────────────────────────────
@@ -1217,6 +1180,15 @@ function resetChecks() {
   localStorage.removeItem(STORAGE_KEY);
   buildChecklist();
 }
+
+// The old Hub Admin PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["admin"],
+  title: "🔒 Hub Admin Dashboard",
+  subtitle: "For the Hub administrator.",
+  legacyPin: "1957",
+  legacyUntil: "2026-11-30"
+}, showDashboard);
 </script>
 </body>
 </html>
