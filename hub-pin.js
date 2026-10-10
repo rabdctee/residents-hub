@@ -139,7 +139,7 @@
     var s = readSession();
     if (s && s.areas && s.areas.indexOf(area) !== -1 && !(s.legacy && retired)) {
       if (s.legacy) showLegacyBanner(opts);
-      onOk({ name: s.name, legacy: !!s.legacy });
+      onOk({ name: s.name, legacy: !!s.legacy, token: s.token || "" });
       return;
     }
 
@@ -202,8 +202,8 @@
       post({ action: "verify", name: name, pin: pin, area: area }).then(function (res) {
         if (!res.success) { fail(res.error || "That didn't work. Please try again."); return; }
         rememberName(res.name);
-        writeSession({ name: res.name, areas: res.areas || [area] });
-        finish({ name: res.name, legacy: false });
+        writeSession({ name: res.name, areas: res.areas || [area], token: res.token || "" });
+        finish({ name: res.name, legacy: false, token: res.token || "" });
       }).catch(function () {
         fail("Couldn't reach the PIN service. Please check your internet connection and try again.");
       });

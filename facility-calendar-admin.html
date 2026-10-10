@@ -136,12 +136,7 @@
 </head>
 <body>
 
-<div id="pin-overlay">
-  <h2>🔒 Village Calendar</h2>
-  <p>This tool is for managing the Combined Village Calendar.</p>
-  <input type="password" id="pin-input" maxlength="6" inputmode="numeric" placeholder="••••">
-  <div id="pin-error"></div>
-</div>
+<!-- Sign-in screen now comes from hub-pin.js (personal PINs) — see the bottom of this file -->
 
 <div class="back-bar"><a href="members-area.html">← Back to Members Area</a></div>
 
@@ -217,29 +212,15 @@
 <datalist id="dl-venue"></datalist>
 <datalist id="dl-contact"></datalist>
 
+<script src="hub-pin.js"></script>
 <script>
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzzsMFnQXBPNfdXnKvU4lju_2LIU5QangsqQwq_NXFYu2r9GA1dhZp0x_H2sf9iFrHcHA/exec";
 const SECRET_KEY = "zwQQcGAflBHjDc91l3DZceVf";
-const CAL_PIN = "5304";
 
 let allRows = [];
 let editingId = null;
 let openMonths = {};
 let openDays = {};
-
-document.getElementById("pin-input").addEventListener("input", function () {
-  if (this.value.length === CAL_PIN.length) checkPin(this.value);
-});
-function checkPin(val) {
-  if (val === CAL_PIN) {
-    document.getElementById("pin-overlay").style.display = "none";
-    loadRows();
-    loadOkPairs();
-  } else {
-    document.getElementById("pin-error").textContent = "Incorrect PIN";
-    document.getElementById("pin-input").value = "";
-  }
-}
 
 let statusTimer = null;
 function showStatus(msg, kind) {
@@ -251,13 +232,26 @@ function showStatus(msg, kind) {
   if (kind !== "busy") statusTimer = setTimeout(() => { b.style.display = "none"; }, msg.length > 90 ? 15000 : 5000);
 }
 
+// Personal-PIN sign-ins send their sign-in pass; the old shared PIN (changeover only) sends the old key
+function authParams() {
+  const s = HubPin.current();
+  return (s && s.token) ? { token: s.token } : { key: SECRET_KEY };
+}
+// If the calendar service says the sign-in has run out, sign out and show the sign-in screen again
+function checkSignIn(res) {
+  if (res && res.signIn) {
+    alert("For your security, please sign in again.");
+    HubPin.signOut();
+  }
+  return res;
+}
 function apiGet(action, extra) {
-  const params = new URLSearchParams(Object.assign({ action, key: SECRET_KEY }, extra || {}));
-  return fetch(APPS_SCRIPT_URL + "?" + params.toString()).then(r => r.json());
+  const params = new URLSearchParams(Object.assign({ action }, authParams(), extra || {}));
+  return fetch(APPS_SCRIPT_URL + "?" + params.toString()).then(r => r.json()).then(checkSignIn);
 }
 function apiPost(action, extra) {
-  const body = new URLSearchParams(Object.assign({ action, key: SECRET_KEY }, extra || {}));
-  return fetch(APPS_SCRIPT_URL, { method: "POST", body }).then(r => r.json());
+  const body = new URLSearchParams(Object.assign({ action }, authParams(), extra || {}));
+  return fetch(APPS_SCRIPT_URL, { method: "POST", body }).then(r => r.json()).then(checkSignIn);
 }
 
 function loadRows() {
@@ -845,6 +839,19 @@ function runGenerateNext() {
     loadRows();
   }).catch(err => showStatus("Couldn't reach the calendar service: " + err, "err"));
 }
+
+// ── Sign in with a personal PIN (hub-pin.js), then load the calendar ──
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: "calendar",
+  title: "🔒 Village Calendar",
+  subtitle: "This tool is for managing the Combined Village Calendar.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function () {
+  loadRows();
+  loadOkPairs();
+});
 </script>
 </body>
 </html>
