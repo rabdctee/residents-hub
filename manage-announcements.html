@@ -471,6 +471,14 @@
     onLinkChoiceChange();
   }
 
+// ── Sign-in pass: sent with every save, so the server knows who is asking ──
+function signedBody(obj) { obj = obj || {}; obj.token = HubPin.token(); return JSON.stringify(obj); }
+function checkSignIn(data) {
+  if (data && data.signIn) { HubPin.expired(); return new Promise(function () {}); }
+  return data;
+}
+function readSignIn(r) { return r.json().then(checkSignIn); }
+
 // ── Sign in with a personal PIN (hub-pin.js), then load the page ──
 // The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
 HubPin.require({
@@ -735,8 +743,8 @@ HubPin.require({
       : { action:'addAnnouncement', title:title, message:message,
           link:link, linkLabel:linkLabel, displayFrom:displayFrom, displayUntil:displayUntil };
 
-    fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(payload) })
-    .then(function() {
+    fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body:signedBody(payload) })
+    .then(readSignIn).then(function() {
       var wasEditing = editingRow;
       btn.disabled = false;
       clearInterval(mt_manageannouncementshtml); btn.textContent = wasEditing ? '💾 Save Changes' : '💾 Add Announcement';
@@ -773,8 +781,8 @@ HubPin.require({
     var mt_manageannouncementshtml_r_i = 0; btn.textContent = mt_manageannouncementshtml_r_msgs[0];
     var mt_manageannouncementshtml_r = setInterval(function(){ mt_manageannouncementshtml_r_i = (mt_manageannouncementshtml_r_i+1)%mt_manageannouncementshtml_r_msgs.length; btn.textContent = mt_manageannouncementshtml_r_msgs[mt_manageannouncementshtml_r_i]; }, 3000);
     fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'deleteAnnouncement', row:deleteRow }) })
-    .then(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 800); })
+      body:signedBody({ action:'deleteAnnouncement', row:deleteRow }) })
+    .then(readSignIn).then(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 800); })
     .catch(function() { closeDelete(); showToast('Announcement removed ✓'); setTimeout(loadAnnouncements, 1500); });
   }
 
@@ -829,9 +837,9 @@ HubPin.require({
     });
     fetch(SCRIPT_URL, {
       method:'POST', headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'reorderAnnouncements', order:order })
+      body:signedBody({ action:'reorderAnnouncements', order:order })
     })
-    .then(function() { showToast('Order saved ✓'); })
+    .then(readSignIn).then(function() { showToast('Order saved ✓'); })
     .catch(function() { showToast('Order saved ✓'); });
   }
 

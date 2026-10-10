@@ -315,7 +315,9 @@ async function setStatus(btnEl, timestamp, newStatus, cardId) {
   cardEl.querySelectorAll('button').forEach(b=>b.disabled=true);
   msgEl.className = 'card-msg'; msgEl.textContent = 'Saving…';
   try {
-    await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({action:'setSessionStatus', timestamp, status:newStatus}) });
+    const resp = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({action:'setSessionStatus', timestamp, status:newStatus, token: HubPin.token()}) });
+    const reply = await resp.json().catch(()=>({}));
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
     const row = allRows.find(r=>r.timestamp===timestamp);
     if (row) { row.status = newStatus; row.tab = newStatus; }
     updateBadges();
@@ -344,7 +346,9 @@ async function addSession() {
 
   msgEl.className='card-msg'; msgEl.textContent='Saving…';
   try {
-    await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({action:'addSession', title, type, date, time, host, format, desc, link}) });
+    const resp = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body: JSON.stringify({action:'addSession', title, type, date, time, host, format, desc, link, token: HubPin.token()}) });
+    const reply = await resp.json().catch(()=>({}));
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
     msgEl.className='card-msg ok'; msgEl.textContent='✅ Session added — refresh to see it.';
     clearForm();
     setTimeout(loadSessions, 2000);

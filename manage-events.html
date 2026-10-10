@@ -870,8 +870,8 @@
       paymentByDate: paymentByDate ? fmtDate(paymentByDate) : ''
     };
 
-    fetch(EVENTS_URL, { method:'POST', body:JSON.stringify(payload) })
-      .then(function(r){ return r.json(); })
+    fetch(EVENTS_URL, { method:'POST', body:signedBody(payload) })
+      .then(function(r){ return r.json(); }).then(checkSignIn)
       .then(function(data){
         btn.disabled = false;
         btn.textContent = row ? '✓ Save Changes' : '✓ Add Event';
@@ -988,7 +988,7 @@
     var btn = document.getElementById('editSaveBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
 
-    fetch(EVENTS_URL, { method:'POST', body:JSON.stringify({
+    fetch(EVENTS_URL, { method:'POST', body:signedBody({
       action:'editEvent', row:row, name:name,
       date:fmtDate(date), time:time,
       location:location, email:email, link:link,
@@ -997,7 +997,7 @@
       paymentType: paymentType,
       paymentByDate: paymentByDate ? fmtDate(paymentByDate) : ''
     })})
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return r.json(); }).then(checkSignIn)
     .then(function(data){
       btn.disabled = false; btn.textContent = '💾 Save Changes';
       closeEditModal();
@@ -1026,8 +1026,8 @@
     if (!deleteEventRow) return;
     var btn = document.getElementById('deleteEventsBtn');
     btn.disabled = true; btn.textContent = 'Deleting…';
-    fetch(EVENTS_URL, { method:'POST', body:JSON.stringify({ action:'deleteEvent', row:deleteEventRow }) })
-      .then(function(r){ return r.json(); })
+    fetch(EVENTS_URL, { method:'POST', body:signedBody({ action:'deleteEvent', row:deleteEventRow }) })
+      .then(function(r){ return r.json(); }).then(checkSignIn)
       .then(function(){
         closeDeleteEvent(); showToast('Event deleted ✓');
         loadEvents();
@@ -1180,9 +1180,9 @@
     fetch(WIDGET_URL, {
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify(payload)
+      body:signedBody(payload)
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return r.json(); }).then(checkSignIn)
     .then(function(){
       showToast(ev.name + ' added to widget ✓');
       loadWidgetEvents();
@@ -1216,9 +1216,9 @@
     fetch(WIDGET_URL, {
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'addEvent', date:date, name:name, link:link, displayFrom:displayFrom })
+      body:signedBody({ action:'addEvent', date:date, name:name, link:link, displayFrom:displayFrom })
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return r.json(); }).then(checkSignIn)
     .then(function(){
       btn.disabled = false; btn.textContent = '➕ Add to Widget';
       showAlert('alertWidget','success','Item added to widget.');
@@ -1270,9 +1270,9 @@
     });
     fetch(WIDGET_URL, {
       method:'POST', headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'reorderEvents', events:updated })
+      body:signedBody({ action:'reorderEvents', events:updated })
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return r.json(); }).then(checkSignIn)
     .then(function(){ btn.disabled=false; btn.textContent='💾 Save Changes'; closeWidgetLinkModal(); showToast('Updated ✓'); loadWidgetEvents(); })
     .catch(function(){ btn.disabled=false; btn.textContent='💾 Save Changes'; closeWidgetLinkModal(); showToast('Updated ✓'); setTimeout(loadWidgetEvents,1000); });
   }
@@ -1310,9 +1310,9 @@
     fetch(WIDGET_URL, {
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'reorderEvents', events:updated })
+      body:signedBody({ action:'reorderEvents', events:updated })
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return r.json(); }).then(checkSignIn)
     .then(function(){
       btn.disabled = false; btn.textContent = '💾 Save Link';
       closeWidgetLinkModal();
@@ -1348,9 +1348,9 @@
     fetch(WIDGET_URL, {
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'reorderEvents', events:updated })
+      body:signedBody({ action:'reorderEvents', events:updated })
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return r.json(); }).then(checkSignIn)
     .then(function(){
       closeDeleteWidget();
       btn.disabled = false; btn.textContent = 'Remove';
@@ -1392,12 +1392,20 @@
     fetch(WIDGET_URL, {
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({ action:'reorderEvents', events:widgetEvents })
+      body:signedBody({ action:'reorderEvents', events:widgetEvents })
     })
-    .then(function(r){ return r.json(); })
+    .then(function(r){ return r.json(); }).then(checkSignIn)
     .then(function(){ showToast('Order saved ✓'); })
     .catch(function(){ showToast('Order saved ✓'); });
   }
+
+// ── Sign-in pass: sent with every save, so the server knows who is asking ──
+function signedBody(obj) { obj = obj || {}; obj.token = HubPin.token(); return JSON.stringify(obj); }
+function checkSignIn(data) {
+  if (data && data.signIn) { HubPin.expired(); return new Promise(function () {}); }
+  return data;
+}
+function readSignIn(r) { return r.json().then(checkSignIn); }
 
   // ═══════════════════════════════════════════════════════════
   // INIT

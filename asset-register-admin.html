@@ -78,18 +78,9 @@
 <body>
 <div class="wrap">
 
-  <!-- ===== PIN SCREEN ===== -->
-  <div id="login">
-    <h2>Asset Register – Admin</h2>
-    <p class="sub" style="margin-bottom:16px">For Social Club and Residents Committee use.</p>
-    <div class="field"><label for="uName">Your name</label><input id="uName" autocomplete="name"></div>
-    <div class="field"><label for="uPin">PIN</label><input id="uPin" type="password" inputmode="numeric"></div>
-    <button class="primary" onclick="login()">Open the register</button>
-    <p class="err" id="loginErr"></p>
-  </div>
-
-  <!-- ===== MAIN AREA (hidden until PIN accepted) ===== -->
+  <!-- ===== MAIN AREA (hidden until signed in with a personal PIN — see hub-pin.js) ===== -->
   <div id="app" hidden>
+    <p class="err" id="loginErr"></p>
     <h1>Asset Register</h1>
     <p class="sub">Items bought with residents' funds, and the care they receive. <a href="asset-register.html">View the residents' page</a></p>
 
@@ -127,6 +118,7 @@
 <div id="modal"><div class="box" id="modalBox"></div></div>
 <div id="toast"></div>
 
+<script src="hub-pin.js"></script>
 <script>
 /* ============ SETTINGS – paste your web app URL here ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbyMuPYlG5tY-v-6LOM0dazDWZVEz_gLDCwfckSZmPjwr129uqi6BOSAOXY0zaDOnvFf/exec';
@@ -163,27 +155,29 @@ function taskStatus(t){
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2600); }
 function options(list, sel){ return list.map(o => `<option${o===sel?' selected':''}>${esc(o)}</option>`).join(''); }
 
-/* ---------- Login & loading ---------- */
-async function login(){
-  USER = $('uName').value.trim(); PIN = $('uPin').value.trim();
-  if (!USER || !PIN){ $('loginErr').textContent = 'Please enter your name and the PIN.'; return; }
-  $('loginErr').textContent = 'Checking…';
-  const ok = await loadData();
-  if (ok){ $('login').hidden = true; $('app').hidden = false; }
+/* ---------- Sign-in & loading ---------- */
+// The sign-in pass (personal PIN) goes with every request. During the changeover,
+// someone who used the old shared PIN sends that instead, until 30 November 2026.
+function authQuery(){
+  const t = HubPin.token();
+  return t ? `token=${encodeURIComponent(t)}` : `pin=${encodeURIComponent(PIN)}`;
 }
 
 async function loadData(){
   try{
-    const r = await fetch(`${API_URL}?action=admin&pin=${encodeURIComponent(PIN)}`);
+    const r = await fetch(`${API_URL}?action=admin&${authQuery()}`);
     const j = await r.json();
+    if (j.signIn){ HubPin.expired(); return false; }   // sign-in has run out
     if (!j.ok){ $('loginErr').textContent = j.error; return false; }
+    $('loginErr').textContent = '';
     DATA = j; drawAll(); return true;
   }catch(e){ $('loginErr').textContent = 'Could not reach the register. Check the internet connection and try again.'; return false; }
 }
 
 async function send(action, record){
-  const r = await fetch(API_URL, { method:'POST', body: JSON.stringify({ action, record, pin:PIN, user:USER }) });
+  const r = await fetch(API_URL, { method:'POST', body: JSON.stringify({ action, record, token:HubPin.token(), pin:PIN, user:USER }) });
   const j = await r.json();
+  if (j.signIn){ HubPin.expired(); throw new Error('please sign in again.'); }
   if (!j.ok) throw new Error(j.error);
   return j;
 }
@@ -377,7 +371,21 @@ async function saveAndReload(action, rec, msg){
   catch(e){ $('formErr').textContent = 'Not saved: ' + e.message; }
 }
 
-$('uPin').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+// ── Sign in with a personal PIN (hub-pin.js), then open the register ──
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["sc-convenor", "sc-treasurer", "rc-chair", "rc-treasurer", "admin"],
+  title: "🔒 Asset Register – Admin",
+  subtitle: "For Social Club and Residents Committee use.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function () {
+  const me = HubPin.current() || {};
+  USER = me.name || 'Shared PIN user';
+  PIN  = me.legacy ? '5304' : '';
+  $('app').hidden = false;
+  loadData();
+});
 </script>
 </body>
 </html>

@@ -702,14 +702,15 @@ async function setStatus(btnEl, timestamp, headline, newStatus, cardId) {
   var _cmt = setInterval(function(){ _ci = (_ci+1)%_cmsgs.length; msgEl.textContent = _cmsgs[_ci]; }, 3000);
 
   try {
-    await fetch(SCRIPT_URL, {
+    const resp = await fetch(SCRIPT_URL, {
       method : 'POST',
-      mode   : 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body   : JSON.stringify({ action: 'setStatus', timestamp, headline, status: newStatus })
+      body   : JSON.stringify({ action: 'setStatus', timestamp, headline, status: newStatus, token: HubPin.token() })
     });
+    const reply = await resp.json().catch(function() { return {}; });
+    if (reply.signIn) { clearInterval(_cmt); HubPin.expired(); return; }   // sign-in has run out
 
-    // no-cors — assume success, update local data and re-render
+    // Saved — update local data and re-render
     const row = allRows.find(r => r.timestamp === timestamp && r.headline === headline);
     if (row) row.status = newStatus;
     updateBadges();

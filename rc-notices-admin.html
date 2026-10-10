@@ -400,7 +400,21 @@
     document.getElementById('notice-date').value = yyyy + '-' + mm + '-' + dd;
   });
 
-  // ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+  // ── Sign-in pass: added to every save, so the server knows who is asking ──
+function signFD(fd) {
+  var p = JSON.parse(fd.get('payload') || '{}');
+  p.token = HubPin.token();
+  fd.set('payload', JSON.stringify(p));
+  return fd;
+}
+function readSignIn(r) {
+  return r.json().then(function (data) {
+    if (data && data.signIn) { HubPin.expired(); return new Promise(function () {}); }
+    return data;
+  });
+}
+
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
   // The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
   HubPin.require({
     area: ["rc-chair", "rc-secretary", "sc-convenor", "admin"],
@@ -467,8 +481,8 @@
     var fd = new FormData();
     fd.append('payload', payload);
 
-    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd })
-      .then(function() {
+    fetch(SCRIPT_URL, { method: 'POST', body: signFD(fd) })
+      .then(readSignIn).then(function() {
         clearInterval(msgTimer);
         showStatus('✅ Notice posted successfully!', 'success');
         document.getElementById('notice-title').value = '';
@@ -634,8 +648,8 @@
       link:   linkVal
     }));
 
-    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd })
-      .then(function() {
+    fetch(SCRIPT_URL, { method: 'POST', body: signFD(fd) })
+      .then(readSignIn).then(function() {
         clearInterval(msgTimer);
         showStatus('✅ Notice updated successfully!', 'success');
         cancelEdit();
@@ -660,8 +674,8 @@
     var fd = new FormData();
     fd.append('payload', JSON.stringify({ action: 'archive', row: rowNum }));
 
-    fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: fd })
-      .then(function() {
+    fetch(SCRIPT_URL, { method: 'POST', body: signFD(fd) })
+      .then(readSignIn).then(function() {
         showStatus('✅ Notice archived.', 'success');
         setTimeout(loadNotices, 1500);
       })

@@ -434,9 +434,10 @@
     document.getElementById('volStatusMsg').style.display = 'block';
     document.getElementById('volStatusMsg').textContent = 'Loading submissions…';
 
-    fetch(SCRIPT_URL + '?key=' + encodeURIComponent(ADMIN_KEY))
+    fetch(SCRIPT_URL + '?key=' + encodeURIComponent(ADMIN_KEY) + '&token=' + encodeURIComponent(HubPin.token()))
       .then(function(r){ return r.json(); })
       .then(function(res){
+        if (res.signIn) { HubPin.expired(); return; }   // sign-in has run out
         if (res.result !== 'success') {
           document.getElementById('talksStatusMsg').textContent = 'Could not load data: ' + (res.message || 'unknown error');
           return;
@@ -535,11 +536,13 @@
     payload.action = id ? 'updateTalk' : 'addTalk';
     if (id) payload.id = id;
 
+    payload.token = HubPin.token();
     fetch(SCRIPT_URL, {
-      method: 'POST', mode: 'no-cors',
+      method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload)
-    }).then(function(){
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if (res.signIn) { HubPin.expired(); return; }   // sign-in has run out
       clearTalkForm();
       setTimeout(function(){
         loadAll();
@@ -598,10 +601,11 @@
 
   function changeVolStatus(id, newStatus) {
     fetch(SCRIPT_URL, {
-      method: 'POST', mode: 'no-cors',
+      method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'updateVolunteerStatus', key: ADMIN_KEY, id: id, status: newStatus })
-    }).then(function(){
+      body: JSON.stringify({ action: 'updateVolunteerStatus', key: ADMIN_KEY, token: HubPin.token(), id: id, status: newStatus })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if (res.signIn) { HubPin.expired(); return; }   // sign-in has run out
       allVolunteers.forEach(function(v){ if (v.ID.toString() === id.toString()) v.Status = newStatus; });
       renderVolunteers();
     }).catch(function(){

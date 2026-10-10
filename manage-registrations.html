@@ -406,8 +406,9 @@
       '<tr><td colspan="8" class="status-msg">Loading…</td></tr>';
     document.getElementById('addBtn').style.display = 'none';
 
-    fetch(SCRIPT_URL + '?action=getRegistrations&event=' + encodeURIComponent(currentEvent))
-      .then(function(r) { return r.json(); })
+    fetch(SCRIPT_URL + '?action=getRegistrations&event=' + encodeURIComponent(currentEvent) +
+          '&token=' + encodeURIComponent(HubPin.token()))
+      .then(function(r) { return r.json(); }).then(checkSignIn)
       .then(function(data) {
         allRegistrations = data.registrations || [];
         activeFilter = 'all';
@@ -640,9 +641,9 @@
     fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
+      body: signedBody(payload)
     })
-    .then(function(r) { return r.json(); })
+    .then(function(r) { return r.json(); }).then(checkSignIn)
     .then(function(data) {
       if (data.status === 'ok') {
         var wasEditing = editingRow;
@@ -693,9 +694,9 @@
     fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action:'deleteRegistration', row:deleteRow })
+      body: signedBody({ action:'deleteRegistration', row:deleteRow })
     })
-.then(function() {
+.then(readSignIn).then(function() {
       closeDelete();
       showToast('Registration deleted ✓');
       setTimeout(loadRegistrations, 1000);
@@ -720,6 +721,14 @@
     return (str || '').toString()
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
+
+// ── Sign-in pass: sent with every save, so the server knows who is asking ──
+function signedBody(obj) { obj = obj || {}; obj.token = HubPin.token(); return JSON.stringify(obj); }
+function checkSignIn(data) {
+  if (data && data.signIn) { HubPin.expired(); return new Promise(function () {}); }
+  return data;
+}
+function readSignIn(r) { return r.json().then(checkSignIn); }
 
   // ── Init ───────────────────────────────────────────────────
 // ── Sign in with a personal PIN (hub-pin.js), then load the page ──
