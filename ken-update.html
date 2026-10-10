@@ -617,11 +617,12 @@ async function submitAdd() {
   btn.innerHTML = '<span class="spinner"></span>Adding issue…';
 
   try {
-    await fetch(APPS_SCRIPT_URL, {
+    const resp = await fetch(APPS_SCRIPT_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "add", category: "Manor", topic, notes, status, source: "Manor", token: HubPin.token() }),
-      mode: "no-cors"
+      body: JSON.stringify({ action: "add", category: "Manor", topic, notes, status, source: "Manor", token: HubPin.token() })
     });
+    const reply = await resp.json();
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
     showMsg("add-success");
     document.getElementById("add-topic").value  = "";
     document.getElementById("add-notes").value  = "";
@@ -682,7 +683,7 @@ async function submitUpdate() {
   btn.innerHTML = '<span class="spinner"></span>Saving…';
 
   try {
-    await fetch(APPS_SCRIPT_URL, {
+    const resp = await fetch(APPS_SCRIPT_URL, {
       method: "POST",
       body: JSON.stringify({
         action:   "update",
@@ -691,9 +692,10 @@ async function submitUpdate() {
         notes:    notes || issue.notes,
         status:   status,
         token:    HubPin.token()
-      }),
-      mode: "no-cors"
+      })
     });
+    const reply = await resp.json();
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
     showMsg("upd-success");
     document.getElementById("upd-issue").value  = "";
     document.getElementById("upd-notes").value  = "";

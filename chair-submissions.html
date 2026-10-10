@@ -108,7 +108,7 @@
 <script src="hub-pin.js"></script>
 <script>
   // ============ SETUP: fill these in ============
-  const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4RH5ux1yecdDf6V9Zrialm8jabfNTXWOVfpzO2vwMFMp6amniOP_FH4JwhgNeXLHK/exec";   // ← the Resident Submissions web app address (same as in raise-a-concern.html)
   const CHAIR_SECRET_KEY = "C0ncerns"; // Must match the Apps Script exactly
   // ================================================
 
@@ -120,6 +120,7 @@
     fetch(`${APPS_SCRIPT_URL}?key=${encodeURIComponent(CHAIR_SECRET_KEY)}&token=${encodeURIComponent(HubPin.token())}`)
       .then(r => r.json())
       .then(rows => {
+        if (rows && rows.signIn) { HubPin.expired(); return; }   // sign-in has run out
         // rows[0] is the header row; each following row is a submission
         allRows = rows.slice(1).map((r, i) => ({
           rowNum: i + 2, // actual sheet row number (header is row 1)
@@ -210,8 +211,10 @@
     data.append('discussed', discussed);
     data.append('linked', linked);
 
-    fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: data })
-      .then(() => {
+    fetch(APPS_SCRIPT_URL, { method: 'POST', body: data })
+      .then(r => r.json())
+      .then(reply => {
+        if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
         document.getElementById(`saved-${rowNum}`).textContent = "Saved ✓";
         setTimeout(() => { document.getElementById(`saved-${rowNum}`).textContent = ""; }, 3000);
       });

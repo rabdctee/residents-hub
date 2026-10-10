@@ -529,7 +529,8 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
   });
 
   try {
-    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+    const reply = await (await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload })).json();
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
 
     // Update local data and refresh the badge/preview in the DOM
     const issue = issueData.find(i => i.category === originalCategory && i.topic === originalTopic);
@@ -667,7 +668,8 @@ ${prefix}` : prefix;
   });
 
   try {
-    await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+    const reply = await (await fetch(APPS_SCRIPT_URL, { method: "POST", body: payload })).json();
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
 
     // Record alert for CM
     const alerts = JSON.parse(localStorage.getItem("bdrv_rc_alerts") || "[]");
