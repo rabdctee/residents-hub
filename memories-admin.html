@@ -359,6 +359,7 @@
 
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxfA7kQVfNgjhkY-Nb9ONvnt5CaVlzfTx18J9MIAsmyLEZ8YFYQPrvhvh03rEFHcvh-/exec';
 const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHwHHy1obnTMIezPfJS1JVmDAOUIgrploP8RgEhCJAWQ-1wfAoNzk3U-5wns3zXaTnhXx62-Gji0cm/pub?gid=0&single=true&output=csv';
@@ -571,12 +572,13 @@ async function setStatus(btnEl, timestamp, newStatus, cardId) {
   msgEl.textContent = 'Saving…';
 
   try {
-    await fetch(SCRIPT_URL, {
+    const resp = await fetch(SCRIPT_URL, {
       method : 'POST',
-      mode   : 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body   : JSON.stringify({ action: 'setMemoryStatus', timestamp, status: newStatus })
+      body   : JSON.stringify({ action: 'setMemoryStatus', timestamp, status: newStatus, token: HubPin.token() })
     });
+    const reply = await resp.json().catch(() => ({}));
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
 
     const row = allRows.find(r => r.timestamp === timestamp);
     if (row) row.status = newStatus;
@@ -612,7 +614,13 @@ function formatDate(raw) {
   return d.toLocaleDateString('en-AU', { day:'numeric', month:'long', year:'numeric' });
 }
 
-loadAll();
+
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+HubPin.require({
+  area: ["admin"],
+  title: "🕰️ Down Memory Lane — Administration",
+  subtitle: "Hub administrator only."
+}, loadAll);
 </script>
 </body>
 </html>

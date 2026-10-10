@@ -317,16 +317,6 @@
     <p class="page-tagline"><span>🗂️ Our Story — Admin Review</span></p>
   </header>
 
-  <!-- ===== PIN GATE ===== -->
-  <div id="pinGate">
-    <h2>Committee Access Only</h2>
-    <p>Please enter the admin PIN to review submitted stories.</p>
-    <input type="password" id="pinInput" inputmode="numeric" placeholder="••••" maxlength="10">
-    <br>
-    <button id="pinBtn" onclick="checkPin()">Unlock</button>
-    <div id="pinError">Incorrect PIN — please try again.</div>
-  </div>
-
   <!-- ===== ADMIN AREA ===== -->
   <div id="adminArea">
 
@@ -348,6 +338,7 @@
 
 </div><!-- end container -->
 
+<script src="hub-pin.js"></script>
 <script>
 
   /* ══════════════════════════════════════════════════════
@@ -356,7 +347,6 @@
   ══════════════════════════════════════════════════════ */
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkQm8cCTghxhjTnnU3vLbryfM4vjvShXHI2IBoUbOIOTJy3w6iA1W-OdzSCYjewAJ6Qg/exec';
   var ADMIN_KEY  = 'bdrv-ourstory-2026';   // must match ADMIN_KEY in the Apps Script
-  var ADMIN_PIN  = '5304';                  // change this to whatever PIN you want to use
 
   var allStories   = [];
   var currentFilter = 'all';
@@ -380,30 +370,16 @@
     ['others',      'Other residents suggested as long-memory contacts']
   ];
 
-  /* ===== PIN CHECK ===== */
-  function checkPin() {
-    var entered = document.getElementById('pinInput').value.trim();
-    if (entered === ADMIN_PIN) {
-      document.getElementById('pinGate').style.display = 'none';
-      document.getElementById('adminArea').style.display = 'block';
-      loadStories();
-    } else {
-      document.getElementById('pinError').style.display = 'block';
-    }
-  }
-  document.getElementById('pinInput').addEventListener('keyup', function(e){
-    if (e.key === 'Enter') checkPin();
-  });
-
   /* ===== LOAD SUBMISSIONS ===== */
   function loadStories() {
     document.getElementById('statusMsg').style.display = 'block';
     document.getElementById('statusMsg').textContent = 'Loading submissions…';
     document.getElementById('cardsContainer').innerHTML = '';
 
-    fetch(SCRIPT_URL + '?key=' + encodeURIComponent(ADMIN_KEY))
+    fetch(SCRIPT_URL + '?key=' + encodeURIComponent(ADMIN_KEY) + '&token=' + encodeURIComponent(HubPin.token()))
       .then(function(r){ return r.json(); })
       .then(function(res){
+        if (res.signIn) { HubPin.expired(); return; }   // sign-in has run out
         if (res.result !== 'success') {
           document.getElementById('statusMsg').textContent = 'Could not load submissions: ' + (res.message || 'unknown error');
           return;
@@ -527,10 +503,10 @@
   function changeStatus(id, newStatus) {
     fetch(SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'updateStatus', key: ADMIN_KEY, id: id, status: newStatus })
-    }).then(function(){
+      body: JSON.stringify({ action: 'updateStatus', key: ADMIN_KEY, token: HubPin.token(), id: id, status: newStatus })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if (res.signIn) { HubPin.expired(); return; }   // sign-in has run out
       // Update locally so the page feels instant, then refresh from the sheet
       allStories.forEach(function(s){ if (s.ID.toString() === id.toString()) s.Status = newStatus; });
       updateCounts();
@@ -594,6 +570,19 @@ qas +
     return String(str)
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
+
+  // ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+  // The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+  HubPin.require({
+    area: ["admin"],
+    title: "🗂️ Our Story — Admin Review",
+    subtitle: "Committee access only.",
+    legacyPin: "5304",
+    legacyUntil: "2026-11-30"
+  }, function () {
+    document.getElementById('adminArea').style.display = 'block';
+    loadStories();
+  });
 
 </script>
 

@@ -354,6 +354,7 @@
 
 <div id="toast"></div>
 
+<script src="hub-pin.js"></script>
 <script>
 // ── CONFIG ────────────────────────────────────────────────────
 var SCRIPT_URL = localStorage.getItem('bdrc_search_logger_url') || 'https://script.google.com/macros/s/AKfycbwEz5REE0zfEGy6FSpK-7s_2muOJr4lFaGagipFu31WPdxHO-90Qr_f8ekJgIt0RkcbKg/exec';
@@ -380,7 +381,7 @@ function loadAll() {
 function loadIndex() {
   document.getElementById('indexTableWrap').innerHTML = '<div class="loading">Loading index…</div>';
   fetch(SCRIPT_URL + '?action=getIndex')
-    .then(r => r.json())
+    .then(r => r.json()).then(checkSignIn)
     .then(data => {
       indexData = data.items || [];
       renderIndex();
@@ -471,17 +472,17 @@ function saveEdit(row, originalKeyword) {
   fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'deleteMapping', row: row })
+    body: signedBody({ action: 'deleteMapping', row: row })
   })
-  .then(r => r.json())
+  .then(r => r.json()).then(checkSignIn)
   .then(function() {
     return fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'addMapping', keyword: kw, page: page, section: sec, title: title })
+      body: signedBody({ action: 'addMapping', keyword: kw, page: page, section: sec, title: title })
     });
   })
-  .then(r => r.json())
+  .then(r => r.json()).then(checkSignIn)
   .then(function() {
     toast('✅ Mapping updated: "' + kw + '"');
     loadIndex();
@@ -503,9 +504,9 @@ function addMapping() {
   fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action:'addMapping', keyword:kw, page:page, section:sec, title:title })
+    body: signedBody({ action:'addMapping', keyword:kw, page:page, section:sec, title:title })
   })
-  .then(r => r.json())
+  .then(r => r.json()).then(checkSignIn)
   .then(() => {
     toast('✅ Mapping added: "' + kw + '"');
     document.getElementById('new-keyword').value = '';
@@ -522,9 +523,9 @@ function deleteMapping(row, keyword) {
   fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action:'deleteMapping', row:row })
+    body: signedBody({ action:'deleteMapping', row:row })
   })
-  .then(r => r.json())
+  .then(r => r.json()).then(checkSignIn)
   .then(() => { toast('🗑️ Mapping removed'); loadIndex(); })
   .catch(() => toast('⚠️ Failed to delete', true));
 }
@@ -533,9 +534,9 @@ function toggleMapping(row) {
   fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action:'toggleMapping', row:row })
+    body: signedBody({ action:'toggleMapping', row:row })
   })
-  .then(r => r.json())
+  .then(r => r.json()).then(checkSignIn)
   .then(data => {
     toast(data.active ? '▶ Mapping enabled' : '⏸ Mapping paused');
     loadIndex();
@@ -547,7 +548,7 @@ function toggleMapping(row) {
 function loadLog() {
   document.getElementById('logTableWrap').innerHTML = '<div class="loading">Loading log…</div>';
   fetch(SCRIPT_URL + '?action=getLog')
-    .then(r => r.json())
+    .then(r => r.json()).then(checkSignIn)
     .then(data => {
       logData = data.items || [];
       renderLog(logData);
@@ -638,7 +639,7 @@ function prefillAdd(term) {
 function loadPages() {
   document.getElementById('pagesTableWrap').innerHTML = '<div class="loading">Loading pages…</div>';
   fetch(SCRIPT_URL + '?action=getPages')
-    .then(r => r.json())
+    .then(r => r.json()).then(checkSignIn)
     .then(data => {
       pagesData = data.items || [];
       renderPages();
@@ -685,9 +686,9 @@ function addPage() {
   fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'addPage', page: page, label: label })
+    body: signedBody({ action: 'addPage', page: page, label: label })
   })
-  .then(r => r.json())
+  .then(r => r.json()).then(checkSignIn)
   .then(data => {
     if (data.error) { toast('⚠️ ' + data.error, true); return; }
     toast('✅ Page added: ' + page);
@@ -703,9 +704,9 @@ function deletePage(row, page) {
   fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'deletePage', row: row })
+    body: signedBody({ action: 'deletePage', row: row })
   })
-  .then(r => r.json())
+  .then(r => r.json()).then(checkSignIn)
   .then(() => { toast('🗑️ Page removed'); loadPages(); })
   .catch(() => toast('⚠️ Failed to remove page', true));
 }
@@ -737,8 +738,20 @@ function toast(msg, warn) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// Auto-load if URL is saved
-if (SCRIPT_URL) loadAll();
+// Auto-load once signed in (if a URL is saved)
+// ── Sign-in pass: sent with every save, so the server knows who is asking ──
+function signedBody(obj) { obj = obj || {}; obj.token = HubPin.token(); return JSON.stringify(obj); }
+function checkSignIn(data) {
+  if (data && data.signIn) { HubPin.expired(); return new Promise(function () {}); }
+  return data;
+}
+
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+HubPin.require({
+  area: ["admin"],
+  title: "🔍 Search Manager",
+  subtitle: "Hub administrator only."
+}, function () { if (SCRIPT_URL) loadAll(); });
 </script>
 </body>
 </html>

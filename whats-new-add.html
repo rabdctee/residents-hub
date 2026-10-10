@@ -179,6 +179,7 @@
 
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
   // Paste the Web App URL from your WhatsNew_Code.gs deployment here:
   var WHATSNEW_URL = 'https://script.google.com/macros/s/AKfycbzDIMmLd_FOleNKie0B6y74tL_Xhcty6MKVf7tzfVdmlzStmy_rGlts3KXtqkjEFLda/exec';
@@ -251,9 +252,9 @@
 
     fetch(WHATSNEW_URL, {
       method:'POST',
-      body:JSON.stringify({ action:'addItem', category:category, title:title, blurb:blurb, link:link, addedBy:addedBy })
+      body:signedBody({ action:'addItem', category:category, title:title, blurb:blurb, link:link, addedBy:addedBy })
     })
-      .then(function(r){ return r.json(); })
+      .then(function(r){ return r.json(); }).then(checkSignIn)
       .then(function(data){
         btn.disabled = false; btn.textContent = '➕ Add Item';
         if (data.status === 'ok') {
@@ -280,14 +281,26 @@
     if (!confirm('Remove this item?')) return;
     fetch(WHATSNEW_URL, {
       method:'POST',
-      body:JSON.stringify({ action:'deleteItem', row:row })
+      body:signedBody({ action:'deleteItem', row:row })
     })
-      .then(function(r){ return r.json(); })
+      .then(function(r){ return r.json(); }).then(checkSignIn)
       .then(function(){ loadItems(); })
       .catch(function(){ setTimeout(loadItems, 1000); });
   }
 
-  loadItems();
+  // ── Sign-in pass: sent with every save, so the server knows who is asking ──
+  function signedBody(obj) { obj = obj || {}; obj.token = HubPin.token(); return JSON.stringify(obj); }
+  function checkSignIn(data) {
+    if (data && data.signIn) { HubPin.expired(); return new Promise(function () {}); }
+    return data;
+  }
+
+  // ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+  HubPin.require({
+    area: ["admin"],
+    title: "🆕 Add What's New Item",
+    subtitle: "Hub administrator only."
+  }, loadItems);
 </script>
 </body>
 </html>
