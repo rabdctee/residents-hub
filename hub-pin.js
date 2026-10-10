@@ -221,5 +221,14 @@
     location.reload();
   }
 
-  window.HubPin = { require: require, post: post, signOut: signOut, current: readSession };
+  // The current sign-in pass ("" if signed in with the old shared PIN, or not signed in)
+  function token() { var s = readSession(); return (s && s.token) || ""; }
+
+  // For pages whose Apps Script replied "please sign in again"
+  function expired() {
+    alert("For your security, please sign in again.");
+    signOut();
+  }
+
+  window.HubPin = { require: require, post: post, signOut: signOut, current: readSession, token: token, expired: expired };
 })();
