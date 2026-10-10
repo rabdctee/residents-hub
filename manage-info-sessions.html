@@ -186,6 +186,7 @@
 </div>
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMqimkKkAgKaupKIsnQ0H5LacQirMQ4Wo9WvRsHtDDYZiPDJFACDYabFT-X9wubjGmOw/exec';
 const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vST7ZHOah2zdcqkuRRMMTXS7B9Gi7_s3l_jpzlegofLJVt_tAxnzAMvnhhjdGhHc7-rPP0vxntB-3ym/pub?gid=0&single=true&output=csv';
@@ -366,7 +367,17 @@ function formatDate(raw) {
   return d.toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
 }
 
-loadSessions();
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["sc-convenor", "admin"],
+  title: "🔒 Info Sessions Administration",
+  subtitle: "For the Social Club Convenor.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function () {
+  loadSessions();
+});
 </script>
 </body>
 </html>

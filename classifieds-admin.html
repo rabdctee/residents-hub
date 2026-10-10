@@ -508,6 +508,7 @@
 
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3ShlYfYLviLL5qBoC9lxHUwfodY6tUH-epZvP06vNHbfcic_fkWq8N8NLSD0OraLQhQ/exec';
 const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9iLsP7-_JlI3QhKso9O0kMdLpwPzr4Y87YbHDeeVOW4Pg1U0_QZvTr1O2PRP4kevvh0PmnCCmfE7W/pub?gid=0&single=true&output=csv';
@@ -893,7 +894,17 @@ function resizeImageToBase64(file, maxDim, quality) {
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
-loadAll();
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["sc-convenor", "admin"],
+  title: "🔒 Classifieds Administration",
+  subtitle: "For the Social Club Convenor.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function () {
+  loadAll();
+});
 </script>
 </body>
 </html>

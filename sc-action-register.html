@@ -127,14 +127,7 @@
 </head>
 <body>
 
-<!-- PIN gate -->
-<div id="pin-gate">
-  <h2>🔒 Committee Access Required</h2>
-  <p style="color:#555;font-size:0.95rem">Enter the committee PIN to view the Action Register.</p>
-  <input type="password" id="pin-input" placeholder="PIN" maxlength="6" onkeydown="if(event.key==='Enter')checkPin()">
-  <button onclick="checkPin()">Enter</button>
-  <span id="pin-error">Incorrect PIN. Please try again.</span>
-</div>
+<!-- Sign-in screen now comes from hub-pin.js (personal PINs) -->
 
 <!-- Main content (hidden until PIN) -->
 <div id="main-content">
@@ -254,11 +247,10 @@
 </div><!-- /.page-wrap -->
 </div><!-- /#main-content -->
 
+<script src="hub-pin.js"></script>
 <script>
 // ── Config ────────────────────────────────────────────────────────────────────
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG6RXWVplDVFen82zZnMmAM5S43HbydythoKcgb87f1gaUT4jnbjOeXKGJGZ752796/exec"; // same script as RC — board=sc tells it which tab to use
-const COMMITTEE_PIN = "5304";
-const SESSION_KEY   = "bdrv_sc_action_register_auth";
 
 // ⚠️ REPLACE THIS with the "Publish to web" CSV link for your new SC-Actions tab
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SRoD_AgQcjrtBrgF95eLDkh2EmZAIusLrw0BaCZi2-U2Q6KWyd9h0Xw8LISjmdW-yWihLLsW/pub?gid=1250803964&single=true&output=csv";
@@ -266,31 +258,22 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SRoD_AgQ
 let allActions = [];
 let editingRow = null;
 
-// ── PIN gate ──────────────────────────────────────────────────────────────────
-function checkPin() {
-  const val = document.getElementById("pin-input").value.trim();
-  if (val === COMMITTEE_PIN) {
-    sessionStorage.setItem(SESSION_KEY, "true");
-    showApp();
-  } else {
-    document.getElementById("pin-error").style.display = "block";
-    document.getElementById("pin-input").value = "";
-    document.getElementById("pin-input").focus();
-  }
-}
-
 function showApp() {
-  document.getElementById("pin-gate").style.display = "none";
   document.getElementById("main-content").style.display = "block";
   loadActions();
 }
 
-// Check for existing session on load
-window.onload = function() {
-  if (sessionStorage.getItem(SESSION_KEY) === "true") {
-    showApp();
-  }
-};
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["sc-convenor", "sc-secretary", "sc-treasurer", "sc-events", "sc-member", "admin"],
+  title: "🔒 SC Action Register",
+  subtitle: "For Social Club Committee members.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function () {
+  showApp();
+});
 
 // ── Data layer ────────────────────────────────────────────────────────────────
 // Robust CSV parser — handles newlines inside quoted fields
