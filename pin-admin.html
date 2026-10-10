@@ -128,8 +128,18 @@
 // To bring another area across later, add a line here, and use the same "id"
 // in that page's HubPin.require({ area: "..." }) call.
 const AREAS = [
-  { id: "calendar", label: "Village Calendar (manage)" },
-  { id: "admin",    label: "PIN Manager (administrator)" }
+  { id: "rc-chair",      label: "RC Chair" },
+  { id: "rc-secretary",  label: "RC Secretary" },
+  { id: "rc-treasurer",  label: "RC Treasurer" },
+  { id: "rc-member",     label: "RC Member" },
+  { id: "manor-advisor", label: "Manor Advisor" },
+  { id: "sc-convenor",   label: "SC Convenor" },
+  { id: "sc-secretary",  label: "SC Secretary" },
+  { id: "sc-treasurer",  label: "SC Treasurer" },
+  { id: "sc-events",     label: "SC Events Coordinator" },
+  { id: "sc-member",     label: "SC Member" },
+  { id: "calendar",      label: "Village Calendar (manage)" },
+  { id: "admin",         label: "Administrator (all roles + PIN Manager)" }
 ];
 
 let adminName = "", adminPin = "";   // kept only while this page is open

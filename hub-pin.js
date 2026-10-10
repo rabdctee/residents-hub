@@ -5,6 +5,7 @@
 
      HubPin.require({
        area: "calendar",                       // the area name used in the PIN Register
+                                               // (or a list, e.g. ["sc-treasurer","admin"] = any one of these)
        title: "🔒 Village Calendar",
        subtitle: "This tool is for managing the Combined Village Calendar.",
        legacyPin: "5304",                      // old shared PIN — optional, for the changeover
@@ -19,7 +20,7 @@
    ============================================================ */
 (function () {
   // Paste the PIN Manager web app URL here (Deploy > Manage deployments > copy the Web app URL)
-  var PIN_SERVICE_URL = "https://script.google.com/macros/s/AKfycbz4RH5ux1yecdDf6V9Zrialm8jabfNTXWOVfpzO2vwMFMp6amniOP_FH4JwhgNeXLHK/exec";
+  var PIN_SERVICE_URL = "PASTE_PIN_MANAGER_WEB_APP_URL_HERE";
 
   var SESSION_KEY   = "bdrv_pin_session";
   var NAME_KEY      = "bdrv_pin_last_name";
@@ -132,12 +133,13 @@
       return;
     }
     injectStyles();
-    var area = String(opts.area || "").toLowerCase();
+    var areas = [].concat(opts.area || []).map(function (a) { return String(a).toLowerCase(); });
+    function hasArea(list) { return areas.some(function (a) { return (list || []).indexOf(a) !== -1; }); }
     var retired = !!(opts.legacyUntil && todayStr() > opts.legacyUntil);
 
     // Already signed in during this visit?
     var s = readSession();
-    if (s && s.areas && s.areas.indexOf(area) !== -1 && !(s.legacy && retired)) {
+    if (s && hasArea(s.areas) && !(s.legacy && retired)) {
       if (s.legacy) showLegacyBanner(opts);
       onOk({ name: s.name, legacy: !!s.legacy, token: s.token || "" });
       return;
@@ -189,7 +191,7 @@
         // The old shared PIN, during the changeover only
         if (opts.legacyPin && pin === String(opts.legacyPin)) {
           if (retired) { fail("The old shared PIN has now been retired. Please enter your name and your own PIN."); return; }
-          writeSession({ name: "", areas: [area], legacy: true });
+          writeSession({ name: "", areas: areas, legacy: true });
           finish({ name: "", legacy: true });
           return;
         }
@@ -199,10 +201,10 @@
 
       btn.disabled = true;
       btn.textContent = "Checking…";
-      post({ action: "verify", name: name, pin: pin, area: area }).then(function (res) {
+      post({ action: "verify", name: name, pin: pin, area: areas.join(",") }).then(function (res) {
         if (!res.success) { fail(res.error || "That didn't work. Please try again."); return; }
         rememberName(res.name);
-        writeSession({ name: res.name, areas: res.areas || [area], token: res.token || "" });
+        writeSession({ name: res.name, areas: res.areas || areas, token: res.token || "" });
         finish({ name: res.name, legacy: false, token: res.token || "" });
       }).catch(function () {
         fail("Couldn't reach the PIN service. Please check your internet connection and try again.");

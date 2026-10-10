@@ -227,21 +227,8 @@
 <body>
 <script src="sidebar.js"></script>
 
-<!-- ── PIN OVERLAY ── -->
-<div id="pin-overlay">
-  <h2>🔒 Committee Members Area</h2>
-  <p>This area is for Residents Committee and Social Club Committee Members. Enter the committee PIN to continue.</p>
-  <input type="password" id="pin-input" maxlength="6" placeholder="••••"
-         inputmode="numeric" autocomplete="off"
-         onkeydown="if(event.key==='Enter') checkPin()">
-  <button type="button" onclick="checkPin()"
-          style="background:#C9A44A;color:#1F4E79;border:none;border-radius:8px;
-                 padding:10px 28px;font-size:1.05em;font-weight:700;cursor:pointer;">
-    Submit
-  </button>
-  <div id="pin-error"></div>
-</div>
- 
+<!-- Sign-in screen now comes from hub-pin.js (personal PINs) — see the bottom of this file -->
+
 <!-- ── NAME SELECTOR OVERLAY ── -->
 <div id="name-overlay">
   <h2>Welcome — Please click on your committee role</h2>
@@ -251,27 +238,27 @@
     <div class="name-group-rc">
       <div class="name-group-label">🏠 Residents Committee</div>
       <div class="name-grid">
-        <button class="name-btn rc-member" onclick="selectMember('Rick','RC','rc')">
+        <button class="name-btn rc-member" data-role="rc-chair" onclick="selectMember('Rick','RC','rc')">
           <span class="nb-icon">👤</span>
           <span class="nb-org">Residents Committee</span><br>
           <span class="nb-name">Chair</span>
         </button>
-        <button class="name-btn rc-member" onclick="selectMember('Jocelyn','RC Secretary','rc')">
+        <button class="name-btn rc-member" data-role="rc-secretary" onclick="selectMember('Jocelyn','RC Secretary','rc')">
           <span class="nb-icon">📝</span>
           <span class="nb-org">Residents Committee</span>
           <span class="nb-name">Secretary</span>
         </button>
-        <button class="name-btn rc-member" onclick="selectMember('Margaret','RC Treasurer','rc')">
+        <button class="name-btn rc-member" data-role="rc-treasurer" onclick="selectMember('Margaret','RC Treasurer','rc')">
           <span class="nb-icon">💰</span>
           <span class="nb-org">Residents Committee</span>
           <span class="nb-name">Treasurer</span>
         </button>
-        <button class="name-btn rc-member" onclick="selectMember('RC Member','RC Member','rc')">
+        <button class="name-btn rc-member" data-role="rc-member" onclick="selectMember('RC Member','RC Member','rc')">
           <span class="nb-icon">👥</span>
           <span class="nb-org">Residents Committee</span><br>
           <span class="nb-name">Member</span>
         </button>
-        <button class="name-btn rc-member" onclick="selectMember('Ken','Manor Advisor','rc')">
+        <button class="name-btn rc-member" data-role="manor-advisor" onclick="selectMember('Ken','Manor Advisor','rc')">
           <span class="nb-icon">🏡</span>
           <span class="nb-org">Residents Committee</span><br>
           <span class="nb-name">Manor Advisor</span>
@@ -282,27 +269,27 @@
     <div class="name-group-sc">
       <div class="name-group-label">🎉 Social Club Committee</div>
       <div class="name-grid">
-        <button class="name-btn sc-member" onclick="selectMember('Kathy','SC Convenor','sc')">
+        <button class="name-btn sc-member" data-role="sc-convenor" onclick="selectMember('Kathy','SC Convenor','sc')">
           <span class="nb-icon">⭐</span>
           <span class="nb-org">Social Committee</span><br>
           <span class="nb-name">Convenor</span>
         </button>
-        <button class="name-btn sc-member" onclick="selectMember('Judy','SC Secretary','sc')">
+        <button class="name-btn sc-member" data-role="sc-secretary" onclick="selectMember('Judy','SC Secretary','sc')">
           <span class="nb-icon">📝</span>
           <span class="nb-org">Social Committee</span><br>
           <span class="nb-name">Secretary</span>
         </button>
-        <button class="name-btn sc-member" onclick="selectMember('Marie','SC Treasurer','sc')">
+        <button class="name-btn sc-member" data-role="sc-treasurer" onclick="selectMember('Marie','SC Treasurer','sc')">
           <span class="nb-icon">💰</span>
           <span class="nb-org">Social Committee</span><br>
           <span class="nb-name">Treasurer</span>
         </button>
-        <button class="name-btn sc-member" onclick="selectMember('Events Coordinator','SC Events Coordinator','sc')">
+        <button class="name-btn sc-member" data-role="sc-events" onclick="selectMember('Events Coordinator','SC Events Coordinator','sc')">
           <span class="nb-icon">🗓️</span>
           <span class="nb-org">Social Committee</span><br>
           <span class="nb-name">Events Coordinator</span>
         </button>
-        <button class="name-btn sc-member" onclick="selectMember('SC Member','SC Member','sc')">
+        <button class="name-btn sc-member" data-role="sc-member" onclick="selectMember('SC Member','SC Member','sc')">
           <span class="nb-icon">👥</span>
           <span class="nb-org">Social Committee</span><br>
           <span class="nb-name">Member</span>
@@ -957,10 +944,15 @@
 
 </div><!-- /.page-wrap -->
 
+<script src="hub-pin.js"></script>
 <script>
-const COMMITTEE_PIN = "5304";
-const SESSION_KEY   = "bdrv_committee_auth";
 const MEMBER_KEY    = "bdrv_member_name";
+
+// Each role button's access name, as ticked for that person in the PIN Manager.
+// Someone with "admin" (the Hub administrator) can open every role.
+const ROLE_AREAS = ["rc-chair", "rc-secretary", "rc-treasurer", "rc-member", "manor-advisor",
+                    "sc-convenor", "sc-secretary", "sc-treasurer", "sc-events", "sc-member"];
+let signedIn = null;   // { name, legacy } from hub-pin.js
 const SCRIPT_URL    = "https://script.google.com/macros/s/AKfycbwG6RXWVplDVFen82zZnMmAM5S43HbydythoKcgb87f1gaUT4jnbjOeXKGJGZ752796/exec";
 const CSV_URL       = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SRoD_AgQcjrtBrgF95eLDkh2EmZAIusLrw0BaCZi2-U2Q6KWyd9h0Xw8LISjmdW-yWihLLsW/pub?gid=0&single=true&output=csv";
 
@@ -979,55 +971,57 @@ function getOrg() {
   return sessionStorage.getItem("bdrv_member_org") || "";
 }
 
-// Hide name buttons that don't belong to the current org
+// Which roles this person may open: from their personal PIN, or all of them
+// for the old shared PIN (changeover only) and for the Hub administrator.
+function allowedRoles() {
+  const s = HubPin.current();
+  if (!s || s.legacy || (s.areas || []).indexOf("admin") !== -1) return ROLE_AREAS.slice();
+  return ROLE_AREAS.filter(r => (s.areas || []).indexOf(r) !== -1);
+}
+
+// Show only the role buttons this person may use (and that match ?org=rc / ?org=sc)
 function filterNameButtons() {
   const org = getOrg();
-  if (!org) return; // show all if no org specified
+  const allowed = allowedRoles();
+  let visible = 0;
   document.querySelectorAll(".name-btn").forEach(btn => {
-    const isRC = btn.classList.contains("rc-member");
-    const isSC = btn.classList.contains("sc-member");
-    if (org === "rc" && !isRC) btn.style.display = "none";
-    if (org === "sc" && !isSC) btn.style.display = "none";
+    let show = allowed.indexOf(btn.dataset.role) !== -1;
+    if (org === "rc" && !btn.classList.contains("rc-member")) show = false;
+    if (org === "sc" && !btn.classList.contains("sc-member")) show = false;
+    btn.style.display = show ? "" : "none";
+    if (show) visible++;
   });
-  // Also hide the "Other / General Member" group label if only one org
-  document.querySelectorAll(".name-group-label").forEach(label => {
-    if (label.textContent.trim() === "Other / General Member") {
-      // Keep only the matching general member button visible
-      const grid = label.nextElementSibling;
-      if (grid) {
-        grid.querySelectorAll(".name-btn").forEach(btn => {
-          if (org === "rc" && !btn.classList.contains("rc-member")) btn.style.display = "none";
-          if (org === "sc" && !btn.classList.contains("sc-member")) btn.style.display = "none";
-        });
-      }
-    }
-  });
-}
-
-// ── PIN ───────────────────────────────────────────────────────────────────────
-function checkPin() {
-  const val = document.getElementById("pin-input").value.trim();
-  if (val === COMMITTEE_PIN) {
-    sessionStorage.setItem(SESSION_KEY, "true");
-    showNameOverlay();
-  } else {
-    document.getElementById("pin-error").textContent = "Incorrect PIN. Please try again.";
-    document.getElementById("pin-input").value = "";
-    document.getElementById("pin-input").focus();
+  // Their role is in the other committee — ignore the ?org= link rather than show nothing
+  if (!visible && org && allowed.length) {
+    sessionStorage.removeItem("bdrv_member_org");
+    history.replaceState(null, "", location.pathname);
+    return filterNameButtons();
   }
+  // Hide a committee panel that has no buttons left in it
+  document.querySelectorAll(".name-group-rc, .name-group-sc").forEach(g => {
+    const any = Array.from(g.querySelectorAll(".name-btn")).some(b => b.style.display !== "none");
+    g.style.display = any ? "" : "none";
+  });
+  return visible;
 }
-document.getElementById("pin-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") checkPin();
-});
 
 function showNameOverlay() {
-  document.getElementById("pin-overlay").style.display = "none";
   document.getElementById("name-overlay").classList.add("visible");
-  filterNameButtons();
+  const visible = filterNameButtons();
+  // Only one role? Take them straight in.
+  if (visible === 1) {
+    Array.from(document.querySelectorAll(".name-btn")).find(b => b.style.display !== "none").click();
+  }
+  if (visible === 0) {
+    document.querySelector("#name-overlay p").textContent =
+      "You're signed in, but no committee role has been set up for you yet. Please contact the Hub administrator.";
+  }
 }
 
 // ── NAME SELECTION ────────────────────────────────────────────────────────────
 function selectMember(name, role, org) {
+  // General "Member" buttons: use the signed-in person's own name, so their action items show
+  if ((name === "RC Member" || name === "SC Member") && signedIn && signedIn.name) name = signedIn.name;
   currentMember = { name, role, org };
   sessionStorage.setItem(MEMBER_KEY, JSON.stringify(currentMember));
   sessionStorage.setItem("bdrv_member_org", org);
@@ -1047,7 +1041,6 @@ function goToNameSelector() {
   sessionStorage.removeItem("bdrv_member_org");
   currentMember = null;
   document.getElementById("main-content").style.display = "none";
-  document.getElementById("pin-overlay").style.display = "none";
   document.getElementById("name-overlay").classList.add("visible");
   filterNameButtons();
 }
@@ -1096,23 +1089,33 @@ function showApp() {
   loadMyActions();
 }
 
-// ── ON LOAD ───────────────────────────────────────────────────────────────────
-window.onload = function() {
-  if (sessionStorage.getItem(SESSION_KEY) === "true") {
-    const saved = sessionStorage.getItem(MEMBER_KEY);
-    if (saved) {
-      try {
-        currentMember = JSON.parse(saved);
-        // Restore org so getOrg() works correctly without URL parameter
-        if (currentMember.org) sessionStorage.setItem("bdrv_member_org", currentMember.org);
-        document.getElementById("pin-overlay").style.display = "none";
+// ── ON LOAD: sign in with a personal PIN (hub-pin.js), then choose a role ────
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ROLE_AREAS.concat("admin"),      // any committee role (or the administrator) may enter
+  title: "🔒 Committee Members Area",
+  subtitle: "This area is for Residents Committee and Social Club Committee Members.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function (person) {
+  signedIn = person;
+  // Already chose a role earlier in this visit (and still allowed it)? Go straight back in.
+  const saved = sessionStorage.getItem(MEMBER_KEY);
+  if (saved) {
+    try {
+      const m = JSON.parse(saved);
+      const btn = Array.from(document.querySelectorAll(".name-btn"))
+        .find(b => (b.getAttribute("onclick") || "").indexOf("'" + m.role + "'") !== -1);
+      if (btn && allowedRoles().indexOf(btn.dataset.role) !== -1) {
+        currentMember = m;
+        if (m.org) sessionStorage.setItem("bdrv_member_org", m.org);
         showApp();
         return;
-      } catch(e) {}
-    }
-    showNameOverlay();
+      }
+    } catch (e) {}
   }
-};
+  showNameOverlay();
+});
 
 // ── ACTION REGISTER ───────────────────────────────────────────────────────────
 // Robust CSV parser — handles newlines inside quoted fields
