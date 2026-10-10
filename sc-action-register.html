@@ -339,17 +339,22 @@ function loadActions() {
     });
 }
 
-// Fire-and-forget POST to Apps Script (no-cors — URL-encoded body)
+// POST to Apps Script (URL-encoded body) — sends the sign-in pass and checks the reply
 function postScript(params) {
-  const body = Object.entries({ ...params, board: "sc" })
+  const body = Object.entries({ ...params, board: "sc", token: HubPin.token() })
     .map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
     .join("&");
   fetch(SCRIPT_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-    mode: "no-cors"
-  });
+    body
+  })
+    .then(r => r.json())
+    .then(d => {
+      if (d.signIn) { HubPin.expired(); return; }   // sign-in has run out
+      if (d.success === false) showError("That change did not save: " + (d.error || d.message || "please try again."));
+    })
+    .catch(() => showError("Could not reach the Action Register. Please check your connection and try again."));
 }
 
 // ── Rendering ─────────────────────────────────────────────────────────────────

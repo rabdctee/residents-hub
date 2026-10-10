@@ -180,16 +180,7 @@
 </head>
 <body>
 
-<!-- PIN gate -->
-<div id="pin-gate">
-  <h2>🔒 Committee Access Required</h2>
-  <p style="color:#555;font-size:0.95rem">Enter the committee PIN to view the Action Register.</p>
-  <input type="password" id="pin-input" placeholder="PIN" maxlength="6" onkeydown="if(event.key==='Enter')checkPin()">
-  <button onclick="checkPin()">Enter</button>
-  <span id="pin-error">Incorrect PIN. Please try again.</span>
-</div>
-
-<!-- Main content (hidden until PIN) -->
+<!-- Main content (hidden until signed in with a personal PIN — see hub-pin.js) -->
 <div id="main-content">
 <div class="page-wrap">
 <div class="main">
@@ -326,11 +317,10 @@
 </div><!-- /.page-wrap -->
 </div><!-- /#main-content -->
 
+<script src="hub-pin.js"></script>
 <script>
 // ── Config ────────────────────────────────────────────────────────────────────
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG6RXWVplDVFen82zZnMmAM5S43HbydythoKcgb87f1gaUT4jnbjOeXKGJGZ752796/exec"; // ← Replace after deploying
-const COMMITTEE_PIN = "5304";
-const SESSION_KEY   = "bdrv_action_register_auth";
 const ISSUES_PAGE   = "progress-tracker.html";
 const ISSUES_CSV    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 
@@ -416,32 +406,13 @@ document.addEventListener("click", e => {
   }
 });
 
-// ── PIN gate ──────────────────────────────────────────────────────────────────
-function checkPin() {
-  const val = document.getElementById("pin-input").value.trim();
-  if (val === COMMITTEE_PIN) {
-    sessionStorage.setItem(SESSION_KEY, "true");
-    showApp();
-  } else {
-    document.getElementById("pin-error").style.display = "block";
-    document.getElementById("pin-input").value = "";
-    document.getElementById("pin-input").focus();
-  }
-}
 
 function showApp() {
-  document.getElementById("pin-gate").style.display = "none";
   document.getElementById("main-content").style.display = "block";
   loadActions();
   loadIssuesDropdown();
 }
 
-// Check for existing session on load
-window.onload = function() {
-  if (sessionStorage.getItem(SESSION_KEY) === "true") {
-    showApp();
-  }
-};
 
 // ── Data layer ────────────────────────────────────────────────────────────────
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SRoD_AgQcjrtBrgF95eLDkh2EmZAIusLrw0BaCZi2-U2Q6KWyd9h0Xw8LISjmdW-yWihLLsW/pub?gid=0&single=true&output=csv";
@@ -513,17 +484,22 @@ function loadActions() {
     });
 }
 
-// Fire-and-forget POST to Apps Script (no-cors — URL-encoded body)
+// POST to Apps Script (URL-encoded body) — sends the sign-in pass and checks the reply
 function postScript(params) {
-  const body = Object.entries(params)
+  const body = Object.entries({ ...params, token: HubPin.token() })
     .map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
     .join("&");
   fetch(SCRIPT_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-    mode: "no-cors"
-  });
+    body
+  })
+    .then(r => r.json())
+    .then(d => {
+      if (d.signIn) { HubPin.expired(); return; }   // sign-in has run out
+      if (d.success === false) showError("That change did not save: " + (d.error || d.message || "please try again."));
+    })
+    .catch(() => showError("Could not reach the Action Register. Please check your connection and try again."));
 }
 
 // ── Rendering ─────────────────────────────────────────────────────────────────
@@ -784,6 +760,16 @@ function showError(msg) {
   el.style.display = "block";
   document.getElementById("msg-success").style.display = "none";
 }
+
+// ── Sign in with a personal PIN (hub-pin.js) ─────────────────────────────────
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["rc-chair", "rc-secretary", "rc-treasurer", "rc-member", "admin"],
+  title: "🔒 RC Action Register",
+  subtitle: "For Residents Committee members.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, showApp);
 </script>
 <script>
 (function(){

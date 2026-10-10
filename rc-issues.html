@@ -176,20 +176,6 @@
 </head>
 <body>
 
-<!-- ── PIN OVERLAY ── -->
-<div id="pinOverlay">
-  <div class="pin-box">
-    <div class="pin-logo">🔒</div>
-    <h2>RC Issues Update</h2>
-    <p>Committee members only.<br>Please enter your PIN to continue.</p>
-    <input type="password" class="pin-input" id="pinInput" maxlength="4"
-           placeholder="••••" inputmode="numeric"
-           onkeydown="if(event.key==='Enter')checkPin()">
-    <button class="pin-btn" onclick="checkPin()">Enter</button>
-    <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
-  </div>
-</div>
-
 <!-- ── HEADER ── -->
 <div class="page-header">
   <h1>📋 RC Issues Update</h1>
@@ -281,36 +267,14 @@
 <div class="toast toast-success" id="toast-success">✅ Saved! Reloading to confirm…</div>
 <div class="toast toast-error"   id="toast-error">⚠️ Something went wrong — please try again</div>
 
+<script src="hub-pin.js"></script>
 <script>
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
 const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJBsVGUur5l7ixOFKqkDHGVsThkoRBINZr7YRc4fxy4Bb0K0ifT8cpoEtoO8uMD_dN7Q/exec";
-const RC_PIN = "1957";
 // ─────────────────────────────────────────────────────────────────────────────
 
 let issueData = [];
-
-// ── PIN ──────────────────────────────────────────────────────────────────────
-function checkPin() {
-  const val = document.getElementById("pinInput").value;
-  if (val === RC_PIN) {
-    sessionStorage.setItem("bdrv_rcissues_auth", "true");
-    document.getElementById("pinOverlay").style.display = "none";
-    document.getElementById("pinInput").value = "";
-    loadIssues();
-  } else {
-    const err = document.getElementById("pinError");
-    err.style.display = "block";
-    setTimeout(() => err.style.display = "none", 3000);
-    document.getElementById("pinInput").value = "";
-  }
-}
-
-// Skip PIN if already authenticated this session
-if (sessionStorage.getItem("bdrv_rcissues_auth") === "true") {
-  document.getElementById("pinOverlay").style.display = "none";
-  loadIssues();
-}
 
 // ── STATUS HELPERS ────────────────────────────────────────────────────────────
 function statusClass(s) {
@@ -560,7 +524,8 @@ async function submitInlineUpdate(uid, originalCategory, originalTopic) {
     originalTopic,
     category,
     topic: originalTopic,
-    status
+    status,
+    token: HubPin.token()
   });
 
   try {
@@ -697,7 +662,8 @@ ${prefix}` : prefix;
     category: originalCategory,
     topic: originalTopic,
     notes: newNotes,
-    status
+    status,
+    token: HubPin.token()
   });
 
   try {
@@ -817,6 +783,16 @@ function escHtml(s) {
   if (!s) return "";
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
+
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["rc-chair", "rc-secretary", "rc-treasurer", "rc-member", "admin"],
+  title: "🔒 RC Issues Update",
+  subtitle: "Residents Committee members only.",
+  legacyPin: "1957",
+  legacyUntil: "2026-11-30"
+}, loadIssues);
 </script>
 <script>
 (function(){

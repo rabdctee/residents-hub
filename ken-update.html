@@ -326,20 +326,6 @@
 </head>
 <body>
 
-<!-- ── PIN OVERLAY ── -->
-<div id="pinOverlay">
-  <div class="pin-box">
-    <div class="pin-logo">🏡</div>
-    <h2>Manor Issues — Ken Richards</h2>
-    <p>This page is for the Manor Advisor.<br>Please enter your PIN to continue.</p>
-    <input type="password" class="pin-input" id="pinInput" maxlength="6"
-           placeholder="••••••" inputmode="numeric"
-           onkeydown="if(event.key==='Enter')checkPin()">
-    <button class="pin-btn" onclick="checkPin()">Enter</button>
-    <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
-  </div>
-</div>
-
 <!-- ── HEADER ── -->
 <div class="page-header">
   <h1>🏡 Manor Issues</h1>
@@ -488,30 +474,15 @@
 
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
 // ── CONFIGURATION ─────────────────────────────────────────────────────────────
 const SHEET_CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzLxgp_7yqtX2pnCeCjU5M5gifZJoFB5dNZJL6_TpE9ppzXfnh2hi-GDkC2oJzRHrkTw/exec";
-const KEN_PIN = "xxxx"; // ← Change this to Ken's actual PIN
 // ─────────────────────────────────────────────────────────────────────────────
 
 let allIssues    = [];
 let manorIssues  = [];
-
-// ── PIN ───────────────────────────────────────────────────────────────────────
-function checkPin() {
-  const val = document.getElementById("pinInput").value;
-  if (val === KEN_PIN) {
-    document.getElementById("pinOverlay").style.display = "none";
-    document.getElementById("pinInput").value = "";
-    loadIssues();
-  } else {
-    const err = document.getElementById("pinError");
-    err.style.display = "block";
-    setTimeout(() => err.style.display = "none", 3000);
-    document.getElementById("pinInput").value = "";
-  }
-}
 
 // ── TAB SWITCHER ──────────────────────────────────────────────────────────────
 function switchTab(tab) {
@@ -648,7 +619,7 @@ async function submitAdd() {
   try {
     await fetch(APPS_SCRIPT_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "add", category: "Manor", topic, notes, status, source: "Manor" }),
+      body: JSON.stringify({ action: "add", category: "Manor", topic, notes, status, source: "Manor", token: HubPin.token() }),
       mode: "no-cors"
     });
     showMsg("add-success");
@@ -718,7 +689,8 @@ async function submitUpdate() {
         category: issue.category,
         topic:    issue.topic,
         notes:    notes || issue.notes,
-        status:   status
+        status:   status,
+        token:    HubPin.token()
       }),
       mode: "no-cors"
     });
@@ -794,6 +766,13 @@ function showMsg(id) {
   el.style.display = "block";
   setTimeout(() => el.style.display = "none", 6000);
 }
+
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+HubPin.require({
+  area: ["manor-advisor", "rc-chair", "admin"],
+  title: "🏡 Manor Issues",
+  subtitle: "For the Manor Advisor."
+}, loadIssues);
 </script>
 <script>
 (function(){

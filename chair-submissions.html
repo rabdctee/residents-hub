@@ -97,14 +97,6 @@
 </head>
 <body>
 
-<div id="pinScreen">
-  <h2>Chair Access Only</h2>
-  <p>Please enter your PIN to view resident submissions.</p>
-  <input type="password" id="pinInput" inputmode="numeric">
-  <button onclick="checkPin()">Enter</button>
-  <p id="pinError" style="color:#b3261e; display:none;">Incorrect PIN.</p>
-</div>
-
 <div class="wrap" id="app">
   <h1>Resident Submissions</h1>
   <p>Only you can see this page. Update status and add notes as items are actioned.</p>
@@ -113,10 +105,10 @@
   <div id="list">Loading...</div>
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
   // ============ SETUP: fill these in ============
   const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
-  const CHAIR_PIN = "1957";              // Change this to your own PIN (page lock)
   const CHAIR_SECRET_KEY = "C0ncerns"; // Must match the Apps Script exactly
   // ================================================
 
@@ -124,19 +116,8 @@
   let allRows = [];
   let activeFilter = "All";
 
-  function checkPin() {
-    const entered = document.getElementById('pinInput').value;
-    if (entered === CHAIR_PIN) {
-      document.getElementById('pinScreen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      loadData();
-    } else {
-      document.getElementById('pinError').style.display = 'block';
-    }
-  }
-
   function loadData() {
-    fetch(`${APPS_SCRIPT_URL}?key=${encodeURIComponent(CHAIR_SECRET_KEY)}`)
+    fetch(`${APPS_SCRIPT_URL}?key=${encodeURIComponent(CHAIR_SECRET_KEY)}&token=${encodeURIComponent(HubPin.token())}`)
       .then(r => r.json())
       .then(rows => {
         // rows[0] is the header row; each following row is a submission
@@ -222,6 +203,7 @@
     const data = new FormData();
     data.append('action', 'updateSubmission');
     data.append('key', CHAIR_SECRET_KEY);
+    data.append('token', HubPin.token());
     data.append('row', rowNum);
     data.append('status', status);
     data.append('notes', notes);
@@ -234,6 +216,19 @@
         setTimeout(() => { document.getElementById(`saved-${rowNum}`).textContent = ""; }, 3000);
       });
   }
+
+  // ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+  // The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+  HubPin.require({
+    area: ["rc-chair", "admin"],
+    title: "🔒 Resident Submissions",
+    subtitle: "Chair access only.",
+    legacyPin: "1957",
+    legacyUntil: "2026-11-30"
+  }, function () {
+    document.getElementById('app').style.display = 'block';
+    loadData();
+  });
 </script>
 
 </body>
