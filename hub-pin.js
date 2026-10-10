@@ -20,7 +20,7 @@
    ============================================================ */
 (function () {
   // Paste the PIN Manager web app URL here (Deploy > Manage deployments > copy the Web app URL)
-  var PIN_SERVICE_URL = "PASTE_PIN_MANAGER_WEB_APP_URL_HERE";
+  var PIN_SERVICE_URL = "https://script.google.com/macros/s/AKfycbz4RH5ux1yecdDf6V9Zrialm8jabfNTXWOVfpzO2vwMFMp6amniOP_FH4JwhgNeXLHK/exec";
 
   var SESSION_KEY   = "bdrv_pin_session";
   var NAME_KEY      = "bdrv_pin_last_name";
