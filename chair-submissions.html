@@ -119,6 +119,17 @@
   .reply-btn.light { background: #fff; color: #1b6fb8; border: 1px solid #1b6fb8; }
   .replied-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
   .replied-row select { width: auto; margin-top: 0; }
+  .replied-already {
+    background: #e6f4ea;
+    color: #1e6b34;
+    border: 1px solid #b7dfc3;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
 </style>
 </head>
 <body>
@@ -200,6 +211,7 @@
 
         <div class="reply-box">
           <div class="reply-title">Reply to ${r.name || "this resident"}</div>
+          <div class="replied-already" style="display:none;"></div>
           <div class="reply-actions"></div>
           <div class="replied-row">
             <span style="font-size:14px;">Once you've replied:</span>
@@ -223,7 +235,7 @@
         <textarea data-row="${r.rowNum}" class="notesTxt">${r.notes}</textarea>
 
         <label>Date Discussed at RC Meeting</label>
-        <input type="text" data-row="${r.rowNum}" class="discussedTxt" value="${r.discussed}" placeholder="e.g. 12 Aug 2026">
+        <input type="text" data-row="${r.rowNum}" class="discussedTxt" value="${shortDate(r.discussed)}" placeholder="e.g. 12 Aug 2026">
 
         <label>Linked Issue Tracker Reference (if escalated)</label>
         <input type="text" data-row="${r.rowNum}" class="linkedTxt" value="${r.linked}" placeholder="e.g. Issue #24">
@@ -244,7 +256,37 @@
           }
         }));
       buildReplyHelper(r, card);
+
+      // Let the notes box grow to show everything, so the "Replied…" lines
+      // at the bottom aren't hidden out of sight
+      const notesBox = card.querySelector('.notesTxt');
+      const fit = () => { notesBox.style.height = 'auto'; notesBox.style.height = (notesBox.scrollHeight + 4) + 'px'; };
+      notesBox.addEventListener('input', fit);
+      fit();
     });
+  }
+
+  // The sheet turns a typed date into a computer date (e.g. 2026-10-05T14:00:00.000Z).
+  // Show it the normal way, e.g. "6 Oct 2026". Anything else is shown as typed.
+  function shortDate(v) {
+    const s = String(v || "");
+    if (!/^\d{4}-\d{2}-\d{2}T/.test(s)) return s;
+    const d = new Date(s);
+    return isNaN(d) ? s : d.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  // Shows "✅ Replied by email, 11 Oct 2026" at the top of the reply box,
+  // taken from the most recent "Replied …" line in the notes.
+  function showLastReply(card) {
+    const lines = card.querySelector('.notesTxt').value.split("\n")
+                      .filter(l => /^Replied (by|in) /.test(l.trim()));
+    const el = card.querySelector('.replied-already');
+    if (lines.length) {
+      el.textContent = "✅ " + lines[lines.length - 1].trim().replace(/\.$/, "");
+      el.style.display = "inline-block";
+    } else {
+      el.style.display = "none";
+    }
   }
 
   // ── REPLY HELPER ──────────────────────────────────────────────
@@ -312,10 +354,18 @@
       const how   = card.querySelector('.replyHow').value;
       const today = new Date().toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
       const notes = card.querySelector('.notesTxt');
-      notes.value = (notes.value.trim() ? notes.value.trim() + "\n" : "") + "Replied " + how + ", " + today + ".";
+      const line  = "Replied " + how + ", " + today + ".";
+      // Don't add the same line twice if the button is pressed again
+      if (!notes.value.split("\n").some(l => l.trim() === line)) {
+        notes.value = (notes.value.trim() ? notes.value.trim() + "\n" : "") + line;
+        notes.dispatchEvent(new Event('input'));   // grow the box to fit
+      }
       card.querySelector('.statusSel').value = "Responded";
+      showLastReply(card);
       saveRow(r.rowNum, card);
     });
+
+    showLastReply(card);   // on opening the page, show any reply already recorded
   }
 
   function saveRow(rowNum, card) {
@@ -351,6 +401,7 @@
         const time = new Date().toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" });
         msg.style.color = "#2f9e52";
         msg.textContent = "Saved ✓ at " + time;   // stays on screen, so it can't be missed
+        card.className = `card status-${status.replace(/\s+/g,'-')}`;   // colour stripe matches the new status
       })
       .catch(() => {
         msg.style.color = "#b3261e";
