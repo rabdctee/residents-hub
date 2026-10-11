@@ -92,6 +92,7 @@
     border-radius: 6px;
     cursor: pointer;
   }
+  .save-btn:disabled { background: #8fb89c; cursor: default; }
   .saved-msg { color: #2f9e52; font-size: 14px; margin-left: 10px; }
 
   /* ── Reply helper ── */
@@ -240,7 +241,7 @@
         <label>Linked Issue Tracker Reference (if escalated)</label>
         <input type="text" data-row="${r.rowNum}" class="linkedTxt" value="${r.linked}" placeholder="e.g. Issue #24">
 
-        <button class="save-btn" data-row="${r.rowNum}">Save</button>
+        <button class="save-btn" data-row="${r.rowNum}" disabled>Saved ✓</button>
         <span class="saved-msg" id="saved-${r.rowNum}"></span>
       `;
       list.appendChild(card);
@@ -249,11 +250,13 @@
       // Once something is changed again, the old "Saved" message no longer applies
       card.querySelectorAll('.statusSel, .notesTxt, .discussedTxt, .linkedTxt').forEach(el =>
         el.addEventListener('input', () => {
-          if (!card.querySelector('.save-btn').disabled) {
-            const m = document.getElementById(`saved-${r.rowNum}`);
-            m.style.color = "#b8860b";
-            m.textContent = "Changes not saved yet";
-          }
+          if (card.dataset.saving) return;            // a save is already under way
+          const b = card.querySelector('.save-btn');
+          b.disabled = false;
+          b.textContent = "Save changes";
+          const m = document.getElementById(`saved-${r.rowNum}`);
+          m.style.color = "#b8860b";
+          m.textContent = "Changes not saved yet";
         }));
       buildReplyHelper(r, card);
 
@@ -388,6 +391,7 @@
     // seconds to answer — and stop a second press while it's saving.
     const btn = card.querySelector('.save-btn');
     const msg = document.getElementById(`saved-${rowNum}`);
+    card.dataset.saving = "1";
     btn.disabled = true;
     btn.textContent = "Saving…";
     msg.style.color = "#555";
@@ -396,20 +400,25 @@
     fetch(APPS_SCRIPT_URL, { method: 'POST', body: data })
       .then(r => r.json())
       .then(reply => {
-        if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
+        if (reply.signIn) {                              // sign-in has run out
+          btn.disabled = false; btn.textContent = "Save changes"; msg.textContent = "";
+          HubPin.expired(); return;
+        }
         if (reply.result !== 'ok') throw new Error('not saved');
         const time = new Date().toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" });
         msg.style.color = "#2f9e52";
-        msg.textContent = "Saved ✓ at " + time;   // stays on screen, so it can't be missed
+        btn.textContent = "Saved ✓";               // greyed out until something is changed again
+        msg.textContent = "at " + time;           // stays on screen, so it can't be missed
         card.className = `card status-${status.replace(/\s+/g,'-')}`;   // colour stripe matches the new status
       })
       .catch(() => {
+        btn.disabled = false;
+        btn.textContent = "Save changes";
         msg.style.color = "#b3261e";
         msg.textContent = "⚠️ Not saved — please press Save again.";
       })
       .finally(() => {
-        btn.disabled = false;
-        btn.textContent = "Save";
+        delete card.dataset.saving;
       });
   }
 
