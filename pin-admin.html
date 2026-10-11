@@ -116,6 +116,7 @@
     <div class="code-box" id="code-box">
       <div>Welcome code for <b id="code-name"></b>:</div>
       <div class="code" id="code-value"></div>
+      <p id="code-emailed" style="display:none;font-weight:bold;"></p>
       <p>Please write this down and give it to them. It works <b>once</b>, and expires on <b id="code-expires"></b>.
         They use it on the <b>My PIN</b> page (bdrv.au/my-pin.html) to choose their own PIN.
         This code won't be shown again.</p>
@@ -132,9 +133,12 @@
         <div><label class="fl" for="n-name">Name <span class="small">(what they'll type to sign in, e.g. "Kathy")</span></label><input type="text" id="n-name"></div>
         <div><label class="fl" for="n-notes">Notes <span class="small">(optional, e.g. "SC Convenor")</span></label><input type="text" id="n-notes"></div>
       </div>
+      <div class="row" style="margin-top:10px;">
+        <div><label class="fl" for="n-email">Email <span class="small">(optional — if filled in, their welcome code is emailed to them)</span></label><input type="email" id="n-email" placeholder="e.g. jocelyn@example.com"></div>
+      </div>
       <label class="fl">Areas they can enter</label>
       <div class="areas" id="n-areas"></div>
-      <div style="margin-top:14px;"><button class="btn btn-gold" onclick="addPerson()">➕ Add and issue a welcome code</button></div>
+      <div style="margin-top:14px;"><button class="btn btn-gold" id="add-go" onclick="addPerson()">➕ Add and issue a welcome code</button></div>
     </div>
 
     <!-- Residents in bulk -->
@@ -291,6 +295,17 @@ function showCode(res) {
   document.getElementById("code-name").textContent = res.name;
   document.getElementById("code-value").textContent = res.code;
   document.getElementById("code-expires").textContent = niceDate(res.expires);
+  // Was it emailed to them?
+  const em = document.getElementById("code-emailed");
+  if (res.email) {
+    em.style.display = "block";
+    em.style.color = res.emailed ? "#2e7d32" : "#c9010b";
+    em.textContent = res.emailed
+      ? "✉️ Emailed to " + res.email + " — you don't need to pass it on yourself."
+      : "⚠️ The email to " + res.email + " couldn't be sent (" + (res.emailError || "unknown problem") + "). Please give them the code yourself.";
+  } else {
+    em.style.display = "none";
+  }
   const box = document.getElementById("code-box");
   box.style.display = "block";
   box.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -303,8 +318,10 @@ function refresh() {
 function addPerson() {
   const name = document.getElementById("n-name").value.trim();
   const areas = tickedAreas(document.getElementById("n-areas"), "n");
+  const email = document.getElementById("n-email").value.trim();
   if (!name) { status("Please enter a name.", "err"); return; }
   if (!areas.length) { status("Please tick at least one area.", "err"); return; }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status("That email address doesn't look right — please check it.", "err"); return; }
   status("Adding " + name + "…", "busy");
   call({ action: "adminSave", name: name, areas: areas.join(","), notes: document.getElementById("n-notes").value.trim() })
     .then(res => {
@@ -312,10 +329,21 @@ function addPerson() {
       peopleList = res.people; render();
       document.getElementById("n-name").value = "";
       document.getElementById("n-notes").value = "";
+      document.getElementById("n-email").value = "";
       document.getElementById("n-areas").innerHTML = areaBoxes("n", []);
-      return call({ action: "adminIssueCode", name: name }).then(r2 => {
-        if (!r2.success) { status("Added, but couldn't issue a code: " + r2.error, "err"); return; }
-        status(name + " added.", "ok");
+      const residentOnly = areas.length === 1 && areas[0] === "resident";
+      const issue = email
+        ? { action: "adminEmailCode", name: name, email: email, days: residentOnly ? 60 : "" }
+        : { action: "adminIssueCode", name: name, days: residentOnly ? 60 : "" };
+      if (email) status("Adding " + name + " and emailing their code…", "busy");
+      return call(issue).then(r2 => {
+        if (!r2.success) {
+          status(r2.error === "Unknown action"
+            ? name + " was added, but the PIN Manager script hasn't been updated for emailing yet. Use \u201cNew welcome code\u201d in the list for now."
+            : "Added, but couldn't issue a code: " + r2.error, "err");
+          return;
+        }
+        status(name + " added" + (r2.emailed ? " and emailed." : "."), r2.email && !r2.emailed ? "err" : "ok");
         showCode(r2);
         refresh();
       });
