@@ -348,20 +348,7 @@
 <body>
 <script src="sidebar.js"></script>
 
-<!-- PIN Overlay -->
-<div id="pinOverlay">
-  <div class="pin-box">
-    <div class="pin-logo">🔒</div>
-    <h2>Residents Only Area</h2>
-    <p>This section contains documents and information<br>for Bridgeman Downs residents.<br>Please enter your resident PIN to continue.</p>
-    <input type="password" class="pin-input" id="pinInput" maxlength="4"
-           placeholder="••••" inputmode="numeric"
-           onkeydown="if(event.key==='Enter')checkPin()">
-    <button class="pin-btn" onclick="checkPin()">Enter</button>
-    <div class="pin-error" id="pinError">Incorrect PIN. Please try again.</div>
-    <div class="pin-hint">Contact the Residents Committee if you need assistance.</div>
-  </div>
-</div>
+<!-- Sign-in box now comes from hub-pin.js (personal PINs) — see the bottom of this file -->
 
 <div class="container">
 
@@ -1214,31 +1201,22 @@
 
 </script>
 
+<script src="hub-pin.js"></script>
+<script src="resident-areas.js"></script>
 <script>
-  // ── PIN Protection with session persistence ───────────────
-  var RESIDENT_PIN = '4035';
-
-  function checkPin() {
-    var val = document.getElementById('pinInput').value;
-    if (val === RESIDENT_PIN) {
-     localStorage.setItem('residentPinOk', '1');
-      document.getElementById('pinOverlay').style.display = 'none';
-      document.getElementById('pinInput').value = '';
-    } else {
-      var err = document.getElementById('pinError');
-      err.style.display = 'block';
-      document.getElementById('pinInput').value = '';
-      document.getElementById('pinInput').focus();
-      setTimeout(function() { err.style.display = 'none'; }, 3000);
-    }
-  }
-
-  // Check session on load — skip PIN if already authenticated this session
-  (function() {
-   if (localStorage.getItem('residentPinOk') === '1') {
-      document.getElementById('pinOverlay').style.display = 'none';
-    }
-  })();
+  // ── Sign in with a personal PIN (hub-pin.js) ───────────────
+  // Residents sign in with their first name and unit (e.g. "Joan 20") and their own PIN.
+  // Committee members can use their usual sign-in. The old shared PIN still works
+  // until legacyUntil, with a reminder to set up a personal PIN.
+  try { localStorage.removeItem('residentPinOk'); } catch (e) {}   // the old "remember me forever" flag
+  HubPin.require({
+    area: RESIDENT_AREAS,
+    audience: 'resident',
+    title: '🔒 Residents Only Area',
+    subtitle: 'Documents and information for Bridgeman Downs residents. Please sign in with your first name, unit number and your own PIN.',
+    legacyPin: '4035',
+    legacyUntil: '2026-11-30'
+  }, function () {});
 
 // ── Load RC Notices (Residents view) ──────────────────────
   var RC_NOTICES_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDoXL1CzYqasSKrJtvSePxx7n_MpeyrMhyGZ1Dp_4TfQ_WBxQnXURkwgpeypLlROz-x6DmpBle3BE-/pub?gid=0&single=true&output=csv';

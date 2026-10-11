@@ -55,7 +55,7 @@
 <script src="sidebar.js"></script>
 
 <div class="page-wrap">
-  <a class="back" href="index.html">← Back to Home</a>
+  <a class="back" id="back-link" href="index.html">← Back to Home</a>
   <h1>🔑 My PIN</h1>
   <p class="intro">Your personal PIN lets you into the parts of the Hub you've been given access to.
     It's private — no one else can see it, not even the Hub administrator.</p>
@@ -68,8 +68,9 @@
   <!-- First-time set-up, or after a forgotten PIN -->
   <div class="panel" id="panel-setup">
     <p class="help">Use this the first time, or if you've forgotten your PIN.
-      Ask Rick, the Hub administrator, for a one-off welcome code.</p>
-    <label for="s-name">Your name <span class="hint">(as given to you with your code)</span></label>
+      <b>Residents:</b> your welcome code is on the slip delivered to your letterbox.
+      <b>Committee members:</b> ask Rick, the Hub administrator, for your code.</p>
+    <label for="s-name">Your name <span class="hint">(exactly as on your slip — residents: first name and unit, e.g. Joan 20)</span></label>
     <input id="s-name" autocomplete="username" placeholder="e.g. Kathy">
     <label for="s-code">Welcome code <span class="hint">(6 letters and numbers)</span></label>
     <input id="s-code" autocomplete="off" maxlength="8" placeholder="e.g. K7PM3Q">
@@ -149,7 +150,9 @@ function doSetup() {
     busy("s-go", false, "Save my PIN");
     if (!res.success) { say("s-msg", res.error, false); return; }
     ["s-code", "s-pin1", "s-pin2"].forEach(id => document.getElementById(id).value = "");
+    try { localStorage.setItem("bdrv_pin_last_name", res.name); } catch (e) {}
     say("s-msg", "✅ All done, " + res.name + "! From now on, sign in with your name and your new PIN. Your welcome code won't be needed again.", true);
+    showContinue("s-msg");
   }).catch(() => {
     busy("s-go", false, "Save my PIN");
     say("s-msg", "Couldn't reach the PIN service. Please check your internet connection and try again.", false);
@@ -168,10 +171,32 @@ function doChange() {
     if (!res.success) { say("c-msg", res.error, false); return; }
     ["c-old", "c-pin1", "c-pin2"].forEach(id => document.getElementById(id).value = "");
     say("c-msg", "✅ Your PIN has been changed, " + res.name + ". Use your new PIN from now on.", true);
+    showContinue("c-msg");
   }).catch(() => {
     busy("c-go", false, "Change my PIN");
     say("c-msg", "Couldn't reach the PIN service. Please check your internet connection and try again.", false);
   });
+}
+
+// Came here from a sign-in box? Offer the way back once the PIN is set.
+// Only plain Hub page names are accepted (e.g. "community-info.html").
+const BACK = (function () {
+  const b = new URLSearchParams(location.search).get("back") || "";
+  return /^[a-z0-9][a-z0-9\-]*\.html(#[a-z0-9\-]*)?$/i.test(b) ? b : "";
+})();
+if (BACK) {
+  const bl = document.getElementById("back-link");
+  bl.href = BACK; bl.textContent = "← Back";
+}
+function showContinue(msgId) {
+  if (!BACK || document.getElementById("continue-btn")) return;
+  const a = document.createElement("a");
+  a.id = "continue-btn"; a.href = BACK;
+  a.textContent = "Continue — sign in with my new PIN →";
+  a.style.cssText = "display:block;margin-top:14px;text-align:center;background:#D4B860;color:#263746;" +
+    "padding:13px;border-radius:8px;font-weight:700;text-decoration:none;font-size:1.05em;";
+  const msg = document.getElementById(msgId);
+  msg.parentNode.insertBefore(a, msg.nextSibling);
 }
 
 // Fill in the name if they've signed in on this computer before

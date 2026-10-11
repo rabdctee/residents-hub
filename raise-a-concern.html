@@ -5,39 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Raise a Concern or Suggestion — BDRV Residents' Hub</title>
 <style>
+/* Hub colour palette (matches the Residents Only page) */
+:root{
+  --hub-navy:#263746; --hub-navy-panel:#2E4256; --hub-navy-hover:#324A5F;
+  --hub-gold:#D4B860; --hub-cream:#F6F2E7; --hub-muted:#B9AF9C;
+  --hub-charcoal:#3F4143; --hub-green:#5fb87e; --hub-red:#e8998c;
+}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 
 body{
   font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-  background:#f5f5f5;
+  background:var(--hub-navy);
   font-size:20px;
   line-height:1.7;
-  color:#222;
+  color:var(--hub-cream);
 }
 
 .container{
   max-width:800px;
   margin:auto;
-  background:white;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
+  background:var(--hub-navy-panel);
+  box-shadow:0 2px 14px rgba(0,0,0,0.35);
   min-height:100vh;
 }
 
 header{
-  background:#1F4E79;
-  color:white;
+  background:linear-gradient(135deg, var(--hub-navy) 0%, var(--hub-navy-hover) 100%);
+  color:var(--hub-cream);
   padding:30px 20px;
   text-align:center;
+  border-bottom:2px solid var(--hub-gold);
 }
-header h1{ font-size:1.7em; }
+header h1{ font-size:1.7em; color:var(--hub-gold); }
 
 .hub-footer{
-  background:#f8f9fa;
+  background:var(--hub-navy);
   padding:16px 30px;
   text-align:center;
-  color:#5f6368;
-  border-top:1px solid #e0e0e0;
+  color:var(--hub-muted);
+  border-top:1px solid var(--hub-charcoal);
   font-size:0.85em;
 }
 
@@ -47,7 +54,7 @@ header h1{ font-size:1.7em; }
 .back-home{
   display:inline-block;
   margin-bottom:20px;
-  color:#1F4E79;
+  color:var(--hub-gold);
   font-weight:600;
   text-decoration:none;
 }
@@ -56,35 +63,36 @@ header h1{ font-size:1.7em; }
 .intro{
   font-size:0.9em;
   line-height:1.6;
-  color:#333;
+  color:var(--hub-cream);
   margin-bottom:20px;
 }
 
-/* Tracker box — matches the site's info-box style */
+/* Tracker box */
 .tracker-box{
-  background:#e8f4f8;
-  border-left:4px solid #1F4E79;
+  background:rgba(246,242,231,0.06);
+  border:1px solid var(--hub-charcoal);
+  border-left:4px solid var(--hub-gold);
   padding:20px;
-  border-radius:4px;
+  border-radius:6px;
   margin:20px 0;
 }
-.tracker-box strong{ color:#1F4E79; }
+.tracker-box strong{ color:var(--hub-gold); }
 .tracker-box p{ margin:8px 0 12px 0; font-size:0.85em; }
 
 .btn{
   display:inline-block;
   padding:10px 20px;
-  background:#1F4E79;
-  color:white;
+  background:var(--hub-gold);
+  color:var(--hub-navy);
   text-decoration:none;
-  border-radius:5px;
+  border-radius:6px;
   font-size:0.85em;
-  font-weight:600;
+  font-weight:700;
   cursor:pointer;
   border:none;
-  transition:background 0.3s;
+  transition:background 0.2s;
 }
-.btn:hover{ background:#1e4178; }
+.btn:hover{ background:#c2a44f; }
 
 .check-row{
   margin-top:14px;
@@ -97,13 +105,12 @@ header h1{ font-size:1.7em; }
   width:20px;
   height:20px;
   margin-top:3px;
-  accent-color:#1F4E79;
+  accent-color:var(--hub-gold);
 }
 
-/* Form — styled like the "Share Your Thoughts" ask-section, in light mode */
 form{
-  background:#fafbfc;
-  border:1px solid #e0e0e0;
+  background:rgba(246,242,231,0.04);
+  border:1px solid var(--hub-charcoal);
   border-radius:8px;
   padding:20px;
   margin-top:20px;
@@ -111,7 +118,7 @@ form{
 label{
   display:block;
   font-weight:600;
-  color:#1F4E79;
+  color:var(--hub-gold);
   margin-top:16px;
   margin-bottom:6px;
   font-size:0.8em;
@@ -122,94 +129,56 @@ input[type=text], select, textarea{
   padding:12px 15px;
   font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
   font-size:0.85em;
-  border:2px solid #e0e0e0;
-  border-radius:5px;
+  border:2px solid var(--hub-charcoal);
+  border-radius:6px;
   background:white;
   color:#222;
-  transition:border-color 0.3s ease;
+  transition:border-color 0.2s ease;
 }
 input[type=text]:focus, select:focus, textarea:focus{
   outline:none;
-  border-color:#1F4E79;
+  border-color:var(--hub-gold);
 }
 textarea{ min-height:120px; resize:vertical; }
-.required{ color:#b3261e; }
+.required{ color:var(--hub-red); }
 
 button[type=submit]{
   margin-top:24px;
   width:100%;
   padding:14px;
   font-size:0.95em;
-  background:#1F4E79;
-  color:white;
+  background:var(--hub-gold);
+  color:var(--hub-navy);
   border:none;
-  border-radius:5px;
+  border-radius:6px;
   cursor:pointer;
   font-weight:700;
   font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-  transition:background 0.3s;
+  transition:background 0.2s;
 }
-button[type=submit]:hover{ background:#1e4178; }
+button[type=submit]:hover{ background:#c2a44f; }
 button[type=submit]:disabled{
-  background:#aab7c2;
+  background:var(--hub-charcoal);
+  color:var(--hub-muted);
   cursor:not-allowed;
 }
 
 .note{
   font-size:0.7em;
-  color:#5f6368;
+  color:var(--hub-muted);
   margin-top:10px;
 }
 
 #thankyou{
   display:none;
-  background:#e8f4f8;
-  border-left:4px solid #2f9e52;
-  border-radius:4px;
+  background:rgba(95,184,126,0.12);
+  border-left:4px solid var(--hub-green);
+  border-radius:6px;
   padding:20px;
   margin-top:20px;
   font-size:0.9em;
 }
-#thankyou strong{ color:#1F4E79; }
-
-/* ===== PIN screen ===== */
-#pinScreen{
-  max-width:380px;
-  margin:80px auto;
-  background:white;
-  padding:30px;
-  border-radius:8px;
-  border:1px solid #c5d8ee;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
-  text-align:center;
-}
-#pinScreen h2{ color:#1F4E79; font-size:1.2em; margin-bottom:10px; }
-#pinScreen p{ font-size:0.75em; color:#5f6368; }
-#pinScreen input{
-  font-size:1.1em;
-  padding:10px;
-  width:140px;
-  text-align:center;
-  margin-top:14px;
-  border:2px solid #e0e0e0;
-  border-radius:5px;
-}
-#pinScreen input:focus{ outline:none; border-color:#1F4E79; }
-#pinScreen button{
-  display:block;
-  margin:16px auto 0 auto;
-  padding:10px 26px;
-  font-size:0.85em;
-  background:#1F4E79;
-  color:white;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-  font-weight:600;
-  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-}
-#pinScreen button:hover{ background:#1e4178; }
-#pinError{ color:#b3261e; font-size:0.75em; margin-top:10px; }
+#thankyou strong{ color:var(--hub-gold); }
 
 @media(max-width:768px){
   header h1{ font-size:1.4em; }
@@ -219,13 +188,7 @@ button[type=submit]:disabled{
 </head>
 <body>
 
-<div id="pinScreen">
-  <h2>🔒 Residents Only</h2>
-  <p>Please enter the Residents Only PIN to continue.</p>
-  <input type="password" id="pinInput" inputmode="numeric" onkeypress="if(event.key==='Enter') checkPin()">
-  <button onclick="checkPin()">Enter</button>
-  <p id="pinError" style="display:none;">Incorrect PIN.</p>
-</div>
+<!-- Sign-in box now comes from hub-pin.js (personal PINs) — see the script below -->
 
 <div class="container" id="mainContent" style="display:none;">
 
@@ -253,7 +216,7 @@ button[type=submit]:disabled{
 
       <div class="check-row">
         <input type="checkbox" id="checkedTracker">
-        <label for="checkedTracker" style="font-weight:normal; margin:0; color:#222;">
+        <label for="checkedTracker" style="font-weight:normal; margin:0; color:var(--hub-cream);">
           I have checked the Village Issues Tracker and my concern is not already listed
           (or it is listed, but I'd still like to add something).
         </label>
@@ -305,24 +268,35 @@ button[type=submit]:disabled{
 
 </div>
 
+<script src="hub-pin.js"></script>
+<script src="resident-areas.js"></script>
 <script>
   // ============ SETUP: fill these in ============
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaoV8H-1vFSQvTdaxdKs00_YcacN3GN6sL-7kOB6R_7ilCq0LVsOj7aUV-35qXrYzv/exec";
 
-  // Use the SAME PIN residents already use for your Residents Only page,
-  // so it feels familiar and they don't need to remember a new one.
-  const RESIDENTS_PIN = "4035";
   // ==========================================================================
 
-  function checkPin() {
-    const entered = document.getElementById('pinInput').value;
-    if (entered === RESIDENTS_PIN) {
-      document.getElementById('pinScreen').style.display = 'none';
-      document.getElementById('mainContent').style.display = 'block';
-    } else {
-      document.getElementById('pinError').style.display = 'block';
+  // ── Sign in with a personal PIN (hub-pin.js) ──
+  // Residents use their first name and unit (e.g. "Joan 20") and their own PIN.
+  // The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+  HubPin.require({
+    area: RESIDENT_AREAS,
+    audience: 'resident',
+    title: '🔒 Raise a Concern or Suggestion',
+    subtitle: 'For Bridgeman Downs residents. Please sign in with your first name, unit number and your own PIN.',
+    legacyPin: '4035',
+    legacyUntil: '2026-11-30'
+  }, function (person) {
+    document.getElementById('mainContent').style.display = 'block';
+    // Fill in their name and unit from the sign-in (e.g. "Joan 20") — they can still change them
+    const m = String((person && person.name) || '').match(/^(.*?)[\s,]+(?:unit|villa)?\s*(\d+[a-z]?)$/i);
+    if (m) {
+      document.getElementById('name').value = m[1].trim();
+      document.getElementById('unit').value = m[2];
+    } else if (person && person.name) {
+      document.getElementById('name').value = person.name;
     }
-  }
+  });
 
   const checkbox = document.getElementById('checkedTracker');
   const submitBtn = document.getElementById('submitBtn');
@@ -342,17 +316,23 @@ button[type=submit]:disabled{
     data.append('contact', document.getElementById('contact').value);
     data.append('category', document.getElementById('category').value);
     data.append('description', document.getElementById('description').value);
+    data.append('token', HubPin.token());
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true; btn.textContent = 'Sending…';
 
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors',
       body: data
-    }).then(() => {
+    }).then(r => r.json()).then(reply => {
+      if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
+      if (reply.result !== 'ok') throw new Error(reply.message || 'Not saved');
       document.getElementById('trackerBox').style.display = 'none';
       document.getElementById('concernForm').style.display = 'none';
       document.getElementById('thankyou').style.display = 'block';
       window.scrollTo(0, 0);
     }).catch(() => {
+      btn.disabled = false; btn.textContent = 'Submit my concern';
       alert("Sorry, something went wrong sending your submission. Please try again, or speak to the Chair directly.");
     });
   });

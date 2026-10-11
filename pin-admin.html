@@ -64,6 +64,31 @@
   .actions { display: flex; flex-wrap: wrap; gap: 6px; }
   .small { font-size: 0.82em; color: rgba(246,242,231,0.7); }
   #main { display: none; }
+  textarea.bulk { width: 100%; min-height: 160px; font-size: 1em; padding: 10px 12px; border-radius: 7px;
+    border: 2px solid #3F4143; color: #222; background: #fff; font-family: inherit; }
+  .list-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+  .list-tools select, .list-tools input { padding: 7px 10px; border-radius: 7px; border: 2px solid #3F4143;
+    font-family: inherit; font-size: 0.95em; }
+  .list-tools input { width: auto; flex: 1; min-width: 180px; }
+
+  /* ── Welcome slips (printed, 3 to an A4 page) ── */
+  #slips { display: none; }
+  .slip { background: #fff; color: #111; border: 2px dashed #888; padding: 7mm 9mm; height: 92mm;
+    page-break-inside: avoid; break-inside: avoid; font-family: 'Segoe UI', Arial, sans-serif;
+    margin-bottom: 3mm; display: flex; flex-direction: column; }
+  .slip h3 { font-size: 15pt; margin-bottom: 1mm; color: #1F4E79; }
+  .slip .who { font-size: 12pt; margin: 2mm 0; }
+  .slip .who b { font-size: 16pt; }
+  .slip .code { font-family: Consolas, 'Courier New', monospace; font-size: 22pt; font-weight: 800;
+    letter-spacing: 0.3em; border: 2px solid #111; display: inline-block; padding: 1mm 4mm; margin: 1mm 0 2mm; }
+  .slip ol { font-size: 11pt; padding-left: 6mm; line-height: 1.45; }
+  .slip .foot { font-size: 9.5pt; color: #444; margin-top: auto; }
+  @media print {
+    @page { size: A4; margin: 10mm; }
+    body { background: #fff !important; }
+    body > *:not(#slips) { display: none !important; }
+    #slips { display: block !important; }
+  }
 </style>
 </head>
 <body>
@@ -94,7 +119,10 @@
       <p>Please write this down and give it to them. It works <b>once</b>, and expires on <b id="code-expires"></b>.
         They use it on the <b>My PIN</b> page (bdrv.au/my-pin.html) to choose their own PIN.
         This code won't be shown again.</p>
-      <div style="margin-top:10px;"><button class="btn btn-gold btn-small" onclick="document.getElementById('code-box').style.display='none'">Done — I've written it down</button></div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-gold btn-small" onclick="document.getElementById('code-box').style.display='none'">Done — I've written it down</button>
+        <button class="btn btn-cream btn-small" onclick="printOneSlip()">🖨️ Print a welcome slip for them</button>
+      </div>
     </div>
 
     <!-- Add a person -->
@@ -109,9 +137,32 @@
       <div style="margin-top:14px;"><button class="btn btn-gold" onclick="addPerson()">➕ Add and issue a welcome code</button></div>
     </div>
 
+    <!-- Residents in bulk -->
+    <div class="panel">
+      <h2>🏘️ Add residents and print welcome slips</h2>
+      <p class="small" style="margin-bottom:8px;">One resident per line: <b>first name and unit number</b>, e.g. <b>Joan 20</b>.
+        For couples, put each person on their own line. Each person gets the <b>Resident</b> area and a
+        welcome code that lasts 60 days. Anyone already on the list is left alone.</p>
+      <textarea class="bulk" id="bulk-names" placeholder="Joan 20&#10;Bill 20&#10;Mary 21"></textarea>
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-gold" id="bulk-go" onclick="bulkAdd()">➕ Add residents and create slips</button>
+        <button class="btn btn-cream" id="print-btn" style="display:none;" onclick="printSlips()">🖨️ Print welcome slips</button>
+      </div>
+      <div id="bulk-result" class="small" style="margin-top:10px;"></div>
+    </div>
+
     <!-- The list -->
     <div class="panel">
       <h2>👥 People with access</h2>
+      <div class="list-tools">
+        <select id="list-show" onchange="render()">
+          <option value="committee">Committee, staff &amp; office holders</option>
+          <option value="residents">Residents only</option>
+          <option value="all">Everyone</option>
+        </select>
+        <input type="text" id="list-search" placeholder="Find a name…" oninput="render()">
+        <span class="small" id="list-count"></span>
+      </div>
       <div style="overflow-x:auto;">
         <table>
           <thead><tr><th>Name</th><th>Areas</th><th>PIN</th><th></th></tr></thead>
@@ -122,12 +173,16 @@
   </div>
 </div>
 
+<!-- Welcome slips go here when printing -->
+<div id="slips"></div>
+
 <script src="hub-pin.js"></script>
 <script>
 // The areas of the Hub that use personal PINs.
 // To bring another area across later, add a line here, and use the same "id"
 // in that page's HubPin.require({ area: "..." }) call.
 const AREAS = [
+  { id: "resident",      label: "Resident (Residents Only pages)" },
   { id: "rc-chair",      label: "RC Chair" },
   { id: "rc-secretary",  label: "RC Secretary" },
   { id: "rc-treasurer",  label: "RC Treasurer" },
@@ -207,8 +262,15 @@ function pinPill(p) {
 
 function render() {
   const body = document.getElementById("people-body");
-  if (!peopleList.length) { body.innerHTML = '<tr><td colspan="4">No one yet.</td></tr>'; return; }
-  body.innerHTML = peopleList.map((p, i) => `
+  const show = document.getElementById("list-show").value;
+  const find = document.getElementById("list-search").value.trim().toLowerCase();
+  const isResidentOnly = p => p.areas.length === 1 && p.areas[0] === "resident";
+  const shown = peopleList.map((p, i) => ({ p, i })).filter(({ p }) =>
+    (show === "all" || (show === "residents") === isResidentOnly(p)) &&
+    (!find || p.name.toLowerCase().indexOf(find) !== -1));
+  document.getElementById("list-count").textContent = shown.length + " of " + peopleList.length + " people";
+  if (!shown.length) { body.innerHTML = '<tr><td colspan="4">No one to show.</td></tr>'; return; }
+  body.innerHTML = shown.map(({ p, i }) => `
     <tr data-i="${i}">
       <td><b>${esc(p.name)}</b>${p.notes ? '<div class="small">' + esc(p.notes) + '</div>' : ""}</td>
       <td><div class="areas">${areaBoxes("r" + i, p.areas)}</div>
@@ -223,7 +285,9 @@ function render() {
 }
 
 // ── Actions ──
+let lastCode = null;
 function showCode(res) {
+  lastCode = { name: res.name, code: res.code, expires: res.expires };
   document.getElementById("code-name").textContent = res.name;
   document.getElementById("code-value").textContent = res.code;
   document.getElementById("code-expires").textContent = niceDate(res.expires);
@@ -280,12 +344,67 @@ function issueCode(i) {
     : "Issue a new welcome code for " + p.name + "?";
   if (!confirm(warn)) return;
   status("Issuing a code…", "busy");
-  call({ action: "adminIssueCode", name: p.name }).then(res => {
+  const residentOnly = p.areas.length === 1 && p.areas[0] === "resident";
+  call({ action: "adminIssueCode", name: p.name, days: residentOnly ? 60 : "" }).then(res => {
     if (!res.success) { status(res.error, "err"); return; }
     status("New welcome code issued for " + res.name + ".", "ok");
     showCode(res);
     refresh();
   }).catch(() => status("Couldn't reach the PIN service.", "err"));
+}
+
+// ── Residents in bulk ──
+let slipQueue = [], slipExpires = "";
+function bulkAdd() {
+  const names = document.getElementById("bulk-names").value.trim();
+  if (!names) { status("Please type at least one name.", "err"); return; }
+  const count = names.split(/\n/).filter(n => n.trim()).length;
+  if (!confirm("Add " + count + " resident" + (count === 1 ? "" : "s") + " and create their welcome codes?")) return;
+  const btn = document.getElementById("bulk-go");
+  btn.disabled = true;
+  status("Adding residents — this can take a little while for a long list…", "busy");
+  call({ action: "adminBulkAdd", names: names, areas: "resident" }).then(res => {
+    btn.disabled = false;
+    if (!res.success) { status(res.error, "err"); return; }
+    slipQueue = res.added; slipExpires = res.expires;
+    let html = "✅ " + res.added.length + " added. ";
+    if (res.skipped.length) {
+      html += res.skipped.length + " already on the list, so left alone: " +
+        res.skipped.map(x => esc(x.name) + (x.existingName !== x.name ? " (as " + esc(x.existingName) + ")" : "")).join(", ") + ".";
+    }
+    document.getElementById("bulk-result").innerHTML = html;
+    document.getElementById("print-btn").style.display = res.added.length ? "" : "none";
+    document.getElementById("print-btn").textContent = "🖨️ Print " + res.added.length + " welcome slip" + (res.added.length === 1 ? "" : "s");
+    document.getElementById("bulk-names").value = "";
+    status("Residents added. Print the slips now — the codes can't be shown again.", "ok");
+    refresh();
+  }).catch(() => { btn.disabled = false; status("Couldn't reach the PIN service.", "err"); });
+}
+
+function slipHTML(x, expires) {
+  return '<div class="slip">' +
+    '<h3>🔑 Your personal PIN for the Residents\' Hub</h3>' +
+    '<div>Bridgeman Downs Retirement Village · bdrv.au</div>' +
+    '<div class="who">Your sign-in name: <b>' + esc(x.name) + '</b></div>' +
+    '<div>Your one-off welcome code:</div><div><span class="code">' + esc(x.code) + '</span></div>' +
+    '<ol>' +
+      '<li>Go to <b>bdrv.au</b> and open <b>Residents Only</b> (or go straight to <b>bdrv.au/my-pin.html</b>).</li>' +
+      '<li>Press <b>"First time? Set up my PIN"</b>. Type your sign-in name and the code above.</li>' +
+      '<li>Choose your own PIN of 4 to 6 numbers. Use your name and PIN from then on.</li>' +
+    '</ol>' +
+    '<div class="foot">Please use this code by <b>' + esc(niceDate(expires)) + '</b>. It works once only. ' +
+      'Keep this slip private. Need help, or lost your PIN? Contact the Residents Committee.</div>' +
+  '</div>';
+}
+function printSlips() {
+  if (!slipQueue.length) return;
+  document.getElementById("slips").innerHTML = slipQueue.map(x => slipHTML(x, slipExpires)).join("");
+  window.print();
+}
+function printOneSlip() {
+  if (!lastCode) return;
+  document.getElementById("slips").innerHTML = slipHTML(lastCode, lastCode.expires);
+  window.print();
 }
 
 function removePerson(i) {
