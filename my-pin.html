@@ -70,13 +70,13 @@
     <p class="help">Use this the first time, or if you've forgotten your PIN.
       <b>Residents:</b> your welcome code is on the slip delivered to your letterbox.
       <b>Committee members:</b> ask Rick, the Hub administrator, for your code.</p>
-    <label for="s-name">Your name <span class="hint">(exactly as on your slip — residents: first name and unit, e.g. Joan 20)</span></label>
-    <input id="s-name" autocomplete="username" placeholder="e.g. Kathy">
+    <label for="s-name">Your name <span class="hint">(exactly as on your slip — residents: first name and unit, e.g. Maggie 42)</span></label>
+    <input id="s-name" autocomplete="username" placeholder="e.g. Maggie">
     <label for="s-code">Welcome code <span class="hint">(6 letters and numbers)</span></label>
     <input id="s-code" autocomplete="off" maxlength="8" placeholder="e.g. K7PM3Q">
-    <label for="s-pin1">Choose your PIN <span class="hint">(4 to 6 numbers)</span></label>
+    <label for="s-pin1">Enter a new PIN <span class="hint">(4 to 6 numbers)</span></label>
     <input id="s-pin1" class="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password">
-    <label for="s-pin2">Type your PIN again</label>
+    <label for="s-pin2">Enter your new PIN again</label>
     <input id="s-pin2" class="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password">
     <button class="btn" id="s-go" onclick="doSetup()">Save my PIN</button>
     <div class="msg" id="s-msg"></div>
