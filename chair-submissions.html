@@ -233,6 +233,15 @@
       list.appendChild(card);
 
       card.querySelector('.save-btn').addEventListener('click', () => saveRow(r.rowNum, card));
+      // Once something is changed again, the old "Saved" message no longer applies
+      card.querySelectorAll('.statusSel, .notesTxt, .discussedTxt, .linkedTxt').forEach(el =>
+        el.addEventListener('input', () => {
+          if (!card.querySelector('.save-btn').disabled) {
+            const m = document.getElementById(`saved-${r.rowNum}`);
+            m.style.color = "#b8860b";
+            m.textContent = "Changes not saved yet";
+          }
+        }));
       buildReplyHelper(r, card);
     });
   }
@@ -324,12 +333,31 @@
     data.append('discussed', discussed);
     data.append('linked', linked);
 
+    // Show straight away that something is happening — Google can take a few
+    // seconds to answer — and stop a second press while it's saving.
+    const btn = card.querySelector('.save-btn');
+    const msg = document.getElementById(`saved-${rowNum}`);
+    btn.disabled = true;
+    btn.textContent = "Saving…";
+    msg.style.color = "#555";
+    msg.textContent = "Please wait…";
+
     fetch(APPS_SCRIPT_URL, { method: 'POST', body: data })
       .then(r => r.json())
       .then(reply => {
         if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
-        document.getElementById(`saved-${rowNum}`).textContent = "Saved ✓";
-        setTimeout(() => { document.getElementById(`saved-${rowNum}`).textContent = ""; }, 3000);
+        if (reply.result !== 'ok') throw new Error('not saved');
+        const time = new Date().toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" });
+        msg.style.color = "#2f9e52";
+        msg.textContent = "Saved ✓ at " + time;   // stays on screen, so it can't be missed
+      })
+      .catch(() => {
+        msg.style.color = "#b3261e";
+        msg.textContent = "⚠️ Not saved — please press Save again.";
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.textContent = "Save";
       });
   }
 
