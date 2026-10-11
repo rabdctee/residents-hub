@@ -93,6 +93,32 @@
     cursor: pointer;
   }
   .saved-msg { color: #2f9e52; font-size: 14px; margin-left: 10px; }
+
+  /* ── Reply helper ── */
+  .reply-box {
+    background: #eef4fb;
+    border: 1px solid #c9dcef;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+  }
+  .reply-box .reply-title { font-weight: bold; font-size: 14px; color: #1b3a5c; margin-bottom: 8px; }
+  .reply-box .reply-hint { font-size: 13px; color: #555; margin-bottom: 8px; }
+  .reply-btn {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 0 8px 8px 0;
+    border-radius: 6px;
+    background: #1b6fb8;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+  }
+  .reply-btn.light { background: #fff; color: #1b6fb8; border: 1px solid #1b6fb8; }
+  .replied-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
+  .replied-row select { width: auto; margin-top: 0; }
 </style>
 </head>
 <body>
@@ -167,10 +193,25 @@
       const card = document.createElement('div');
       card.className = `card status-${r.status.replace(/\s+/g,'-')}`;
       card.innerHTML = `
-        <div class="meta">${r.timestamp} — ${r.category}</div>
+        <div class="meta">${friendlyDate(r.timestamp)} — ${r.category}</div>
         <strong>${r.name}</strong> ${r.unit ? "(" + r.unit + ")" : ""}
         ${r.contact ? "<br>Contact: " + r.contact : ""}
         <div class="desc">${r.description}</div>
+
+        <div class="reply-box">
+          <div class="reply-title">Reply to ${r.name || "this resident"}</div>
+          <div class="reply-actions"></div>
+          <div class="replied-row">
+            <span style="font-size:14px;">Once you've replied:</span>
+            <select class="replyHow">
+              <option>by email</option>
+              <option>by phone</option>
+              <option>by letterbox note</option>
+              <option>in person</option>
+            </select>
+            <button type="button" class="reply-btn light markReplied">✅ Mark as replied</button>
+          </div>
+        </div>
 
         <label>Status</label>
         <select data-row="${r.rowNum}" class="statusSel">
@@ -192,6 +233,78 @@
       list.appendChild(card);
 
       card.querySelector('.save-btn').addEventListener('click', () => saveRow(r.rowNum, card));
+      buildReplyHelper(r, card);
+    });
+  }
+
+  // ── REPLY HELPER ──────────────────────────────────────────────
+  // Works out whether the resident left an email address and/or a phone
+  // number, and offers the right buttons. Replies are sent from your own
+  // Gmail, so they sit in your Sent folder and the resident can answer you.
+  function friendlyDate(ts) {
+    const d = new Date(ts);
+    if (isNaN(d)) return String(ts || "");
+    return d.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+  }
+
+  function buildReplyHelper(r, card) {
+    const box     = card.querySelector('.reply-actions');
+    const contact = String(r.contact || "");
+    const email   = (contact.match(/[^\s@,;<>()]+@[^\s@,;<>()]+\.[^\s@,;<>()]+/) || [""])[0];
+    const phoneRaw = (contact.replace(email, "").match(/\+?[\d\s()-]{8,}/) || [""])[0].trim();
+    const phone   = phoneRaw.replace(/[^\d+]/g, "");
+    const raised  = friendlyDate(r.timestamp);
+    const first   = String(r.name || "").trim().split(/\s+/)[0] || "";
+
+    if (email) {
+      const subject = "Your concern raised on " + raised;
+      const body =
+        "Dear " + (first || "Resident") + ",\n\n" +
+        "Thank you for raising your concern with the Residents Committee.\n\n\n\n" +
+        "Kind regards,\nRick Van Haeften\nChair, BDRV Residents Committee\n\n" +
+        "----- Your original message (" + raised + ") -----\n" +
+        "Category: " + (r.category || "") + "\n" +
+        String(r.description || "");
+      const link = document.createElement('a');
+      link.className = 'reply-btn';
+      link.target = '_blank';
+      link.textContent = '✉️ Reply by email';
+      link.href = 'https://mail.google.com/mail/?view=cm&fs=1' +
+                  '&to=' + encodeURIComponent(email) +
+                  '&su=' + encodeURIComponent(subject) +
+                  '&body=' + encodeURIComponent(body);
+      box.appendChild(link);
+    }
+
+    const hasPhone = phone.replace(/\D/g, "").length >= 8;
+    if (hasPhone) {
+      const call = document.createElement('a');
+      call.className = 'reply-btn' + (email ? ' light' : '');
+      call.href = 'tel:' + phone;
+      call.textContent = '📞 Ring ' + phoneRaw;
+      box.appendChild(call);
+    }
+
+    if (!email && !hasPhone) {
+      const hint = document.createElement('div');
+      hint.className = 'reply-hint';
+      hint.textContent = 'No email or phone number was left — a note in the letterbox of unit ' +
+                         (r.unit || '?') + ' will reach them.';
+      box.appendChild(hint);
+      card.querySelector('.replyHow').value = 'by letterbox note';
+    } else if (!email) {
+      card.querySelector('.replyHow').value = 'by phone';
+    }
+
+    // "Mark as replied": adds a dated line to the notes, sets the status to
+    // Responded and saves — all in one press.
+    card.querySelector('.markReplied').addEventListener('click', () => {
+      const how   = card.querySelector('.replyHow').value;
+      const today = new Date().toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
+      const notes = card.querySelector('.notesTxt');
+      notes.value = (notes.value.trim() ? notes.value.trim() + "\n" : "") + "Replied " + how + ", " + today + ".";
+      card.querySelector('.statusSel').value = "Responded";
+      saveRow(r.rowNum, card);
     });
   }
 

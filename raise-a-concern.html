@@ -230,8 +230,8 @@ button[type=submit]:disabled{
       <label for="unit">Unit / Villa Number</label>
       <input type="text" id="unit" placeholder="Optional">
 
-      <label for="contact">Best way to contact you (phone or email)</label>
-      <input type="text" id="contact" placeholder="Optional — helpful if the Chair needs to follow up">
+      <label for="contact">Your phone number or email, so the Chair can reply <span class="required">*</span></label>
+      <input type="text" id="contact" required placeholder="e.g. 0412 345 678 or joan@example.com">
 
       <label for="category">Category <span class="required">*</span></label>
       <select id="category" required>
@@ -298,6 +298,9 @@ button[type=submit]:disabled{
     }
   });
 
+  // Clear the "please enter your phone or email" message as soon as they start typing
+  document.getElementById('contact').addEventListener('input', function () { this.setCustomValidity(''); });
+
   const checkbox = document.getElementById('checkedTracker');
   const submitBtn = document.getElementById('submitBtn');
 
@@ -308,6 +311,14 @@ button[type=submit]:disabled{
 
   document.getElementById('concernForm').addEventListener('submit', function(e) {
     e.preventDefault();
+
+    // The contact box must hold a phone number (at least 8 digits) or an email address
+    const contactBox = document.getElementById('contact');
+    const contactVal = contactBox.value.trim();
+    const looksOK = /\S+@\S+\.\S+/.test(contactVal) || contactVal.replace(/\D/g, '').length >= 8;
+    contactBox.setCustomValidity(looksOK ? '' :
+      'Please enter your phone number or email address, so the Chair can reply to you.');
+    if (!looksOK) { contactBox.reportValidity(); return; }
 
     const data = new FormData();
     data.append('action', 'newSubmission');
