@@ -227,19 +227,7 @@
 </head>
 <body>
 
-<!-- PIN OVERLAY -->
-<div id="pin-overlay">
-  <div class="pin-box">
-    <div class="logo">🏘️</div>
-    <h2>Residents Contact List</h2>
-    <p>Please enter the PIN to access this page.</p>
-    <input type="password" id="pin-input" maxlength="4" placeholder="••••"
-           oninput="if(this.value.length===4) checkPin()"
-           onkeydown="if(event.key==='Enter') checkPin()">
-    <div class="pin-error" id="pin-error"></div>
-    <button onclick="checkPin()">Enter</button>
-  </div>
-</div>
+<!-- Sign-in box now comes from hub-pin.js (personal PINs) — see the script below -->
 
 <!-- MAIN CONTENT -->
 <div id="main-content">
@@ -293,35 +281,27 @@
   <footer>BDRV Residents' Information Hub &nbsp;·&nbsp; Residents Only &nbsp;·&nbsp; Do not distribute</footer>
 </div>
 
+<script src="hub-pin.js"></script>
+<script src="resident-areas.js"></script>
 <script>
 // ── CONFIG ──
+// The Residents Data script (ResidentsData_Code.gs) only hands the list to signed-in residents.
+// Until its web address is pasted here, the page keeps using the published sheet below.
+const CONTACTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyaMvGfBBLtVgi6279j4T3sac3vN-4N5k_U-ptUgTHUvdhmu8seJxM2xIxvBEHDY-Qn/exec';
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQyR4BQFFKGgh29t0BOQosbAk8MZiBx4qZ3MNBqibQbQTjbBP8yx6k1_QaT6XIua9ftWKwVbjGSBMIj/pub?gid=405969186&single=true&output=csv'
-const CORRECT_PIN = '4035';
-const SESSION_KEY = 'bdrv_committee_auth';
-
-// ── PIN ──
-function checkPin() {
-  const val = document.getElementById('pin-input').value;
-  if (val === CORRECT_PIN) {
-    sessionStorage.setItem(SESSION_KEY, 'true');
-    document.getElementById('pin-overlay').classList.add('hidden');
-    document.getElementById('main-content').classList.add('visible');
-    loadData();
-  } else {
-    const inp = document.getElementById('pin-input');
-    inp.classList.add('error');
-    document.getElementById('pin-error').textContent = 'Incorrect PIN. Please try again.';
-    inp.value = '';
-    setTimeout(() => inp.classList.remove('error'), 600);
-  }
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  if (sessionStorage.getItem(SESSION_KEY) === 'true') {
-    document.getElementById('pin-overlay').classList.add('hidden');
-    document.getElementById('main-content').classList.add('visible');
-    loadData();
-  }
+// ── SIGN IN (hub-pin.js) ──
+// Residents use their first name and unit (e.g. "Joan 20") and their own PIN.
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: RESIDENT_AREAS,
+  audience: 'resident',
+  title: '🏘️ Residents Contact List',
+  subtitle: 'For Bridgeman Downs residents. Please sign in with your first name, unit number and your own PIN.',
+  legacyPin: '4035',
+  legacyUntil: '2026-11-30'
+}, function () {
+  document.getElementById('main-content').classList.add('visible');
+  loadData();
 });
 
 // ── CSV PARSER ──
@@ -347,10 +327,18 @@ function parseCSV(text) {
 // ── LOAD DATA ──
 async function loadData() {
   try {
-    const resp = await fetch(CSV_URL);
-    if (!resp.ok) throw new Error('Fetch failed');
-    const text = await resp.text();
-    const rows = parseCSV(text);
+    let rows;
+    if (CONTACTS_SCRIPT_URL.indexOf('script.google.com') !== -1) {
+      const resp = await fetch(CONTACTS_SCRIPT_URL + '?action=contacts&token=' + encodeURIComponent(HubPin.token()));
+      const data = await resp.json();
+      if (data.signIn) { HubPin.expired(); return; }   // sign-in has run out
+      if (!data.success) throw new Error(data.message || 'Not available');
+      rows = data.rows;
+    } else {
+      const resp = await fetch(CSV_URL);
+      if (!resp.ok) throw new Error('Fetch failed');
+      rows = parseCSV(await resp.text());
+    }
 
     // Row 0: date in A1
     const lastUpdated = rows[0] && rows[0][0] ? rows[0][0].trim() : '';
