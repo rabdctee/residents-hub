@@ -21,7 +21,7 @@
   }
   .panel h2 { color: #D4B860; font-size: 1.1em; margin-bottom: 10px; }
   label.fl { display: block; font-weight: 700; font-size: 0.9em; margin: 10px 0 4px; }
-  input[type=text], input[type=password] {
+  input[type=text], input[type=password], input[type=email] {
     width: 100%; font-size: 1em; padding: 9px 12px; border-radius: 7px;
     border: 2px solid #3F4143; outline: none; color: #222; background: #fff; font-family: inherit;
   }
@@ -147,7 +147,9 @@
       <p class="small" style="margin-bottom:8px;">One resident per line: <b>first name and unit number</b>, e.g. <b>Joan 20</b>.
         For couples, put each person on their own line. Each person gets the <b>Resident</b> area and a
         welcome code that lasts 60 days. Anyone already on the list is left alone.</p>
-      <textarea class="bulk" id="bulk-names" placeholder="Joan 20&#10;Bill 20&#10;Mary 21"></textarea>
+      <p class="small" style="margin-bottom:8px;">✉️ <b>To email someone their code instead of printing a slip</b>, add their email
+        address after a comma, e.g. <b>Joan 20, joan@example.com</b>. Anyone without an email address gets a printed slip.</p>
+      <textarea class="bulk" id="bulk-names" placeholder="Joan 20, joan@example.com&#10;Bill 20&#10;Mary 21, mary@example.com"></textarea>
       <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn btn-gold" id="bulk-go" onclick="bulkAdd()">➕ Add residents and create slips</button>
         <button class="btn btn-cream" id="print-btn" style="display:none;" onclick="printSlips()">🖨️ Print welcome slips</button>
@@ -391,20 +393,33 @@ function bulkAdd() {
   const btn = document.getElementById("bulk-go");
   btn.disabled = true;
   status("Adding residents — this can take a little while for a long list…", "busy");
-  call({ action: "adminBulkAdd", names: names, areas: "resident" }).then(res => {
+  const withEmail = /[^\s@,]+@[^\s@,]+\.[^\s@,]+/.test(names);
+  if (withEmail) status("Adding residents and emailing their codes — this can take a little while…", "busy");
+  call({ action: withEmail ? "adminBulkAddEmail" : "adminBulkAdd", names: names, areas: "resident" }).then(res => {
     btn.disabled = false;
-    if (!res.success) { status(res.error, "err"); return; }
-    slipQueue = res.added; slipExpires = res.expires;
+    if (!res.success) {
+      status(res.error === "Unknown action"
+        ? "Nothing was added: the PIN Manager script hasn't been updated for emailing residents yet. Remove the email addresses to add them with slips, or update the script first."
+        : res.error, "err");
+      return;
+    }
+    const emailed = res.added.filter(x => x.emailed);
+    const failed  = res.added.filter(x => x.email && !x.emailed);
+    slipQueue = res.added.filter(x => !x.emailed); slipExpires = res.expires;
     let html = "✅ " + res.added.length + " added. ";
+    if (emailed.length) html += "✉️ " + emailed.length + " emailed their code. ";
+    if (failed.length) html += "⚠️ Couldn't email " + failed.map(x => esc(x.name)).join(", ") +
+      " (" + esc(failed[0].emailError || "unknown problem") + ") — their slips are ready to print instead. ";
     if (res.skipped.length) {
       html += res.skipped.length + " already on the list, so left alone: " +
         res.skipped.map(x => esc(x.name) + (x.existingName !== x.name ? " (as " + esc(x.existingName) + ")" : "")).join(", ") + ".";
     }
     document.getElementById("bulk-result").innerHTML = html;
-    document.getElementById("print-btn").style.display = res.added.length ? "" : "none";
-    document.getElementById("print-btn").textContent = "🖨️ Print " + res.added.length + " welcome slip" + (res.added.length === 1 ? "" : "s");
+    document.getElementById("print-btn").style.display = slipQueue.length ? "" : "none";
+    document.getElementById("print-btn").textContent = "🖨️ Print " + slipQueue.length + " welcome slip" + (slipQueue.length === 1 ? "" : "s");
     document.getElementById("bulk-names").value = "";
-    status("Residents added. Print the slips now — the codes can't be shown again.", "ok");
+    status(slipQueue.length ? "Residents added. Print the slips now — the codes can't be shown again."
+                            : "Residents added, and everyone was emailed their code.", "ok");
     refresh();
   }).catch(() => { btn.disabled = false; status("Couldn't reach the PIN service.", "err"); });
 }
@@ -424,15 +439,44 @@ function slipHTML(x, expires) {
       'Keep this slip private. Need help, or lost your PIN? Contact the Residents Committee.</div>' +
   '</div>';
 }
+// Slips are printed from their own small hidden page, so the Hub's sidebar and
+// page layout can't hide them (that's what made the print preview blank).
+const SLIP_CSS = `
+  @page { size: A4; margin: 10mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; }
+  .slip { background: #fff; color: #111; border: 2px dashed #888; padding: 7mm 9mm; height: 92mm;
+    page-break-inside: avoid; break-inside: avoid; font-family: 'Segoe UI', Arial, sans-serif;
+    margin-bottom: 3mm; display: flex; flex-direction: column; }
+  .slip h3 { font-size: 15pt; margin-bottom: 1mm; color: #1F4E79; }
+  .slip .who { font-size: 12pt; margin: 2mm 0; }
+  .slip .who b { font-size: 16pt; }
+  .slip .code { font-family: Consolas, 'Courier New', monospace; font-size: 22pt; font-weight: 800;
+    letter-spacing: 0.3em; border: 2px solid #111; display: inline-block; padding: 1mm 4mm; margin: 1mm 0 2mm; }
+  .slip ol { font-size: 11pt; padding-left: 6mm; line-height: 1.45; }
+  .slip .foot { font-size: 9.5pt; color: #444; margin-top: auto; }`;
+
+function printHTML(inner) {
+  const old = document.getElementById("slip-frame");
+  if (old) old.remove();
+  const f = document.createElement("iframe");
+  f.id = "slip-frame";
+  f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;";
+  document.body.appendChild(f);
+  const d = f.contentDocument;
+  d.open();
+  d.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Welcome slips</title><style>' +
+          SLIP_CSS + '</style></head><body>' + inner + '</body></html>');
+  d.close();
+  setTimeout(() => { f.contentWindow.focus(); f.contentWindow.print(); }, 300);
+}
 function printSlips() {
   if (!slipQueue.length) return;
-  document.getElementById("slips").innerHTML = slipQueue.map(x => slipHTML(x, slipExpires)).join("");
-  window.print();
+  printHTML(slipQueue.map(x => slipHTML(x, slipExpires)).join(""));
 }
 function printOneSlip() {
   if (!lastCode) return;
-  document.getElementById("slips").innerHTML = slipHTML(lastCode, lastCode.expires);
-  window.print();
+  printHTML(slipHTML(lastCode, lastCode.expires));
 }
 
 function removePerson(i) {
