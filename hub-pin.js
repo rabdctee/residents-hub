@@ -9,7 +9,8 @@
        title: "🔒 Village Calendar",
        subtitle: "This tool is for managing the Combined Village Calendar.",
        legacyPin: "5304",                      // old shared PIN — optional, for the changeover
-       legacyUntil: "2026-11-30"               // last day the old shared PIN works
+       legacyUntil: "2026-11-30",              // last day the old shared PIN works
+       audience: "resident"                    // optional — residents' wording ("first name and unit")
      }, function (person) {
        // start the page here
      });
@@ -27,6 +28,20 @@
   var SESSION_HOURS = 2;
   var MY_PIN_PAGE   = "my-pin.html";
   var CONTACT       = "Rick, the Hub administrator";
+  var RES_CONTACT   = "the Residents Committee";
+
+  // Changeover extensions: an old shared PIN listed here keeps working until the
+  // date shown, on every page that uses it, whatever date the page itself says.
+  // (The matching Apps Scripts need the same date in their OPEN_UNTIL line.)
+  var LEGACY_EXTEND = {
+    "4035": "2026-12-31"     // residents' old shared PIN
+  };
+
+  // Link to My PIN that brings the person straight back to this page afterwards
+  function myPinLink() {
+    var here = (location.pathname.split("/").pop() || "index.html") + (location.hash || "");
+    return MY_PIN_PAGE + "?back=" + encodeURIComponent(here);
+  }
 
   function todayStr() {
     var d = new Date();
@@ -81,6 +96,10 @@
   .hubpin-notice p, .hubpin-notice ol { margin: 10px 0 0; }
   .hubpin-notice ol { padding-left: 22px; }
   .hubpin-notice a { color: #D4B860; font-weight: 700; }
+  .hubpin-setup { display: block; margin-top: 14px; padding: 12px; border: 2px solid #D4B860; border-radius: 8px;
+    color: #D4B860; font-weight: 700; text-decoration: none; font-size: 1.05em; }
+  .hubpin-setup:hover { background: rgba(212,184,96,0.12); }
+  .hubpin-help { color: rgba(246,242,231,0.75); font-size: 0.85em; text-align: left; margin-top: 4px; }
   #hubpin-banner { position: sticky; top: 0; z-index: 9000; background: #D4B860; color: #263746;
     padding: 10px 44px 10px 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 0.95em; font-weight: 600; line-height: 1.45; }
@@ -101,9 +120,25 @@
   function noticeHTML(opts, retired) {
     if (!opts.legacyUntil) return "";
     var when = niceDate(opts.legacyUntil);
+    if (opts.audience === "resident") {
+      return '<details class="hubpin-notice"' + (retired ? "" : " open") + '>' +
+        "<summary>📣 New: your own personal PIN</summary>" +
+        "<p>The Residents Only pages are moving from one shared PIN to a personal PIN for each resident. " +
+        "Your PIN is private — no one else can see it — and you can change it whenever you like.</p>" +
+        "<ol>" +
+          "<li>Look for your <b>welcome code</b> — by email, or on a slip in your letterbox. It shows your sign-in name and a one-off code.</li>" +
+          '<li>Press <b>Set up my PIN</b> above and choose a PIN of 4 to 6 numbers.</li>' +
+          "<li>From then on, sign in here with your first name and unit number, and your own PIN.</li>" +
+        "</ol>" +
+        (retired
+          ? "<p><b>The old shared PIN stopped working on " + when + ".</b> No slip, or lost it? Please contact " + esc(RES_CONTACT) + ".</p>"
+          : "<p><b>Still using the old shared PIN?</b> It keeps working until <b>" + when + "</b>. Just type it in the PIN box and press Sign in — your name is optional. " +
+            "No slip, or lost it? Please contact " + esc(RES_CONTACT) + ".</p>") +
+        "</details>";
+    }
     var lastLine = retired
       ? "<p><b>The old shared PIN stopped working on " + when + ".</b> If you haven't set up your own PIN yet, please contact " + esc(CONTACT) + ".</p>"
-      : "<p>The old shared PIN will keep working until <b>" + when + "</b>. Until then, you can still leave the name box empty and enter the shared PIN.</p>";
+      : "<p><b>Still using the old shared PIN?</b> It keeps working until <b>" + when + "</b>. Just type it in the PIN box and press Sign in — your name is optional.</p>";
     return '<details class="hubpin-notice"' + (retired ? "" : " open") + '>' +
       "<summary>📣 New: your own personal PIN</summary>" +
       "<p>The Hub is moving from one shared PIN to a personal PIN for each person. " +
@@ -120,7 +155,9 @@
     var b = document.createElement("div");
     b.id = "hubpin-banner";
     b.innerHTML = "📣 You signed in with the old shared PIN, which stops working on " + esc(niceDate(opts.legacyUntil)) +
-      '. Please set up your own personal PIN — <a href="' + MY_PIN_PAGE + '">here\'s how</a>.' +
+      (opts.audience === "resident"
+        ? '. Please set up your own PIN using the welcome slip from your letterbox — <a href="' + myPinLink() + '">set up my PIN now</a>.'
+        : '. Please set up your own personal PIN — <a href="' + myPinLink() + '">here\'s how</a>.') +
       '<button type="button" aria-label="Close">✕</button>';
     b.querySelector("button").onclick = function () { b.remove(); };
     document.body.insertBefore(b, document.body.firstChild);
@@ -133,31 +170,43 @@
       return;
     }
     injectStyles();
+    if (opts.legacyPin && LEGACY_EXTEND[String(opts.legacyPin)]) {
+      opts.legacyUntil = LEGACY_EXTEND[String(opts.legacyPin)];
+    }
     var areas = [].concat(opts.area || []).map(function (a) { return String(a).toLowerCase(); });
     function hasArea(list) { return areas.some(function (a) { return (list || []).indexOf(a) !== -1; }); }
     var retired = !!(opts.legacyUntil && todayStr() > opts.legacyUntil);
 
     // Already signed in during this visit?
     var s = readSession();
-    if (s && hasArea(s.areas) && !(s.legacy && retired)) {
+    var sameLegacy = !s || !s.legacy || (opts.legacyPin && s.legacyPin === String(opts.legacyPin));
+    if (s && hasArea(s.areas) && sameLegacy && !(s.legacy && retired)) {
       if (s.legacy) showLegacyBanner(opts);
       onOk({ name: s.name, legacy: !!s.legacy, token: s.token || "" });
       return;
     }
 
+    var resident = opts.audience === "resident";
     var ov = document.createElement("div");
     ov.id = "hubpin-overlay";
     ov.innerHTML =
       '<div class="hubpin-card">' +
         "<h2>" + esc(opts.title || "🔒 Members only") + "</h2>" +
         '<p class="hubpin-sub">' + esc(opts.subtitle || "Please sign in with your name and your own PIN.") + "</p>" +
-        '<label for="hubpin-name">Your name</label>' +
-        '<input id="hubpin-name" autocomplete="username" placeholder="e.g. Kathy" value="' + esc(lastName()) + '">' +
+        (resident
+          ? '<label for="hubpin-name">Your first name and unit number</label>' +
+            '<input id="hubpin-name" autocomplete="username" placeholder="e.g. Joan 20" value="' + esc(lastName()) + '">' +
+            '<div class="hubpin-help">Exactly as on your welcome slip.</div>'
+          : '<label for="hubpin-name">Your name</label>' +
+            '<input id="hubpin-name" autocomplete="username" placeholder="e.g. Kathy" value="' + esc(lastName()) + '">') +
         '<label for="hubpin-pin">Your PIN</label>' +
         '<input id="hubpin-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="••••">' +
         '<button type="button" id="hubpin-go">Sign in</button>' +
         '<div id="hubpin-error"></div>' +
-        '<div class="hubpin-links"><a href="' + MY_PIN_PAGE + '">Set up or change my PIN</a></div>' +
+        (resident
+          ? '<a class="hubpin-setup" href="' + myPinLink() + '">📬 First time? Set up my PIN with my welcome slip</a>' +
+            '<div class="hubpin-links"><a href="' + myPinLink() + '">Change my PIN</a></div>'
+          : '<div class="hubpin-links"><a href="' + myPinLink() + '">Set up or change my PIN</a></div>') +
         noticeHTML(opts, retired) +
       "</div>";
     document.body.appendChild(ov);
@@ -187,15 +236,19 @@
       errEl.textContent = "";
       if (!pin) { fail("Please enter your PIN."); return; }
 
+      // The old shared PIN, during the changeover only — accepted whether or not
+      // a name has been typed, as many people type their name out of habit.
+      if (opts.legacyPin && pin === String(opts.legacyPin) && !retired) {
+        writeSession({ name: "", areas: areas, legacy: true, legacyPin: String(opts.legacyPin) });
+        finish({ name: "", legacy: true });
+        return;
+      }
+
       if (!name) {
-        // The old shared PIN, during the changeover only
-        if (opts.legacyPin && pin === String(opts.legacyPin)) {
-          if (retired) { fail("The old shared PIN has now been retired. Please enter your name and your own PIN."); return; }
-          writeSession({ name: "", areas: areas, legacy: true });
-          finish({ name: "", legacy: true });
-          return;
+        if (opts.legacyPin && pin === String(opts.legacyPin) && retired) {
+          fail("The old shared PIN has now been retired. Please enter your name and your own PIN."); return;
         }
-        fail("Please enter your name as well as your PIN.");
+        fail(resident ? "Please enter your first name and unit number as well as your PIN." : "Please enter your name as well as your PIN.");
         return;
       }
 
