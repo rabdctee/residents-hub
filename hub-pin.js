@@ -30,12 +30,10 @@
   var CONTACT       = "Rick, the Hub administrator";
   var RES_CONTACT   = "the Residents Committee";
 
-  // Changeover extensions: an old shared PIN listed here keeps working until the
-  // date shown, on every page that uses it, whatever date the page itself says.
-  // (The matching Apps Scripts need the same date in their OPEN_UNTIL line.)
-  var LEGACY_EXTEND = {
-    "4035": "2026-12-31"     // residents' old shared PIN
-  };
+  // Changeover: every old shared PIN keeps working until this date, on every page,
+  // whatever date the page itself says. (The Apps Scripts need the same date in
+  // their OPEN_UNTIL line.) To extend again later, change just this one date.
+  var LEGACY_ALL_UNTIL = "2026-12-31";
 
   // Link to My PIN that brings the person straight back to this page afterwards
   function myPinLink() {
@@ -170,8 +168,8 @@
       return;
     }
     injectStyles();
-    if (opts.legacyPin && LEGACY_EXTEND[String(opts.legacyPin)]) {
-      opts.legacyUntil = LEGACY_EXTEND[String(opts.legacyPin)];
+    if (opts.legacyPin && (!opts.legacyUntil || opts.legacyUntil < LEGACY_ALL_UNTIL)) {
+      opts.legacyUntil = LEGACY_ALL_UNTIL;
     }
     var areas = [].concat(opts.area || []).map(function (a) { return String(a).toLowerCase(); });
     function hasArea(list) { return areas.some(function (a) { return (list || []).indexOf(a) !== -1; }); }
