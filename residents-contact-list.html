@@ -290,7 +290,7 @@
 const CONTACTS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyaMvGfBBLtVgi6279j4T3sac3vN-4N5k_U-ptUgTHUvdhmu8seJxM2xIxvBEHDY-Qn/exec';
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQyR4BQFFKGgh29t0BOQosbAk8MZiBx4qZ3MNBqibQbQTjbBP8yx6k1_QaT6XIua9ftWKwVbjGSBMIj/pub?gid=405969186&single=true&output=csv'
 // ── SIGN IN (hub-pin.js) ──
-// Residents use their first name and unit (e.g. "Joan 20") and their own PIN.
+// Residents use their first name and unit (e.g. "Maggie 42") and their own PIN.
 // The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
 HubPin.require({
   area: RESIDENT_AREAS,
@@ -298,7 +298,7 @@ HubPin.require({
   title: '🏘️ Residents Contact List',
   subtitle: 'For Bridgeman Downs residents. Please sign in with your first name, unit number and your own PIN.',
   legacyPin: '4035',
-  legacyUntil: '2026-11-30'
+  legacyUntil: '2026-12-31'
 }, function () {
   document.getElementById('main-content').classList.add('visible');
   loadData();
