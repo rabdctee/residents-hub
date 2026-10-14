@@ -9,7 +9,7 @@
        title: "🔒 Village Calendar",
        subtitle: "This tool is for managing the Combined Village Calendar.",
        legacyPin: "5304",                      // old shared PIN — optional, for the changeover
-       legacyUntil: "2026-11-30",              // last day the old shared PIN works
+       legacyUntil: "2026-12-31",              // last day the old shared PIN works
        audience: "resident"                    // optional — residents' wording ("first name and unit")
      }, function (person) {
        // start the page here
@@ -193,7 +193,7 @@
         '<p class="hubpin-sub">' + esc(opts.subtitle || "Please sign in with your name and your own PIN.") + "</p>" +
         (resident
           ? '<label for="hubpin-name">Your first name and unit number</label>' +
-            '<input id="hubpin-name" autocomplete="username" placeholder="e.g. Joan 20" value="' + esc(lastName()) + '">' +
+            '<input id="hubpin-name" autocomplete="username" placeholder="e.g. Maggie 42" value="' + esc(lastName()) + '">' +
             '<div class="hubpin-help">Exactly as on your welcome slip.</div>'
           : '<label for="hubpin-name">Your name</label>' +
             '<input id="hubpin-name" autocomplete="username" placeholder="e.g. Kathy" value="' + esc(lastName()) + '">') +
