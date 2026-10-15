@@ -300,6 +300,107 @@
     .toast.error { background:#7a1a1a; }
 
     .no-events { text-align:center; color:#aaa; font-style:italic; font-size:0.9em; padding:20px; }
+
+    /* ══════════════════════════════════════════════════════════
+       HUB NAVY / GOLD PALETTE — additive override block.
+       Delete this whole block to return to the old light look.
+       Red (delete/danger) and green (success) are kept as-is.
+    ══════════════════════════════════════════════════════════ */
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-navy-hover: #324A5F;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-charcoal:   #3F4143;
+      --grey:   #BFC6CE;   /* muted cream for hints and small print */
+      --border: #3F4143;
+    }
+    body { background:var(--hub-navy); color:var(--hub-cream); }
+
+    /* Top bar and tabs */
+    .top-bar { background:var(--hub-navy-panel); border-bottom:2px solid var(--hub-charcoal); }
+    .top-bar-title { color:var(--hub-gold); }
+    .top-bar-sub { color:var(--hub-cream); opacity:0.8; }
+    .back-btn { background:var(--hub-gold); color:var(--hub-navy); }
+    .back-btn:hover { background:#E2CA7E; }
+    .tab-bar { background:var(--hub-navy); border-bottom-color:var(--hub-charcoal); }
+    .tab-btn { color:var(--hub-cream); opacity:0.75; }
+    .tab-btn:hover { color:var(--hub-gold); opacity:1; }
+    .tab-btn.active { color:var(--hub-gold); border-bottom-color:var(--hub-gold); opacity:1; }
+
+    /* Info bar and cards */
+    .info-bar { background:var(--hub-navy-panel); border-color:var(--hub-charcoal); color:var(--hub-cream); }
+    .info-bar strong { color:var(--hub-gold); }
+    .card { background:var(--hub-navy-panel); border-color:var(--hub-charcoal); box-shadow:none; }
+    .card-header { background:#1E2C38; color:var(--hub-gold); border-bottom:1px solid var(--hub-charcoal); }
+    .widget-counter { background:rgba(212,184,96,0.18); color:var(--hub-gold); }
+    .widget-counter.full { background:var(--hub-gold); color:var(--hub-navy); }
+
+    /* Event rows and widget cards */
+    .event-row, .widget-event-card { background:var(--hub-navy); border-color:var(--hub-charcoal); }
+    .widget-event-card:hover { border-color:var(--hub-gold); }
+    .widget-event-card.featured { background:#3A3420; border-color:var(--hub-gold); }
+    .widget-event-card.drag-over { background:var(--hub-navy-hover); border-color:var(--hub-gold); }
+    .event-row-name, .widget-event-name { color:var(--hub-gold); }
+    .event-row-meta, .widget-event-meta, .event-row-link, .widget-event-link { color:var(--hub-cream); opacity:0.85; }
+    .event-drag { color:#7D8792; }
+
+    /* Buttons */
+    .btn-edit, .btn-widget-edit { background:var(--hub-navy); color:var(--hub-cream); border-color:#5A7A99; }
+    .btn-edit:hover, .btn-widget-edit:hover { background:var(--hub-navy-hover); }
+    .btn-widget-edit.has-override { border-color:var(--hub-gold); color:var(--hub-gold); }
+    .btn-upload, .btn-feature { background:var(--hub-navy); color:var(--hub-gold); border-color:var(--hub-gold); }
+    .btn-upload:hover, .btn-feature:hover { background:var(--hub-navy-hover); }
+    .btn-feature.active { background:var(--hub-gold); color:var(--hub-navy); }
+    .btn-feature:disabled:not(.active) { opacity:0.6; cursor:not-allowed; }
+    .btn-delete { background:var(--hub-navy); color:#F08A7E; border-color:#C0392B; }
+    .btn-delete:hover { background:#3A2A2A; }
+    .btn-add, .btn-primary, .btn-save { background:var(--hub-gold); color:var(--hub-navy); }
+    .btn-add:hover, .btn-primary:hover, .btn-save:hover { background:#E2CA7E; }
+    .btn-primary:disabled, .btn-save:disabled { background:#6E6A5E; color:var(--hub-cream); }
+    .btn-secondary, .btn-cancel { background:transparent; color:var(--hub-cream); border-color:var(--hub-charcoal); }
+    .btn-secondary:hover, .btn-cancel:hover { background:var(--hub-navy-hover); }
+
+    /* Preview panel */
+    .preview-panel { background:var(--hub-navy); border-color:var(--hub-charcoal); }
+    .preview-event { border-bottom-color:var(--hub-charcoal); }
+    .preview-date { background:var(--hub-navy-panel); color:var(--hub-gold); }
+    .preview-name { color:var(--hub-cream); }
+    .preview-name a[style] { color:var(--hub-cream) !important; }
+
+    /* Forms */
+    .form-label { color:var(--hub-gold); }
+    .form-input { background:var(--hub-navy); color:var(--hub-cream); border-color:var(--hub-charcoal); }
+    .form-input:focus { border-color:var(--hub-gold); }
+    .form-input::placeholder { color:#8E97A1; }
+    input[type="date"].form-input, input[type="time"].form-input { color-scheme:dark; }
+    select.form-input option { background:var(--hub-navy); color:var(--hub-cream); }
+    .divider { border-top-color:var(--hub-charcoal); }
+
+    /* Alerts — keep green/red meaning, darker backgrounds */
+    .alert-success { background:#1F3A2B; color:#9FD8B4; border-color:#2F6B47; }
+    .alert-error   { background:#3A2424; color:#F4A9A0; border-color:#7A3A33; }
+
+    /* Messages and empty states */
+    .status-msg, .no-events { color:var(--hub-cream); opacity:0.7; }
+
+    /* Pop-up boxes */
+    .modal, .delete-box { background:var(--hub-navy-panel); color:var(--hub-cream); border:1px solid var(--hub-charcoal); }
+    .modal-title { color:var(--hub-gold); border-bottom-color:var(--hub-charcoal); }
+    #widgetLinkEventName { color:var(--hub-cream) !important; }
+    .delete-name { color:var(--hub-gold); }
+    .delete-msg { color:var(--hub-cream); opacity:0.8; }
+
+    /* Badges written into the All Events list */
+    .event-row-name span[style*="color:#555"] { color:var(--hub-cream) !important; opacity:0.85; }
+    .event-row-name span[style*="background:#eee"] { background:#4A5560 !important; color:var(--hub-cream) !important; }
+    .event-row-name span[style*="background:#e8f0fe"] { background:#3A3420 !important; color:var(--hub-gold) !important; }
+    .event-row-name span[style*="color:#2e7d32"] { color:#9FD8B4 !important; }
+
+    /* Toast */
+    .toast { background:#1F3A2B; border:1px solid #2F6B47; }
+    .toast.error { background:#5A2420; border-color:#7A3A33; }
   </style>
 </head>
 <body>
@@ -307,15 +408,15 @@
 <div class="top-bar">
   <div>
     <div class="top-bar-title">🗓️ Manage Events</div>
-    <div class="top-bar-sub">Social Club — Event Management &amp; What's On Widget</div>
+    <div class="top-bar-sub">Social Club — Event Management &amp; Upcoming Events</div>
   </div>
   <button onclick="history.back()" class="back-btn">← Back</button>
 </div>
 
 <!-- Tab bar -->
 <div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('events')">📋 All Events</button>
-  <button class="tab-btn" onclick="switchTab('widget')">⭐ What's On Widget</button>
+  <button class="tab-btn active" onclick="switchTab('widget')">⭐ Upcoming Events</button>
+  <button class="tab-btn" onclick="switchTab('events')">📋 All Events</button>
 </div>
 
 <div class="content">
@@ -323,10 +424,10 @@
   <!-- ══════════════════════════════════════════════
        TAB 1 — ALL EVENTS
   ══════════════════════════════════════════════ -->
-  <div class="tab-panel active" id="tab-events">
+  <div class="tab-panel" id="tab-events">
 
     <div class="info-bar">
-      📋 Add and manage all Social Club events here. To feature an event on the home page <strong>What's On</strong> widget, go to the <strong>⭐ What's On Widget</strong> tab.
+      📋 Add and manage all Social Club events here. To feature an event on the home page <strong>Upcoming Events</strong> widget, go to the <strong>⭐ Upcoming Events</strong> tab.
     </div>
 
     <div class="card">
@@ -434,12 +535,12 @@
   </div><!-- /tab-events -->
 
   <!-- ══════════════════════════════════════════════
-       TAB 2 — WHAT'S ON WIDGET
+       TAB 2 — UPCOMING EVENTS WIDGET
   ══════════════════════════════════════════════ -->
-  <div class="tab-panel" id="tab-widget">
+  <div class="tab-panel active" id="tab-widget">
 
     <div class="info-bar">
-      ⭐ Select up to <strong>3 events</strong> to feature on the home page <strong>What's On</strong> widget. You can also add a PDF link to any featured event. Drag featured events to reorder them.
+      ⭐ Select up to <strong>3 events</strong> to feature on the home page <strong>Upcoming Events</strong> widget. You can also add a PDF link to any featured event. Drag featured events to reorder them.
     </div>
 
     <!-- Featured events (widget entries) -->
@@ -454,6 +555,21 @@
         <div class="preview-panel" id="previewPanel" style="display:none;">
           <div class="preview-title">👁️ Widget Preview</div>
           <div id="previewList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pick from Village Calendar -->
+    <div class="card">
+      <div class="card-header">🗓️ Pick from Village Calendar</div>
+      <div class="card-body">
+        <div class="form-group" style="margin-bottom:12px;">
+          <label class="form-label" for="calDay">Choose a day</label>
+          <select class="form-input" id="calDay" onchange="renderCalPickList()"></select>
+        </div>
+        <div id="calPickList"><div class="status-msg">Loading calendar…</div></div>
+        <div style="font-size:0.83em;color:var(--grey);margin-top:10px;">
+          💡 This copies the activity onto the widget. If the calendar entry changes later, edit the widget item too.
         </div>
       </div>
     </div>
@@ -619,7 +735,7 @@
   <div class="delete-box">
     <div class="delete-icon">🗑️</div>
     <div class="delete-name" id="deleteWidgetName"></div>
-    <div class="delete-msg">This will remove this event from the What's On widget.</div>
+    <div class="delete-msg">This will remove this event from the Upcoming Events widget.</div>
     <div class="delete-btns">
       <button class="btn-cancel" onclick="closeDeleteWidget()">Cancel</button>
       <button class="btn-confirm-delete" id="deleteWidgetBtn" onclick="confirmDeleteWidget()">Remove from Widget</button>
@@ -651,7 +767,7 @@
     document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
     document.getElementById('tab-' + name).classList.add('active');
     event.target.classList.add('active');
-    if (name === 'widget') { loadWidgetEvents(); loadEventsForPicker(); }
+    if (name === 'widget') { loadWidgetEvents(); loadEventsForPicker(); loadCalendarForPicker(); }
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -1039,10 +1155,10 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // TAB 2 — WHAT'S ON WIDGET
+  // TAB 2 —  UPCOMING EVENTS WIDGET
   // ═══════════════════════════════════════════════════════════
 
-  function loadWidgetEvents() {
+  function loadWidgetEvents(cb) {
     document.getElementById('widgetList').innerHTML = '<div class="status-msg">Loading…</div>';
     fetch(WIDGET_URL + '?action=getEvents')
       .then(function(r){ return r.json(); })
@@ -1051,6 +1167,8 @@
         renderWidgetList();
         renderWidgetPreview();
         updateWidgetCounter();
+        if (document.getElementById('calDay').options.length) renderCalPickList();
+        if (cb) cb();
       })
       .catch(function(){
         document.getElementById('widgetList').innerHTML =
@@ -1069,6 +1187,116 @@
         document.getElementById('pickList').innerHTML =
           '<div class="status-msg">⚠️ Could not load events.</div>';
       });
+  }
+
+  // ── Village Calendar picker (same read-only feed as facility-calendar-print.html) ──
+  var CAL_URL = 'https://script.google.com/macros/s/AKfycbzzsMFnQXBPNfdXnKvU4lju_2LIU5QangsqQwq_NXFYu2r9GA1dhZp0x_H2sf9iFrHcHA/exec';
+  var CAL_KEY = 'zwQQcGAflBHjDc91l3DZceVf';
+  var CAL_DAYS_AHEAD = 14;
+  var calRowsByDate = {};
+
+  function calDateStr(d) {
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function calTime(t) { return String(t || '').replace(/AM/gi,'am').replace(/PM/gi,'pm'); }
+
+  function loadCalendarForPicker() {
+    document.getElementById('calPickList').innerHTML = '<div class="status-msg">Loading calendar…</div>';
+    var params = new URLSearchParams({ action:'list', key:CAL_KEY });
+    fetch(CAL_URL + '?' + params.toString())
+      .then(function(r){ return r.json(); })
+      .then(function(res){
+        if (!res.success) throw new Error(res.error || 'error');
+        calRowsByDate = {};
+        (res.rows || []).forEach(function(r){
+          (calRowsByDate[r.date] = calRowsByDate[r.date] || []).push(r);
+        });
+        // Fill the day chooser: today plus the next two weeks
+        var sel = document.getElementById('calDay');
+        var keep = sel.value;
+        var html = '';
+        for (var i = 0; i < CAL_DAYS_AHEAD; i++) {
+          var d = new Date(); d.setDate(d.getDate() + i);
+          var ds = calDateStr(d);
+          var n = (calRowsByDate[ds] || []).length;
+          var label = (i === 0 ? 'Today — ' : i === 1 ? 'Tomorrow — ' : '') + toWidgetDate(ds) +
+                      ' (' + n + ' ' + (n === 1 ? 'activity' : 'activities') + ')';
+          html += '<option value="' + ds + '">' + esc(label) + '</option>';
+        }
+        sel.innerHTML = html;
+        if (keep) sel.value = keep;
+        renderCalPickList();
+      })
+      .catch(function(){
+        document.getElementById('calPickList').innerHTML =
+          '<div class="status-msg">⚠️ Could not load the Village Calendar. Please refresh.</div>';
+      });
+  }
+
+  // Widget name in the same style already used, e.g. "Chess coaching session - 10:30 am - Fountain Court"
+  function calWidgetName(r) {
+    return [r.activity, calTime(r.time), r.venue].filter(Boolean).join(' - ');
+  }
+
+  function renderCalPickList() {
+    var ds = document.getElementById('calDay').value;
+    var rows = calRowsByDate[ds] || [];
+    if (rows.length === 0) {
+      document.getElementById('calPickList').innerHTML =
+        '<div class="status-msg">Nothing on the calendar for this day.</div>';
+      return;
+    }
+    var atLimit = widgetEvents.length >= 3;
+    var html = '';
+    rows.forEach(function(r, i) {
+      var wName = calWidgetName(r);
+      var already = widgetEvents.some(function(w){ return w.name === wName; });
+      html += '<div class="widget-event-card' + (already ? ' featured' : '') + '">' +
+        '<div class="widget-event-info">' +
+          '<div class="widget-event-name">' + esc(r.activity) + '</div>' +
+          '<div class="widget-event-meta">' +
+            (r.time  ? '🕐 ' + esc(calTime(r.time)) : '') +
+            (r.venue ? ' &nbsp;|&nbsp; 📍 ' + esc(r.venue) : '') +
+          '</div>' +
+        '</div>' +
+        '<button class="btn-feature' + (already ? ' active' : '') + '" ' +
+          (already ? 'disabled title="Already on widget"' :
+           atLimit ? 'disabled title="Widget is full (max 3)"' :
+           'onclick="addCalToWidget(this,\'' + ds + '\',' + i + ')"') + '>' +
+          (already ? '⭐ Featured' : atLimit ? '🚫 Full' : '⭐ Add to Widget') +
+        '</button>' +
+      '</div>';
+    });
+    document.getElementById('calPickList').innerHTML = html;
+  }
+
+  function addCalToWidget(btn, ds, i) {
+    if (widgetEvents.length >= 3) {
+      showToast('Widget already has 3 events. Remove one first.', true); return;
+    }
+    var r = (calRowsByDate[ds] || [])[i];
+    if (!r) return;
+    var name = calWidgetName(r);
+    btn.disabled = true; btn.textContent = 'Adding…';
+    fetch(WIDGET_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:signedBody({ action:'addEvent', date:toWidgetDate(ds), name:name, link:'', displayFrom:'' })
+    })
+    .then(function(r){ return r.json(); }).then(checkSignIn)
+    .then(function(){
+      showToast(r.activity + ' added to widget ✓');
+      refreshWidgetTab();
+    })
+    .catch(function(){
+      showToast(r.activity + ' added to widget ✓');
+      setTimeout(refreshWidgetTab, 1200);
+    });
+  }
+
+  // Reload the featured list first, then redraw both pickers so "Featured"/"Full" are correct
+  function refreshWidgetTab() {
+    loadWidgetEvents(function(){ renderCalPickList(); loadEventsForPicker(); });
   }
 
   function updateWidgetCounter() {
@@ -1420,6 +1648,8 @@ HubPin.require({
   legacyUntil: "2026-11-30"
 }, function () {
   loadEvents();
+  // Upcoming Events Widget is now the opening tab — load its lists straight away
+  loadWidgetEvents(); loadEventsForPicker(); loadCalendarForPicker();
 });
 </script>
 </body>
