@@ -40,7 +40,10 @@
   .btn-red   { background: #a12b2b; color: #fff; }
   .btn-small { padding: 5px 10px; font-size: 0.82em; }
 
-  .status { display: none; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-weight: 600; }
+  .status { display: none; border-radius: 8px; padding: 12px 18px; font-weight: 600;
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 9999;
+    width: calc(100% - 32px); max-width: 560px; text-align: center; font-size: 1.05em;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.45); }
   .status.ok   { display: block; background: #e6f4ea; color: #1e7a34; }
   .status.err  { display: block; background: #fdeaea; color: #a12b2b; }
   .status.busy { display: block; background: #fff6e0; color: #8a6d16; }
@@ -356,16 +359,22 @@ function addPerson() {
 function saveAreas(i) {
   const p = peopleList[i];
   const row = document.querySelector('tr[data-i="' + i + '"]');
+  const btn = row.querySelector(".btn-cream");
+  if (btn) { btn.disabled = true; btn.textContent = "Saving…"; }
   // keep any areas not shown as tick-boxes on this page
   const extra = p.areas.filter(a => !AREAS.some(x => x.id === a));
   const areas = tickedAreas(row, "r" + i).concat(extra);
   status("Saving…", "busy");
   call({ action: "adminSave", originalName: p.name, name: p.name, areas: areas.join(","), notes: p.notes })
     .then(res => {
-      if (!res.success) { status(res.error, "err"); return; }
+      if (!res.success) { status(res.error, "err"); render(); return; }
       peopleList = res.people; render();
-      status("Areas saved for " + p.name + ".", "ok");
-    }).catch(() => status("Couldn't reach the PIN service.", "err"));
+      status("✓ Areas saved for " + p.name + ".", "ok");
+      // Show "Saved" on that person's own button too, for a few seconds
+      const idx = peopleList.findIndex(x => x.name === p.name);
+      const b = document.querySelector('tr[data-i="' + idx + '"] .btn-cream');
+      if (b) { b.textContent = "✓ Saved"; setTimeout(() => { b.textContent = "💾 Save areas"; }, 4000); }
+    }).catch(() => { status("Couldn't reach the PIN service.", "err"); if (btn) { btn.disabled = false; btn.textContent = "💾 Save areas"; } });
 }
 
 function issueCode(i) {
