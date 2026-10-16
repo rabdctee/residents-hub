@@ -17,7 +17,7 @@
    The role names are the same ones used in the PIN Manager:
      rc-chair  rc-secretary  rc-treasurer  rc-member  manor-advisor
      sc-convenor  sc-secretary  sc-treasurer  sc-events  sc-member
-     calendar  community-manager  text-updates
+     calendar  community-manager  text-updates  contacts-editor
      bc-chair  bc-manager  bc-secretary  admin
 
    Tiles only point the way — each page still checks the person's roles
@@ -202,6 +202,11 @@ var WORKBENCH_TILES = [
     roles: ["rc-secretary", "sc-secretary", "sc-convenor", "sc-treasurer"],
     links: [["📤 Upload", "upload-document.html"]] },
 
+  { section: "committee", icon: "📇", title: "External Contacts",
+    desc: "Phone numbers and emails for the outside people our committees deal with.",
+    roles: RC.concat(SC, ["contacts-editor"]),
+    links: [["📇 Open Contacts", "external-contacts.html"]] },
+
   { section: "committee", icon: "✅", title: "SC Action Register",
     desc: "Social Club committee actions and their progress.",
     roles: SC,
@@ -301,6 +306,7 @@ var WORKBENCH_ROLE_NAMES = {
   "sc-convenor": "SC Convenor", "sc-secretary": "SC Secretary", "sc-treasurer": "SC Treasurer",
   "sc-events": "SC Events Coordinator", "sc-member": "SC Member",
   "calendar": "Village Calendar", "community-manager": "Community Manager", "text-updates": "Text Updates",
+  "contacts-editor": "External Contacts Editor",
   "bc-chair": "Body Corporate Chair", "bc-manager": "Body Corporate Manager",
   "bc-secretary": "Body Corporate Secretary", "admin": "Hub Administrator"
 };
