@@ -707,8 +707,13 @@
     </div>
     <div class="form-group">
       <label class="form-label">Link <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
-      <div class="form-hint">Leave blank to use default (Events page), or paste a PDF/web link</div>
-      <input class="form-input" type="text" id="widgetLinkUrl" placeholder="e.g. https://drive.google.com/file/d/…/view">
+      <div class="form-hint">Choose a document already uploaded to the Hub…</div>
+      <select class="form-input" id="widgetDocChoice" onchange="onWidgetDocChoice()" style="margin-bottom:6px;">
+        <option value="">— Choose a Hub document —</option>
+      </select>
+      <div class="form-hint" id="widgetDocsHint" style="margin-bottom:10px;">Loading Hub documents…</div>
+      <div class="form-hint">…or paste a web link. Leave blank to use the default (Events page).</div>
+      <input class="form-input" type="text" id="widgetLinkUrl" placeholder="e.g. https://…" oninput="document.getElementById('widgetDocChoice').value=''">
     </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeWidgetLinkModal()">Cancel</button>
@@ -1505,6 +1510,75 @@
     .catch(function(){ btn.disabled=false; btn.textContent='💾 Save Changes'; closeWidgetLinkModal(); showToast('Updated ✓'); setTimeout(loadWidgetEvents,1000); });
   }
 
+  // ── Hub documents for the link pop-up ──
+  // Same published Document Registry used by Manage Announcements.
+  var REGISTRY_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR2t0ycP0kjXiKuJ9LmTo6_u9tLGQjedCdXxFNy0h2jA_cFPSwqCK_beq7ZnXRe3lT-jSs081JcI670/pub?gid=512397980&single=true&output=csv';
+  var hubDocs = [];
+
+  function parseRegistryLine(line) {
+    var cols = [], cur = '', q = false;
+    for (var i = 0; i < line.length; i++) {
+      var ch = line[i];
+      if (ch === '"' && q && line[i+1] === '"') { cur += '"'; i++; }
+      else if (ch === '"')       { q = !q; }
+      else if (ch === ',' && !q) { cols.push(cur); cur = ''; }
+      else                       { cur += ch; }
+    }
+    cols.push(cur);
+    return cols;
+  }
+
+  function loadHubDocs() {
+    fetch(REGISTRY_CSV_URL + '&t=' + Date.now())
+      .then(function(r){ return r.text(); })
+      .then(function(csv){
+        hubDocs = [];
+        csv.split('\n').slice(1).forEach(function(line){
+          if (!line.trim()) return;
+          var c = parseRegistryLine(line.replace(/\r$/, ''));
+          var id = (c[2] || '').trim();
+          if (!id) return;
+          hubDocs.push({ name:(c[1]||'').trim(), id:id,
+                         folder:(c[3]||'').trim() || 'Other', subfolder:(c[4]||'').trim() });
+        });
+        hubDocs.reverse(); // newest uploads first
+        buildWidgetDocOptions();
+        document.getElementById('widgetDocsHint').textContent =
+          'Newest uploads are at the top of each folder. A just-uploaded document can take a few minutes to appear.';
+      })
+      .catch(function(){
+        document.getElementById('widgetDocsHint').textContent =
+          '⚠️ Could not load Hub documents. You can still paste a link below.';
+      });
+  }
+
+  function buildWidgetDocOptions() {
+    var sel = document.getElementById('widgetDocChoice');
+    sel.querySelectorAll('optgroup').forEach(function(g){ g.parentNode.removeChild(g); });
+    var groups = {}, order = [];
+    hubDocs.forEach(function(d){
+      if (!groups[d.folder]) { groups[d.folder] = []; order.push(d.folder); }
+      groups[d.folder].push(d);
+    });
+    order.forEach(function(folder){
+      var og = document.createElement('optgroup');
+      og.label = '📁 ' + folder;
+      groups[folder].forEach(function(d){
+        var o = document.createElement('option');
+        o.value = d.id;
+        o.textContent = d.name + (d.subfolder ? ' — ' + d.subfolder : '');
+        og.appendChild(o);
+      });
+      sel.appendChild(og);
+    });
+  }
+
+  function onWidgetDocChoice() {
+    var id = document.getElementById('widgetDocChoice').value;
+    if (id) document.getElementById('widgetLinkUrl').value =
+      'https://bdrv.au/view-document.html?id=' + id + '&back=home';
+  }
+
   // ── Widget link override modal ──
   function openWidgetLinkModal(idx) {
     var ev = widgetEvents[idx];
@@ -1512,6 +1586,10 @@
     document.getElementById('widgetLinkEventName').textContent = ev.name;
     document.getElementById('widgetLinkTitle').textContent = '🔗 Edit Widget Link';
     document.getElementById('widgetLinkUrl').value = ev.link || '';
+    // Show the matching document in the drop-down, if the current link is one
+    var m = (ev.link || '').match(/view-document\.html\?id=([a-zA-Z0-9_-]+)/);
+    var sel = document.getElementById('widgetDocChoice');
+    sel.value = (m && sel.querySelector('option[value="' + m[1] + '"]')) ? m[1] : '';
     document.getElementById('widgetLinkSaveBtn').onclick = saveWidgetLink;
     document.getElementById('widgetLinkModal').classList.add('open');
   }
@@ -1650,6 +1728,7 @@ HubPin.require({
   loadEvents();
   // Upcoming Events Widget is now the opening tab — load its lists straight away
   loadWidgetEvents(); loadEventsForPicker(); loadCalendarForPicker();
+  loadHubDocs();
 });
 </script>
 </body>
