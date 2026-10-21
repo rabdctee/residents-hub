@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>How the Hub Works | Hub Handbook</title>
+<link rel="stylesheet" href="handbook.css">
+</head>
+<body>
+<header class="hb-top">
+  <a class="brand" href="index.html">📘 Hub Handbook<small>Bridgeman Downs Residents Hub</small></a>
+  <nav><a class="hb-btn ghost" href="index.html">Contents</a><a class="hb-btn ghost" href="../hub-admin.html">← Hub Admin</a></nav>
+</header>
+
+<main class="hb-wrap">
+  <div class="hb-crumb"><a href="index.html">Handbook</a> › Technical Guide › Chapter 1</div>
+  <h1>How the Hub Works</h1>
+  <p class="hb-lead">The big picture. Read this first — every other chapter builds on it.</p>
+
+  <div class="hb-toc"><strong>On this page</strong>
+    <ol>
+      <li><a href="#parts">The three parts</a></li>
+      <li><a href="#flow">How a page gets and saves information</a></li>
+      <li><a href="#shared">Shared building blocks</a></li>
+      <li><a href="#locks">PIN locks and what they really protect</a></li>
+      <li><a href="#outside">Outside services the Hub uses</a></li>
+      <li><a href="#history">How the Hub grew</a></li>
+    </ol>
+  </div>
+
+  <h2 id="parts">1. The three parts</h2>
+  <p>The Hub is a <strong>static website</strong>: a collection of ordinary web-page files with no server or database of its own. Everything that changes — events, notices, transactions, photos — is kept in Google, and the pages fetch it when someone opens them. There are three parts:</p>
+  <ol>
+    <li><strong>The website files</strong> (HTML pages plus a few shared files) are kept in a GitHub repository called <code>rabdctee/residents-hub</code>. GitHub also <em>hosts</em> them for free through a service called GitHub Pages, and the address <code>bdrv.au</code> points there.</li>
+    <li><strong>Google Sheets and Google Drive</strong> hold the information. Sheets act as the Hub’s database (one Sheet per system, more or less). Drive holds uploaded files: minutes, newsletters, photos, videos, bank statements.</li>
+    <li><strong>Google Apps Scripts</strong> are small programs attached to the Sheets. Each is published as a “web app” with its own long web address. When a page needs to <em>save</em> something, or read something that must not be public, it sends a request to one of these scripts, which does the work inside Google and replies.</li>
+  </ol>
+
+  <div class="diagram" role="img" aria-label="Diagram: a resident's browser loads pages from bdrv.au on GitHub Pages; the pages read published Google Sheets directly and send saves to Google Apps Scripts, which write to Sheets, Drive and Calendar.">
+    <svg viewBox="0 0 760 330" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Tahoma, sans-serif">
+      <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D4B860"/></marker></defs>
+      <!-- Browser -->
+      <rect x="20" y="120" width="170" height="90" rx="10" fill="#263746" stroke="#D4B860" stroke-width="2"/>
+      <text x="105" y="155" text-anchor="middle" fill="#F6F2E7" font-size="15" font-weight="700">Resident’s</text>
+      <text x="105" y="175" text-anchor="middle" fill="#F6F2E7" font-size="15" font-weight="700">phone or computer</text>
+      <text x="105" y="196" text-anchor="middle" fill="#B9AF9C" font-size="12">web browser</text>
+      <!-- GitHub -->
+      <rect x="290" y="20" width="200" height="80" rx="10" fill="#263746" stroke="#B9AF9C" stroke-width="2"/>
+      <text x="390" y="50" text-anchor="middle" fill="#F6F2E7" font-size="15" font-weight="700">bdrv.au</text>
+      <text x="390" y="70" text-anchor="middle" fill="#B9AF9C" font-size="12">GitHub Pages hosts the</text>
+      <text x="390" y="86" text-anchor="middle" fill="#B9AF9C" font-size="12">page files from the repo</text>
+      <!-- Published sheets -->
+      <rect x="290" y="130" width="200" height="70" rx="10" fill="#263746" stroke="#B9AF9C" stroke-width="2"/>
+      <text x="390" y="158" text-anchor="middle" fill="#F6F2E7" font-size="15" font-weight="700">Published Sheets</text>
+      <text x="390" y="178" text-anchor="middle" fill="#B9AF9C" font-size="12">read-only CSV feeds</text>
+      <!-- Apps Script -->
+      <rect x="290" y="230" width="200" height="80" rx="10" fill="#263746" stroke="#B9AF9C" stroke-width="2"/>
+      <text x="390" y="260" text-anchor="middle" fill="#F6F2E7" font-size="15" font-weight="700">Apps Script web apps</text>
+      <text x="390" y="280" text-anchor="middle" fill="#B9AF9C" font-size="12">25 small programs that</text>
+      <text x="390" y="296" text-anchor="middle" fill="#B9AF9C" font-size="12">save and fetch data</text>
+      <!-- Google storage -->
+      <rect x="580" y="150" width="160" height="130" rx="10" fill="#2E4256" stroke="#D4B860" stroke-width="2"/>
+      <text x="660" y="180" text-anchor="middle" fill="#D4B860" font-size="15" font-weight="700">Google</text>
+      <text x="660" y="205" text-anchor="middle" fill="#F6F2E7" font-size="13">Sheets (the data)</text>
+      <text x="660" y="225" text-anchor="middle" fill="#F6F2E7" font-size="13">Drive (the files)</text>
+      <text x="660" y="245" text-anchor="middle" fill="#F6F2E7" font-size="13">Calendar · Gmail</text>
+      <!-- Arrows -->
+      <line x1="190" y1="140" x2="288" y2="70" stroke="#D4B860" stroke-width="2" marker-end="url(#ar)"/>
+      <text x="215" y="92" fill="#B9AF9C" font-size="12">1. load page</text>
+      <line x1="190" y1="165" x2="288" y2="165" stroke="#D4B860" stroke-width="2" marker-end="url(#ar)"/>
+      <text x="200" y="157" fill="#B9AF9C" font-size="12">2. read data</text>
+      <line x1="190" y1="190" x2="288" y2="262" stroke="#D4B860" stroke-width="2" marker-end="url(#ar)"/>
+      <text x="196" y="250" fill="#B9AF9C" font-size="12">3. save / fetch</text>
+      <line x1="490" y1="270" x2="578" y2="240" stroke="#D4B860" stroke-width="2" marker-end="url(#ar)"/>
+      <line x1="578" y1="185" x2="492" y2="168" stroke="#D4B860" stroke-width="2" marker-end="url(#ar)"/>
+      <text x="500" y="152" fill="#B9AF9C" font-size="11">published from</text>
+    </svg>
+  </div>
+
+  <h2 id="flow">2. How a page gets and saves information</h2>
+  <p>Almost every interactive page uses one or more of these four patterns. Recognising them makes any page much easier to understand.</p>
+
+  <h3>Pattern A — Reading a published Sheet (“CSV feed”)</h3>
+  <p>In Google Sheets, <em>File → Share → Publish to web</em> makes one tab available as a read-only CSV file at a long address beginning <code>docs.google.com/spreadsheets/d/e/2PACX-…/pub?gid=…&amp;output=csv</code>. The page downloads that file and builds its display from it. The number after <code>gid=</code> identifies the tab.</p>
+  <div class="box warn">
+    <span class="box-title">Two things to know about published feeds</span>
+    <p><strong>They lag.</strong> Google refreshes a published feed every few minutes, not instantly. A change saved a moment ago may not show for up to about five minutes. Several pages update their own screen straight after a save so the person doesn’t see old data (this was the cause of the Action Register “status reverting” problem in 2026).</p>
+    <p><strong>They are public.</strong> Anyone who has the address can read the whole tab. Only publish tabs whose contents you would be content for anyone to see.</p>
+  </div>
+
+  <h3>Pattern B — Asking an Apps Script for data (“getEvents”, “gallery”…)</h3>
+  <p>The page calls a script’s address with <code>?action=something</code> on the end, and the script replies with data in a format called JSON. This is used where data needs tidying first, or should only go out to someone who supplies a key. Examples: <code>?action=getEvents</code> (events list), <code>?action=gallery</code> (event photos).</p>
+
+  <h3>Pattern C — Sending a save to an Apps Script</h3>
+  <p>The page sends (“POSTs”) the information to a script with an <code>action</code> name such as <code>addEvent</code>, <code>recordTransaction</code> or <code>updateStatus</code>. The script writes it into the Sheet or saves a file to Drive.</p>
+  <p>Many older pages send in <strong>“no-cors” mode</strong>: the browser sends the information but is not allowed to read the reply. Those pages simply <em>assume</em> the save worked and update the screen straight away. That keeps them simple, but if the script fails, the page cannot tell. If a save “didn’t stick”, check the Sheet itself.</p>
+
+  <h3>Pattern D — Reading a Sheet through the Google Sheets API</h3>
+  <p>A small events widget in the Home page’s side column reads the <em>Web Content Manager</em> Sheet directly using Google’s Sheets API and an API key written in the page. This is unusual on the Hub — most pages use Pattern A or B.</p>
+
+  <h2 id="shared">3. Shared building blocks</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>File</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>index.html</code></td><td>The Home page. It is a <strong>single-page app</strong>: one file containing ten sections (Home, About, Newsletters, Calendar, Events, Activities &amp; Contacts, Noticeboard, Village Info, Useful Links, Contacts). JavaScript shows one section at a time, chosen by the menu or by the address (e.g. <code>index.html#events</code>). It is the largest file on the site (about 4,000 lines).</td></tr>
+      <tr><td><code>sidebar.js</code></td><td>Builds the left-hand menu on every public page that includes it, highlights the current page, shows the “new” badges (RC Notices, Event Photos), and starts Google Analytics. <strong>Change the menu here.</strong> Note that <code>index.html</code> also contains its own separate copy of the menu, which must be changed too.</td></tr>
+      <tr><td><code>print-issues.js</code></td><td>The “Print / Save as PDF” button used by the Issues pages.</td></tr>
+      <tr><td><code>quotes.txt</code></td><td>The list of quotes the Home page picks from.</td></tr>
+      <tr><td><code>CNAME</code></td><td>One line, <code>bdrv.au</code>. Tells GitHub Pages which address the site answers to. <strong>Do not delete or edit.</strong></td></tr>
+      <tr><td><code>images/</code>, <code>videos/</code></td><td>Pictures used by pages, and the Hub-hosted event videos (see <a href="events.html#videos">Chapter 4</a>).</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>The look: colours and styling</h3>
+  <p>Since September 2026 the Hub uses a navy, gold and cream palette, chosen for readability. Each page defines the colours at the top of its own styles:</p>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Name</th><th>Colour</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td><code>--hub-navy</code></td><td>#263746</td><td>Page background</td></tr>
+      <tr><td><code>--hub-navy-panel</code></td><td>#2E4256</td><td>Cards and panels</td></tr>
+      <tr><td><code>--hub-gold</code></td><td>#D4B860</td><td>Headings, buttons, links</td></tr>
+      <tr><td><code>--hub-cream</code></td><td>#F6F2E7</td><td>Body text</td></tr>
+      <tr><td><code>--hub-charcoal</code></td><td>#3F4143</td><td>Borders and dividing lines</td></tr>
+    </tbody>
+  </table></div>
+  <p>Some colours carry a <strong>meaning</strong> and were deliberately kept when the palette changed: red for urgent or danger, green for success, amber for official or restricted (e.g. the “members-only” menu links), RC blue, Social Club green, Manor purple and Body Corporate burgundy on the committee pages, plus page-specific colour sets such as the six Classifieds categories and the four issue statuses. Several older admin pages still use the earlier light design with a “dark mode” block added at the end of their styles.</p>
+  <p>Each page carries its own copy of its styles (there is no single site-wide stylesheet in use; an old <code>styles.css</code> file remains but nothing loads it). This makes pages independent, but means a site-wide style change has to be made page by page.</p>
+
+  <h2 id="locks">4. PIN locks and what they really protect</h2>
+  <p>About 30 pages ask for a PIN. There are several different PINs: a Residents PIN (Residents Only, Raise a Concern, Fireside Talks), committee PINs, the Hub Admin PIN, and individual PINs for pages such as CM Update, Manor Issues, Village Calendar, Body Corporate and Text Updates. After a correct PIN the page remembers it until the browser tab is closed (using the browser’s “session storage”).</p>
+  <div class="box danger">
+    <span class="box-title">Important: most PINs are only a curtain, not a lock</span>
+    <p>On most pages the correct PIN is written in the page’s own code, and the repository is public. Anyone who views the page source, or browses the repository on GitHub, can read it. Likewise, the published Sheets that sit behind locked pages (for example the Residents Contact List) can be read by anyone who finds their address. The Village Calendar admin page also contains its Apps Script’s “secret key” in the same visible way.</p>
+    <p>So PINs keep casual visitors out, but would not stop a determined person. The safer model already exists on the Hub: the <strong>Asset Register</strong> sends the PIN to its Apps Script, and the script checks it and only then hands over the data. See <a href="routines.html#risks">Risks &amp; recommendations</a>.</p>
+  </div>
+  <p>The PINs themselves are recorded only in the private Hub Secrets Register, never in this handbook.</p>
+
+  <h2 id="outside">5. Outside services the Hub uses</h2>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Service</th><th>Used for</th><th>Cost / account</th></tr></thead>
+    <tbody>
+      <tr><td>GitHub + GitHub Pages</td><td>Storing and hosting the website</td><td>Free; account <code>rabdctee</code></td></tr>
+      <tr><td>Google Workspace (Sheets, Drive, Apps Script, Calendar, Gmail)</td><td>All data, files, saving, emails</td><td>Free consumer accounts (see <a href="google-services.html#accounts">Chapter 3</a>)</td></tr>
+      <tr><td>Domain name <code>bdrv.au</code></td><td>The Hub’s address</td><td>Annual renewal — <em>registrar and renewal date to confirm</em></td></tr>
+      <tr><td>Google Analytics (ID <code>G-V5X3VEVK8R</code>)</td><td>Visitor statistics</td><td>Free; linked from Hub Admin</td></tr>
+      <tr><td>rss2json.com</td><td>Turns news feeds (ABC, NASA, Brisbane Times) into a form The Roundup can read</td><td>Free tier, no account in the page</td></tr>
+      <tr><td>Wikipedia “On This Day”</td><td>The Roundup’s Nostalgia tab</td><td>Free</td></tr>
+      <tr><td>Open-Meteo</td><td>Home page weather</td><td>Free</td></tr>
+      <tr><td>Anthropic (Claude AI) API</td><td>The Price Checker’s live price searches</td><td><strong>Paid per search</strong>; API key held in the Best Buys Proxy script’s settings, under the personal account</td></tr>
+      <tr><td>SMS gateway (e.g. Mobile Message / ClickSend)</td><td>Text Updates — <em>not yet connected</em> (see <a href="documents.html#text">Chapter 7</a>)</td><td>Paid per message when set up</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2 id="history">6. How the Hub grew</h2>
+  <ul>
+    <li><strong>February–March 2026:</strong> first Sheets and Google Forms (feedback, noticeboard, event registrations); finance spreadsheets.</li>
+    <li><strong>March–May 2026:</strong> core building blocks — shared sidebar, Classifieds, RC Notices, surveys, Hub Admin daily checklist, Members Area with RC and SC panels, Action Register, Progress Tracker, CM and Manor issue pages, print/PDF.</li>
+    <li><strong>June–August 2026:</strong> Down Memory Lane, Our Story, Fireside Talks, Raise a Concern, Text Updates page, FIFA World Cup Sports Hub, World News, The Roundup, Events/Calendar split, Manor vs Social Club events, Registration and Cost labels.</li>
+    <li><strong>September 2026:</strong> navy/gold palette rolled out; Event Photos &amp; Videos and Travel Pics; Treasurer tiles for the SC Treasurer; Village (facility) Calendar run from a Google Sheet; Asset Register; Bridgeman Times rebuilt in the Hub palette; Body Corporate page.</li>
+    <li><strong>October 2026:</strong> Hub-hosted event videos; this handbook.</li>
+  </ul>
+
+  <footer class="hb-foot"><span><a href="index.html">← Contents</a> · <a href="making-changes.html">Next: Repo, Hosting &amp; Making Changes →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+</main>
+</body>
+</html>
