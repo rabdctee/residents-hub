@@ -71,23 +71,23 @@
   </table></div>
 
   <h2 id="secrets">3. The Hub Secrets Register</h2>
-  <p>Everything sensitive belongs in one <strong>private Google Doc</strong>, owned by <code>rabd.ctee@gmail.com</code> and shared only with the Hub administrator and one trusted deputy. It should never be published, and never copied into the repo or this handbook. It should record:</p>
+  <p>Everything sensitive belongs in one <strong>private Google Doc</strong>, owned by <code>bdrv.hubadmin@gmail.com</code> and shared only with the Hub administrator and one trusted deputy. It should never be published, and never copied into the repo or this handbook. It should record:</p>
   <ul>
     <li>Each PIN, which pages it opens, and who holds it.</li>
-    <li>Sign-in and recovery details for the GitHub account <code>rabdctee</code> and the Google accounts (or where those are kept).</li>
+    <li>Sign-in, recovery and 2-Step Verification backup codes for the GitHub account <code>rabdctee</code> and the Google accounts, starting with <code>bdrv.hubadmin@gmail.com</code> (or where those are kept).</li>
     <li>The domain registrar, account holder, renewal date and payment method for bdrv.au.</li>
     <li>Any secret keys used between pages and scripts, and the Google API key’s settings.</li>
-    <li>SMS service account details, once Text Updates is connected.</li>
+    <li>Mobile Message (the SMS service used by Text Updates) account details.</li>
   </ul>
-  <div class="box todo"><span class="box-title">To do</span>Create the Hub Secrets Register and record its location (not its contents) here.</div>
+  <div class="box tip"><span class="box-title">Where it is</span>Created October 2026: a Google Doc called <strong>“Hub Secrets Register — PRIVATE”</strong> in bdrv.hubadmin’s Google Drive, set to Restricted.</div>
 
   <h2 id="risks">4. Risks and recommendations</h2>
   <p>In order of importance:</p>
   <div class="tbl-wrap"><table>
     <thead><tr><th>#</th><th>Risk</th><th>Recommendation</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td><strong>One person knows how it all works.</strong> The Hub was built and is maintained single-handedly.</td><td>This handbook; the Secrets Register; give a deputy access to the GitHub and committee Google accounts; walk them through one routine change.</td></tr>
-      <tr><td>2</td><td><strong>Key parts are owned by a personal Google account:</strong> the Classifieds, RC Notices, progress-tracker-data, Upcoming Events, Hub Search Logger and Prices Sheets, and the Upcoming Events Manager and RC-Notices scripts.</td><td>Transfer ownership to <code>rabd.ctee@gmail.com</code>. For a script attached to a Sheet, transferring the Sheet moves the script too. Afterwards, re-check each affected page works; timed triggers may need re-creating under the new owner.</td></tr>
+      <tr><td>1</td><td><strong>One person knows how it all works.</strong> The Hub was built and is maintained single-handedly.</td><td>This handbook; the Secrets Register; give a deputy access to the GitHub account and the bdrv.hubadmin Google account; walk them through one routine change.</td></tr>
+      <tr><td>2</td><td><strong>Hub parts were spread across two accounts</strong>, including a personal one. <em>Resolved October 2026.</em></td><td>Done: every Sheet, Form and Apps Script was moved to <code>bdrv.hubadmin@gmail.com</code> on 21 October 2026, re-published and re-tested. Keep rick.vanhaeften and rabd.ctee as Editors as a safety net. Later, at leisure: move the Drive folders and the Hub Google Calendar to bdrv.hubadmin.</td></tr>
       <tr><td>3</td><td><strong>PINs and some private data are visible to a determined person.</strong> PINs are written in public page code; the Contact List and other locked pages read published Sheets that anyone with the address can open; the transaction list has no PIN.</td><td>Move private data behind Apps Scripts that check the PIN themselves (the Asset Register already does this), starting with the Residents Contact List and finance pages; then un-publish those Sheets.</td></tr>
       <tr><td>4</td><td><strong>Domain renewal</strong> — if bdrv.au lapses the Hub disappears from its address.</td><td>Record the renewal date; turn on auto-renew; add a reminder.</td></tr>
       <tr><td>5</td><td><strong>Admin pages without a PIN.</strong> Several management pages have no PIN of their own and rely on not being found: Classifieds Admin, Manage Events, Manage Registrations, View Registrations, Upload a Document, Upload Event Document, Upload Bank Statement, Search Admin, Survey Admin, Memories Admin, Help &amp; How-To editor, The Roundup’s Add page and Manage Info Sessions. Their scripts mostly accept requests without a key. Their addresses are visible in the public repository.</td><td>Add the Hub Admin PIN check to each, starting with the upload pages; longer term, have their scripts check a key as the Asset Register does.</td></tr>
@@ -102,7 +102,7 @@
   <p>Found while preparing this handbook. None is urgent; each is harmless as it stands.</p>
   <ul>
     <li><strong>Not linked from anywhere:</strong> <code>role-admin.html</code>, <code>how-to-admin.html</code> and <code>hub-raise-a-concern.html</code> are older versions of current pages — candidates for removal. <code>chair-submissions.html</code> was never connected to its script. <code>body-corporate.html</code> is reached only by its address (intended).</li>
-    <li><strong>Not yet connected:</strong> Text Updates (no SMS service yet); the interest-registration form on Information Sessions; Chair Submissions (script ready, page not linked).</li>
+    <li><strong>Not yet connected:</strong> the interest-registration form on Information Sessions; Chair Submissions (script ready, page not linked).</li>
     <li><strong>Unused leftovers:</strong> the <em>Community Price Hub Backend</em> script and its <em>Prices</em> Sheet; the event functions in the Web Content Manager script.</li>
     <li><strong>Two Issues scripts</strong> — confirm which page uses which, then consider moving all issue pages to the one that numbers issues safely, keeping the email notification.</li>
     <li><strong>Finances</strong> — two web addresses for the one project (keep both deployments up to date, or merge); old one-off report functions for January–June 2026 should not be run again.</li>
@@ -114,7 +114,7 @@
     <li><strong>Menu kept in two places</strong> — <code>sidebar.js</code> and a copy inside <code>index.html</code>. Change both, or in future make <code>index.html</code> use <code>sidebar.js</code>.</li>
   </ul>
 
-  <footer class="hb-foot"><span><a href="page-directory.html">← Page Directory</a> · <a href="index.html">Contents</a></span><span>Last reviewed: 8 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="page-directory.html">← Page Directory</a> · <a href="index.html">Contents</a></span><span>Last reviewed: 21 October 2026</span></footer>
 </main>
 </body>
 </html>

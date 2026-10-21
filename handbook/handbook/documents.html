@@ -55,7 +55,7 @@
 
   <h2 id="notices">3. RC Notices</h2>
   <ul>
-    <li><code>rc-notices-admin.html</code> — post, edit and archive notices; choose whether each is public or residents-only. Saved by the RC-Notices script to the <em>Notices</em> tab of the <em>RC Notices</em> Sheet (both owned by the personal account): A timestamp (with “(edited)” after a change), B date, C title, D body, E type (Public or Residents), F status (Active or Archived), G link. Archived notices are kept, not deleted.</li>
+    <li><code>rc-notices-admin.html</code> — post, edit and archive notices; choose whether each is public or residents-only. Saved by the RC-Notices script to the <em>Notices</em> tab of the <em>RC Notices</em> Sheet (both owned by bdrv.hubadmin): A timestamp (with “(edited)” after a change), B date, C title, D body, E type (Public or Residents), F status (Active or Archived), G link. Archived notices are kept, not deleted.</li>
     <li><code>rc-notices.html</code> — public notices, open to all. Residents-only notices (monthly RC summaries, budget matters, surveys) are shown inside the Residents Only page, behind the Residents PIN.</li>
     <li>A gold banner on the Home page and a badge in the menu show when there is a notice newer than the resident’s last visit (remembered on their device).</li>
   </ul>
@@ -87,9 +87,9 @@
 
   <h2 id="text">7. Text Updates</h2>
   <p><code>text-updates.html</code> (own PIN) lets the RC Chair and SC Convenor compose a short text message to residents who have opted in, with on-screen preview and confirmation.</p>
-  <div class="box warn"><span class="box-title">Not yet sending</span>The page is built, but the two settings it needs are still empty: the published list of residents who have signed up, and the Apps Script that would pass the message to an SMS service (such as Mobile Message or ClickSend). Until those are set up, pressing Send shows a friendly error and nothing is texted. An SMS service will charge per message.</div>
+  <div class="box tip"><span class="box-title">How it sends</span>Working since October 2026. The page reads the residents who have signed up from the <em>Residents Contact List for Text Messages</em> Sheet and passes the message to the <em>Text Updates</em> Apps Script, which sends it through the <strong>Mobile Message</strong> text service. Mobile Message charges per message. Its sign-in and API key are recorded only in the Hub Secrets Register, never in the website or the GitHub repository.</div>
 
-  <footer class="hb-foot"><span><a href="issues.html">← Issues</a> · <a href="community.html">Next: Community Content →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="issues.html">← Issues</a> · <a href="community.html">Next: Community Content →</a></span><span>Last reviewed: 21 October 2026</span></footer>
 </main>
 </body>
 </html>

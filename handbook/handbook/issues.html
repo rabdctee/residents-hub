@@ -30,9 +30,9 @@
   <h2 id="tracker">1. The Issues Tracker</h2>
   <div class="box"><span class="box-title">In one sentence</span>Every village issue raised with Village Management is one row in the <em>progress-tracker-data</em> Sheet; the Community Manager, Manor Advisor and RC each add their notes through their own page, and residents see progress on the public “What We’re Working On” page.</div>
   <h3>The Sheet</h3>
-  <p><em>progress-tracker-data</em> (owned by the personal account — see <a href="google-services.html#accounts">ownership risk</a>). Columns: A issue number (ISS-01, ISS-02… assigned automatically), B category, C topic, D notes, E status (new issues start “Not Started”), F source, G last updated (Brisbane time, set by the script). The tab is published as a CSV feed and read by all the issue pages.</p>
+  <p><em>progress-tracker-data</em> (owned by bdrv.hubadmin). Columns: A issue number (ISS-01, ISS-02… assigned automatically), B category, C topic, D notes, E status (new issues start “Not Started”), F source, G last updated (Brisbane time, set by the script). The tab is published as a CSV feed and read by all the issue pages.</p>
   <h3>Two scripts update the same Sheet</h3>
-  <p>The <em>Issues Tracker</em> script (committee account) and the <em>Progress Tracker Email Notification</em> script (personal account) both add and update rows. The second also emails rabd.ctee each time and writes a ✅/⚠️/❌ message in cell <strong>J1</strong> of the Sheet describing its last save — the first place to look if an update didn’t stick. Which page uses which script is still to be confirmed (probably the Manor Advisor’s page uses the second).</p>
+  <p>The <em>Issues Tracker</em> script and the <em>Progress Tracker Email Notification</em> script both add and update rows. The second also emails rabd.ctee each time and writes a ✅/⚠️/❌ message in cell <strong>J1</strong> of the Sheet describing its last save — the first place to look if an update didn’t stick. Which page uses which script is still to be confirmed (probably the Manor Advisor’s page uses the second).</p>
   <div class="box warn"><span class="box-title">Issue numbers</span>The Issues Tracker script numbers a new issue one higher than the highest existing number. The email-notification script numbers it by counting rows, so if a row has ever been deleted it can repeat a number already in use. Check new numbers occasionally, and avoid deleting rows — set a status instead.</div>
   <div class="box warn"><span class="box-title">How the script finds an issue</span>When a note or status is saved, the Issues Tracker script finds the row by its <strong>category and topic together</strong>, not by its ISS number. Keep every issue’s topic distinct within its category; two issues with the same category and topic would be confused, and only the first would be updated.</div>
   <h3>Pages</h3>
@@ -81,7 +81,7 @@
   </ul>
   <div class="box warn"><span class="box-title">Privacy</span>Concerns can contain personal matters. The <em>Resident Concerns</em> Sheet must never be published to the web, and should be shared only with those who need to read it.</div>
 
-  <footer class="hb-foot"><span><a href="finance.html">← Finance</a> · <a href="documents.html">Next: Documents, Notices &amp; Committee Areas →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="finance.html">← Finance</a> · <a href="documents.html">Next: Documents, Notices &amp; Committee Areas →</a></span><span>Last reviewed: 21 October 2026</span></footer>
 </main>
 </body>
 </html>
