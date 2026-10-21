@@ -503,11 +503,12 @@
 
 <div class="hub-footer">
   Bridgeman Downs Retirement Village Residents' Information Hub &nbsp;|&nbsp;
-  © 2026 | Contact: rabd.ctee@gmail.com | Emergency: 000
+  © 2026 | Contact: hubadmin@bdrv.au | Emergency: 000
 </div>
 
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3ShlYfYLviLL5qBoC9lxHUwfodY6tUH-epZvP06vNHbfcic_fkWq8N8NLSD0OraLQhQ/exec';
 const CSV_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9iLsP7-_JlI3QhKso9O0kMdLpwPzr4Y87YbHDeeVOW4Pg1U0_QZvTr1O2PRP4kevvh0PmnCCmfE7W/pub?gid=0&single=true&output=csv';
@@ -701,14 +702,15 @@ async function setStatus(btnEl, timestamp, headline, newStatus, cardId) {
   var _cmt = setInterval(function(){ _ci = (_ci+1)%_cmsgs.length; msgEl.textContent = _cmsgs[_ci]; }, 3000);
 
   try {
-    await fetch(SCRIPT_URL, {
+    const resp = await fetch(SCRIPT_URL, {
       method : 'POST',
-      mode   : 'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body   : JSON.stringify({ action: 'setStatus', timestamp, headline, status: newStatus })
+      body   : JSON.stringify({ action: 'setStatus', timestamp, headline, status: newStatus, token: HubPin.token() })
     });
+    const reply = await resp.json().catch(function() { return {}; });
+    if (reply.signIn) { clearInterval(_cmt); HubPin.expired(); return; }   // sign-in has run out
 
-    // no-cors — assume success, update local data and re-render
+    // Saved — update local data and re-render
     const row = allRows.find(r => r.timestamp === timestamp && r.headline === headline);
     if (row) row.status = newStatus;
     updateBadges();
@@ -893,7 +895,17 @@ function resizeImageToBase64(file, maxDim, quality) {
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
-loadAll();
+// ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+// The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["sc-convenor", "admin"],
+  title: "🔒 Classifieds Administration",
+  subtitle: "For the Social Club Convenor.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function () {
+  loadAll();
+});
 </script>
 </body>
 </html>

@@ -188,7 +188,19 @@
 
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
+// ── Sign in with a personal PIN (hub-pin.js) ──
+// Open to the SC Treasurer, the SC Convenor and the Hub administrator. The old shared PIN still works
+// until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["sc-treasurer", "sc-convenor", "admin"],
+  title: "🔒 Upload Bank Statement",
+  subtitle: "This page is for the Social Club Treasurer and Convenor.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function () {});
+
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywdH4fh95RRspDJsLgKDJ8SXqODbLKio230Le_am16muLRgnm3rQ6YIOeLbvs0T4HR/exec';
 
   var MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun',
@@ -269,6 +281,7 @@
         method:'POST',
         body: JSON.stringify({
           action:         'uploadDocument',
+          token:          HubPin.token(),
           fileName:        name,
           fileData:        base64,
           mimeType:       'application/pdf',
@@ -279,6 +292,7 @@
       })
       .then(function(r){ return r.json(); })
       .then(function(data){
+        if (data.signIn) { clearInterval(_umt); return HubPin.expired(); }
         setProgress(100,'Complete!');
         clearInterval(_umt);
       btn.disabled = false;

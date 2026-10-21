@@ -92,18 +92,48 @@
     border-radius: 6px;
     cursor: pointer;
   }
+  .save-btn:disabled { background: #8fb89c; cursor: default; }
   .saved-msg { color: #2f9e52; font-size: 14px; margin-left: 10px; }
+
+  /* ── Reply helper ── */
+  .reply-box {
+    background: #eef4fb;
+    border: 1px solid #c9dcef;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 12px;
+  }
+  .reply-box .reply-title { font-weight: bold; font-size: 14px; color: #1b3a5c; margin-bottom: 8px; }
+  .reply-box .reply-hint { font-size: 13px; color: #555; margin-bottom: 8px; }
+  .reply-btn {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 0 8px 8px 0;
+    border-radius: 6px;
+    background: #1b6fb8;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+  }
+  .reply-btn.light { background: #fff; color: #1b6fb8; border: 1px solid #1b6fb8; }
+  .replied-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
+  .replied-row select { width: auto; margin-top: 0; }
+  .replied-already {
+    background: #e6f4ea;
+    color: #1e6b34;
+    border: 1px solid #b7dfc3;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: inline-block;
+  }
 </style>
 </head>
 <body>
-
-<div id="pinScreen">
-  <h2>Chair Access Only</h2>
-  <p>Please enter your PIN to view resident submissions.</p>
-  <input type="password" id="pinInput" inputmode="numeric">
-  <button onclick="checkPin()">Enter</button>
-  <p id="pinError" style="color:#b3261e; display:none;">Incorrect PIN.</p>
-</div>
 
 <div class="wrap" id="app">
   <h1>Resident Submissions</h1>
@@ -113,10 +143,10 @@
   <div id="list">Loading...</div>
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
   // ============ SETUP: fill these in ============
-  const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
-  const CHAIR_PIN = "1957";              // Change this to your own PIN (page lock)
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaoV8H-1vFSQvTdaxdKs00_YcacN3GN6sL-7kOB6R_7ilCq0LVsOj7aUV-35qXrYzv/exec";   // the Resident Submissions web app (same as in raise-a-concern.html)
   const CHAIR_SECRET_KEY = "C0ncerns"; // Must match the Apps Script exactly
   // ================================================
 
@@ -124,21 +154,11 @@
   let allRows = [];
   let activeFilter = "All";
 
-  function checkPin() {
-    const entered = document.getElementById('pinInput').value;
-    if (entered === CHAIR_PIN) {
-      document.getElementById('pinScreen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      loadData();
-    } else {
-      document.getElementById('pinError').style.display = 'block';
-    }
-  }
-
   function loadData() {
-    fetch(`${APPS_SCRIPT_URL}?key=${encodeURIComponent(CHAIR_SECRET_KEY)}`)
+    fetch(`${APPS_SCRIPT_URL}?key=${encodeURIComponent(CHAIR_SECRET_KEY)}&token=${encodeURIComponent(HubPin.token())}`)
       .then(r => r.json())
       .then(rows => {
+        if (rows && rows.signIn) { HubPin.expired(); return; }   // sign-in has run out
         // rows[0] is the header row; each following row is a submission
         allRows = rows.slice(1).map((r, i) => ({
           rowNum: i + 2, // actual sheet row number (header is row 1)
@@ -185,10 +205,27 @@
       const card = document.createElement('div');
       card.className = `card status-${r.status.replace(/\s+/g,'-')}`;
       card.innerHTML = `
-        <div class="meta">${r.timestamp} — ${r.category}</div>
+        <div class="meta">${friendlyDate(r.timestamp)} — ${r.category}</div>
         <strong>${r.name}</strong> ${r.unit ? "(" + r.unit + ")" : ""}
         ${r.contact ? "<br>Contact: " + r.contact : ""}
         <div class="desc">${r.description}</div>
+
+        <div class="reply-box">
+          <div class="reply-title">Reply to ${r.name || "this resident"}</div>
+          <div class="replied-already" style="display:none;"></div>
+          <div class="reply-actions"></div>
+          <div class="replied-row">
+            <span style="font-size:14px;">Once you've replied:</span>
+            <select class="replyHow">
+              <option>by email</option>
+              <option>by SMS</option>
+              <option>by phone</option>
+              <option>by letterbox note</option>
+              <option>in person</option>
+            </select>
+            <button type="button" class="reply-btn light markReplied">✅ Mark as replied</button>
+          </div>
+        </div>
 
         <label>Status</label>
         <select data-row="${r.rowNum}" class="statusSel">
@@ -199,18 +236,139 @@
         <textarea data-row="${r.rowNum}" class="notesTxt">${r.notes}</textarea>
 
         <label>Date Discussed at RC Meeting</label>
-        <input type="text" data-row="${r.rowNum}" class="discussedTxt" value="${r.discussed}" placeholder="e.g. 12 Aug 2026">
+        <input type="text" data-row="${r.rowNum}" class="discussedTxt" value="${shortDate(r.discussed)}" placeholder="e.g. 12 Aug 2026">
 
         <label>Linked Issue Tracker Reference (if escalated)</label>
         <input type="text" data-row="${r.rowNum}" class="linkedTxt" value="${r.linked}" placeholder="e.g. Issue #24">
 
-        <button class="save-btn" data-row="${r.rowNum}">Save</button>
+        <button class="save-btn" data-row="${r.rowNum}" disabled>Saved ✓</button>
         <span class="saved-msg" id="saved-${r.rowNum}"></span>
       `;
       list.appendChild(card);
 
       card.querySelector('.save-btn').addEventListener('click', () => saveRow(r.rowNum, card));
+      // Once something is changed again, the old "Saved" message no longer applies
+      card.querySelectorAll('.statusSel, .notesTxt, .discussedTxt, .linkedTxt').forEach(el =>
+        el.addEventListener('input', () => {
+          if (card.dataset.saving) return;            // a save is already under way
+          const b = card.querySelector('.save-btn');
+          b.disabled = false;
+          b.textContent = "Save changes";
+          const m = document.getElementById(`saved-${r.rowNum}`);
+          m.style.color = "#b8860b";
+          m.textContent = "Changes not saved yet";
+        }));
+      buildReplyHelper(r, card);
+
+      // Let the notes box grow to show everything, so the "Replied…" lines
+      // at the bottom aren't hidden out of sight
+      const notesBox = card.querySelector('.notesTxt');
+      const fit = () => { notesBox.style.height = 'auto'; notesBox.style.height = (notesBox.scrollHeight + 4) + 'px'; };
+      notesBox.addEventListener('input', fit);
+      fit();
     });
+  }
+
+  // The sheet turns a typed date into a computer date (e.g. 2026-10-05T14:00:00.000Z).
+  // Show it the normal way, e.g. "6 Oct 2026". Anything else is shown as typed.
+  function shortDate(v) {
+    const s = String(v || "");
+    if (!/^\d{4}-\d{2}-\d{2}T/.test(s)) return s;
+    const d = new Date(s);
+    return isNaN(d) ? s : d.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  // Shows "✅ Replied by email, 11 Oct 2026" at the top of the reply box,
+  // taken from the most recent "Replied …" line in the notes.
+  function showLastReply(card) {
+    const lines = card.querySelector('.notesTxt').value.split("\n")
+                      .filter(l => /^Replied (by|in) /.test(l.trim()));
+    const el = card.querySelector('.replied-already');
+    if (lines.length) {
+      el.textContent = "✅ " + lines[lines.length - 1].trim().replace(/\.$/, "");
+      el.style.display = "inline-block";
+    } else {
+      el.style.display = "none";
+    }
+  }
+
+  // ── REPLY HELPER ──────────────────────────────────────────────
+  // Works out whether the resident left an email address and/or a phone
+  // number, and offers the right buttons. Replies are sent from your own
+  // Gmail, so they sit in your Sent folder and the resident can answer you.
+  function friendlyDate(ts) {
+    const d = new Date(ts);
+    if (isNaN(d)) return String(ts || "");
+    return d.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+  }
+
+  function buildReplyHelper(r, card) {
+    const box     = card.querySelector('.reply-actions');
+    const contact = String(r.contact || "");
+    const email   = (contact.match(/[^\s@,;<>()]+@[^\s@,;<>()]+\.[^\s@,;<>()]+/) || [""])[0];
+    const phoneRaw = (contact.replace(email, "").match(/\+?[\d\s()-]{8,}/) || [""])[0].trim();
+    const phone   = phoneRaw.replace(/[^\d+]/g, "");
+    const raised  = friendlyDate(r.timestamp);
+    const first   = String(r.name || "").trim().split(/\s+/)[0] || "";
+
+    if (email) {
+      const subject = "Your concern raised on " + raised;
+      const body =
+        "Dear " + (first || "Resident") + ",\n\n" +
+        "Thank you for raising your concern with the Residents Committee.\n\n\n\n" +
+        "Kind regards,\nRick Van Haeften\nChair, BDRV Residents Committee\n\n" +
+        "----- Your original message (" + raised + ") -----\n" +
+        "Category: " + (r.category || "") + "\n" +
+        String(r.description || "");
+      const link = document.createElement('a');
+      link.className = 'reply-btn';
+      link.target = '_blank';
+      link.textContent = '✉️ Reply by email';
+      link.href = 'https://mail.google.com/mail/?view=cm&fs=1' +
+                  '&to=' + encodeURIComponent(email) +
+                  '&su=' + encodeURIComponent(subject) +
+                  '&body=' + encodeURIComponent(body);
+      box.appendChild(link);
+    }
+
+    const hasPhone = phone.replace(/\D/g, "").length >= 8;
+    if (hasPhone) {
+      const call = document.createElement('a');
+      call.className = 'reply-btn' + (email ? ' light' : '');
+      call.href = 'tel:' + phone;
+      call.textContent = '📞 Ring ' + phoneRaw;
+      box.appendChild(call);
+    }
+
+    if (!email && !hasPhone) {
+      const hint = document.createElement('div');
+      hint.className = 'reply-hint';
+      hint.textContent = 'No email or phone number was left — a note in the letterbox of unit ' +
+                         (r.unit || '?') + ' will reach them.';
+      box.appendChild(hint);
+      card.querySelector('.replyHow').value = 'by letterbox note';
+    } else if (!email) {
+      card.querySelector('.replyHow').value = 'by phone';
+    }
+
+    // "Mark as replied": adds a dated line to the notes, sets the status to
+    // Responded and saves — all in one press.
+    card.querySelector('.markReplied').addEventListener('click', () => {
+      const how   = card.querySelector('.replyHow').value;
+      const today = new Date().toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
+      const notes = card.querySelector('.notesTxt');
+      const line  = "Replied " + how + ", " + today + ".";
+      // Don't add the same line twice if the button is pressed again
+      if (!notes.value.split("\n").some(l => l.trim() === line)) {
+        notes.value = (notes.value.trim() ? notes.value.trim() + "\n" : "") + line;
+        notes.dispatchEvent(new Event('input'));   // grow the box to fit
+      }
+      card.querySelector('.statusSel').value = "Responded";
+      showLastReply(card);
+      saveRow(r.rowNum, card);
+    });
+
+    showLastReply(card);   // on opening the page, show any reply already recorded
   }
 
   function saveRow(rowNum, card) {
@@ -222,18 +380,60 @@
     const data = new FormData();
     data.append('action', 'updateSubmission');
     data.append('key', CHAIR_SECRET_KEY);
+    data.append('token', HubPin.token());
     data.append('row', rowNum);
     data.append('status', status);
     data.append('notes', notes);
     data.append('discussed', discussed);
     data.append('linked', linked);
 
-    fetch(APPS_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: data })
-      .then(() => {
-        document.getElementById(`saved-${rowNum}`).textContent = "Saved ✓";
-        setTimeout(() => { document.getElementById(`saved-${rowNum}`).textContent = ""; }, 3000);
+    // Show straight away that something is happening — Google can take a few
+    // seconds to answer — and stop a second press while it's saving.
+    const btn = card.querySelector('.save-btn');
+    const msg = document.getElementById(`saved-${rowNum}`);
+    card.dataset.saving = "1";
+    btn.disabled = true;
+    btn.textContent = "Saving…";
+    msg.style.color = "#555";
+    msg.textContent = "Please wait…";
+
+    fetch(APPS_SCRIPT_URL, { method: 'POST', body: data })
+      .then(r => r.json())
+      .then(reply => {
+        if (reply.signIn) {                              // sign-in has run out
+          btn.disabled = false; btn.textContent = "Save changes"; msg.textContent = "";
+          HubPin.expired(); return;
+        }
+        if (reply.result !== 'ok') throw new Error('not saved');
+        const time = new Date().toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" });
+        msg.style.color = "#2f9e52";
+        btn.textContent = "Saved ✓";               // greyed out until something is changed again
+        msg.textContent = "at " + time;           // stays on screen, so it can't be missed
+        card.className = `card status-${status.replace(/\s+/g,'-')}`;   // colour stripe matches the new status
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.textContent = "Save changes";
+        msg.style.color = "#b3261e";
+        msg.textContent = "⚠️ Not saved — please press Save again.";
+      })
+      .finally(() => {
+        delete card.dataset.saving;
       });
   }
+
+  // ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+  // The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+  HubPin.require({
+    area: ["rc-chair", "admin"],
+    title: "🔒 Resident Submissions",
+    subtitle: "Chair access only.",
+    legacyPin: "1957",
+    legacyUntil: "2026-12-31"
+  }, function () {
+    document.getElementById('app').style.display = 'block';
+    loadData();
+  });
 </script>
 
 </body>

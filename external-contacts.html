@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>External Contacts — BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #263746; color: #F6F2E7; font-size: 17px; line-height: 1.55; min-height: 100vh;
+  }
+  a { color: #D4B860; }
+
+  /* ── Back bar ── */
+  .back-bar { padding: 10px 16px; border-bottom: 1px solid #3F4143; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .back-bar a, .back-bar button { color: #D4B860; background: transparent; border: 2px solid #3F4143; border-radius: 10px;
+    padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 16px; cursor: pointer; font-family: inherit; }
+  .back-bar a:hover, .back-bar button:hover { border-color: #D4B860; }
+  .back-bar .spacer { flex: 1; }
+
+  .page-wrap { max-width: 1000px; margin: 0 auto; padding: 24px 16px 60px; }
+  h1 { color: #D4B860; font-size: 1.55em; }
+  .sub { color: rgba(246,242,231,0.82); margin: 4px 0 14px; }
+  .privacy { background: rgba(212,184,96,0.1); border: 1px solid #D4B860; border-radius: 10px;
+    padding: 10px 14px; font-size: 0.9em; margin-bottom: 18px; }
+
+  /* ── Tools ── */
+  .tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+  .tools input[type=search] { flex: 1; min-width: 200px; font-size: 1em; padding: 10px 14px; border-radius: 8px;
+    border: 2px solid #3F4143; color: #222; background: #fff; font-family: inherit; }
+  .tools input[type=search]:focus { outline: none; border-color: #D4B860; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .pill { background: transparent; color: #F6F2E7; border: 2px solid #3F4143; border-radius: 20px;
+    padding: 5px 14px; font-size: 0.88em; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .pill.on { background: #D4B860; color: #263746; border-color: #D4B860; }
+  .count { font-size: 0.88em; color: rgba(246,242,231,0.7); }
+
+  .btn { display: inline-block; padding: 9px 16px; border-radius: 8px; font-size: 0.95em; font-weight: 700;
+    border: none; cursor: pointer; font-family: inherit; text-decoration: none; }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .btn-gold  { background: #D4B860; color: #263746; }
+  .btn-cream { background: #F6F2E7; color: #263746; }
+  .btn-line  { background: transparent; color: #D4B860; border: 2px solid #D4B860; }
+  .btn-red   { background: #a12b2b; color: #fff; }
+  .btn-small { padding: 5px 11px; font-size: 0.84em; }
+
+  .status { display: none; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-weight: 600; }
+  .status.ok   { display: block; background: #e6f4ea; color: #1e7a34; }
+  .status.err  { display: block; background: #fdeaea; color: #a12b2b; }
+  .status.busy { display: block; background: #fff6e0; color: #8a6d16; }
+
+  /* ── Category groups and contact cards ── */
+  .group-label { color: #D4B860; font-weight: 700; font-size: 0.85em; letter-spacing: 0.08em; text-transform: uppercase;
+    margin: 26px 0 10px; padding-left: 10px; border-left: 4px solid #D4B860; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 14px; }
+  .card { background: rgba(246,242,231,0.06); border: 1px solid #3F4143; border-left: 5px solid #D4B860;
+    border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .card .name { font-weight: 700; font-size: 1.08em; color: #F6F2E7; }
+  .card .org { color: #D4B860; font-weight: 600; font-size: 0.95em; }
+  .card .helps { font-size: 0.92em; color: rgba(246,242,231,0.85); font-style: italic; margin-bottom: 4px; }
+  .card .line { font-size: 0.95em; word-break: break-word; }
+  .card .line b { color: rgba(246,242,231,0.65); font-weight: 600; display: inline-block; min-width: 68px; }
+  .card .notes { font-size: 0.9em; background: rgba(0,0,0,0.15); border-radius: 6px; padding: 6px 9px; margin-top: 4px; white-space: pre-wrap; }
+  .card .who { font-size: 0.78em; color: rgba(246,242,231,0.55); margin-top: 6px; }
+  .card .acts { display: flex; gap: 8px; margin-top: 8px; }
+  .empty { padding: 30px 10px; text-align: center; color: rgba(246,242,231,0.75); }
+
+  /* ── Add / edit form ── */
+  .form-panel { display: none; background: rgba(246,242,231,0.07); border: 2px solid #D4B860; border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 20px; }
+  .form-panel h2 { color: #D4B860; font-size: 1.15em; margin-bottom: 6px; }
+  .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  label.fl { display: block; font-weight: 700; font-size: 0.9em; margin: 10px 0 4px; }
+  label.fl span { font-weight: 400; color: rgba(246,242,231,0.65); }
+  .form-panel input, .form-panel select, .form-panel textarea {
+    width: 100%; font-size: 1em; padding: 9px 12px; border-radius: 7px; border: 2px solid #3F4143;
+    color: #222; background: #fff; font-family: inherit; }
+  .form-panel input:focus, .form-panel select:focus, .form-panel textarea:focus { outline: none; border-color: #D4B860; }
+  .form-panel textarea { min-height: 70px; resize: vertical; }
+  .form-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+
+  #main { display: none; }
+
+  @media print {
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .back-bar, .tools, .pills, .privacy, .status, .form-panel, .acts, #hubpin-banner, .no-print { display: none !important; }
+    h1, .group-label, .card .org { color: #000; }
+    .group-label { border-left-color: #000; }
+    .card { background: #fff; border: 1px solid #999; border-left: 4px solid #000; break-inside: avoid; }
+    .card .name, .card .line, .card .helps { color: #000; }
+    .card .line b, .card .who { color: #444; }
+    .card .notes { background: #f3f3f3; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    a { color: #000; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="back-bar" id="back-bar" style="display:none;">
+  <a href="my-workbench.html">← My Workbench</a>
+  <span class="spacer"></span>
+  <button type="button" onclick="HubPin.signOut()">Sign out</button>
+</div>
+
+<div class="page-wrap" id="main">
+  <h1>📇 External Contacts</h1>
+  <p class="sub">The outside people our committees deal with — Aveo, council, trades, entertainers, suppliers and others.</p>
+  <div class="privacy">🔒 These are other people's contact details, shared with us for village business.
+    Please use them only for that purpose and don't pass them on.</div>
+
+  <div id="status" class="status"></div>
+
+  <!-- Add / edit form (only for people ticked "Manage External Contacts") -->
+  <div class="form-panel" id="form-panel">
+    <h2 id="form-title">➕ Add a contact</h2>
+    <div class="form-row">
+      <div><label class="fl" for="f-name">Name <span>(the person)</span></label><input id="f-name" maxlength="300"></div>
+      <div><label class="fl" for="f-organisation">Organisation</label><input id="f-organisation" maxlength="300"></div>
+    </div>
+    <div class="form-row">
+      <div><label class="fl" for="f-category">Category</label><select id="f-category"></select></div>
+      <div><label class="fl" for="f-helpsWith">What they help with <span>(e.g. "Bus hire")</span></label><input id="f-helpsWith" maxlength="300"></div>
+    </div>
+    <div class="form-row">
+      <div><label class="fl" for="f-phone">Phone</label><input id="f-phone" type="tel" maxlength="300"></div>
+      <div><label class="fl" for="f-mobile">Mobile</label><input id="f-mobile" type="tel" maxlength="300"></div>
+    </div>
+    <div class="form-row">
+      <div><label class="fl" for="f-email">Email</label><input id="f-email" type="email" maxlength="300"></div>
+      <div><label class="fl" for="f-website">Website <span>(optional)</span></label><input id="f-website" maxlength="300" placeholder="e.g. www.example.com.au"></div>
+    </div>
+    <label class="fl" for="f-address">Address <span>(optional)</span></label><input id="f-address" maxlength="1000">
+    <label class="fl" for="f-notes">Notes <span>(optional, e.g. "Best to call mornings")</span></label><textarea id="f-notes" maxlength="1000"></textarea>
+    <div class="form-btns">
+      <button class="btn btn-gold" id="f-save" onclick="saveForm()">💾 Save contact</button>
+      <button class="btn btn-line" onclick="closeForm()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="tools">
+    <input type="search" id="search" placeholder="🔍 Search by name, organisation or what they help with…" oninput="render()">
+    <button class="btn btn-gold no-print" id="add-btn" style="display:none;" onclick="openForm()">➕ Add a contact</button>
+    <button class="btn btn-line no-print" onclick="window.print()">🖨️ Print</button>
+  </div>
+  <div class="pills" id="pills"></div>
+  <div class="count" id="count"></div>
+  <div id="list"><div class="empty">Loading contacts…</div></div>
+</div>
+
+<script src="hub-pin.js"></script>
+<script>
+// Paste the External Contacts web app URL here (Deploy > Manage deployments > copy the Web app URL)
+const CONTACTS_URL = "https://script.google.com/macros/s/AKfycbwWd30b_T240icRjbHpKGcoQJbsfKaybBPnI1Fd5YXkmpaCJOJuzgL0WZXxTgb5lX8_vQ/exec";
+
+// Who may open this page (the same roles the script checks)
+const VIEW_AREAS = ["rc-chair", "rc-secretary", "rc-treasurer", "rc-member", "manor-advisor",
+                    "sc-convenor", "sc-secretary", "sc-treasurer", "sc-events", "sc-member",
+                    "contacts-editor", "admin"];
+const FIELDS = ["name", "organisation", "category", "helpsWith", "phone", "mobile", "email", "website", "address", "notes"];
+
+let contacts = [], categories = [], canEdit = false, editingId = "", showCat = "";
+
+function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function niceDate(iso) {
+  const d = new Date(iso);
+  return isNaN(d) ? "" : d.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" });
+}
+
+let statusTimer = null;
+function status(msg, kind) {
+  const el = document.getElementById("status");
+  clearTimeout(statusTimer);
+  el.textContent = msg;
+  el.className = "status " + kind;
+  if (kind !== "busy") statusTimer = setTimeout(() => { el.className = "status"; }, 7000);
+}
+
+function call(params) {
+  return fetch(CONTACTS_URL, { method: "POST",
+      body: new URLSearchParams(Object.assign({ token: HubPin.token() }, params)) })
+    .then(r => r.json())
+    .then(res => { if (!res.success && res.expired) { HubPin.expired(); throw new Error("expired"); } return res; });
+}
+
+function take(res) {
+  contacts = res.contacts || [];
+  categories = res.categories || [];
+  canEdit = !!res.canEdit;
+  document.getElementById("add-btn").style.display = canEdit ? "" : "none";
+  document.getElementById("f-category").innerHTML = categories.map(c => '<option>' + esc(c) + '</option>').join("");
+  render();
+}
+
+function load() {
+  if (CONTACTS_URL.indexOf("PASTE_") === 0) {
+    document.getElementById("list").innerHTML = '<div class="empty">This page isn\'t connected to its Google Sheet yet. ' +
+      'Please ask the Hub administrator to finish setting it up.</div>';
+    return;
+  }
+  call({ action: "list" }).then(res => {
+    if (!res.success) { document.getElementById("list").innerHTML = '<div class="empty">' + esc(res.error) + '</div>'; return; }
+    take(res);
+  }).catch(e => {
+    if (e.message !== "expired") document.getElementById("list").innerHTML =
+      '<div class="empty">Couldn\'t load the contacts. Please check your internet connection and try again.</div>';
+  });
+}
+
+// ── Showing the list ──
+function phoneLink(n) {
+  const dial = String(n).replace(/[^\d+]/g, "");
+  return dial ? '<a href="tel:' + esc(dial) + '">' + esc(n) + '</a>' : esc(n);
+}
+
+function cardHTML(c) {
+  const lines = [];
+  if (c.phone)   lines.push('<div class="line"><b>Phone</b> ' + phoneLink(c.phone) + '</div>');
+  if (c.mobile)  lines.push('<div class="line"><b>Mobile</b> ' + phoneLink(c.mobile) + '</div>');
+  if (c.email)   lines.push('<div class="line"><b>Email</b> <a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></div>');
+  if (c.website) lines.push('<div class="line"><b>Website</b> <a href="' + esc(c.website) + '" target="_blank" rel="noopener">' +
+                            esc(c.website.replace(/^https?:\/\//i, "").replace(/\/$/, "")) + '</a></div>');
+  if (c.address) lines.push('<div class="line"><b>Address</b> ' + esc(c.address) + '</div>');
+  const who = c.updatedBy ? "Updated by " + c.updatedBy + " · " + niceDate(c.updatedOn)
+                          : (c.addedBy ? "Added by " + c.addedBy + " · " + niceDate(c.addedOn) : "");
+  return '<div class="card">' +
+    '<div class="name">' + esc(c.name || c.organisation) + '</div>' +
+    (c.name && c.organisation ? '<div class="org">' + esc(c.organisation) + '</div>' : "") +
+    (c.helpsWith ? '<div class="helps">' + esc(c.helpsWith) + '</div>' : "") +
+    lines.join("") +
+    (c.notes ? '<div class="notes">' + esc(c.notes) + '</div>' : "") +
+    (who ? '<div class="who">' + esc(who) + '</div>' : "") +
+    (canEdit ? '<div class="acts"><button class="btn btn-cream btn-small" onclick="openForm(\'' + esc(c.id) + '\')">✏️ Edit</button>' +
+               '<button class="btn btn-red btn-small" onclick="removeContact(\'' + esc(c.id) + '\')">🗑️ Remove</button></div>' : "") +
+  '</div>';
+}
+
+function render() {
+  // Category pills (only categories that have contacts)
+  const used = categories.filter(cat => contacts.some(c => c.category === cat));
+  if (showCat && used.indexOf(showCat) === -1) showCat = "";
+  document.getElementById("pills").innerHTML =
+    ['<button class="pill' + (showCat ? "" : " on") + '" onclick="pickCat(\'\')">All</button>']
+    .concat(used.map(cat => '<button class="pill' + (showCat === cat ? " on" : "") + '" onclick="pickCat(\'' + esc(cat) + '\')">' + esc(cat) + '</button>'))
+    .join("");
+
+  const find = document.getElementById("search").value.trim().toLowerCase();
+  const shown = contacts.filter(c => (!showCat || c.category === showCat) &&
+    (!find || FIELDS.some(f => String(c[f] || "").toLowerCase().indexOf(find) !== -1)));
+  document.getElementById("count").textContent = contacts.length
+    ? "Showing " + shown.length + " of " + contacts.length + " contact" + (contacts.length === 1 ? "" : "s") : "";
+
+  const box = document.getElementById("list");
+  if (!contacts.length) {
+    box.innerHTML = '<div class="empty">No contacts yet.' + (canEdit ? ' Press <b>➕ Add a contact</b> to add the first one.' : '') + '</div>';
+    return;
+  }
+  if (!shown.length) { box.innerHTML = '<div class="empty">No contacts match your search.</div>'; return; }
+  box.innerHTML = categories.map(cat => {
+    const list = shown.filter(c => c.category === cat)
+      .sort((a, b) => (a.name || a.organisation).localeCompare(b.name || b.organisation));
+    return list.length ? '<div class="group-label">' + esc(cat) + '</div><div class="grid">' + list.map(cardHTML).join("") + '</div>' : "";
+  }).join("");
+}
+function pickCat(cat) { showCat = cat; render(); }
+
+// ── Adding and editing ──
+function openForm(id) {
+  editingId = id || "";
+  const c = contacts.find(x => x.id === editingId) || {};
+  FIELDS.forEach(f => document.getElementById("f-" + f).value = c[f] || (f === "category" ? (categories[0] || "") : ""));
+  document.getElementById("form-title").textContent = editingId ? "✏️ Edit " + (c.name || c.organisation) : "➕ Add a contact";
+  const panel = document.getElementById("form-panel");
+  panel.style.display = "block";
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+  document.getElementById("f-name").focus();
+}
+function closeForm() { document.getElementById("form-panel").style.display = "none"; editingId = ""; }
+
+function saveForm() {
+  const data = {};
+  FIELDS.forEach(f => data[f] = document.getElementById("f-" + f).value.trim());
+  if (!data.name && !data.organisation) { status("Please enter a name or an organisation.", "err"); return; }
+  if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) { status("That email address doesn't look right — please check it.", "err"); return; }
+  const btn = document.getElementById("f-save");
+  btn.disabled = true;
+  status("Saving…", "busy");
+  call(Object.assign({ action: "save", id: editingId }, data)).then(res => {
+    btn.disabled = false;
+    if (!res.success) { status(res.error, "err"); return; }
+    take(res);
+    status((data.name || data.organisation) + " saved.", "ok");
+    closeForm();
+  }).catch(e => { btn.disabled = false; if (e.message !== "expired") status("Couldn't reach the contacts list. Please try again.", "err"); });
+}
+
+function removeContact(id) {
+  const c = contacts.find(x => x.id === id);
+  if (!c || !confirm("Remove " + (c.name || c.organisation) + " from the contacts list?")) return;
+  status("Removing…", "busy");
+  call({ action: "remove", id: id }).then(res => {
+    if (!res.success) { status(res.error, "err"); return; }
+    take(res);
+    status((c.name || c.organisation) + " removed.", "ok");
+  }).catch(e => { if (e.message !== "expired") status("Couldn't reach the contacts list. Please try again.", "err"); });
+}
+
+// ── Sign in with a personal PIN, then load the list ──
+HubPin.require({
+  area: VIEW_AREAS,
+  title: "🔒 External Contacts",
+  subtitle: "For Residents Committee and Social Club members."
+}, function () {
+  document.getElementById("back-bar").style.display = "";
+  document.getElementById("main").style.display = "block";
+  load();
+});
+</script>
+</body>
+</html>

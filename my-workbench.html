@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Workbench — BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #eef3f8; color: #222; font-size: 17px; line-height: 1.6; min-height: 100vh;
+  }
+
+  /* ── BACK BAR ── */
+  .back-bar { background: #E7F1FB; padding: 10px 20px; border-bottom: 2px solid #c5d8ee;
+              display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .back-bar a { color: #1F4E79; background: white; border: 2px solid #c5d8ee; border-radius: 10px;
+                padding: 7px 16px; text-decoration: none; font-weight: 700; font-size: 16px; }
+  .back-bar a:hover { border-color: #1F4E79; }
+  .back-bar .spacer { flex: 1; }
+  .btn-signout { background: white; color: #1F4E79; border: 2px solid #c5d8ee; border-radius: 10px;
+                 padding: 7px 16px; font-weight: 700; font-size: 15px; cursor: pointer; font-family: inherit; }
+  .btn-signout:hover { border-color: #1F4E79; }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 1000px; margin: 0 auto; padding: 30px 20px 60px; }
+
+  /* ── HEADER ── */
+  .dash-header { border-radius: 12px; padding: 24px 28px; margin-bottom: 22px;
+                 display: flex; align-items: flex-start; justify-content: space-between;
+                 flex-wrap: wrap; gap: 16px; color: white; background: #1F4E79; }
+  .dash-header h1 { font-size: 1.45em; font-weight: 700; }
+  .dash-header .sub { font-size: 0.82em; opacity: 0.85; margin-top: 4px; }
+  .role-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .role-chip { background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35);
+               border-radius: 20px; padding: 2px 11px; font-size: 0.74em; font-weight: 700; }
+  .dash-date { background: rgba(255,255,255,0.15); border-radius: 8px; padding: 10px 18px;
+               font-size: 0.85em; text-align: right; line-height: 1.5; }
+  .dash-date strong { display: block; font-size: 1.1em; }
+
+  /* ── "Show the workbench for" (administrator / old shared PIN) ── */
+  .view-as { background: #fff8e1; border: 2px solid #e8d5a3; border-radius: 10px;
+             padding: 12px 16px; margin-bottom: 22px; font-size: 0.9em; color: #5a3e00;
+             display: none; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .view-as select { font-size: 1em; padding: 6px 10px; border-radius: 6px; border: 1px solid #e8d5a3;
+                    font-family: inherit; background: white; }
+
+  /* ── SECTIONS & TILES ── */
+  .section-label { font-size: 0.78em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+                   color: #1F4E79; margin: 28px 0 12px; padding-left: 10px; border-left: 4px solid #C9A44A; }
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .info-card { background: white; border-radius: 12px; border: 1px solid #c5d8ee;
+               border-left: 5px solid #1F4E79; padding: 18px 20px;
+               display: flex; flex-direction: column; gap: 10px; transition: box-shadow 0.2s; }
+  .info-card:hover { box-shadow: 0 4px 16px rgba(31,78,121,0.12); }
+  .card-top { display: flex; align-items: flex-start; gap: 14px; }
+  .card-icon { font-size: 1.6em; line-height: 1; flex-shrink: 0; }
+  .card-title { font-weight: 700; color: #1F4E79; font-size: 1em; }
+  .card-desc  { font-size: 0.84em; color: #555; margin-top: 2px; line-height: 1.4; }
+  .card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn-action { display: inline-block; padding: 7px 14px; border-radius: 7px; font-size: 0.84em;
+                font-weight: 600; text-decoration: none; color: white; border: 2px solid transparent; }
+  .btn-action:hover { opacity: 0.85; }
+  .btn-action.outline { background: white !important; }
+  .empty-note { color: #666; font-style: italic; font-size: 0.92em; padding: 16px 4px; }
+
+  /* ── MY ACTION ITEMS ── */
+  #my-actions-section { display: none; }
+  .my-actions-box { background: white; border-radius: 12px; border: 1px solid #c5d8ee; overflow: hidden; }
+  .my-actions-table { width: 100%; border-collapse: collapse; font-size: 0.88em; }
+  .my-actions-table th { background: #1F4E79; color: white; padding: 8px 10px; text-align: left; font-size: 0.85em; }
+  .my-actions-table td { padding: 8px 10px; border-bottom: 1px solid #e0eaf4; vertical-align: top; }
+  .my-actions-table tr:last-child td { border-bottom: none; }
+  .pill { display: inline-block; font-size: 0.78em; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+  .pill-open { background: #dbeafe; color: #1e40af; } .pill-inprogress { background: #fef3c7; color: #92400e; }
+  .pill-done { background: #dcfce7; color: #166534; } .pill-deferred { background: #fee2e2; color: #991b1b; }
+  .overdue { color: #c0392b; font-weight: 600; }
+  .edit-inline-row td { background: #f0f8ff; }
+  .edit-inline-row select, .edit-inline-row textarea { font-size: 0.88em; border: 1px solid #c5d8ee;
+    border-radius: 5px; padding: 4px 7px; width: 100%; font-family: inherit; }
+  .edit-inline-row textarea { min-height: 50px; resize: vertical; }
+  .save-btn { background: #166534; color: white; border: none; border-radius: 5px; padding: 4px 10px; cursor: pointer; font-size: 0.82em; margin-right: 4px; }
+  .cancel-btn { background: #6b7280; color: white; border: none; border-radius: 5px; padding: 4px 10px; cursor: pointer; font-size: 0.82em; }
+  .icon-btn { background: none; border: none; cursor: pointer; color: #2E75B6; padding: 2px 5px; border-radius: 4px; }
+  #actions-msg { font-size: 0.85em; padding: 8px 12px; display: none; }
+
+  /* ── DAILY CHECKLIST ── */
+  .checklist-strip { background: white; border-radius: 10px; border: 1px solid #d0e2f2; padding: 20px 24px; margin-top: 30px; }
+  .checklist-strip h3 { font-size: 0.9em; font-weight: 700; color: #1F4E79; margin-bottom: 14px; }
+  .checklist-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+  .check-item { display: flex; align-items: center; gap: 10px; font-size: 0.84em; cursor: pointer;
+                padding: 6px 8px; border-radius: 6px; user-select: none; }
+  .check-item:hover { background: #f0f6fc; }
+  .check-item input { width: 17px; height: 17px; accent-color: #1F4E79; flex-shrink: 0; }
+  .check-item.done span { text-decoration: line-through; color: #aaa; }
+  .checklist-footer { margin-top: 14px; display: flex; gap: 10px; align-items: center; }
+  .btn-reset-checks { background: white; border: 2px solid #c5d8ee; color: #1F4E79; border-radius: 6px;
+                      padding: 6px 16px; font-size: 0.8em; font-weight: 700; cursor: pointer; font-family: inherit; }
+  #check-progress { font-size: 0.8em; color: #5f6368; }
+
+  @media(max-width:600px) { .card-grid { grid-template-columns: 1fr; } .dash-date { text-align: left; } }
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="back-bar" id="back-bar" style="display:none;">
+  <a href="index.html">🏠 Home</a>
+  <a href="my-pin.html">🔑 My PIN</a>
+  <span class="spacer"></span>
+  <button class="btn-signout" onclick="HubPin.signOut()">Sign out</button>
+</div>
+
+<div class="page-wrap" id="main-content" style="display:none;">
+
+  <div class="dash-header">
+    <div>
+      <h1 id="greeting">👋 My Workbench</h1>
+      <div class="sub">Bridgeman Downs Retirement Village — your tools, based on your roles</div>
+      <div class="role-chips" id="role-chips"></div>
+    </div>
+    <div class="dash-date"><strong id="today-day"></strong><span id="today-date"></span></div>
+  </div>
+
+  <!-- Administrator (or old shared PIN): choose whose workbench to show -->
+  <div class="view-as" id="view-as">
+    <span id="view-as-text">👁 Show the workbench for:</span>
+    <select id="view-as-select" onchange="render()"></select>
+  </div>
+
+  <!-- My Action Items (Residents Committee Action Register) -->
+  <div id="my-actions-section">
+    <div class="section-label">📌 My Action Items</div>
+    <div class="my-actions-box">
+      <div id="actions-msg"></div>
+      <table class="my-actions-table">
+        <thead><tr><th style="width:70px">Ref</th><th>Action</th><th style="width:90px">Due</th>
+                   <th style="width:110px">Status</th><th style="width:170px">Notes</th><th style="width:40px"></th></tr></thead>
+        <tbody id="my-actions-body"></tbody>
+      </table>
+      <div id="my-actions-empty" class="empty-note" style="padding:14px 20px;display:none;">No open actions assigned to you right now.</div>
+    </div>
+  </div>
+
+  <div id="tiles"></div>
+
+  <div class="checklist-strip" id="checklist" style="display:none;">
+    <h3>✅ Daily Checklist — tick off as you go (resets each day)</h3>
+    <div class="checklist-items" id="checklist-items"></div>
+    <div class="checklist-footer">
+      <button class="btn-reset-checks" onclick="resetChecks()">↺ Reset All</button>
+      <span id="check-progress"></span>
+    </div>
+  </div>
+</div>
+
+<script src="hub-pin.js"></script>
+<script src="workbench-tiles.js"></script>
+<script>
+// ── Action Register (Residents Committee) ──
+const ACTIONS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwG6RXWVplDVFen82zZnMmAM5S43HbydythoKcgb87f1gaUT4jnbjOeXKGJGZ752796/exec";
+const ACTIONS_CSV_URL    = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQox-a_SRoD_AgQcjrtBrgF95eLDkh2EmZAIusLrw0BaCZi2-U2Q6KWyd9h0Xw8LISjmdW-yWihLLsW/pub?gid=0&single=true&output=csv";
+const RC_BOARD_ROLES     = ["rc-chair", "rc-secretary", "rc-treasurer", "rc-member", "manor-advisor"];   // may update RC actions
+
+// Every role that can open this page
+const ALL_ROLES = Object.keys(WORKBENCH_ROLE_NAMES);
+
+// For the old shared PIN only: the name the Action Register uses for each role
+const ROLE_OWNER_NAMES = { "rc-chair": "Rick", "rc-secretary": "Jocelyn", "rc-treasurer": "Margaret",
+                           "manor-advisor": "Ken" };
+
+let me = null;          // the signed-in person { name, areas, legacy }
+let viewRoles = [];     // the roles whose tiles are showing right now
+let viewName = "";      // whose action items to show
+let allActions = [], editingRow = null;
+
+function esc(s) { return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function hasAny(list, roles) { return list.some(r => roles.indexOf(r) !== -1); }
+
+// ── Which tiles this set of roles may see ──
+function tilesFor(roles) {
+  const isAdmin = roles.indexOf("admin") !== -1;
+  return WORKBENCH_TILES.filter(t => {
+    if (isAdmin) return true;
+    if (!hasAny(t.roles, roles)) return false;
+    if (t.notFor && hasAny(t.notFor, roles)) return false;
+    return true;
+  });
+}
+
+// ── Draw the page ──
+function render() {
+  const sel = document.getElementById("view-as-select");
+  const isAdmin = !me.legacy && (me.areas || []).indexOf("admin") !== -1;
+
+  if (me.legacy || isAdmin) {
+    const choice = sel.value;
+    if (me.legacy && !choice) { viewRoles = []; }
+    else if (!choice || choice === "*") { viewRoles = ["admin"]; }
+    else { viewRoles = [choice]; }
+    viewName = me.legacy ? (ROLE_OWNER_NAMES[viewRoles[0]] || "") : (choice && choice !== "*" ? "" : me.name);
+  } else {
+    viewRoles = me.areas || [];
+    viewName = me.name;
+  }
+
+  // Greeting and role chips
+  document.getElementById("greeting").textContent = "👋 " + (me.name ? "Hello " + me.name : "My Workbench");
+  document.getElementById("role-chips").innerHTML = (me.legacy ? ["Old shared PIN"] :
+      (me.areas || []).map(a => WORKBENCH_ROLE_NAMES[a] || a)).map(n => '<span class="role-chip">' + esc(n) + '</span>').join("");
+
+  // Tiles, grouped by section
+  const box = document.getElementById("tiles");
+  if (me.legacy && !viewRoles.length) {
+    box.innerHTML = '<div class="empty-note">Please choose your role above to see your tools.</div>';
+  } else {
+    const shown = tilesFor(viewRoles);
+    let html = "";
+    WORKBENCH_SECTIONS.forEach(sec => {
+      const list = shown.filter(t => t.section === sec.id);
+      if (!list.length) return;
+      html += '<div class="section-label" style="border-left-color:' + sec.colour + '">' + esc(sec.label) + '</div><div class="card-grid">';
+      list.forEach(t => {
+        html += '<div class="info-card" style="border-left-color:' + sec.colour + '">' +
+          '<div class="card-top"><div class="card-icon">' + t.icon + '</div><div>' +
+          '<div class="card-title">' + esc(t.title) + '</div><div class="card-desc">' + esc(t.desc) + '</div></div></div>' +
+          '<div class="card-actions">' + t.links.map(l => {
+            const outline = l[2] === "outline";
+            const style = outline ? 'color:' + sec.colour + ';border-color:' + sec.colour : 'background:' + sec.colour;
+            return '<a class="btn-action' + (outline ? ' outline' : '') + '" style="' + style + '" href="' + esc(l[1]) + '"' +
+                   (l[3] ? ' target="_blank" rel="noopener"' : '') + '>' + esc(l[0]) + '</a>';
+          }).join("") + '</div></div>';
+      });
+      html += '</div>';
+    });
+    box.innerHTML = html || '<div class="empty-note">You\'re signed in, but no committee tools have been set up for your roles yet. Please contact the Hub administrator.</div>';
+  }
+
+  buildChecklist();
+  loadMyActions();
+}
+
+// ── Set up the "Show the workbench for" chooser (administrator / old shared PIN) ──
+function setUpViewAs() {
+  const isAdmin = !me.legacy && (me.areas || []).indexOf("admin") !== -1;
+  if (!me.legacy && !isAdmin) return;
+  const sel = document.getElementById("view-as-select");
+  const roles = ALL_ROLES.filter(r => r !== "admin");
+  sel.innerHTML = (me.legacy ? '<option value="">— choose your role —</option>' : '<option value="*">Everything (administrator)</option>') +
+    roles.map(r => '<option value="' + r + '">' + esc(WORKBENCH_ROLE_NAMES[r]) + '</option>').join("");
+  document.getElementById("view-as-text").textContent = me.legacy
+    ? "Which committee role are you? (Set up your personal PIN and this happens automatically.)"
+    : "👁 Show the workbench as seen by:";
+  document.getElementById("view-as").style.display = "flex";
+}
+
+// ── Daily checklist: the items for every role showing, without repeats ──
+function checklistItems() {
+  const items = [];
+  const roles = viewRoles.indexOf("admin") !== -1 ? [] : viewRoles;   // administrator has the Hub Admin checklist instead
+  roles.forEach(r => (WORKBENCH_CHECKS[r] || []).forEach(c => { if (items.indexOf(c) === -1) items.push(c); }));
+  return items;
+}
+function checkKeys() {
+  const who = (me.name || "shared") + "_" + viewRoles.join("+");
+  return { store: "wb_checks_" + who, date: "wb_checks_date_" + who };
+}
+function todayStr() { return new Date().toLocaleDateString("en-CA", { timeZone: "Australia/Brisbane" }); }
+function readChecks() {
+  const k = checkKeys();
+  try {
+    if (localStorage.getItem(k.date) !== todayStr()) { localStorage.removeItem(k.store); localStorage.setItem(k.date, todayStr()); }
+    return JSON.parse(localStorage.getItem(k.store) || "{}");
+  } catch (e) { return {}; }
+}
+function buildChecklist() {
+  const items = checklistItems();
+  const strip = document.getElementById("checklist");
+  if (!items.length) { strip.style.display = "none"; return; }
+  strip.style.display = "";
+  const state = readChecks();
+  const box = document.getElementById("checklist-items");
+  box.innerHTML = "";
+  items.forEach(label => {
+    const el = document.createElement("label");
+    el.className = "check-item" + (state[label] ? " done" : "");
+    el.innerHTML = '<input type="checkbox"' + (state[label] ? " checked" : "") + '><span>' + esc(label) + '</span>';
+    el.querySelector("input").addEventListener("change", function () {
+      const s = readChecks(); s[label] = this.checked;
+      try { localStorage.setItem(checkKeys().store, JSON.stringify(s)); } catch (e) {}
+      el.classList.toggle("done", this.checked);
+      updateProgress();
+    });
+    box.appendChild(el);
+  });
+  updateProgress();
+}
+function updateProgress() {
+  const items = checklistItems(), state = readChecks();
+  const done = items.filter(i => state[i]).length;
+  const el = document.getElementById("check-progress");
+  el.textContent = done === items.length ? "🎉 All done for today!" : done + " of " + items.length + " completed";
+  el.style.color = done === items.length ? "#2e7d32" : "#5f6368";
+}
+function resetChecks() { try { localStorage.removeItem(checkKeys().store); } catch (e) {} buildChecklist(); }
+
+// ── My Action Items (from the RC Action Register) ──
+function parseCSVFull(text) {
+  const rows = []; let cur = "", inQ = false, cols = [];
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') { if (inQ && text[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+    else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
+    else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQ) { if (ch === '\r') i++; cols.push(cur.trim()); cur = ""; rows.push(cols); cols = []; }
+    else cur += ch;
+  }
+  if (cur || cols.length) { cols.push(cur.trim()); rows.push(cols); }
+  return rows;
+}
+function showsActions() {
+  return !!viewName && (hasAny(viewRoles, RC_BOARD_ROLES.concat(["manor-advisor"])) || viewRoles.indexOf("admin") !== -1);
+}
+function canEditActions() {
+  return !me.legacy ? hasAny(me.areas || [], RC_BOARD_ROLES.concat(["admin"])) : true;
+}
+function loadMyActions() {
+  const section = document.getElementById("my-actions-section");
+  if (!showsActions()) { section.style.display = "none"; return; }
+  fetch(ACTIONS_CSV_URL + "&cachebust=" + Date.now())
+    .then(r => r.text())
+    .then(csv => {
+      const rows = parseCSVFull(csv).slice(1).filter(r => r.length > 0);
+      allActions = [];
+      rows.forEach((c, i) => {
+        if (!c[0]) return;
+        allActions.push({ row: i + 2, ref: c[0], action: c[2], owner: c[3], due: c[4],
+                          status: c[6] || "Open", notes: c[7] || "", outcome: c[10] || "" });
+      });
+      renderMyActions();
+    })
+    .catch(() => {});
+}
+function pillClass(s) { return s === "Done" ? "pill-done" : s === "In Progress" ? "pill-inprogress" : s === "Deferred" ? "pill-deferred" : "pill-open"; }
+function isOverdue(due, status) { if (!due || status === "Done" || status === "Deferred") return false; const d = new Date(due); return !isNaN(d) && d < new Date(); }
+function renderMyActions() {
+  const mine = allActions.filter(a => a.owner === viewName && a.status !== "Done" && a.status !== "Deferred");
+  document.getElementById("my-actions-section").style.display = "block";
+  const body = document.getElementById("my-actions-body");
+  document.getElementById("my-actions-empty").style.display = mine.length ? "none" : "block";
+  const edit = canEditActions();
+  body.innerHTML = mine.map(a => '<tr data-row="' + a.row + '">' +
+    '<td style="font-weight:700;color:#1F4E79">' + esc(a.ref) + '</td><td>' + esc(a.action) + '</td>' +
+    '<td>' + (isOverdue(a.due, a.status) ? '<span class="overdue">' + esc(a.due) + ' ⚠</span>' : esc(a.due)) + '</td>' +
+    '<td><span class="pill ' + pillClass(a.status) + '">' + esc(a.status) + '</span></td>' +
+    '<td style="color:#555;font-style:italic;font-size:0.88em">' + esc(a.notes) + '</td>' +
+    '<td>' + (edit ? '<button class="icon-btn" title="Update this action" onclick="startEdit(' + a.row + ')">✏️</button>' : '') + '</td></tr>').join("");
+}
+function startEdit(rowNum) {
+  if (editingRow) renderMyActions();
+  editingRow = rowNum;
+  const a = allActions.find(x => x.row === rowNum); if (!a) return;
+  const tr = document.querySelector('#my-actions-body tr[data-row="' + rowNum + '"]');
+  tr.classList.add("edit-inline-row");
+  tr.innerHTML = '<td style="font-weight:700;color:#1F4E79">' + esc(a.ref) + '</td><td style="color:#555;font-size:0.88em">' + esc(a.action) + '</td>' +
+    '<td>' + esc(a.due) + '</td><td><select id="ei-status">' + ["Open","In Progress","Done","Deferred"].map(s =>
+      '<option' + (s === a.status ? ' selected' : '') + '>' + s + '</option>').join("") + '</select></td>' +
+    '<td><textarea id="ei-notes" placeholder="Add a progress note…">' + esc(a.notes) + '</textarea></td>' +
+    '<td><button class="save-btn" onclick="saveEdit(' + rowNum + ')">Save</button><button class="cancel-btn" onclick="cancelEdit()">✕</button></td>';
+}
+function cancelEdit() { editingRow = null; renderMyActions(); }
+function actionsMsg(text, ok) {
+  const el = document.getElementById("actions-msg");
+  el.textContent = text; el.style.display = "block";
+  el.style.background = ok ? "#dcfce7" : "#fee2e2"; el.style.color = ok ? "#166534" : "#991b1b";
+  setTimeout(() => { el.style.display = "none"; }, 5000);
+}
+function saveEdit(rowNum) {
+  const status = document.getElementById("ei-status").value;
+  const notes  = document.getElementById("ei-notes").value.trim();
+  const a = allActions.find(x => x.row === rowNum);
+  if (a) { a.status = status; a.notes = notes; }
+  editingRow = null; renderMyActions();
+  const params = { action: "updateAction", row: rowNum, status: status, notes: notes, token: HubPin.token() };
+  if (a && a.outcome) params.outcome = a.outcome;
+  const body = Object.entries(params).map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v)).join("&");
+  fetch(ACTIONS_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body })
+    .then(r => r.json())
+    .then(d => {
+      if (d.signIn) { HubPin.expired(); return; }
+      if (d.success === false) actionsMsg("⚠ That change did not save: " + (d.error || d.message || "please try again."), false);
+      else actionsMsg("✓ Saved — the Action Register can take a few minutes to show it.", true);
+    })
+    .catch(() => actionsMsg("⚠ Could not reach the Action Register. Please try again.", false));
+}
+
+// ── Sign in with a personal PIN (hub-pin.js), then build the workbench ──
+// The old shared PIN still works until legacyUntil — they're asked to choose their role.
+HubPin.require({
+  area: ALL_ROLES,
+  title: "🔒 My Workbench",
+  subtitle: "For committee members and office holders.",
+  legacyPin: "5304",
+  legacyUntil: "2026-11-30"
+}, function () {
+  me = HubPin.current() || { legacy: true };
+  const now = new Date();
+  document.getElementById("today-day").textContent  = now.toLocaleDateString("en-AU", { weekday: "long" });
+  document.getElementById("today-date").textContent = now.toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+  setUpViewAs();
+  document.getElementById("back-bar").style.display = "";
+  document.getElementById("main-content").style.display = "";
+  render();
+});
+</script>
+</body>
+</html>

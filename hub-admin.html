@@ -331,15 +331,6 @@
 </head>
 <body>
 
-<!-- ── PIN OVERLAY ── -->
-<div id="pin-overlay">
-  <h2>🔒 Hub Admin Dashboard</h2>
-  <p>Enter the committee PIN to continue.</p>
-  <input type="password" id="pin-input" maxlength="6" placeholder="••••"
-         inputmode="numeric" autocomplete="off">
-  <div id="pin-error"></div>
-</div>
-
 <div class="back-bar" id="back-bar" style="display:none;">
   <a href="index.html">🏠 Home</a>
 </div>
@@ -599,6 +590,20 @@
       </div>
     </div>
 
+    <div class="admin-card cat-issues">
+      <div class="card-top">
+        <div class="card-icon">📨</div>
+        <div>
+          <div class="card-title">Resident Concerns (Chair Submissions)</div>
+          <div class="card-desc">Read concerns sent in by residents through Raise a Concern, set their status and add notes. An email alert arrives when a new one comes in.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="chair-submissions.html" class="btn-action btn-red">📨 Open Concerns</a>
+        <a href="raise-a-concern.html" class="btn-action btn-secondary">👁 View Residents' Form</a>
+      </div>
+    </div>
+
   </div>
 
   <!-- ════════════════════════════════════════
@@ -737,13 +742,12 @@
       <div class="card-top">
         <div class="card-icon">🗂️</div>
         <div>
-          <div class="card-title">Members Area</div>
-          <div class="card-desc">View and access all Committee Member Roles.</div>
+          <div class="card-title">My Workbench</div>
+          <div class="card-desc">Each committee member's tools, built from their roles in the PIN Manager. Use "Show the workbench as seen by" to check any role.</div>
         </div>
       </div>
       <div class="card-actions">
-        <a href="https://bdrv.au/members-area.html"
-           target="_blank" class="btn-action btn-teal">📘 Committee Member Area</a>
+        <a href="my-workbench.html" class="btn-action btn-teal">🧰 Open My Workbench</a>
       </div>
     </div>
 
@@ -805,7 +809,7 @@
         </div>
       </div>
       <div class="card-actions">
-        <a href="https://docs.google.com/spreadsheets/d/1npGgVH6QhJwFXN96RpG3byEmxea5r5HhKPsfNABTH7M/edit?gid=1397639661#gid=1397639661" class="btn-action btn-primary">⚙️ Manage List</a>
+        <a href="https://docs.google.com/spreadsheets/d/1n0sUVNT7tAp6QDAiZDIddsdQf-5cLtgEXZnDzKYGb58/edit?gid=405969186#gid=405969186" target="_blank" class="btn-action btn-primary">⚙️ Manage List</a>
         <a href="residents-contact-list.html" class="btn-action btn-secondary">👁 View Live Page</a>
       </div>
     </div>
@@ -916,6 +920,20 @@
 
     <div class="admin-card cat-system">
       <div class="card-top">
+        <div class="card-icon">🔑</div>
+        <div>
+          <div class="card-title">PIN Manager</div>
+          <div class="card-desc">Choose who can enter each PIN-protected area, issue welcome codes and reset forgotten PINs.</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="pin-admin.html" class="btn-action btn-purple">🔑 Manage Access</a>
+        <a href="my-pin.html" class="btn-action btn-secondary">👁 My PIN Page</a>
+      </div>
+    </div>
+
+    <div class="admin-card cat-system">
+      <div class="card-top">
         <div class="card-icon">🐙</div>
         <div>
           <div class="card-title">GitHub Repository</div>
@@ -933,7 +951,7 @@
         <div class="card-icon">📧</div>
         <div>
           <div class="card-title">Committee Email</div>
-          <div class="card-desc">Check rabd.ctee@gmail.com for new submissions and notifications.</div>
+          <div class="card-desc">Check hubadmin@bdrv.au (the BDRV Hub Administrator mailbox) for new submissions and notifications.</div>
         </div>
       </div>
       <div class="card-actions">
@@ -1004,6 +1022,7 @@
 
 </div><!-- /page-wrap -->
 
+<script src="hub-pin.js"></script>
 <script>
 // ── ADD NEW ISSUE ────────────────────────────────────────────────────────────
 const ISSUES_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJBsVGUur5l7ixOFKqkDHGVsThkoRBINZr7YRc4fxy4Bb0K0ifT8cpoEtoO8uMD_dN7Q/exec";
@@ -1043,10 +1062,11 @@ async function submitNewIssue() {
   const tag   = `[Added by RC - ${stamp}]` + (addedBy ? ` (${addedBy})` : "");
   const notes = rawNotes ? `${tag} ${rawNotes}` : `${tag} New issue added.`;
 
-  const payload = JSON.stringify({ action: "add", category, topic, notes, status, source });
+  const payload = JSON.stringify({ action: "add", category, topic, notes, status, source, token: HubPin.token() });
 
   try {
-    await fetch(ISSUES_SCRIPT_URL, { method: "POST", body: payload, mode: "no-cors" });
+    const reply = await (await fetch(ISSUES_SCRIPT_URL, { method: "POST", body: payload })).json();
+    if (reply.signIn) { HubPin.expired(); return; }   // sign-in has run out
     // Clear fields
     document.getElementById("ai-category").value = "";
     document.getElementById("ai-category-new").value = "";
@@ -1075,41 +1095,11 @@ function showAiMsg(text, color) {
   el.style.display = "block";
 }
 
-// ── PIN ──────────────────────────────────────────────────────────────────────
-const CORRECT_PIN = '1957';   // ← change this to your actual PIN
-
-const pinInput  = document.getElementById('pin-input');
-const pinError  = document.getElementById('pin-error');
-const pinOverlay = document.getElementById('pin-overlay');
-const mainContent = document.getElementById('main-content');
-
-// Check if already authenticated this session
-if (sessionStorage.getItem('hub_admin_auth') === 'yes') {
-  pinOverlay.classList.add('hidden');
+// ── Sign in with a personal PIN (hub-pin.js) — set up at the end of this script ──
+function showDashboard() {
   document.getElementById('back-bar').style.display = '';
-  mainContent.style.display = '';
-  setTimeout(init, 0);
-}
-
-pinInput.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') checkPin();
-});
-pinInput.addEventListener('input', function() {
-  if (this.value.length >= 4) checkPin();
-});
-
-function checkPin() {
-  if (pinInput.value === CORRECT_PIN) {
-    sessionStorage.setItem('hub_admin_auth', 'yes');
-    pinOverlay.classList.add('hidden');
-    document.getElementById('back-bar').style.display = '';
-    mainContent.style.display = '';
-    init();
-  } else if (pinInput.value.length >= CORRECT_PIN.length) {
-    pinError.textContent = '⚠️ Incorrect PIN — please try again.';
-    pinInput.value = '';
-    setTimeout(() => { pinError.textContent = ''; }, 2500);
-  }
+  document.getElementById('main-content').style.display = '';
+  init();
 }
 
 // ── DATE ─────────────────────────────────────────────────────────────────────
@@ -1125,12 +1115,13 @@ function init() {
 // ── CHECKLIST ────────────────────────────────────────────────────────────────
 const CHECKS = [
   'Classifieds — any pending listings?',
-  'Committee email (rabd.ctee) checked',
+  'Hub Admin email (hubadmin@bdrv.au) checked',
   'What\'s On widget — events still current?',
   'RC Notices — anything new to publish?',
   'Latest Announcements — any updates needed?',
   'Surveys — any active surveys to check?',
   'Progress Tracker & CM Update — any updates needed?',
+  'Resident Concerns — any new or unanswered?',
   'Search — working correctly?',
   'Help & How-To — content still accurate?',
   'Down Memory Lane — new submissions?',
@@ -1203,6 +1194,15 @@ function resetChecks() {
   localStorage.removeItem(STORAGE_KEY);
   buildChecklist();
 }
+
+// The old Hub Admin PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+HubPin.require({
+  area: ["admin"],
+  title: "🔒 Hub Admin Dashboard",
+  subtitle: "For the Hub administrator.",
+  legacyPin: "1957",
+  legacyUntil: "2026-11-30"
+}, showDashboard);
 </script>
 </body>
 </html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIN Manager — BDRV</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #263746; color: #F6F2E7; font-size: 16px; line-height: 1.55; min-height: 100vh;
+  }
+  .page-wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 60px; }
+  .back { display: inline-block; margin-bottom: 16px; color: #D4B860; font-weight: 700; text-decoration: none; }
+  h1 { color: #D4B860; font-size: 1.5em; }
+  .sub { color: rgba(246,242,231,0.8); margin: 4px 0 20px; }
+
+  .panel {
+    background: rgba(246,242,231,0.06); border: 1px solid #3F4143; border-radius: 12px;
+    padding: 18px 20px; margin-bottom: 20px;
+  }
+  .panel h2 { color: #D4B860; font-size: 1.1em; margin-bottom: 10px; }
+  label.fl { display: block; font-weight: 700; font-size: 0.9em; margin: 10px 0 4px; }
+  input[type=text], input[type=password], input[type=email] {
+    width: 100%; font-size: 1em; padding: 9px 12px; border-radius: 7px;
+    border: 2px solid #3F4143; outline: none; color: #222; background: #fff; font-family: inherit;
+  }
+  input:focus { border-color: #D4B860; }
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .areas { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 6px; }
+  .areas label { display: inline-flex; align-items: center; gap: 6px; font-size: 0.92em; cursor: pointer; }
+
+  .btn {
+    display: inline-block; padding: 9px 16px; border-radius: 7px; font-size: 0.92em; font-weight: 700;
+    border: none; cursor: pointer; font-family: inherit;
+  }
+  .btn:disabled { opacity: 0.6; cursor: default; }
+  .btn-gold  { background: #D4B860; color: #263746; }
+  .btn-cream { background: #F6F2E7; color: #263746; }
+  .btn-red   { background: #a12b2b; color: #fff; }
+  .btn-small { padding: 5px 10px; font-size: 0.82em; }
+
+  .status { display: none; border-radius: 8px; padding: 12px 18px; font-weight: 600;
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 9999;
+    width: calc(100% - 32px); max-width: 560px; text-align: center; font-size: 1.05em;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.45); }
+  .status.ok   { display: block; background: #e6f4ea; color: #1e7a34; }
+  .status.err  { display: block; background: #fdeaea; color: #a12b2b; }
+  .status.busy { display: block; background: #fff6e0; color: #8a6d16; }
+
+  .code-box {
+    display: none; background: #F6F2E7; color: #263746; border: 3px solid #D4B860; border-radius: 12px;
+    padding: 16px 20px; margin-bottom: 20px;
+  }
+  .code-box .code { font-size: 2.2em; font-weight: 800; letter-spacing: 0.25em; font-family: Consolas, monospace; }
+  .code-box p { margin-top: 6px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+  th { background: #3F4143; color: #D4B860; text-align: left; padding: 8px 10px; }
+  td { padding: 9px 10px; border-bottom: 1px solid #3F4143; vertical-align: top; }
+  td .areas label { font-size: 0.88em; }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 0.82em; font-weight: 700; }
+  .pill-ok   { background: #dcfce7; color: #166534; }
+  .pill-wait { background: #fef3c7; color: #92400e; }
+  .pill-none { background: #e5e7eb; color: #374151; }
+  .pill-exp  { background: #fee2e2; color: #991b1b; }
+  .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+  .small { font-size: 0.82em; color: rgba(246,242,231,0.7); }
+  #main { display: none; }
+  textarea.bulk { width: 100%; min-height: 160px; font-size: 1em; padding: 10px 12px; border-radius: 7px;
+    border: 2px solid #3F4143; color: #222; background: #fff; font-family: inherit; }
+  .list-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+  .list-tools select, .list-tools input { padding: 7px 10px; border-radius: 7px; border: 2px solid #3F4143;
+    font-family: inherit; font-size: 0.95em; }
+  .list-tools input { width: auto; flex: 1; min-width: 180px; }
+
+  /* ── Welcome slips (printed, 3 to an A4 page) ── */
+  #slips { display: none; }
+  .slip { background: #fff; color: #111; border: 2px dashed #888; padding: 7mm 9mm; height: 92mm;
+    page-break-inside: avoid; break-inside: avoid; font-family: 'Segoe UI', Arial, sans-serif;
+    margin-bottom: 3mm; display: flex; flex-direction: column; }
+  .slip h3 { font-size: 15pt; margin-bottom: 1mm; color: #1F4E79; }
+  .slip .who { font-size: 12pt; margin: 2mm 0; }
+  .slip .who b { font-size: 16pt; }
+  .slip .code { font-family: Consolas, 'Courier New', monospace; font-size: 22pt; font-weight: 800;
+    letter-spacing: 0.3em; border: 2px solid #111; display: inline-block; padding: 1mm 4mm; margin: 1mm 0 2mm; }
+  .slip ol { font-size: 11pt; padding-left: 6mm; line-height: 1.45; }
+  .slip .foot { font-size: 9.5pt; color: #444; margin-top: auto; }
+  @media print {
+    @page { size: A4; margin: 10mm; }
+    body { background: #fff !important; }
+    body > *:not(#slips) { display: none !important; }
+    #slips { display: block !important; }
+  }
+</style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="page-wrap">
+  <a class="back" href="hub-admin.html">← Back to Hub Admin</a>
+  <h1>🔑 PIN Manager</h1>
+  <p class="sub">Decide who can enter each area of the Hub. People choose their own PINs — you never see them.</p>
+
+  <div id="status" class="status"></div>
+
+  <!-- Sign in -->
+  <div class="panel" id="signin">
+    <h2>Administrator sign in</h2>
+    <div class="row">
+      <div><label class="fl" for="a-name">Your name</label><input type="text" id="a-name" autocomplete="username"></div>
+      <div><label class="fl" for="a-pin">Your PIN</label><input type="password" id="a-pin" inputmode="numeric" maxlength="6" autocomplete="current-password"></div>
+    </div>
+    <div style="margin-top:14px;"><button class="btn btn-gold" id="a-go" onclick="signIn()">Sign in</button></div>
+  </div>
+
+  <div id="main">
+    <!-- A freshly issued welcome code -->
+    <div class="code-box" id="code-box">
+      <div>Welcome code for <b id="code-name"></b>:</div>
+      <div class="code" id="code-value"></div>
+      <p id="code-emailed" style="display:none;font-weight:bold;"></p>
+      <p>Please write this down and give it to them. It works <b>once</b>, and expires on <b id="code-expires"></b>.
+        They use it on the <b>My PIN</b> page (bdrv.au/my-pin.html) to choose their own PIN.
+        This code won't be shown again.</p>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-gold btn-small" onclick="document.getElementById('code-box').style.display='none'">Done — I've written it down</button>
+        <button class="btn btn-cream btn-small" onclick="printOneSlip()">🖨️ Print a welcome slip for them</button>
+      </div>
+    </div>
+
+    <!-- Add a person -->
+    <div class="panel">
+      <h2>➕ Add a person</h2>
+      <div class="row">
+        <div><label class="fl" for="n-name">Name <span class="small">(what they'll type to sign in, e.g. "Kathy")</span></label><input type="text" id="n-name"></div>
+        <div><label class="fl" for="n-notes">Notes <span class="small">(optional, e.g. "SC Convenor")</span></label><input type="text" id="n-notes"></div>
+      </div>
+      <div class="row" style="margin-top:10px;">
+        <div><label class="fl" for="n-email">Email <span class="small">(optional — if filled in, their welcome code is emailed to them)</span></label><input type="email" id="n-email" placeholder="e.g. jocelyn@example.com"></div>
+      </div>
+      <label class="fl">Areas they can enter</label>
+      <div class="areas" id="n-areas"></div>
+      <div style="margin-top:14px;"><button class="btn btn-gold" id="add-go" onclick="addPerson()">➕ Add and issue a welcome code</button></div>
+    </div>
+
+    <!-- Residents in bulk -->
+    <div class="panel">
+      <h2>🏘️ Add residents and print welcome slips</h2>
+      <p class="small" style="margin-bottom:8px;">One resident per line: <b>first name and unit number</b>, e.g. <b>Joan 20</b>.
+        For couples, put each person on their own line. Each person gets the <b>Resident</b> area and a
+        welcome code that lasts 60 days. Anyone already on the list is left alone.</p>
+      <p class="small" style="margin-bottom:8px;">✉️ <b>To email someone their code instead of printing a slip</b>, add their email
+        address after a comma, e.g. <b>Joan 20, joan@example.com</b>. Anyone without an email address gets a printed slip.</p>
+      <textarea class="bulk" id="bulk-names" placeholder="Joan 20, joan@example.com&#10;Bill 20&#10;Mary 21, mary@example.com"></textarea>
+      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-gold" id="bulk-go" onclick="bulkAdd()">➕ Add residents and create slips</button>
+        <button class="btn btn-cream" id="print-btn" style="display:none;" onclick="printSlips()">🖨️ Print welcome slips</button>
+      </div>
+      <div id="bulk-result" class="small" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- The list -->
+    <div class="panel">
+      <h2>👥 People with access</h2>
+      <div class="list-tools">
+        <select id="list-show" onchange="render()">
+          <option value="committee">Committee, staff &amp; office holders</option>
+          <option value="residents">Residents only</option>
+          <option value="all">Everyone</option>
+        </select>
+        <input type="text" id="list-search" placeholder="Find a name…" oninput="render()">
+        <span class="small" id="list-count"></span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>Name</th><th>Areas</th><th>PIN</th><th></th></tr></thead>
+          <tbody id="people-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Welcome slips go here when printing -->
+<div id="slips"></div>
+
+<script src="hub-pin.js"></script>
+<script>
+// The areas of the Hub that use personal PINs.
+// To bring another area across later, add a line here, and use the same "id"
+// in that page's HubPin.require({ area: "..." }) call.
+const AREAS = [
+  { id: "resident",      label: "Resident (Residents Only pages)" },
+  { id: "rc-chair",      label: "RC Chair" },
+  { id: "rc-secretary",  label: "RC Secretary" },
+  { id: "rc-treasurer",  label: "RC Treasurer" },
+  { id: "rc-member",     label: "RC Member" },
+  { id: "manor-advisor", label: "Manor Advisor" },
+  { id: "sc-convenor",   label: "SC Convenor" },
+  { id: "sc-secretary",  label: "SC Secretary" },
+  { id: "sc-treasurer",  label: "SC Treasurer" },
+  { id: "sc-events",     label: "SC Events Coordinator" },
+  { id: "sc-member",     label: "SC Member" },
+  { id: "calendar",      label: "Village Calendar (manage)" },
+  { id: "community-manager", label: "Community Manager (CM Update)" },
+  { id: "text-updates",  label: "Text Updates (send texts)" },
+  { id: "contacts-editor", label: "Manage External Contacts (add & edit)" },
+  { id: "bc-chair",      label: "Body Corporate Chair" },
+  { id: "bc-manager",    label: "Body Corporate Manager" },
+  { id: "bc-secretary",  label: "Body Corporate Secretary" },
+  { id: "admin",         label: "Administrator (all roles + PIN Manager)" }
+];
+
+let adminName = "", adminPin = "";   // kept only while this page is open
+let peopleList = [];
+
+function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function niceDate(iso) { return iso ? new Date(iso).toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" }) : ""; }
+
+let statusTimer = null;
+function status(msg, kind) {
+  const el = document.getElementById("status");
+  clearTimeout(statusTimer);
+  el.textContent = msg;
+  el.className = "status " + kind;
+  if (kind !== "busy") statusTimer = setTimeout(() => { el.className = "status"; }, 8000);
+}
+
+function areaBoxes(prefix, chosen) {
+  return AREAS.map(a =>
+    `<label><input type="checkbox" class="${prefix}-area" value="${a.id}"${chosen.indexOf(a.id) !== -1 ? " checked" : ""}> ${esc(a.label)}</label>`
+  ).join("");
+}
+function tickedAreas(container, prefix) {
+  return Array.from(container.querySelectorAll("input." + prefix + "-area:checked")).map(b => b.value);
+}
+
+function call(params) {
+  return HubPin.post(Object.assign({ adminName: adminName, adminPin: adminPin }, params));
+}
+
+// ── Sign in ──
+function signIn() {
+  adminName = document.getElementById("a-name").value.trim();
+  adminPin  = document.getElementById("a-pin").value.trim();
+  if (!adminName || !adminPin) { status("Please enter your name and PIN.", "err"); return; }
+  const btn = document.getElementById("a-go");
+  btn.disabled = true; btn.textContent = "Checking…";
+  call({ action: "adminList" }).then(res => {
+    btn.disabled = false; btn.textContent = "Sign in";
+    if (!res.success) { status(res.error, "err"); document.getElementById("a-pin").value = ""; return; }
+    document.getElementById("signin").style.display = "none";
+    document.getElementById("main").style.display = "block";
+    document.getElementById("n-areas").innerHTML = areaBoxes("n", []);
+    peopleList = res.people;
+    render();
+  }).catch(() => {
+    btn.disabled = false; btn.textContent = "Sign in";
+    status("Couldn't reach the PIN service. Please check your internet connection.", "err");
+  });
+}
+document.getElementById("a-pin").addEventListener("keydown", e => { if (e.key === "Enter") signIn(); });
+
+// ── The list ──
+function pinPill(p) {
+  if (p.hasPin)      return '<span class="pill pill-ok">✓ PIN set</span>';
+  if (p.codeWaiting) return '<span class="pill pill-wait">Waiting — code expires ' + esc(niceDate(p.codeExpires)) + '</span>';
+  if (p.codeExpired) return '<span class="pill pill-exp">Code expired</span>';
+  return '<span class="pill pill-none">Not set up</span>';
+}
+
+function render() {
+  const body = document.getElementById("people-body");
+  const show = document.getElementById("list-show").value;
+  const find = document.getElementById("list-search").value.trim().toLowerCase();
+  const isResidentOnly = p => p.areas.length === 1 && p.areas[0] === "resident";
+  const shown = peopleList.map((p, i) => ({ p, i })).filter(({ p }) =>
+    (show === "all" || (show === "residents") === isResidentOnly(p)) &&
+    (!find || p.name.toLowerCase().indexOf(find) !== -1));
+  document.getElementById("list-count").textContent = shown.length + " of " + peopleList.length + " people";
+  if (!shown.length) { body.innerHTML = '<tr><td colspan="4">No one to show.</td></tr>'; return; }
+  body.innerHTML = shown.map(({ p, i }) => `
+    <tr data-i="${i}">
+      <td><b>${esc(p.name)}</b>${p.notes ? '<div class="small">' + esc(p.notes) + '</div>' : ""}</td>
+      <td><div class="areas">${areaBoxes("r" + i, p.areas)}</div>
+          ${p.areas.filter(a => !AREAS.some(x => x.id === a)).map(a => '<div class="small">also: ' + esc(a) + '</div>').join("")}</td>
+      <td>${pinPill(p)}</td>
+      <td><div class="actions">
+        <button class="btn btn-cream btn-small" onclick="saveAreas(${i})">💾 Save areas</button>
+        <button class="btn btn-gold btn-small" onclick="issueCode(${i})">🔑 ${p.hasPin ? "Reset PIN" : "New welcome code"}</button>
+        <button class="btn btn-red btn-small" onclick="removePerson(${i})">🗑️</button>
+      </div></td>
+    </tr>`).join("");
+}
+
+// ── Actions ──
+let lastCode = null;
+function showCode(res) {
+  lastCode = { name: res.name, code: res.code, expires: res.expires };
+  document.getElementById("code-name").textContent = res.name;
+  document.getElementById("code-value").textContent = res.code;
+  document.getElementById("code-expires").textContent = niceDate(res.expires);
+  // Was it emailed to them?
+  const em = document.getElementById("code-emailed");
+  if (res.email) {
+    em.style.display = "block";
+    em.style.color = res.emailed ? "#2e7d32" : "#c9010b";
+    em.textContent = res.emailed
+      ? "✉️ Emailed to " + res.email + " — you don't need to pass it on yourself."
+      : "⚠️ The email to " + res.email + " couldn't be sent (" + (res.emailError || "unknown problem") + "). Please give them the code yourself.";
+  } else {
+    em.style.display = "none";
+  }
+  const box = document.getElementById("code-box");
+  box.style.display = "block";
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function refresh() {
+  return call({ action: "adminList" }).then(res => { if (res.success) { peopleList = res.people; render(); } });
+}
+
+function addPerson() {
+  const name = document.getElementById("n-name").value.trim();
+  const areas = tickedAreas(document.getElementById("n-areas"), "n");
+  const email = document.getElementById("n-email").value.trim();
+  if (!name) { status("Please enter a name.", "err"); return; }
+  if (!areas.length) { status("Please tick at least one area.", "err"); return; }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { status("That email address doesn't look right — please check it.", "err"); return; }
+  status("Adding " + name + "…", "busy");
+  call({ action: "adminSave", name: name, areas: areas.join(","), notes: document.getElementById("n-notes").value.trim() })
+    .then(res => {
+      if (!res.success) { status(res.error, "err"); return; }
+      peopleList = res.people; render();
+      document.getElementById("n-name").value = "";
+      document.getElementById("n-notes").value = "";
+      document.getElementById("n-email").value = "";
+      document.getElementById("n-areas").innerHTML = areaBoxes("n", []);
+      const residentOnly = areas.length === 1 && areas[0] === "resident";
+      const issue = email
+        ? { action: "adminEmailCode", name: name, email: email, days: residentOnly ? 60 : "" }
+        : { action: "adminIssueCode", name: name, days: residentOnly ? 60 : "" };
+      if (email) status("Adding " + name + " and emailing their code…", "busy");
+      return call(issue).then(r2 => {
+        if (!r2.success) {
+          status(r2.error === "Unknown action"
+            ? name + " was added, but the PIN Manager script hasn't been updated for emailing yet. Use \u201cNew welcome code\u201d in the list for now."
+            : "Added, but couldn't issue a code: " + r2.error, "err");
+          return;
+        }
+        status(name + " added" + (r2.emailed ? " and emailed." : "."), r2.email && !r2.emailed ? "err" : "ok");
+        showCode(r2);
+        refresh();
+      });
+    }).catch(() => status("Couldn't reach the PIN service.", "err"));
+}
+
+function saveAreas(i) {
+  const p = peopleList[i];
+  const row = document.querySelector('tr[data-i="' + i + '"]');
+  const btn = row.querySelector(".btn-cream");
+  if (btn) { btn.disabled = true; btn.textContent = "Saving…"; }
+  // keep any areas not shown as tick-boxes on this page
+  const extra = p.areas.filter(a => !AREAS.some(x => x.id === a));
+  const areas = tickedAreas(row, "r" + i).concat(extra);
+  status("Saving…", "busy");
+  call({ action: "adminSave", originalName: p.name, name: p.name, areas: areas.join(","), notes: p.notes })
+    .then(res => {
+      if (!res.success) { status(res.error, "err"); render(); return; }
+      peopleList = res.people; render();
+      status("✓ Areas saved for " + p.name + ".", "ok");
+      // Show "Saved" on that person's own button too, for a few seconds
+      const idx = peopleList.findIndex(x => x.name === p.name);
+      const b = document.querySelector('tr[data-i="' + idx + '"] .btn-cream');
+      if (b) { b.textContent = "✓ Saved"; setTimeout(() => { b.textContent = "💾 Save areas"; }, 4000); }
+    }).catch(() => { status("Couldn't reach the PIN service.", "err"); if (btn) { btn.disabled = false; btn.textContent = "💾 Save areas"; } });
+}
+
+function issueCode(i) {
+  const p = peopleList[i];
+  const warn = p.hasPin
+    ? "Issue a new welcome code for " + p.name + "?\n\nTheir current PIN will stop working straight away, and they'll use the new code to choose a fresh PIN."
+    : "Issue a new welcome code for " + p.name + "?";
+  if (!confirm(warn)) return;
+  status("Issuing a code…", "busy");
+  const residentOnly = p.areas.length === 1 && p.areas[0] === "resident";
+  call({ action: "adminIssueCode", name: p.name, days: residentOnly ? 60 : "" }).then(res => {
+    if (!res.success) { status(res.error, "err"); return; }
+    status("New welcome code issued for " + res.name + ".", "ok");
+    showCode(res);
+    refresh();
+  }).catch(() => status("Couldn't reach the PIN service.", "err"));
+}
+
+// ── Residents in bulk ──
+let slipQueue = [], slipExpires = "";
+function bulkAdd() {
+  const names = document.getElementById("bulk-names").value.trim();
+  if (!names) { status("Please type at least one name.", "err"); return; }
+  const count = names.split(/\n/).filter(n => n.trim()).length;
+  if (!confirm("Add " + count + " resident" + (count === 1 ? "" : "s") + " and create their welcome codes?")) return;
+  const btn = document.getElementById("bulk-go");
+  btn.disabled = true;
+  status("Adding residents — this can take a little while for a long list…", "busy");
+  const withEmail = /[^\s@,]+@[^\s@,]+\.[^\s@,]+/.test(names);
+  if (withEmail) status("Adding residents and emailing their codes — this can take a little while…", "busy");
+  call({ action: withEmail ? "adminBulkAddEmail" : "adminBulkAdd", names: names, areas: "resident" }).then(res => {
+    btn.disabled = false;
+    if (!res.success) {
+      status(res.error === "Unknown action"
+        ? "Nothing was added: the PIN Manager script hasn't been updated for emailing residents yet. Remove the email addresses to add them with slips, or update the script first."
+        : res.error, "err");
+      return;
+    }
+    const emailed = res.added.filter(x => x.emailed);
+    const failed  = res.added.filter(x => x.email && !x.emailed);
+    slipQueue = res.added.filter(x => !x.emailed); slipExpires = res.expires;
+    let html = "✅ " + res.added.length + " added. ";
+    if (emailed.length) html += "✉️ " + emailed.length + " emailed their code. ";
+    if (failed.length) html += "⚠️ Couldn't email " + failed.map(x => esc(x.name)).join(", ") +
+      " (" + esc(failed[0].emailError || "unknown problem") + ") — their slips are ready to print instead. ";
+    if (res.skipped.length) {
+      html += res.skipped.length + " already on the list, so left alone: " +
+        res.skipped.map(x => esc(x.name) + (x.existingName !== x.name ? " (as " + esc(x.existingName) + ")" : "")).join(", ") + ".";
+    }
+    document.getElementById("bulk-result").innerHTML = html;
+    document.getElementById("print-btn").style.display = slipQueue.length ? "" : "none";
+    document.getElementById("print-btn").textContent = "🖨️ Print " + slipQueue.length + " welcome slip" + (slipQueue.length === 1 ? "" : "s");
+    document.getElementById("bulk-names").value = "";
+    status(slipQueue.length ? "Residents added. Print the slips now — the codes can't be shown again."
+                            : "Residents added, and everyone was emailed their code.", "ok");
+    refresh();
+  }).catch(() => { btn.disabled = false; status("Couldn't reach the PIN service.", "err"); });
+}
+
+function slipHTML(x, expires) {
+  return '<div class="slip">' +
+    '<h3>🔑 Your personal PIN for the Residents\' Hub</h3>' +
+    '<div>Bridgeman Downs Retirement Village · bdrv.au</div>' +
+    '<div class="who">Your sign-in name: <b>' + esc(x.name) + '</b></div>' +
+    '<div>Your one-off welcome code:</div><div><span class="code">' + esc(x.code) + '</span></div>' +
+    '<ol>' +
+      '<li>Go to <b>bdrv.au</b> and open <b>Residents Only</b> (or go straight to <b>bdrv.au/my-pin.html</b>).</li>' +
+      '<li>Press <b>"First time? Set up my PIN"</b>. Type your sign-in name and the code above.</li>' +
+      '<li>Choose your own PIN of 4 to 6 numbers. Use your name and PIN from then on.</li>' +
+    '</ol>' +
+    '<div class="foot">Please use this code by <b>' + esc(niceDate(expires)) + '</b>. It works once only. ' +
+      'Keep this slip private. Need help, or lost your PIN? Contact the Residents Committee.</div>' +
+  '</div>';
+}
+// Slips are printed from their own small hidden page, so the Hub's sidebar and
+// page layout can't hide them (that's what made the print preview blank).
+const SLIP_CSS = `
+  @page { size: A4; margin: 10mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; }
+  .slip { background: #fff; color: #111; border: 2px dashed #888; padding: 7mm 9mm; height: 92mm;
+    page-break-inside: avoid; break-inside: avoid; font-family: 'Segoe UI', Arial, sans-serif;
+    margin-bottom: 3mm; display: flex; flex-direction: column; }
+  .slip h3 { font-size: 15pt; margin-bottom: 1mm; color: #1F4E79; }
+  .slip .who { font-size: 12pt; margin: 2mm 0; }
+  .slip .who b { font-size: 16pt; }
+  .slip .code { font-family: Consolas, 'Courier New', monospace; font-size: 22pt; font-weight: 800;
+    letter-spacing: 0.3em; border: 2px solid #111; display: inline-block; padding: 1mm 4mm; margin: 1mm 0 2mm; }
+  .slip ol { font-size: 11pt; padding-left: 6mm; line-height: 1.45; }
+  .slip .foot { font-size: 9.5pt; color: #444; margin-top: auto; }`;
+
+function printHTML(inner) {
+  const old = document.getElementById("slip-frame");
+  if (old) old.remove();
+  const f = document.createElement("iframe");
+  f.id = "slip-frame";
+  f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0;";
+  document.body.appendChild(f);
+  const d = f.contentDocument;
+  d.open();
+  d.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Welcome slips</title><style>' +
+          SLIP_CSS + '</style></head><body>' + inner + '</body></html>');
+  d.close();
+  setTimeout(() => { f.contentWindow.focus(); f.contentWindow.print(); }, 300);
+}
+function printSlips() {
+  if (!slipQueue.length) return;
+  printHTML(slipQueue.map(x => slipHTML(x, slipExpires)).join(""));
+}
+function printOneSlip() {
+  if (!lastCode) return;
+  printHTML(slipHTML(lastCode, lastCode.expires));
+}
+
+function removePerson(i) {
+  const p = peopleList[i];
+  if (!confirm("Remove " + p.name + " completely? They will no longer be able to sign in anywhere.")) return;
+  status("Removing…", "busy");
+  call({ action: "adminRemove", name: p.name }).then(res => {
+    if (!res.success) { status(res.error, "err"); return; }
+    peopleList = res.people; render();
+    status(p.name + " removed.", "ok");
+  }).catch(() => status("Couldn't reach the PIN service.", "err"));
+}
+</script>
+</body>
+</html>

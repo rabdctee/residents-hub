@@ -1048,8 +1048,9 @@ font-size:0.8em;
 color:#666;
 }
 
-/* Hide link URLs for navigation items */
+/* Hide link URLs for navigation items and phone numbers */
 .nav-item[href]:after, 
+a[href^="tel"]:after,
 button[onclick]:after{
 content:"" !important;
 }
@@ -1234,6 +1235,7 @@ a{ color:#000000 !important; }
       <ul class="sb-links">
         <li><a href="#" onclick="showPage('activity-contacts',this);return false;">🚶 Activities &amp; Contacts</a></li>
         <li><a href="community-life.html">🎨 Artists &amp; Creators</a></li>
+        <li><a href="charities.html">💛 Charities We Support</a></li>
         <li><a href="classifieds.html">📌 Classifieds</a></li>
         <li><a href="savings.html">💲 Price Checker</a></li>
         <li><a href="travel-gallery.html">✈️ Travel Pics</a></li>
@@ -2699,15 +2701,15 @@ If you find a link that no longer works, please let us know using the <strong>Ha
 🚨 Emergency Services
 </h3>
 <div style="background:white;padding:20px;border-radius:6px;font-size:1.1em;line-height:2;color:#222;">
-<p style="margin:0;"><strong style="color:#d32f2f;">Police / Fire / Ambulance:</strong> <strong>000</strong></p>
-<p style="margin:8px 0 0 0;"><strong>Police Non-Emergency (Policelink):</strong> 131 444</p>
-<p style="margin:8px 0 0 0;"><strong>SES:</strong> 132 500</p>
-<p style="margin:8px 0 0 0;"><strong>Energex Emergencies:</strong> 131 962</p>
-<p style="margin-top:8px;"><strong>Urban Utilities (Faults &amp; Emergencies):</strong> 132 364</p>
-<p style="margin:8px 0 0 0;"><strong>After Hours Doctor (13 SICK):</strong> 13 7425</p>
-<p style="margin:8px 0 0 0;"><strong>After Hours Emergency Maintenance:</strong> 1300 528 592</p>
-<p style="margin:8px 0 0 0;"><strong>Brisbane City Council:</strong> 3403 8888</p>
-<p style="margin:8px 0 0 0;"><strong>Village Office:</strong> (07) 3862 9020 &nbsp;<em style="color:#d32f2f;font-size:0.9em;">(Do not call in an emergency — press your emergency alarm)</em></p>
+<p style="margin:0;"><strong style="color:#d32f2f;">Police / Fire / Ambulance:</strong> <strong><a href="tel:000" class="phone-link phone-link-dark">000</a></strong></p>
+<p style="margin:8px 0 0 0;"><strong>Police Non-Emergency (Policelink):</strong> <a href="tel:131444" class="phone-link phone-link-dark">131 444</a></p>
+<p style="margin:8px 0 0 0;"><strong>SES:</strong> <a href="tel:132500" class="phone-link phone-link-dark">132 500</a></p>
+<p style="margin:8px 0 0 0;"><strong>Energex Emergencies:</strong> <a href="tel:131962" class="phone-link phone-link-dark">131 962</a></p>
+<p style="margin-top:8px;"><strong>Urban Utilities (Faults &amp; Emergencies):</strong> <a href="tel:132364" class="phone-link phone-link-dark">132 364</a></p>
+<p style="margin:8px 0 0 0;"><strong>After Hours Doctor (13 SICK):</strong> <a href="tel:137425" class="phone-link phone-link-dark">13 7425</a></p>
+<p style="margin:8px 0 0 0;"><strong>After Hours Emergency Maintenance:</strong> <a href="tel:1300528592" class="phone-link phone-link-dark">1300 528 592</a></p>
+<p style="margin:8px 0 0 0;"><strong>Brisbane City Council:</strong> <a href="tel:+61734038888" class="phone-link phone-link-dark">3403 8888</a></p>
+<p style="margin:8px 0 0 0;"><strong>Village Office:</strong> <a href="tel:+61738629020" class="phone-link phone-link-dark">(07) 3862 9020</a> &nbsp;<em style="color:#d32f2f;font-size:0.9em;">(Do not call in an emergency — press your emergency alarm)</em></p>
 </div>
 </div>
 
@@ -2752,27 +2754,28 @@ Judy Ash<br>
 <!-- Village Services -->
 <div class="contact-card" style="margin-bottom:15px;">
 <h4>🏥 Village Services</h4>
-<p><strong>Northwest Pharmacy:</strong> 3353 3591</p>
-<p style="margin-top:8px;"><strong>Chempro Chemist:</strong> 3263 2033</p>
-<p style="margin-top:8px;"><strong>Hairdresser — Cheryl</strong> (on site Tuesdays): 0409 301 483</p>
+<p><strong>Northwest Pharmacy:</strong> <a href="tel:+61733533591" class="phone-link">3353 3591</a></p>
+<p style="margin-top:8px;"><strong>Chempro Chemist:</strong> <a href="tel:+61732632033" class="phone-link">3263 2033</a></p>
+<p style="margin-top:8px;"><strong>Hairdresser — Cheryl</strong> (on site Tuesdays): <a href="tel:+61409301483" class="phone-link">0409 301 483</a></p>
 </div>
 
 <!-- Suggested Tradesmen -->
 <div class="contact-card" style="margin-bottom:15px;">
 <h4>🔧 Suggested Tradesmen</h4>
-<p><strong>CNG Electrical (Dave):</strong> 0412 634 361</p>
-<p style="margin-top:8px;"><strong>P3 Electrical (Russell):</strong> 0439 037 044</p>
-<p style="margin-top:8px;"><strong>Slade Brothers Plumbing:</strong> 0417 787 284</p>
-<p style="margin-top:8px;"><strong>Plumbaround:</strong> 0405 103 544</p>
-<p style="margin-top:8px;"><strong>EBS Pest Control:</strong> 5533 7778</p>
-<p style="margin-top:8px;"><strong>Snake Removal Services:</strong> 0409 675 522</p>
+<p><strong>CNG Electrical (Dave):</strong> <a href="tel:+61412634361" class="phone-link">0412 634 361</a></p>
+<p style="margin-top:8px;"><strong>P3 Electrical (Russell):</strong> <a href="tel:+61439037044" class="phone-link">0439 037 044</a></p>
+<p style="margin-top:8px;"><strong>Slade Brothers Plumbing:</strong> <a href="tel:+61417787284" class="phone-link">0417 787 284</a></p>
+<p style="margin-top:8px;"><strong>Plumbaround:</strong> <a href="tel:+61405103544" class="phone-link">0405 103 544</a></p>
+<p style="margin-top:8px;"><strong>EBS Pest Control:</strong> <a href="tel:+61755337778" class="phone-link">5533 7778</a></p>
+<p style="margin-top:8px;"><strong>Snake Removal Services:</strong> <a href="tel:+61409675522" class="phone-link">0409 675 522</a></p>
 </div>
 
 <!-- Taxi Services -->
 <div class="contact-card">
 <h4>🚕 Taxi Services</h4>
-<p><strong>Black &amp; White Cabs:</strong> 133 222 / 131 008</p>
-<p style="margin-top:8px;"><strong>Yellow Cabs:</strong> 131 924</p>
+<p><strong>Black &amp; White Cabs:</strong> <a href="tel:133222" class="phone-link">133 222</a> / <a href="tel:131008" class="phone-link">131 008</a></p>
+<p style="margin-top:8px;"><strong>Yellow Cabs:</strong> <a href="tel:131924" class="phone-link">131 924</a></p>
+<p style="margin-top:8px;"><strong>Council Cabs:</strong> <a href="tel:+61734032227" class="phone-link">07 3403 2227</a></p>	
 </div>
 
 </div><!-- end community-contacts -->
@@ -2804,7 +2807,7 @@ The feedback button stays visible as you scroll down the page, making it easy to
 <div class="hub-footer">
   Bridgeman Downs Retirement Village Residents' Information Hub &nbsp;|&nbsp;
   © 2026 | Some information is for residents' use only &nbsp;|&nbsp;
-  Contact: rabd.ctee@gmail.com | Emergency: 000
+  Contact: hubadmin@bdrv.au | Emergency: 000
 </div>
 
 </div><!-- end container -->
@@ -4073,6 +4076,13 @@ a[href="welcome.html"]{ background:var(--hub-gold) !important; border-color:var(
   .activities-table tr{ border-color:var(--hub-charcoal); }
   .activities-table td::before{ color:var(--hub-gold); }
 }
+/* ---- Tap-to-call phone numbers (Contacts page) ----
+   Gold on navy to match the email links. The second rule stops
+   iPhones/iPads repainting any phone number in Apple's bright blue. */
+.phone-link{ color:var(--hub-gold) !important; font-weight:700; text-decoration:none; white-space:nowrap; }
+.phone-link:hover{ text-decoration:underline; }
+.phone-link-dark{ color:#1F4E79 !important; }  /* inside the white Emergency box */
+a[x-apple-data-detectors]{ color:inherit !important; text-decoration:none !important; font-weight:inherit !important; }
 </style>
 </body>
 </html>

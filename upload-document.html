@@ -261,6 +261,7 @@
 
 </div>
 
+<script src="hub-pin.js"></script>
 <script>
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwya128saiqJPHdrUonuHXQnHfAUqlFwNuxcuPBOcSnpWl9wOaxgXCr9j5l-K8qt_HN/exec';
 
@@ -379,10 +380,11 @@
     btn.textContent = 'Saving…';
     fetch(SCRIPT_URL, {
       method: 'POST',
-      body: JSON.stringify({ action: 'setDocumentStatus', fileId: fileId, status: '' })
+      body: JSON.stringify({ action: 'setDocumentStatus', fileId: fileId, status: '', token: HubPin.token() })
     })
     .then(function(r) { return r.json(); })
     .then(function(data) {
+      if (data.signIn) return HubPin.expired();
       if (data.status === 'ok') {
         approvedThisVisit[fileId] = true;
         var row = document.getElementById('draft-' + fileId);
@@ -468,8 +470,19 @@
     return (bytes/(1024*1024)).toFixed(1) + ' MB';
   }
 
+  // ── Sign in with a personal PIN (hub-pin.js), then load the page ──
+  // The old shared PIN still works until legacyUntil, with a reminder to set up a personal PIN.
+  HubPin.require({
+    area: ["rc-secretary", "sc-secretary", "sc-convenor", "sc-treasurer", "admin"],
+    title: "🔒 Upload a Document",
+    subtitle: "For committee secretaries, the SC Convenor and SC Treasurer.",
+    legacyPin: "5304",
+    legacyUntil: "2026-11-30"
+  }, function () {
+      loadDrafts();
+  });
+
   window.addEventListener('DOMContentLoaded', function() {
-    loadDrafts();
     var dz = document.getElementById('dropZone');
     dz.addEventListener('dragover',  function(e){ e.preventDefault(); dz.classList.add('dragover'); });
     dz.addEventListener('dragleave', function(){ dz.classList.remove('dragover'); });
@@ -520,6 +533,7 @@
         method:'POST',
         body: JSON.stringify({
           action:     'uploadDocument',
+          token:      HubPin.token(),
           fileName:   driveFileName,
           displayName: nameClean,
           fileData:   base64,
@@ -532,6 +546,7 @@
       })
       .then(function(r){ return r.json(); })
       .then(function(data){
+        if (data.signIn) { clearInterval(_umt); return HubPin.expired(); }
         setProgress(100,'Complete!');
         clearInterval(_umt);
       btn.disabled = false;

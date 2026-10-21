@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V5X3VEVK8R"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V5X3VEVK8R');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charities We Support | Bridgeman Downs Retirement Village Residents' Information Hub</title>
+
+  <style>
+
+    /* ===== Base ===== */
+    :root {
+      --hub-navy:       #263746;
+      --hub-navy-panel: #2E4256;
+      --hub-navy-hover: #324A5F;
+      --hub-gold:       #D4B860;
+      --hub-cream:      #F6F2E7;
+      --hub-muted:      #B9AF9C;
+      --hub-charcoal:   #3F4143;
+    }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html{ scroll-behavior:smooth; }
+
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:var(--hub-navy);
+      font-size:18px;
+      line-height:1.7;
+      color:var(--hub-cream);
+    }
+
+    .container{
+      max-width:1200px;
+      margin:auto;
+      background:var(--hub-navy);
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* ===== Header ===== */
+    header{
+      background:var(--hub-navy);
+      color:var(--hub-cream);
+      padding:36px 20px 30px;
+      text-align:center;
+    }
+    header h1{ font-size:2em; font-weight:700; }
+    header p{ margin-top:8px; font-size:0.95em; opacity:0.88; }
+    header .page-tagline{
+      margin-top:14px;
+      font-size:1.15em;
+      font-weight:700;
+    }
+    header .page-tagline span{
+      display:inline-block;
+      background:rgba(212,184,96,0.18);
+      color:var(--hub-gold);
+      border-radius:6px;
+      padding:6px 22px;
+    }
+
+        /* Navigation handled by sidebar.js */
+
+    /* ===== Page content ===== */
+    .page-content{ padding:36px 25px 50px; }
+
+    /* ===== Info box ===== */
+    .info-box{
+      background:var(--hub-navy-panel);
+      border-left:4px solid var(--hub-gold);
+      padding:16px 20px;
+      margin:0 0 28px;
+      border-radius:0 4px 4px 0;
+      font-size:0.95em;
+      color:var(--hub-cream);
+    }
+
+    /* ===== Section heading ===== */
+    .section-heading{
+      font-size:1.3em;
+      font-weight:700;
+      color:var(--hub-gold);
+      margin:28px 0 8px;
+      padding-bottom:8px;
+      border-bottom:2px solid var(--hub-charcoal);
+    }
+
+    /* ===== Collapsible sections ===== */
+    .collapsible-header{
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
+      border-radius:6px;
+      padding:16px 18px;
+      cursor:pointer;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      transition:background 0.2s;
+      margin-bottom:8px;
+    }
+    .collapsible-header:hover{ background:var(--hub-navy-hover); }
+
+    .collapsible-title{
+      color:var(--hub-cream);
+      font-size:1.05em;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .collapsible-arrow{
+      color:var(--hub-gold);
+      font-size:1.1em;
+      transition:transform 0.3s ease;
+      font-weight:700;
+    }
+    .collapsible-arrow.open{ transform:rotate(180deg); }
+
+    .collapsible-content{
+      display:none;
+      padding:16px 18px;
+      background:var(--hub-navy);
+      border:1px solid var(--hub-charcoal);
+      border-top:none;
+      border-radius:0 0 6px 6px;
+      margin-top:-8px;
+      margin-bottom:12px;
+    }
+    .collapsible-content.open{ display:block; }
+
+    /* ===== Document / link items ===== */
+    .doc-link{
+      display:block;
+      padding:11px 14px;
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
+      border-radius:5px;
+      color:var(--hub-cream);
+      text-decoration:none;
+      margin-bottom:8px;
+      transition:all 0.2s;
+      font-size:0.92em;
+      font-weight:600;
+    }
+    .doc-link:hover{ background:var(--hub-navy-hover); border-color:var(--hub-gold); }
+
+    .section-note{
+      color:var(--hub-muted);
+      font-size:0.88em;
+      margin-top:8px;
+      font-style:italic;
+    }
+
+    /* ===== Responsive ===== */
+    @media(max-width:768px){
+      header h1{ font-size:1.6em; }
+      .page-content{ padding:24px 16px 40px; }
+    }
+
+  
+    
+    
+    
+    
+
+
+    /* ===== Charity cards ===== */
+    .charity-card{
+      background:var(--hub-navy-panel);
+      border:1px solid var(--hub-charcoal);
+      border-left:4px solid var(--hub-gold);
+      border-radius:6px;
+      padding:18px 20px;
+      margin-bottom:16px;
+    }
+    .charity-card h3{ color:var(--hub-gold); font-size:1.15em; margin-bottom:6px; }
+    .charity-card p{ font-size:0.95em; margin-bottom:12px; }
+    .charity-card .visit-btn{
+      display:inline-block;
+      background:var(--hub-gold);
+      color:var(--hub-navy);
+      font-weight:700;
+      text-decoration:none;
+      padding:8px 18px;
+      border-radius:5px;
+    }
+    .charity-card .visit-btn:hover{ background:var(--hub-cream); }
+  </style>
+</head>
+<body>
+<script src="sidebar.js"></script>
+
+<div class="container">
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <h1>Bridgeman Downs Retirement Village</h1>
+    <p>Residents' Information Hub</p>
+    <p class="page-tagline"><span>💛 Charities We Support</span></p>
+  </header>
+
+  <!-- ===== PAGE CONTENT ===== -->
+  <div class="page-content">
+
+    <div class="info-box">
+      These are charities that residents of our village support. If you would like to learn more
+      or help out, click a charity's button to visit its website.
+    </div>
+
+    <h3 class="section-heading">🤝 The Charities</h3>
+
+    <!-- To add a charity: copy one charity-card block below, then change the name, description and web address. -->
+
+    <div class="charity-card">
+      <h3>Uniforms 4 Kids</h3>
+      <p>Volunteers turn donated police and emergency services uniforms into clothing for children in need across Australia.</p>
+      <a href="https://uniforms4kids.com.au/" target="_blank" rel="noopener" class="visit-btn">🔗 Visit website</a>
+    </div>
+
+    <div class="charity-card">
+      <h3>Hummingbird House</h3>
+      <p>Queensland's children's hospice, at Chermside, caring for babies, children and young people with life-limiting conditions, and supporting their families.</p>
+      <a href="https://hummingbirdhouse.org.au/" target="_blank" rel="noopener" class="visit-btn">🔗 Visit website</a>
+    </div>
+
+    <p class="section-note" style="margin-top:24px;">
+      Listed for residents' information. Donations are a personal choice and are not handled by
+      the Residents Committee or the Social Club.
+    </p>
+
+    <div class="info-box" style="margin-top:28px;">
+      💡 <strong>Know of another charity residents support?</strong> Please let us know using the
+      <strong>Have a Question?</strong> form on the
+      <a href="how-to.html" style="color:#D4B860;font-weight:700;">Help &amp; How To</a> page.
+    </div>
+
+  </div><!-- end page-content -->
+</div><!-- end container -->
+
+</body>
+</html>
