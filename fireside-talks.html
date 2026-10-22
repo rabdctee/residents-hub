@@ -307,13 +307,7 @@
     <p class="page-tagline"><span>🔥 Fireside Talks</span></p>
   </header>
 
-  <div id="pinScreen">
-    <h2>🔒 Residents Only</h2>
-    <p>Please enter the Residents Only PIN to continue.</p>
-    <input type="password" id="pinInput" inputmode="numeric" onkeypress="if(event.key==='Enter') checkPin()">
-    <button onclick="checkPin()">Enter</button>
-    <p id="pinError">Incorrect PIN.</p>
-  </div>
+  <!-- Sign-in box now comes from hub-pin.js (personal PINs) — see the script below -->
 
   <div id="mainContent" style="display:none;">
 
@@ -364,26 +358,10 @@
 
 </div><!-- /.container -->
 
+<script src="hub-pin.js"></script>
+<script src="resident-areas.js"></script>
 <script>
 
-  /* ══════════════════════════════════════════════════════
-     Fill this in once you have your Apps Script web app URL.
-  ══════════════════════════════════════════════════════ */
-  /* ══════════════════════════════════════════════════════
-     Residents Only PIN gate — same PIN used elsewhere on the Hub.
-  ══════════════════════════════════════════════════════ */
-  var RESIDENTS_PIN = "4035";
-
-  function checkPin() {
-    var entered = document.getElementById('pinInput').value;
-    if (entered === RESIDENTS_PIN) {
-      document.getElementById('pinScreen').style.display = 'none';
-      document.getElementById('mainContent').style.display = 'block';
-      loadTalks();
-    } else {
-      document.getElementById('pinError').style.display = 'block';
-    }
-  }
 
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4Zic9NSdiK80nkHPwX7feo7c7jGTkrwpWhsy7Q194HnEg7KhrwNaKIQsJqPFAclGeXQ/exec';
 
@@ -548,6 +526,25 @@
     if (drivePath) return drivePath[1];
     return raw; // assume it's already a bare ID
   }
+
+  /* ══════════════════════════════════════════════════════
+     Residents Only — sign in with a personal PIN (hub-pin.js).
+     Residents use their first name and unit (e.g. "Maggie 42") and their
+     own PIN. This runs last, once SCRIPT_URL and loadTalks are set up.
+     The old shared PIN still works during the changeover, with a
+     reminder to set up a personal PIN.
+  ══════════════════════════════════════════════════════ */
+  HubPin.require({
+    area: RESIDENT_AREAS,
+    audience: 'resident',
+    title: '🔥 Fireside Talks',
+    subtitle: 'For Bridgeman Downs residents. Please sign in with your first name, unit number and your own PIN.',
+    legacyPin: '4035',
+    legacyUntil: '2026-12-31'
+  }, function () {
+    document.getElementById('mainContent').style.display = 'block';
+    loadTalks();
+  });
 
 </script>
 

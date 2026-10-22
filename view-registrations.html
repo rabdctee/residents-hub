@@ -293,6 +293,7 @@
 
   <div id="mac-container" style="display:none;"></div>
 
+  <script src="hub-pin.js"></script>
   <script>
     // ── Published CSV URL (same sheet, gid unchanged) ──────────────────────
     const CSV_URL =
@@ -874,7 +875,17 @@
         .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    loadData();
+    // ── Sign in with a personal PIN (hub-pin.js), then load the registrations ──
+    // Open to every Social Club role and the Hub administrator (the same people who see
+    // the View Registrations button on My Workbench). The old shared PIN still works
+    // during the changeover, with a reminder to set up a personal PIN.
+    HubPin.require({
+      area: ["sc-convenor", "sc-secretary", "sc-treasurer", "sc-events", "sc-member", "admin"],
+      title: "🔒 View Registrations",
+      subtitle: "This page is for Social Club committee members.",
+      legacyPin: "5304",
+      legacyUntil: "2026-11-30"
+    }, function () { loadData(); });
   
   // ── Smart back navigation ─────────────────────────────────────────────────
   function smartBack() { history.back(); }
