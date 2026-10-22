@@ -34,7 +34,7 @@
   <ol>
     <li><strong>The website files</strong> (HTML pages plus a few shared files) are kept in a GitHub repository called <code>rabdctee/residents-hub</code>. GitHub also <em>hosts</em> them for free through a service called GitHub Pages, and the address <code>bdrv.au</code> points there.</li>
     <li><strong>Google Sheets and Google Drive</strong> hold the information. Sheets act as the Hub’s database (one Sheet per system, more or less). Drive holds uploaded files: minutes, newsletters, photos, videos, bank statements.</li>
-    <li><strong>Google Apps Scripts</strong> are small programs attached to the Sheets. Each is published as a “web app” with its own long web address. When a page needs to <em>save</em> something, or read something that must not be public, it sends a request to one of these scripts, which does the work inside Google and replies.</li>
+    <li><strong>Google Apps Scripts</strong> are small programs attached to the Sheets. Each is published as a “web app” with its own web address. When a page needs to <em>save</em> something, or read something that must not be public, it sends a request to one of these scripts, which does the work inside Google and replies.</li>
   </ol>
 
   <div class="diagram" role="img" aria-label="Diagram: a resident's browser loads pages from bdrv.au on GitHub Pages; the pages read published Google Sheets directly and send saves to Google Apps Scripts, which write to Sheets, Drive and Calendar.">
@@ -82,10 +82,10 @@
   <p>Almost every interactive page uses one or more of these four patterns. Recognising them makes any page much easier to understand.</p>
 
   <h3>Pattern A — Reading a published Sheet (“CSV feed”)</h3>
-  <p>In Google Sheets, <em>File → Share → Publish to web</em> makes one tab available as a read-only CSV file at a long address beginning <code>docs.google.com/spreadsheets/d/e/2PACX-…/pub?gid=…&amp;output=csv</code>. The page downloads that file and builds its display from it. The number after <code>gid=</code> identifies the tab.</p>
+  <p>In Google Sheets, <em>File → Share → Publish to web</em> makes one tab available as a read-only CSV file at an address beginning <code>docs.google.com/spreadsheets/d/e/2PACX-…/pub?gid=…&amp;output=csv</code>. The page downloads that file and builds its display from it. The number after <code>gid=</code> identifies the tab.</p>
   <div class="box warn">
     <span class="box-title">Two things to know about published feeds</span>
-    <p><strong>They lag.</strong> Google refreshes a published feed every few minutes, not instantly. A change saved a moment ago may not show for up to about five minutes. Several pages update their own screen straight after a save so the person doesn’t see old data (this was the cause of the Action Register “status reverting” problem in 2026).</p>
+    <p><strong>They lag.</strong> Google refreshes a published feed every few minutes, not instantly. A change saved a moment ago may not show for up to about five minutes. Several pages update their own screen straight after a save so the person doesn’t see old data.</p>
     <p><strong>They are public.</strong> Anyone who has the address can read the whole tab. Only publish tabs whose contents you would be content for anyone to see.</p>
   </div>
 
@@ -97,7 +97,7 @@
   <p>Many older pages send in <strong>“no-cors” mode</strong>: the browser sends the information but is not allowed to read the reply. Those pages simply <em>assume</em> the save worked and update the screen straight away. That keeps them simple, but if the script fails, the page cannot tell. If a save “didn’t stick”, check the Sheet itself.</p>
 
   <h3>Pattern D — Reading a Sheet through the Google Sheets API</h3>
-  <p>A small events widget in the Home page’s side column reads the <em>Web Content Manager</em> Sheet directly using Google’s Sheets API and an API key written in the page. This is unusual on the Hub — most pages use Pattern A or B.</p>
+  <p>A small events widget in the Home page’s side column reads the <em>Web Content Manager</em> Sheet directly using Google’s Sheets API and an API key written in the page.</p>
 
   <h2 id="shared">3. Shared building blocks</h2>
   <div class="tbl-wrap"><table>
