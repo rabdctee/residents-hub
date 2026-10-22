@@ -32,7 +32,7 @@
     <li><code>classifieds-admin.html</code> — moderation tabs: pending, published, rejected. Publish, reject, unpublish or delete (delete just sets the status to “deleted”).</li>
     <li>Data: <em>Submissions</em> tab of the <em>BDRV Classifieds</em> Sheet: A timestamp, B name, C unit, D phone (kept as text so a leading 0 isn’t lost), E category, F headline, G details, H status (pending, published, rejected, deleted), I photo link. Photos go to a Classifieds photos folder in Drive. Each new listing emails rabd.ctee and the RC Chair’s personal address.</li>
     <li><strong>Matching by headline:</strong> publishing or rejecting finds the listing by its <em>headline</em>; residents’ edits match headline, name and unit together. Two listings with exactly the same headline could be confused.</li>
-    <li><code>classifieds-admin.html</code> has no PIN of its own.</li>
+    <li><code>classifieds-admin.html</code> needs a personal PIN (SC Convenor or administrator) and sends the sign-in pass with each change.</li>
   </ul>
 
   <h2 id="prices">Price Checker</h2>
@@ -53,21 +53,21 @@
   <ul>
     <li><code>our-story.html</code> — the village history project: question accordion, community stories with search (newest first, one open at a time), and a “From the Vault” historical section with original scans.</li>
     <li><code>our-story-submit.html</code> — residents share memories of the village.</li>
-    <li><code>our-story-admin.html</code> (PIN) — review submissions; <strong>Copy Story Card HTML</strong> produces the code for an approved story, which is then pasted into <code>our-story.html</code> and pushed. Publishing is therefore a manual GitHub step.</li>
+    <li><code>our-story-admin.html</code> (administrator’s personal PIN) — review submissions; <strong>Copy Story Card HTML</strong> produces the code for an approved story, which is then pasted into <code>our-story.html</code> and pushed. Publishing is therefore a manual GitHub step.</li>
   </ul>
 
   <h2 id="fireside">Fireside Talks</h2>
   <ul>
-    <li><code>fireside-talks.html</code> (Residents PIN) — upcoming talks and a searchable archive of past talks; recordings play from Drive.</li>
+    <li><code>fireside-talks.html</code> (still the old shared Residents PIN, written in the page; not yet moved to personal PINs) — upcoming talks and a searchable archive of past talks; recordings play from Drive.</li>
     <li><code>fireside-talks-submit.html</code> — residents volunteer to give a talk.</li>
-    <li><code>fireside-talks-admin.html</code> (PIN) — add and update talks (date, time, speaker, title, description, location, recording, status) and review volunteers; paste a Drive link or ID and the page extracts the file ID. Talk times are stored as plain text so Sheets can’t turn “10:00 AM” into a date. Talks marked <em>Cancelled</em> are hidden from residents.</li>
+    <li><code>fireside-talks-admin.html</code> (personal PIN; SC Convenor or administrator) — add and update talks (date, time, speaker, title, description, location, recording, status) and review volunteers; paste a Drive link or ID and the page extracts the file ID. Talk times are stored as plain text so Sheets can’t turn “10:00 AM” into a date. Talks marked <em>Cancelled</em> are hidden from residents.</li>
   </ul>
 
   <h2 id="roundup">The Roundup (What’s New)</h2>
   <ul>
     <li><code>whats-new.html</code> — six tabs: Health &amp; Wellbeing, Technology, Books/Film/TV, Local Brisbane, Science &amp; Nature, Nostalgia. Each mixes live headlines with items added by the Hub. Listed in the menu under <em>World News</em>, with “Major Media Outlets” (<code>news.html</code>).</li>
     <li>Live feeds: ABC News (Lifestyle feed for Health, topic feed 2298 for Technology, Entertainment &amp; Culture feed for Books/Film/TV), Brisbane Times (Local), NASA (Science &amp; Nature), Wikipedia “On This Day” (Nostalgia, events 5–100 years ago). ABC, Brisbane Times and NASA go through rss2json.com because browsers cannot read news feeds directly.</li>
-    <li><code>whats-new-add.html</code> — add or delete an item (linked only from Hub Admin); saved to the first tab of <em>BDRV What’s New Submissions</em> (timestamp, category, title, blurb, link, added by). Use it for CSIRO stories and Brisbane-specific nostalgia, which have no automatic feed. The page has no PIN and its script does not check one, so anyone who found the page could add or delete items.</li>
+    <li><code>whats-new-add.html</code> — add or delete an item (linked only from Hub Admin); saved to the first tab of <em>BDRV What’s New Submissions</em> (timestamp, category, title, blurb, link, added by). Use it for CSIRO stories and Brisbane-specific nostalgia, which have no automatic feed. The page needs the administrator’s personal PIN and sends the sign-in pass with each change; whether the script refuses requests without one is <em>to confirm</em>.</li>
     <li>If a feed address stops working (ABC changed its rules in August 2026), the page quietly shows only the added items for that tab.</li>
   </ul>
 
@@ -90,7 +90,7 @@
   </ul>
 
   <h2 id="info">Information Sessions</h2>
-  <p><code>info-sessions.html</code> lists sessions (upcoming ones are written into the page and sorted by date automatically). <code>manage-info-sessions.html</code> is meant to record planned sessions in the <em>BDRV Info Sessions</em> Sheet, but its script currently points at the wrong spreadsheet, so additions probably fail (see <a href="google-services.html#scripts">Google Services</a>). The manage page also has no PIN. The info page’s interest-registration form is not yet connected to a script.</p>
+  <p><code>info-sessions.html</code> lists sessions (upcoming ones are written into the page and sorted by date automatically). <code>manage-info-sessions.html</code> is meant to record planned sessions in the <em>BDRV Info Sessions</em> Sheet, but its script currently points at the wrong spreadsheet, so additions probably fail (see <a href="google-services.html#scripts">Google Services</a>). The manage page needs a personal PIN (SC Convenor or administrator). The info page’s interest-registration form is not yet connected to a script.</p>
 
   <h2 id="static">Information pages updated by hand</h2>
   <div class="tbl-wrap"><table>
@@ -108,7 +108,7 @@
     </tbody>
   </table></div>
 
-  <footer class="hb-foot"><span><a href="documents.html">← Documents</a> · <a href="page-directory.html">Next: Page Directory →</a></span><span>Last reviewed: 21 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="documents.html">← Documents</a> · <a href="page-directory.html">Next: Page Directory →</a></span><span>Last reviewed: 22 October 2026</span></footer>
 </main>
 </body>
 </html>

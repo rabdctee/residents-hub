@@ -51,7 +51,7 @@
     <p>The Hub has two separate event sources, which has caused confusion before:</p>
     <ul>
       <li><strong>The Events script</strong> (<code>xUcetKOK</code>, Event Registration Sheet) — the full list. Used by the Events page, Register page, registrations, and the photo upload form.</li>
-      <li><strong>The Upcoming Events box on the Home page</strong> — a separate, hand-picked short list from the Upcoming Events Manager script (<code>z7Zi9xPa</code>) and the <em>Bridgeman Downs Upcoming Events</em> Sheet (A date as text, e.g. “Tue, Jul 21”; B event; C link). Managed in the lower part of Manage Events, where it can be reordered by dragging. Kept separate by choice so the Home page can feature selected events.</li>
+      <li><strong>The Upcoming Events box on the Home page</strong> — a separate, hand-picked short list from the Upcoming Events Manager script (<code>z7Zi9xPa</code>) and the <em>Bridgeman Downs Upcoming Events</em> Sheet (A date as text, e.g. “Tue, Jul 21”; B event; C link). Managed on the first tab of Manage Events, <strong>⭐ Upcoming Events</strong>, where it can be reordered by dragging and activities can be picked from the Village Calendar. The second tab, <strong>📋 All Events</strong>, is the full events list. Manage Events is open to the SC Convenor and anyone ticked “SC Events” in the PIN Manager. Kept separate by choice so the Home page can feature selected events.</li>
     </ul>
     <p>In addition, a small events widget in the Home page’s side column reads the <em>Events</em> tab of the <em>Web Content Manager</em> Sheet directly (using the API key). An event added in Manage Events will not appear in either of these Home-page boxes unless it is added there too; that is expected.</p>
   </div>
@@ -71,7 +71,7 @@
   <h2 id="home">3. Home-page boxes: Upcoming Events and Announcements</h2>
   <ul>
     <li><strong>Upcoming Events box</strong> and <strong>side-column events widget</strong> — see the “two event lists” note above. Both curated by hand.</li>
-    <li><strong>Latest Announcements</strong> — managed in <code>manage-announcements.html</code> (committee PIN). There are three slots; each announcement has “Display From” and “Display Until” dates, and the page warns when slots are full or an announcement has expired. Drag to reorder. Every morning at 8 am a script checks for announcements due to expire within three days and emails rabd.ctee@gmail.com.</li>
+    <li><strong>Latest Announcements</strong> — managed in <code>manage-announcements.html</code> (personal PIN; SC Convenor and administrator). There are three slots; each announcement has “Display From” and “Display Until” dates, and the page warns when slots are full or an announcement has expired. Drag to reorder. Every morning at 8 am a script checks for announcements due to expire within three days and emails rabd.ctee@gmail.com.</li>
     <li><strong>Calendar</strong> (<code>index.html#events</code>) — an embedded Google Calendar (agenda view) belonging to <code>rabd.ctee@gmail.com</code>, filled automatically from the Village Calendar Sheet.</li>
   </ul>
 
@@ -79,7 +79,7 @@
   <div class="box"><span class="box-title">In one sentence</span>The <em>BDRV Facility Calendar — Master Schedule</em> Sheet is the single source of truth for every regular and one-off activity; the Facility Calendar Sync script copies it into the Google Calendar residents see, and the same data feeds the printable calendar and the Bridgeman Times.</div>
   <h3>Pages</h3>
   <ul>
-    <li><code>facility-calendar-admin.html</code> (own PIN; for the RC Chair and SC Convenor) — add, edit and delete activities using pick-lists, with a month/day accordion view. Each add, edit or delete updates that day on the Google Calendar within seconds. Other features: “make this recurring” (weekly, fortnightly, or monthly on chosen weeks such as the 1st and 3rd Thursday), <strong>clash checking</strong> (same venue, overlapping times, with a shared list of pairs that are “fine to overlap”), times sorted properly, a full <em>Sync</em> button, and <em>Generate</em> to fill in recurring activities ahead.</li>
+    <li><code>facility-calendar-admin.html</code> (personal PIN; anyone ticked “Village Calendar” in the PIN Manager) — add, edit and delete activities using pick-lists, with a month/day accordion view. Each add, edit or delete updates that day on the Google Calendar within seconds. Other features: “make this recurring” (weekly, fortnightly, or monthly on chosen weeks such as the 1st and 3rd Thursday), <strong>clash checking</strong> (same venue, overlapping times, with a shared list of pairs that are “fine to overlap”), times sorted properly, a full <em>Sync</em> button, and <em>Generate</em> to fill in recurring activities ahead.</li>
     <li><code>facility-calendar-print.html</code> — public printable calendar in the familiar paper format: week list (prints portrait) or month grid (prints landscape); click an entry for detail on screen.</li>
   </ul>
   <h3>Recurring activities</h3>
@@ -118,7 +118,7 @@
   <h2 id="travel">7. Travel Pics</h2>
   <p>A copy of the event gallery system for holiday photos, grouped by <strong>album</strong> (a name the resident types) instead of event: <code>travel-photos-submit.html</code>, <code>travel-gallery.html</code>, the Travel Media script, its own Drive folder and the <em>Travel Media Registry</em> Sheet. Listed in the menu under <em>Our Community</em>. It records each visit on the resident’s device, ready for a “new” badge, but nothing shows one yet. Its script includes a one-off repair tool, <code>fixMissingSharing</code>, that re-shares any file in the Travel Pics folder that has lost its “anyone with the link” setting (useful after moving files in by hand).</p>
 
-  <footer class="hb-foot"><span><a href="google-services.html">← Google Services</a> · <a href="finance.html">Next: Finance &amp; Asset Register →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="google-services.html">← Google Services</a> · <a href="finance.html">Next: Finance &amp; Asset Register →</a></span><span>Last reviewed: 22 October 2026</span></footer>
 </main>
 </body>
 </html>

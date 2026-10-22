@@ -50,7 +50,7 @@
     <li><strong>Hub Form Handler</strong> — the web app the pages talk to: record a transaction, request a correction or deletion, update the bank balance and cash on hand, upload a bank statement, and supply the Dashboard and Financial Reports figures for display.</li>
     <li><strong>Code.gs</strong> — the background jobs: applying corrections every 15 minutes, and the monthly report.</li>
   </ul>
-  <div class="box warn"><span class="box-title">Two web addresses for one project</span>Record, Correct and Delete a Transaction and Update Bank Balance use the address beginning <code>ytxHID43</code>; Cash on Hand, Bank Statement upload, Dashboard and Reports use <code>ywdH4fh9</code>. Both are almost certainly deployments of this same project, one older than the other. Check under <em>Deploy → Manage deployments</em>. When the Hub Form Handler is changed, publish a new version of <strong>both</strong> deployments (or, better, point all eight pages at one address).</div>
+  <div class="box tip"><span class="box-title">One web address</span>Since October 2026 all eight finance pages use the one address beginning <code>ywdH4fh9</code>. An older deployment of the same project (<code>ytxHID43</code>) is no longer used by any page and can be archived under <em>Deploy → Manage deployments</em>. When the Hub Form Handler is changed, publish a new version of the <code>ywdH4fh9</code> deployment.</div>
   <div class="box warn"><span class="box-title">The spreadsheet is the record</span>The Hub pages are a convenient way in, but the Sheet is the authoritative record. Make a copy (<em>File → Make a copy</em>) before changing its layout or formulas.</div>
 
   <h2 id="txn">2. Recording, correcting and deleting transactions</h2>
@@ -83,7 +83,7 @@
 
   <h2 id="who">5. Who uses which page</h2>
   <ul>
-    <li><strong>SC Treasurer</strong> — in the Members Area, the Treasurer sees her own panel with three tiles: Update Cash On Hand, Financial Dashboard and Financial Reports, so the Sheet itself need not be touched. These were added in September 2026 to make the monthly work easier.</li>
+    <li><strong>SC Treasurer</strong> — on My Workbench, the Treasurer (and the SC Convenor) sees the Finance tiles, including Update Cash On Hand, Financial Dashboard and Financial Reports, so the Sheet itself need not be touched. These were added in September 2026 to make the monthly work easier. Every finance page needs a personal PIN except the Financial Dashboard and Financial Reports views, which still use the old shared committee PIN written in the page. The RC Treasurer also has the View Transactions tile.</li>
     <li><strong>Hub administrator</strong> — Hub Admin’s gold “Finance” section links to every finance page.</li>
     <li><strong>Residents</strong> — reports and statements via Residents Only; transaction list via View Transactions.</li>
   </ul>
@@ -110,10 +110,10 @@
     <li>Each save records who made it (the name typed on the admin page) and the date.</li>
     <li>The residents’ page receives only a safe summary: name, category, description, location, owner, date acquired, cost and funding, condition, status, disposal details, when last serviced, and whether maintenance is up to date, due within 30 days, or overdue — plus the ten most recent maintenance jobs. Supplier, serial numbers and admin notes stay private.</li>
   </ul>
-  <div class="box tip"><span class="box-title">The best-protected system on the Hub</span>The Asset Register’s PIN is kept only inside its Apps Script, never in the web page. The script checks it before releasing admin data or accepting any change, and handles one save at a time so two people can’t overwrite each other. This is the model to copy when strengthening other pages.</div>
+  <div class="box tip"><span class="box-title">A well-protected system</span>The Asset Register’s script checks who is asking before releasing admin data or accepting any change, and handles one save at a time so two people can’t overwrite each other. Since October 2026 the admin page signs people in with personal PINs and sends their sign-in pass; during the changeover it still accepts the old shared committee PIN. Checking the sign-in inside the script is the model to copy when strengthening other pages.</div>
   <div class="box todo"><span class="box-title">To confirm</span>Whether the Asset Register is fully in use, and who enters records.</div>
 
-  <footer class="hb-foot"><span><a href="events.html">← Events</a> · <a href="issues.html">Next: Issues, Actions &amp; Concerns →</a></span><span>Last reviewed: 21 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="events.html">← Events</a> · <a href="issues.html">Next: Issues, Actions &amp; Concerns →</a></span><span>Last reviewed: 22 October 2026</span></footer>
 </main>
 </body>
 </html>

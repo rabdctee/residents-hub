@@ -56,40 +56,43 @@
   <h2 id="notices">3. RC Notices</h2>
   <ul>
     <li><code>rc-notices-admin.html</code> — post, edit and archive notices; choose whether each is public or residents-only. Saved by the RC-Notices script to the <em>Notices</em> tab of the <em>RC Notices</em> Sheet (both owned by bdrv.hubadmin): A timestamp (with “(edited)” after a change), B date, C title, D body, E type (Public or Residents), F status (Active or Archived), G link. Archived notices are kept, not deleted.</li>
-    <li><code>rc-notices.html</code> — public notices, open to all. Residents-only notices (monthly RC summaries, budget matters, surveys) are shown inside the Residents Only page, behind the Residents PIN.</li>
+    <li><code>rc-notices.html</code> — public notices, open to all. Residents-only notices (monthly RC summaries, budget matters, surveys) are shown inside the Residents Only page, which needs a resident’s personal PIN.</li>
     <li>A gold banner on the Home page and a badge in the menu show when there is a notice newer than the resident’s last visit (remembered on their device).</li>
   </ul>
 
   <h2 id="resonly">4. Residents Only and the Contact List</h2>
   <ul>
-    <li><code>community-info.html</code> (“Residents Only”, Residents PIN) — meeting documents, financial reports and bank statements, Village Budgets, and other resident-only information.</li>
-    <li><code>residents-contact-list.html</code> (own PIN) — residents’ contact details from a published Sheet.</li>
+    <li><code>community-info.html</code> (“Residents Only”; residents sign in with their first name, unit number and personal PIN) — meeting documents, financial reports and bank statements, Village Budgets, and other resident-only information.</li>
+    <li><code>residents-contact-list.html</code> (resident sign-in) — residents’ contact details, handed over by the <em>Residents Data</em> script only after a valid sign-in.</li>
+    <li>Who counts as a resident for these pages is set in <code>resident-areas.js</code>: anyone ticked “Resident” in the PIN Manager, plus every committee and Body Corporate role.</li>
   </ul>
   <div class="box danger"><span class="box-title">The Contact List needs care</span>
     <p>There are <strong>two</strong> contact-list Sheets. In 2026 an edit made to the wrong one (the July copy) did not appear on the Hub, because the Hub reads the other (the August copy, which is the one published to the web). Always edit the published copy, and consolidate to one Sheet when possible.</p>
-    <p>The published copy can be read by anyone who finds its address, whatever the page’s PIN — see <a href="routines.html#risks">Risks</a>.</p>
+    <p>The page still contains the old published-feed address as a fallback. Once the Residents Data script has been confirmed working, stop publishing that Sheet to the web (<em>File → Share → Publish to web → Stop publishing</em>), so the list can no longer be read without signing in — see <a href="routines.html#risks">Risks</a>.</p>
   </div>
 
   <h2 id="committee">5. Committee areas</h2>
   <div class="tbl-wrap"><table>
     <thead><tr><th>Page</th><th>Who</th><th>What it is</th></tr></thead>
     <tbody>
-      <tr><td><code>committee.html</code></td><td>RC and SC members</td><td>Committee entry page (committee PIN): choose Residents Committee or Social Club, then the Members Area or the role dashboard. Not linked from the public menu; reached by its address or a bookmark.</td></tr>
-      <tr><td><code>members-area.html</code></td><td>All committee members</td><td>Choose your name; see the tiles for your role. RC panels in blue and SC panels in green. Special panels: the SC Treasurer’s finance tiles, the SC Convenor’s box, Manor Issues for the Manor Advisor, Text Updates for the RC Chair. Opened as <code>members-area.html?org=rc</code> or <code>?org=sc</code>.</td></tr>
-      <tr><td><code>rc-admin.html</code>, <code>sc-admin.html</code></td><td>Office bearers</td><td>Role dashboards (Chair, Secretary, Treasurer, Convenor, Events) with links to role mailboxes, documents, finance and events tasks.</td></tr>
-      <tr><td><code>role-admin.html</code></td><td>—</td><td>Older combined RC/SC role dashboard, replaced by the two above. Not linked from anywhere.</td></tr>
-      <tr><td><code>body-corporate.html</code></td><td>Body Corporate</td><td>Separate PIN; roles Chair, Manager, Secretary, in burgundy. The Chair’s area currently has one tile (Text Updates); Manager and Secretary areas are placeholders. Not linked from any page; shared by its address.</td></tr>
+      <tr><td><code>my-workbench.html</code></td><td>Every committee role</td><td><strong>My Workbench</strong> (since October 2026): sign in with your own PIN and see a tile for each tool your roles allow, grouped under Residents Committee, Issues, Events &amp; Notices, Finance, Committee &amp; Documents, Resident-Facing Content, Body Corporate, Communication, Around the Village and Hub Administration. RC members also see their own items from the Action Register. The tiles are listed in <code>workbench-tiles.js</code>; tick a role in the PIN Manager and the matching tiles appear. The administrator can choose whose workbench to view.</td></tr>
+      <tr><td><code>pin-admin.html</code></td><td>Hub administrator</td><td><strong>PIN Manager</strong>: add people (one at a time, or residents in bulk), tick their roles, issue a welcome code (printed slip or email), reset a forgotten PIN, remove someone. Linked from Hub Admin and the administrator’s workbench.</td></tr>
+      <tr><td><code>my-pin.html</code></td><td>Everyone with a PIN</td><td><strong>My PIN</strong>: turn a welcome code into a personal PIN, or change a PIN. Every sign-in box links here.</td></tr>
+      <tr><td><code>external-contacts.html</code></td><td>RC, SC, Manor Advisor</td><td><strong>External Contacts</strong>: the outside people the committees deal with. Everyone with an RC or SC role can view; only people ticked “Manage External Contacts” can add or edit.</td></tr>
+      <tr><td><code>members-area.html</code>, <code>role-admin.html</code>, <code>sc-admin.html</code></td><td>—</td><td>The old Members Area and role dashboards. They now simply redirect to My Workbench, so old bookmarks still work.</td></tr>
+      <tr><td><code>committee.html</code>, <code>rc-admin.html</code></td><td>—</td><td>The old committee entry page and RC role dashboard. Not linked from anywhere and still on an old shared PIN; candidates for removal (or a redirect like the pages above).</td></tr>
+            <tr><td><code>body-corporate.html</code></td><td>Body Corporate</td><td>Personal PIN; roles Chair, Manager and Secretary (ticked in the PIN Manager), in burgundy. The Chair’s area currently has one tile (Text Updates); Manager and Secretary areas are placeholders. Also reached from the Body Corporate tile on My Workbench.</td></tr>
     </tbody>
   </table></div>
 
   <h2 id="admin">6. Hub Admin</h2>
-  <p><code>hub-admin.html</code> (Hub Admin PIN) is the administrator’s control panel, in colour-coded sections: What’s On (events, registrations, announcements, RC notices, surveys, info sessions and concerts, text updates, Village Calendar) · Issues (add an issue, tracker, CM Update, RC response) · Finance (all finance pages and the Asset Register) · Documents (upload, Members Area, registry, Action Register) · Resident-facing content (Classifieds, Contact List, Search, Help &amp; How To, Down Memory Lane, Our Story, Fireside Talks, The Roundup) · quick links (GitHub repo, committee email, Classifieds Sheet, Google Analytics, Classifieds script) · and a <strong>Daily Checklist</strong> that resets each day (using Brisbane time). This handbook is linked from here.</p>
+  <p><code>hub-admin.html</code> (administrator’s personal PIN) is the administrator’s control panel, in colour-coded sections: What’s On (events, registrations, announcements, RC notices, surveys, info sessions and concerts, text updates, Village Calendar) · Issues (add an issue, tracker, CM Update, RC response) · Finance (all finance pages and the Asset Register) · Documents (upload, My Workbench, registry, Action Register) · Resident-facing content (Classifieds, Contact List, Search, Help &amp; How To, Down Memory Lane, Our Story, Fireside Talks, The Roundup) · Hub Handbook and PIN Manager · quick links (GitHub repo, the Hub Admin mailbox <code>hubadmin@bdrv.au</code>, Classifieds Sheet, Google Analytics, Classifieds script) · and a <strong>Daily Checklist</strong> that resets each day (using Brisbane time). This handbook is linked from here.</p>
 
   <h2 id="text">7. Text Updates</h2>
-  <p><code>text-updates.html</code> (own PIN) lets the RC Chair and SC Convenor compose a short text message to residents who have opted in, with on-screen preview and confirmation.</p>
-  <div class="box tip"><span class="box-title">How it sends</span>Working since October 2026. The page reads the residents who have signed up from the <em>Residents Contact List for Text Messages</em> Sheet and passes the message to the <em>Text Updates</em> Apps Script, which sends it through the <strong>Mobile Message</strong> text service. Mobile Message charges per message. Its sign-in and API key are recorded only in the Hub Secrets Register, never in the website or the GitHub repository.</div>
+  <p><code>text-updates.html</code> lets anyone ticked “Text Updates” in the PIN Manager (and the Body Corporate Chair) compose a short text message to residents who have opted in, with on-screen preview and confirmation. A message can be up to 160 characters including the sign-off “ - BDRV Res. Cttee”.</p>
+  <div class="box tip"><span class="box-title">How it sends</span>Working since October 2026. The page sends the message to the <em>Text Updates</em> Apps Script, which checks the sender’s sign-in, reads the mobile numbers of residents who have opted in from the <em>Residents Contact List for Text Messages</em> Sheet, and sends the texts through the <strong>Mobile Message</strong> text service. The same message can’t go out twice within 10 minutes, and every send is written to the Sheet’s <em>Text Log</em> tab. Mobile Message charges per message. Its API username and password are kept in the script’s <em>Project Settings → Script Properties</em> and in the Hub Secrets Register, never in the website or the GitHub repository. To replace the key, change those Script Properties; the script does not need re-publishing.</div>
 
-  <footer class="hb-foot"><span><a href="issues.html">← Issues</a> · <a href="community.html">Next: Community Content →</a></span><span>Last reviewed: 21 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="issues.html">← Issues</a> · <a href="community.html">Next: Community Content →</a></span><span>Last reviewed: 22 October 2026</span></footer>
 </main>
 </body>
 </html>

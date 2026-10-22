@@ -57,7 +57,7 @@
       <!-- Apps Script -->
       <rect x="290" y="230" width="200" height="80" rx="10" fill="#263746" stroke="#B9AF9C" stroke-width="2"/>
       <text x="390" y="260" text-anchor="middle" fill="#F6F2E7" font-size="15" font-weight="700">Apps Script web apps</text>
-      <text x="390" y="280" text-anchor="middle" fill="#B9AF9C" font-size="12">25 small programs that</text>
+      <text x="390" y="280" text-anchor="middle" fill="#B9AF9C" font-size="12">about 30 small programs that</text>
       <text x="390" y="296" text-anchor="middle" fill="#B9AF9C" font-size="12">save and fetch data</text>
       <!-- Google storage -->
       <rect x="580" y="150" width="160" height="130" rx="10" fill="#2E4256" stroke="#D4B860" stroke-width="2"/>
@@ -90,7 +90,7 @@
   </div>
 
   <h3>Pattern B — Asking an Apps Script for data (“getEvents”, “gallery”…)</h3>
-  <p>The page calls a script’s address with <code>?action=something</code> on the end, and the script replies with data in a format called JSON. This is used where data needs tidying first, or should only go out to someone who supplies a key. Examples: <code>?action=getEvents</code> (events list), <code>?action=gallery</code> (event photos).</p>
+  <p>The page calls a script’s address with <code>?action=something</code> on the end, and the script replies with data in a format called JSON. This is used where data needs tidying first, or should only go out to someone who has signed in. Examples: <code>?action=getEvents</code> (events list), <code>?action=gallery</code> (event photos), <code>?action=contacts</code> (the Residents Contact List, which the Residents Data script only hands to a signed-in resident).</p>
 
   <h3>Pattern C — Sending a save to an Apps Script</h3>
   <p>The page sends (“POSTs”) the information to a script with an <code>action</code> name such as <code>addEvent</code>, <code>recordTransaction</code> or <code>updateStatus</code>. The script writes it into the Sheet or saves a file to Drive.</p>
@@ -105,6 +105,9 @@
     <tbody>
       <tr><td><code>index.html</code></td><td>The Home page. It is a <strong>single-page app</strong>: one file containing ten sections (Home, About, Newsletters, Calendar, Events, Activities &amp; Contacts, Noticeboard, Village Info, Useful Links, Contacts). JavaScript shows one section at a time, chosen by the menu or by the address (e.g. <code>index.html#events</code>). It is the largest file on the site (about 4,000 lines).</td></tr>
       <tr><td><code>sidebar.js</code></td><td>Builds the left-hand menu on every public page that includes it, highlights the current page, shows the “new” badges (RC Notices, Event Photos), and starts Google Analytics. <strong>Change the menu here.</strong> Note that <code>index.html</code> also contains its own separate copy of the menu, which must be changed too.</td></tr>
+      <tr><td><code>hub-pin.js</code></td><td>The <strong>personal PIN sign-in</strong> used by every locked page (see <a href="#locks">PIN locks</a> below). A page adds one <code>HubPin.require(…)</code> call naming the roles that may open it.</td></tr>
+      <tr><td><code>workbench-tiles.js</code></td><td>The one list of <strong>My Workbench</strong> tiles, and which PIN Manager roles see each tile. <strong>Add or change a committee tile here.</strong></td></tr>
+      <tr><td><code>resident-areas.js</code></td><td>The list of roles that may open the Residents Only pages (Residents Only, the Contact List and Raise a Concern).</td></tr>
       <tr><td><code>print-issues.js</code></td><td>The “Print / Save as PDF” button used by the Issues pages.</td></tr>
       <tr><td><code>quotes.txt</code></td><td>The list of quotes the Home page picks from.</td></tr>
       <tr><td><code>CNAME</code></td><td>One line, <code>bdrv.au</code>. Tells GitHub Pages which address the site answers to. <strong>Do not delete or edit.</strong></td></tr>
@@ -128,27 +131,36 @@
   <p>Each page carries its own copy of its styles (there is no single site-wide stylesheet in use; an old <code>styles.css</code> file remains but nothing loads it). This makes pages independent, but means a site-wide style change has to be made page by page.</p>
 
   <h2 id="locks">4. PIN locks and what they really protect</h2>
-  <p>About 30 pages ask for a PIN. There are several different PINs: a Residents PIN (Residents Only, Raise a Concern, Fireside Talks), committee PINs, the Hub Admin PIN, and individual PINs for pages such as CM Update, Manor Issues, Village Calendar, Body Corporate and Text Updates. After a correct PIN the page remembers it until the browser tab is closed (using the browser’s “session storage”).</p>
-  <div class="box danger">
-    <span class="box-title">Important: most PINs are only a curtain, not a lock</span>
-    <p>On most pages the correct PIN is written in the page’s own code, and the repository is public. Anyone who views the page source, or browses the repository on GitHub, can read it. Likewise, the published Sheets that sit behind locked pages (for example the Residents Contact List) can be read by anyone who finds their address. The Village Calendar admin page also contains its Apps Script’s “secret key” in the same visible way.</p>
-    <p>So PINs keep casual visitors out, but would not stop a determined person. The safer model already exists on the Hub: the <strong>Asset Register</strong> sends the PIN to its Apps Script, and the script checks it and only then hands over the data. See <a href="routines.html#risks">Risks &amp; recommendations</a>.</p>
+  <p>Since October 2026 the Hub uses <strong>personal PINs</strong>. About 40 pages ask the person to sign in with their name and their own PIN (residents use their first name and unit number, e.g. “Joan 20”). How it fits together:</p>
+  <ul>
+    <li><strong>The PIN Manager</strong> (<code>pin-admin.html</code>, Hub Admin only) lists every person and ticks the <strong>roles</strong> they hold, such as RC Chair, SC Treasurer, Calendar editor or Resident. It issues a one-off <strong>welcome code</strong> (printed, or emailed from the page), and resets a forgotten PIN by issuing a new one. The administrator never sees anyone’s PIN.</li>
+    <li><strong>My PIN</strong> (<code>my-pin.html</code>) is where a person turns their welcome code into a PIN of their own, or changes it later.</li>
+    <li><strong>The sign-in box</strong> comes from <code>hub-pin.js</code>. The page names the roles allowed in; the name and PIN are checked by the <em>PIN Manager</em> Apps Script against the <em>Hub PIN Register</em> Sheet, never in the page. A successful sign-in lasts <strong>two hours</strong> in that browser tab, on every page the person’s roles allow.</li>
+    <li><strong>My Workbench</strong> (<code>my-workbench.html</code>) shows each committee member the tiles for the roles ticked for them, built from <code>workbench-tiles.js</code>. It replaced the old Members Area and role dashboards, whose addresses now redirect to it.</li>
+    <li>Most locked pages also send the person’s <strong>sign-in pass</strong> with every save, so the script behind the page can check it with the PIN Manager. The Residents Data (Contact List), Text Updates and External Contacts scripts already refuse anyone without a valid pass. According to <code>hub-pin.js</code>, the older scripts keep accepting requests the old way until the same changeover date (their <code>OPEN_UNTIL</code> line) — <em>to confirm in each script</em>.</li>
+  </ul>
+  <div class="box warn">
+    <span class="box-title">What is still not fully protected</span>
+    <p><strong>The changeover.</strong> The old shared PINs keep working until <strong>31 December 2026</strong> on every page that offers them (one date in <code>hub-pin.js</code> overrides the dates written in the pages), with a reminder to set up a personal PIN. They are still written in those pages’ code, and the repository is public. When the changeover ends, remove the <code>legacyPin</code> lines.</p>
+    <p><strong>Pages not yet moved across.</strong> Fireside Talks still uses the old Residents PIN, and the Financial Dashboard and Financial Reports views still use the old committee PIN, written in the page. Several old pages that are no longer linked (<code>committee.html</code>, <code>rc-admin.html</code>, <code>hub-raise-a-concern.html</code>) also still contain a PIN.</p>
+    <p><strong>Published Sheets.</strong> A page can only be as private as its data. The Residents Only documents and notices, the Social Club transaction list and the Financial Dashboard figures are still read from published Sheets or open script requests that anyone who finds the address can read. See <a href="routines.html#risks">Risks &amp; recommendations</a>.</p>
   </div>
-  <p>The PINs themselves are recorded only in the private Hub Secrets Register, never in this handbook.</p>
+  <p>Personal PINs are chosen by each person and are not recorded anywhere. Account sign-ins and any remaining shared PINs belong only in the private Hub Secrets Register, never in this handbook.</p>
 
   <h2 id="outside">5. Outside services the Hub uses</h2>
   <div class="tbl-wrap"><table>
     <thead><tr><th>Service</th><th>Used for</th><th>Cost / account</th></tr></thead>
     <tbody>
       <tr><td>GitHub + GitHub Pages</td><td>Storing and hosting the website</td><td>Free; account <code>rabdctee</code></td></tr>
-      <tr><td>Google Workspace (Sheets, Drive, Apps Script, Calendar, Gmail)</td><td>All data, files, saving, emails</td><td>Free consumer accounts (see <a href="google-services.html#accounts">Chapter 3</a>)</td></tr>
-      <tr><td>Domain name <code>bdrv.au</code></td><td>The Hub’s address</td><td>Annual renewal — <em>registrar and renewal date to confirm</em></td></tr>
+      <tr><td>Google Workspace (Sheets, Drive, Apps Script, Calendar, Gmail)</td><td>All data, files, saving, emails</td><td>Free consumer accounts; everything the Hub runs on belongs to <code>bdrv.hubadmin@gmail.com</code> (see <a href="google-services.html#accounts">Chapter 3</a>)</td></tr>
+      <tr><td>Domain name <code>bdrv.au</code></td><td>The Hub’s address</td><td>Bought from <strong>Crazy Domains</strong>; annual renewal — <em>renewal date to confirm and record in the Secrets Register</em></td></tr>
+      <tr><td>ImprovMX</td><td>Forwards mail sent to <code>hubadmin@bdrv.au</code> into the Hub Administrator mailbox (<code>bdrv.hubadmin@gmail.com</code>)</td><td>Free plan</td></tr>
       <tr><td>Google Analytics (ID <code>G-V5X3VEVK8R</code>)</td><td>Visitor statistics</td><td>Free; linked from Hub Admin</td></tr>
       <tr><td>rss2json.com</td><td>Turns news feeds (ABC, NASA, Brisbane Times) into a form The Roundup can read</td><td>Free tier, no account in the page</td></tr>
       <tr><td>Wikipedia “On This Day”</td><td>The Roundup’s Nostalgia tab</td><td>Free</td></tr>
       <tr><td>Open-Meteo</td><td>Home page weather</td><td>Free</td></tr>
-      <tr><td>Anthropic (Claude AI) API</td><td>The Price Checker’s live price searches</td><td><strong>Paid per search</strong>; API key held in the Best Buys Proxy script’s settings, under the personal account</td></tr>
-      <tr><td>SMS gateway (e.g. Mobile Message / ClickSend)</td><td>Text Updates — <em>not yet connected</em> (see <a href="documents.html#text">Chapter 7</a>)</td><td>Paid per message when set up</td></tr>
+      <tr><td>Anthropic (Claude AI) API</td><td>The Price Checker’s live price searches</td><td><strong>Paid per search</strong>; API key held in the Best Buys Proxy script’s settings (now owned by bdrv.hubadmin)</td></tr>
+      <tr><td>Mobile Message</td><td>Sends Text Updates to residents (see <a href="documents.html#text">Chapter 7</a>)</td><td><strong>Paid per message</strong>; account signed in as rabd.ctee; API key kept in the Text Updates script’s Script Properties and the Secrets Register</td></tr>
     </tbody>
   </table></div>
 
@@ -158,10 +170,10 @@
     <li><strong>March–May 2026:</strong> core building blocks — shared sidebar, Classifieds, RC Notices, surveys, Hub Admin daily checklist, Members Area with RC and SC panels, Action Register, Progress Tracker, CM and Manor issue pages, print/PDF.</li>
     <li><strong>June–August 2026:</strong> Down Memory Lane, Our Story, Fireside Talks, Raise a Concern, Text Updates page, FIFA World Cup Sports Hub, World News, The Roundup, Events/Calendar split, Manor vs Social Club events, Registration and Cost labels.</li>
     <li><strong>September 2026:</strong> navy/gold palette rolled out; Event Photos &amp; Videos and Travel Pics; Treasurer tiles for the SC Treasurer; Village (facility) Calendar run from a Google Sheet; Asset Register; Bridgeman Times rebuilt in the Hub palette; Body Corporate page.</li>
-    <li><strong>October 2026:</strong> Hub-hosted event videos; this handbook.</li>
+    <li><strong>October 2026:</strong> Hub-hosted event videos; this handbook; <strong>personal PINs</strong> with the PIN Manager, My PIN and My Workbench (replacing the Members Area and role dashboards); Text Updates connected to Mobile Message; External Contacts; Charities We Support; the Hub Administrator account <code>bdrv.hubadmin@gmail.com</code> and mailbox <code>hubadmin@bdrv.au</code>, with every Sheet and Apps Script moved to that account.</li>
   </ul>
 
-  <footer class="hb-foot"><span><a href="index.html">← Contents</a> · <a href="making-changes.html">Next: Repo, Hosting &amp; Making Changes →</a></span><span>Last reviewed: 8 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="index.html">← Contents</a> · <a href="making-changes.html">Next: Repo, Hosting &amp; Making Changes →</a></span><span>Last reviewed: 22 October 2026</span></footer>
 </main>
 </body>
 </html>
