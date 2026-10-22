@@ -97,6 +97,7 @@ strong { color:#fff8e6; }
 .tbl-wrap { overflow-x:auto; margin:12px 0 18px; border-radius:8px; border:2px solid var(--hub-charcoal); }
 table { width:100%; border-collapse:collapse; font-size:0.88em; }
 th, td { padding:9px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--hub-charcoal); }
+td { overflow-wrap:anywhere; }  /* let long names (e.g. add/edit/delete/reorderAnnouncements) wrap, so wide tables fit the page */
 th { background:var(--hub-navy-panel); color:var(--hub-gold); font-weight:700; white-space:nowrap; }
 tr:last-child td { border-bottom:none; }
 tbody tr:nth-child(even) td { background:rgba(255,255,255,0.025); }
