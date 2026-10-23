@@ -165,6 +165,10 @@
   .search-wrap input { border: none; outline: none; font-size: 0.8em; font-family: var(--font); color: #222; background: transparent; width: 160px; }
   .search-clear { background: none; border: none; cursor: pointer; color: #888; font-size: 1em; padding: 0 2px; line-height: 1; display: none; }
 
+  /* ── Search results ── */
+  mark.hit { background: #ffe066; color: #222; border-radius: 3px; padding: 0 2px; }
+  .search-count { font-size: 0.85em; font-weight: 700; color: var(--gold); margin-bottom: 0.75rem; display: none; }
+
     /* ── Print button ── */
   .print-btn { font-size: 0.82em; font-weight: 700; padding: 7px 16px; background: var(--navy); color: var(--gold); border: 2px solid var(--gold); border-radius: 20px; cursor: pointer; font-family: var(--font); transition: background 0.15s, color 0.15s; display: flex; align-items: center; gap: 5px; }
   .print-btn:hover { background: var(--gold); color: var(--navy); }
@@ -263,6 +267,7 @@
 
   <!-- ACCORDION -->
   <div id="loading" class="state-msg">⏳ Loading issues…</div>
+  <div class="search-count" id="search-count"></div>
   <div id="accordion" style="display:none"></div>
 
 </div>
@@ -365,6 +370,7 @@ async function loadIssues() {
     buildDashboard();
     buildAccordion();
     wireFilterBtns();
+    applyFilter();          // keep any search or filter in place after a save reloads the list
     checkRcAlerts();
   } catch(e) {
     document.getElementById("loading").textContent = "⚠️ Could not load issues. Please refresh.";
@@ -653,7 +659,10 @@ function buildDashboard() {
 // ── FILTER + SEARCH ──────────────────────────────────────────────────────────
 let activeFilter = "all";
 let searchTerm = "";
+let filtersWired = false;
 function wireFilterBtns() {
+  if (filtersWired) return;   // only set the buttons up once, even when the list reloads
+  filtersWired = true;
   document.querySelectorAll(".filter-btn").forEach(btn => {
     btn.addEventListener("click", function() {
       activeFilter = this.dataset.filter;
@@ -670,10 +679,15 @@ function wireFilterBtns() {
     si.addEventListener("input", () => {
       searchTerm = si.value.toLowerCase().trim();
       sc.style.display = searchTerm ? "block" : "none";
+      if (searchTerm) {            // a search always looks through every issue
+        activeFilter = "all";
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.filter === "all"));
+      }
       applyFilter();
     });
     sc.addEventListener("click", () => {
       si.value = ""; searchTerm = ""; sc.style.display = "none";
+      document.querySelectorAll(".cat-block").forEach(b => b.classList.remove("open"));
       applyFilter();
     });
   }
@@ -692,6 +706,51 @@ function applyFilter() {
       if (show) anyVisible = true;
     });
     block.style.display = anyVisible ? "" : "none";
+    // While searching, open the categories that have matches so they can be seen
+    if (searchTerm && anyVisible) block.classList.add("open");
+  });
+  highlightMatches();
+}
+
+// ── Search helpers: highlight the matching words and say how many were found ──
+function highlightMatches() {
+  document.querySelectorAll("#accordion mark.hit").forEach(m => {
+    const parent = m.parentNode;
+    parent.replaceChild(document.createTextNode(m.textContent), m);
+    parent.normalize();
+  });
+  const countEl = document.getElementById("search-count");
+  if (!searchTerm) { countEl.style.display = "none"; return; }
+  const visible = Array.from(document.querySelectorAll("#accordion .issue-row")).filter(r => r.style.display !== "none");
+  const shown = document.getElementById("search-input").value.trim();
+  countEl.textContent = visible.length
+    ? visible.length + (visible.length === 1 ? " issue" : " issues") + " found for \u201c" + shown + "\u201d \u2014 matching words are highlighted. Tap an issue to see its full notes."
+    : "No issues found for \u201c" + shown + "\u201d.";
+  countEl.style.display = "block";
+  visible.forEach(row => {
+    row.querySelectorAll(".issue-title, .issue-note-preview, .notes-display").forEach(area => {
+      const walker = document.createTreeWalker(area, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(node => {
+        const text = node.nodeValue, lower = text.toLowerCase();
+        let i = lower.indexOf(searchTerm);
+        if (i === -1) return;
+        const frag = document.createDocumentFragment();
+        let last = 0;
+        while (i !== -1) {
+          frag.appendChild(document.createTextNode(text.slice(last, i)));
+          const mk = document.createElement("mark");
+          mk.className = "hit";
+          mk.textContent = text.slice(i, i + searchTerm.length);
+          frag.appendChild(mk);
+          last = i + searchTerm.length;
+          i = lower.indexOf(searchTerm, last);
+        }
+        frag.appendChild(document.createTextNode(text.slice(last)));
+        node.parentNode.replaceChild(frag, node);
+      });
+    });
   });
 }
 
