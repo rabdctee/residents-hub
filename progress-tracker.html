@@ -110,6 +110,8 @@
   /* ── States ── */
   .state-msg { text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); font-size: 0.92em; }
   .state-msg .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+  mark.hit { background: #ffe066; color: #222; border-radius: 3px; padding: 0 2px; }
+  .search-count { font-size: 0.85em; font-weight: 700; color: var(--hub-blue); margin-bottom: 0.75rem; display: none; }
   .no-results { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.92em; display: none; }
 
   /* ── Expand/collapse ── */
@@ -240,6 +242,7 @@
       <button class="expand-btn" id="expand-all">Show all details ▼</button>
       <button class="expand-btn" id="collapse-all">Hide all details ▲</button>
     </div>
+    <div class="search-count" id="search-count"></div>
     <div id="accordion"></div>
     <div class="no-results" id="no-results">No issues match this filter or search.</div>
   </div>
@@ -510,8 +513,8 @@ function applyFilterAndSearch() {
       row.classList.toggle("hidden", !show);
       if (show) catHasVisible = true;
     });
-    // When a specific filter is active, auto-expand all matching categories
-    if (activeFilter !== "all" && catHasVisible) block.classList.add("open");
+    // When a specific filter is active, or someone is searching, open the matching categories
+    if ((activeFilter !== "all" || searchTerm) && catHasVisible) block.classList.add("open");
     block.style.display = catHasVisible ? "" : "none";
     if (catHasVisible) anyVisible = true;
     block.querySelectorAll(".mini-pill").forEach(pill => {
@@ -519,6 +522,54 @@ function applyFilterAndSearch() {
     });
   });
   document.getElementById("no-results").style.display = anyVisible ? "none" : "block";
+  highlightMatches();
+}
+
+// ── Search helpers: highlight the matching words and say how many were found ──
+function clearHighlights() {
+  document.querySelectorAll("#accordion mark.hit").forEach(m => {
+    const parent = m.parentNode;
+    parent.replaceChild(document.createTextNode(m.textContent), m);
+    parent.normalize();
+  });
+}
+function highlightMatches() {
+  clearHighlights();
+  const countEl = document.getElementById("search-count");
+  if (!searchTerm) { if (countEl) countEl.style.display = "none"; return; }
+  const visible = document.querySelectorAll("#accordion .issue-row:not(.hidden)");
+  const shownText = searchInput.value.trim();
+  if (countEl) {
+    countEl.textContent = visible.length
+      ? visible.length + (visible.length === 1 ? " issue" : " issues") + " found for “" + shownText + "” — matching words are highlighted."
+      : "No issues found for “" + shownText + "”.";
+    countEl.style.display = "block";
+  }
+  visible.forEach(row => {
+    row.querySelectorAll(".issue-name, .issue-note").forEach(area => {
+      const walker = document.createTreeWalker(area, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(node => {
+        const text = node.nodeValue, lower = text.toLowerCase();
+        let i = lower.indexOf(searchTerm);
+        if (i === -1) return;
+        const frag = document.createDocumentFragment();
+        let last = 0;
+        while (i !== -1) {
+          frag.appendChild(document.createTextNode(text.slice(last, i)));
+          const mk = document.createElement("mark");
+          mk.className = "hit";
+          mk.textContent = text.slice(i, i + searchTerm.length);
+          frag.appendChild(mk);
+          last = i + searchTerm.length;
+          i = lower.indexOf(searchTerm, last);
+        }
+        frag.appendChild(document.createTextNode(text.slice(last)));
+        node.parentNode.replaceChild(frag, node);
+      });
+    });
+  });
 }
 
 function escHtml(s) {
@@ -586,13 +637,14 @@ const searchInput = document.getElementById("search-input");
 const searchClear = document.getElementById("search-clear");
 searchInput.addEventListener("input", () => {
   searchTerm = searchInput.value.toLowerCase().trim();
-  if (searchTerm) filterSelected = true;
+  if (searchTerm) { filterSelected = true; activeFilter = "all"; }   // a search always looks through every issue
   searchClear.style.display = searchTerm ? "block" : "none";
   applyFilterAndSearch();
 });
 searchClear.addEventListener("click", () => {
   searchInput.value = ""; searchTerm = "";
   searchClear.style.display = "none";
+  if (activeFilter === "all") document.querySelectorAll(".cat-block").forEach(b => b.classList.remove("open"));
   applyFilterAndSearch();
 });
 
