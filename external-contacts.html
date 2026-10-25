@@ -94,6 +94,31 @@
     .grid { grid-template-columns: 1fr 1fr; }
     a { color: #000; text-decoration: none; }
   }
+
+  /* ══════════════════════════════════════════════════
+     ACCORDION — each category folds away.
+     Delete this block (and setupAccordions in the script)
+     to go back to everything always showing.
+  ═══════════════════════════════════════════════════ */
+  .group-label.acc-head { display: flex; align-items: center; gap: 10px;
+    background: rgba(246,242,231,0.06); border: 1px solid #3F4143; border-left: 4px solid #D4B860;
+    border-radius: 10px; padding: 14px 18px; margin: 12px 0 0; font-size: 0.95em; letter-spacing: 0.06em;
+    cursor: pointer; user-select: none; transition: background 0.15s; }
+  .group-label.acc-head:hover,
+  .group-label.acc-head:focus-visible { background: rgba(246,242,231,0.12); outline: none; }
+  .acc-count { margin-left: auto; font-size: 0.82em; font-weight: 600; letter-spacing: 0;
+               text-transform: none; color: rgba(246,242,231,0.7); }
+  .acc-arrow { font-size: 0.9em; transition: transform 0.2s; }
+  .acc-head.open .acc-arrow { transform: rotate(90deg); }
+  .grid.acc-body { padding: 12px 0 6px; }
+  .grid.acc-body.closed { display: none; }
+  .acc-tools { display: flex; gap: 8px; justify-content: flex-end; margin: 10px 0 4px; }
+  @media print {
+    .grid.acc-body.closed { display: grid !important; }   /* print everything */
+    .acc-tools, .acc-arrow, .acc-count { display: none !important; }
+    .group-label.acc-head { background: none; border: none; border-left: 4px solid #000; border-radius: 0;
+                            padding: 0 0 0 10px; margin: 20px 0 10px; color: #000; }
+  }
 </style>
 </head>
 <body>
@@ -263,8 +288,73 @@ function render() {
       .sort((a, b) => (a.name || a.organisation).localeCompare(b.name || b.organisation));
     return list.length ? '<div class="group-label">' + esc(cat) + '</div><div class="grid">' + list.map(cardHTML).join("") + '</div>' : "";
   }).join("");
+  setupAccordions(!!(find || showCat));
 }
 function pickCat(cat) { showCat = cat; render(); }
+
+// ── ACCORDION ──
+// Turns each category heading into a fold-away bar. Click a heading to show or
+// hide its contacts. The page remembers which categories you left open.
+// While searching or picking a category, every matching group opens by itself,
+// so nothing you're looking for is ever hidden.
+const ACC_KEY = "ec_open_sections";
+
+function setupAccordions(filtering) {
+  const box   = document.getElementById("list");
+  const heads = box.querySelectorAll(".group-label");
+  if (!heads.length) return;
+
+  let openList = [];
+  try { openList = JSON.parse(localStorage.getItem(ACC_KEY) || "[]") || []; } catch (e) {}
+
+  heads.forEach(head => {
+    const body = head.nextElementSibling;
+    if (!body || !body.classList.contains("grid")) return;
+    const name  = head.textContent.trim();
+    const count = body.querySelectorAll(":scope > .card").length;
+
+    head.innerHTML = '<span class="acc-arrow">▶</span><span>' + head.innerHTML + '</span>' +
+                     '<span class="acc-count">' + count + (count === 1 ? " contact" : " contacts") + '</span>';
+    head.classList.add("acc-head");
+    head.dataset.name = name;
+    head.setAttribute("role", "button");
+    head.setAttribute("tabindex", "0");
+    body.classList.add("acc-body");
+
+    setSection(head, body, filtering || heads.length === 1 || openList.indexOf(name) !== -1);
+
+    const toggle = () => { setSection(head, body, body.classList.contains("closed")); if (!filtering) saveOpenSections(); };
+    head.addEventListener("click", toggle);
+    head.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+    });
+  });
+
+  if (heads.length > 1 && !filtering) {
+    const tools = document.createElement("div");
+    tools.className = "acc-tools no-print";
+    tools.innerHTML = '<button class="btn btn-line btn-small" onclick="setAllSections(true)">▼ Open all</button>' +
+                      '<button class="btn btn-line btn-small" onclick="setAllSections(false)">▲ Close all</button>';
+    box.insertBefore(tools, heads[0]);
+  }
+}
+
+function setSection(head, body, open) {
+  body.classList.toggle("closed", !open);
+  head.classList.toggle("open", open);
+  head.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function setAllSections(open) {
+  document.querySelectorAll("#list .acc-head").forEach(h => setSection(h, h.nextElementSibling, open));
+  saveOpenSections();
+}
+
+function saveOpenSections() {
+  const open = [];
+  document.querySelectorAll("#list .acc-head.open").forEach(h => open.push(h.dataset.name));
+  try { localStorage.setItem(ACC_KEY, JSON.stringify(open)); } catch (e) {}
+}
 
 // ── Adding and editing ──
 function openForm(id) {
