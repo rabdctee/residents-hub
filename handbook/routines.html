@@ -70,7 +70,7 @@
       <tr><td>A new event isn’t in the Home-page box</td><td>The Home-page boxes are curated separately</td><td>See <a href="events.html#events">the two event lists</a>.</td></tr>
       <tr><td>The Google Calendar is out of step with the Village Calendar</td><td>Sync hasn’t run, or something was added directly to the Google Calendar</td><td>Press Sync on the admin page; always add activities through the admin page.</td></tr>
       <tr><td>A video won’t upload</td><td>Over 50 MB (resident upload) or over 25 MB (GitHub website)</td><td>Export smaller or in parts; use GitHub Desktop for Hub videos.</td></tr>
-      <tr><td>A Roundup tab shows no headlines</td><td>A news feed address changed or rss2json is unavailable</td><td>Check the feed address in <code>whats-new.html</code>; added items still show.</td></tr>
+      <tr><td>A Roundup tab shows no headlines</td><td>A news feed address changed, or the news site is refusing Google’s requests</td><td>Run <code>testFeeds</code> in the What’s New script; fix the address in its <code>NEWS_FEEDS</code> list and re-publish (Deploy → Manage deployments → pencil → <strong>New version</strong>). Added items still show.</td></tr>
       <tr><td>A page broke after an edit</td><td>An editing mistake</td><td>Revert the commit in GitHub Desktop (<a href="making-changes.html#undo">Chapter 2</a>), then retry the change carefully.</td></tr>
       <tr><td>Stray “\n” text appears on a page</td><td>A find-and-replace in VS Code without regex mode</td><td><code>sidebar.js</code> removes these automatically on pages that load it; otherwise fix in the file.</td></tr>
     </tbody>
@@ -100,7 +100,7 @@
       <tr><td>6</td><td><strong>Price Checker costs</strong> — each search is a paid AI request, and the script accepts searches from anyone with its address.</td><td>Set a monthly spending limit in the Anthropic console; consider a simple key or daily limit in the script.</td></tr>
       <tr><td>7</td><td><strong>Google Sheets API key</strong> written in <code>index.html</code>.</td><td>Restrict it in Google Cloud Console to the Sheets API and to bdrv.au.</td></tr>
       <tr><td>8</td><td><strong>Website size</strong> — videos count toward GitHub’s 1 GB limit.</td><td>Quarterly check of the <code>videos</code> folder.</td></tr>
-      <tr><td>9</td><td><strong>Free outside services</strong> (rss2json.com, Open-Meteo, Wikipedia) could change or stop.</td><td>Accept; the pages degrade gracefully. Check The Roundup occasionally.</td></tr>
+      <tr><td>9</td><td><strong>Free outside services</strong> (the ABC, Brisbane Times and NASA news feeds, Open-Meteo, Wikipedia) could change or stop.</td><td>Accept; the pages degrade gracefully. Check The Roundup occasionally, and run <code>testFeeds</code> if a tab is empty.</td></tr>
     </tbody>
   </table></div>
 
@@ -120,7 +120,7 @@
     <li><strong>Menu kept in two places</strong> — <code>sidebar.js</code> and a copy inside <code>index.html</code>. Change both, or in future make <code>index.html</code> use <code>sidebar.js</code>.</li>
   </ul>
 
-  <footer class="hb-foot"><span><a href="page-directory.html">← Page Directory</a> · <a href="index.html">Contents</a></span><span>Last reviewed: 22 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="page-directory.html">← Page Directory</a> · <a href="index.html">Contents</a></span><span>Last reviewed: 25 October 2026</span></footer>
 </main>
 </body>
 </html>

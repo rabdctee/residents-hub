@@ -66,9 +66,9 @@
   <h2 id="roundup">The Roundup (What’s New)</h2>
   <ul>
     <li><code>whats-new.html</code> — six tabs: Health &amp; Wellbeing, Technology, Books/Film/TV, Local Brisbane, Science &amp; Nature, Nostalgia. Each mixes live headlines with items added by the Hub. Listed in the menu under <em>World News</em>, with “Major Media Outlets” (<code>news.html</code>).</li>
-    <li>Live feeds: ABC News (Lifestyle feed for Health, topic feed 2298 for Technology, Entertainment &amp; Culture feed for Books/Film/TV), Brisbane Times (Local), NASA (Science &amp; Nature), Wikipedia “On This Day” (Nostalgia, events 5–100 years ago). ABC, Brisbane Times and NASA go through rss2json.com because browsers cannot read news feeds directly.</li>
-    <li><code>whats-new-add.html</code> — add or delete an item (linked only from Hub Admin); saved to the first tab of <em>BDRV What’s New Submissions</em> (timestamp, category, title, blurb, link, added by). Use it for CSIRO stories and Brisbane-specific nostalgia, which have no automatic feed. The page needs the administrator’s personal PIN and sends the sign-in pass with each change; whether the script refuses requests without one is <em>to confirm</em>.</li>
-    <li>If a feed address stops working (ABC changed its rules in August 2026), the page quietly shows only the added items for that tab.</li>
+    <li>Live feeds: ABC News (Lifestyle feed for Health, topic feed 2298 for Technology, Entertainment &amp; Culture feed for Books/Film/TV), Brisbane Times (Local), NASA (Science &amp; Nature), Wikipedia “On This Day” (Nostalgia, events 5–100 years ago). Browsers cannot read news feeds directly, so the page asks the <em>What’s New</em> script (<code>?action=feed&amp;id=…</code>), which fetches the feed from Google’s side and keeps a copy for 30 minutes. The feed addresses are listed in that script’s <code>NEWS_FEEDS</code> setting (ids <code>abc-health</code>, <code>abc-tech</code>, <code>abc-arts</code>, <code>brisbane</code>, <code>nasa</code>); to change a feed, edit that list and re-publish the script. Running <code>testFeeds</code> in the editor checks every feed. Until October 2026 this went through the free rss2json.com service, which then began blocking requests.</li>
+    <li><code>whats-new-add.html</code> — add or delete an item (linked only from Hub Admin); saved to the first tab of <em>BDRV What’s New Submissions</em> (timestamp, category, title, blurb, link, added by). Use it for CSIRO stories and Brisbane-specific nostalgia, which have no automatic feed. The page needs the administrator’s personal PIN and sends the sign-in pass with each change; the script checks it with the PIN Manager (requests without a pass are still accepted until the changeover ends on 31 December 2026).</li>
+    <li>If a feed stops working (ABC changed its rules in August 2026), that tab shows a short “couldn’t load” notice alongside any added items. Run <code>testFeeds</code> to see which feed is failing and why.</li>
   </ul>
 
   <h2 id="life">Life in Our Community</h2>
@@ -108,7 +108,7 @@
     </tbody>
   </table></div>
 
-  <footer class="hb-foot"><span><a href="documents.html">← Documents</a> · <a href="page-directory.html">Next: Page Directory →</a></span><span>Last reviewed: 22 October 2026</span></footer>
+  <footer class="hb-foot"><span><a href="documents.html">← Documents</a> · <a href="page-directory.html">Next: Page Directory →</a></span><span>Last reviewed: 25 October 2026</span></footer>
 </main>
 </body>
 </html>
