@@ -364,6 +364,10 @@
   var openVillage   = villagePages.some(isActive)    ? ' open' : '';
   var openInfo      = infoPages.some(isActive)       ? ' open' : '';
 
+  // ⚠️ THE MENU LIVES IN TWO PLACES. If you change this menu, also change the
+  // other copy inside index.html (the Home page has its own menu, near the
+  // "LEFT SIDEBAR" note). Links to Home-page sections here open index.html at
+  // that section (index.html#… or ?page=…); in index.html they use showPage('…').
   var sidebarHTML = `
     <aside class="hub-sidebar" id="hubSidebar">
       <div class="sb-section">
