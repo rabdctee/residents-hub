@@ -336,18 +336,6 @@
         </div>
       </div>
 
-      <div class="item-card">
-        <div class="item-source-bar">Australian Geographic</div>
-        <div class="item-body">
-          <div class="item-title">Sample headline: Rare wildlife sighting delights researchers</div>
-          <p class="item-snippet">Placeholder snippet for the Australian Geographic feed.</p>
-          <div class="item-meta">
-            <span class="item-date">Placeholder date</span>
-            <a class="item-link-btn" href="#" target="_blank">Read on Australian Geographic ↗</a>
-          </div>
-        </div>
-      </div>
-
     </div>
     <div class="cat-panel" id="panel-nostalgia">
 
@@ -444,11 +432,11 @@
 
   // ── Load live NASA headlines ─────────────────────────────────
   // Browsers aren't allowed to read another website's RSS feed directly
-  // (a security rule called CORS), so this goes through a free
-  // "translator" service (rss2json.com) that converts the feed into a
-  // format the page is allowed to read.
-  var NASA_RSS_URL   = 'https://www.nasa.gov/rss/dyn/breaking_news.rss';
-  var NASA_JSON_URL  = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(NASA_RSS_URL);
+  // (a security rule called CORS). The page used to go through a free
+  // "translator" service (rss2json.com), but that now blocks requests,
+  // so since October 2026 our own What's New script fetches the feeds
+  // (the list of feeds is kept in that script, NEWS_FEEDS).
+  var NASA_JSON_URL  = WHATSNEW_URL + '?action=feed&id=nasa';
 
   function stripHtml(html) {
     var tmp = document.createElement('div');
@@ -502,10 +490,10 @@
   loadNasaFeed();
 
   // ── Load live ABC News headlines (Health, Technology, Entertainment) ──
-  // Same "translator" approach as NASA above — reused for three ABC topic feeds
-  // and the Brisbane Times feed below.
-  function loadFeed(rssUrl, panelId, statusId, sourceLabel, maxItems) {
-    var jsonUrl = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(rssUrl);
+  // Same approach as NASA above — our What's New script fetches the feed.
+  // feedId is one of the names in that script's NEWS_FEEDS list.
+  function loadFeed(feedId, panelId, statusId, sourceLabel, maxItems) {
+    var jsonUrl = WHATSNEW_URL + '?action=feed&id=' + encodeURIComponent(feedId);
     var panel = document.getElementById(panelId);
 
     fetch(jsonUrl)
@@ -549,10 +537,10 @@
       });
   }
 
-  loadFeed('https://www.abc.net.au/news/feed/103728564/rss.xml', 'panel-health', 'abc-health-status', 'ABC News', 4);
-  loadFeed('https://www.abc.net.au/news/feed/2298/rss.xml',      'panel-tech',   'abc-tech-status',   'ABC News', 4);
-  loadFeed('https://www.abc.net.au/news/feed/103728568/rss.xml', 'panel-arts',   'abc-arts-status',   'ABC News', 4);
-  loadFeed('https://www.brisbanetimes.com.au/rss/feed.xml',      'panel-local',  'brisbanetimes-status', 'Brisbane Times', 4);
+  loadFeed('abc-health', 'panel-health', 'abc-health-status',    'ABC News',       4);
+  loadFeed('abc-tech',   'panel-tech',   'abc-tech-status',      'ABC News',       4);
+  loadFeed('abc-arts',   'panel-arts',   'abc-arts-status',      'ABC News',       4);
+  loadFeed('brisbane',   'panel-local',  'brisbanetimes-status', 'Brisbane Times', 4);
 
   // ── Load "On This Day" history from Wikipedia ───────────────
   // A genuine, free, no-signup feed — updates itself daily based on
