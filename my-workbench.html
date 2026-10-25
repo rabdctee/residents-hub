@@ -99,6 +99,25 @@
   #check-progress { font-size: 0.8em; color: #5f6368; }
 
   @media(max-width:600px) { .card-grid { grid-template-columns: 1fr; } .dash-date { text-align: left; } }
+
+  /* ══════════════════════════════════════════════════
+     ACCORDION — each tool section folds away.
+     Delete this block (and setupAccordions in the script)
+     to go back to everything always showing.
+  ═══════════════════════════════════════════════════ */
+  .section-label.acc-head { display: flex; align-items: center; gap: 10px; background: white;
+    border: 1px solid #c5d8ee; border-left-width: 5px; border-left-style: solid; border-radius: 10px;
+    padding: 14px 18px; margin: 12px 0 0; font-size: 0.95em; letter-spacing: 0.06em;
+    cursor: pointer; user-select: none; transition: background 0.15s; }
+  .section-label.acc-head:hover,
+  .section-label.acc-head:focus-visible { background: #f0f6fc; outline: none; }
+  .acc-count { margin-left: auto; font-size: 0.78em; font-weight: 600; letter-spacing: 0;
+               text-transform: none; color: #5f6368; }
+  .acc-arrow { font-size: 0.9em; color: #C9A44A; transition: transform 0.2s; }
+  .acc-head.open .acc-arrow { transform: rotate(90deg); }
+  .card-grid.acc-body { padding: 12px 0 6px; }
+  .card-grid.acc-body.closed { display: none; }
+  .acc-tools { display: flex; gap: 8px; justify-content: flex-end; margin: 20px 0 4px; }
 </style>
 </head>
 <body>
@@ -234,10 +253,83 @@ function render() {
       html += '</div>';
     });
     box.innerHTML = html || '<div class="empty-note">You\'re signed in, but no committee tools have been set up for your roles yet. Please contact the Hub administrator.</div>';
+    setupAccordions();
   }
 
   buildChecklist();
   loadMyActions();
+}
+
+// ── ACCORDION ──
+// Turns each tool section heading into a fold-away bar. Click a heading to show
+// or hide its tools. The page remembers which sections you left open. The first
+// time, someone with only one or two sections sees them open; more than that
+// start closed so the page is tidy.
+const ACC_KEY = "wb_open_sections";
+
+function setupAccordions() {
+  const box   = document.getElementById("tiles");
+  const heads = box.querySelectorAll(".section-label");
+  if (!heads.length) return;
+
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(ACC_KEY) || "null"); } catch (e) {}
+
+  heads.forEach(head => {
+    const body = head.nextElementSibling;
+    if (!body || !body.classList.contains("card-grid")) return;
+    const name  = head.textContent.trim();
+    const count = body.querySelectorAll(":scope > .info-card").length;
+
+    head.innerHTML = '<span class="acc-arrow">▶</span><span>' + head.innerHTML + '</span>' +
+                     '<span class="acc-count">' + count + (count === 1 ? " tool" : " tools") + '</span>';
+    head.classList.add("acc-head");
+    head.dataset.name = name;
+    head.setAttribute("role", "button");
+    head.setAttribute("tabindex", "0");
+    body.classList.add("acc-body");
+
+    setSection(head, body, saved ? saved.indexOf(name) !== -1 : heads.length <= 2);
+
+    const toggle = () => { setSection(head, body, body.classList.contains("closed")); saveOpenSections(); };
+    head.addEventListener("click", toggle);
+    head.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+    });
+  });
+
+  // "Open all" / "Close all" buttons — only worth showing with more than one section
+  if (heads.length > 1) {
+    const tools = document.createElement("div");
+    tools.className = "acc-tools";
+    tools.innerHTML = '<button class="btn-reset-checks" onclick="setAllSections(true)">▼ Open all</button>' +
+                      '<button class="btn-reset-checks" onclick="setAllSections(false)">▲ Close all</button>';
+    box.insertBefore(tools, heads[0]);
+  }
+}
+
+function setSection(head, body, open) {
+  body.classList.toggle("closed", !open);
+  head.classList.toggle("open", open);
+  head.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function setAllSections(open) {
+  document.querySelectorAll("#tiles .acc-head").forEach(h => setSection(h, h.nextElementSibling, open));
+  saveOpenSections();
+}
+
+function saveOpenSections() {
+  // Keep sections remembered as open even if they're not on screen right now
+  // (e.g. the administrator switching "Show the workbench as seen by").
+  let open = [];
+  try { open = JSON.parse(localStorage.getItem(ACC_KEY) || "[]") || []; } catch (e) {}
+  document.querySelectorAll("#tiles .acc-head").forEach(h => {
+    const i = open.indexOf(h.dataset.name);
+    if (h.classList.contains("open") && i === -1) open.push(h.dataset.name);
+    if (!h.classList.contains("open") && i !== -1) open.splice(i, 1);
+  });
+  try { localStorage.setItem(ACC_KEY, JSON.stringify(open)); } catch (e) {}
 }
 
 // ── Set up the "Show the workbench for" chooser (administrator / old shared PIN) ──

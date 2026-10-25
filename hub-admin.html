@@ -327,6 +327,48 @@
     color: #93a0b3 !important;
     border-color: #2e3b4b !important;
   }
+
+  /* ══════════════════════════════════════════════════
+     ACCORDION — each section heading folds its tiles away.
+     Delete this block (and setupAccordions in the script)
+     to go back to everything always showing.
+  ═══════════════════════════════════════════════════ */
+  .section-label.acc-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1c2530;
+    border: 1px solid #2e3b4b;
+    border-left: 4px solid #C9A44A;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 12px 0 0;
+    font-size: 0.95em;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .section-label.acc-head:hover,
+  .section-label.acc-head:focus-visible { background: #232f3d; outline: none; }
+  .acc-count {
+    margin-left: auto;
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #93a0b3;
+  }
+  .acc-arrow {
+    font-size: 0.9em;
+    color: #C9A44A;
+    transition: transform 0.2s;
+  }
+  .acc-head.open .acc-arrow { transform: rotate(90deg); }
+  .card-grid.acc-body { padding: 12px 0 6px; }
+  .card-grid.acc-body.closed { display: none; }
+
+  .acc-tools { display: flex; gap: 8px; justify-content: flex-end; margin-bottom: 4px; }
 </style>
 </head>
 <body>
@@ -1110,6 +1152,67 @@ function init() {
   document.getElementById('today-day').textContent =
     now.toLocaleDateString('en-AU', { weekday: 'long' });
   buildChecklist();
+  setupAccordions();
+}
+
+// ── ACCORDION ────────────────────────────────────────────────────────────────
+// Turns each section heading into a fold-away bar. Click a heading to show or
+// hide its tiles. The page remembers which sections you left open.
+const ACC_KEY = 'hub_admin_open_sections';
+
+function setupAccordions() {
+  const heads = document.querySelectorAll('.section-label');
+  if (!heads.length || heads[0].classList.contains('acc-head')) return;   // already done
+
+  let openList = [];
+  try { openList = JSON.parse(localStorage.getItem(ACC_KEY) || '[]'); } catch (e) {}
+
+  heads.forEach(head => {
+    const body = head.nextElementSibling;
+    if (!body || !body.classList.contains('card-grid')) return;
+    const name  = head.textContent.trim();
+    const count = body.querySelectorAll(':scope > .admin-card').length;
+
+    head.innerHTML = '<span class="acc-arrow">▶</span><span>' + head.innerHTML + '</span>' +
+                     '<span class="acc-count">' + count + (count === 1 ? ' tool' : ' tools') + '</span>';
+    head.classList.add('acc-head');
+    head.dataset.name = name;
+    head.setAttribute('role', 'button');
+    head.setAttribute('tabindex', '0');
+    body.classList.add('acc-body');
+
+    setSection(head, body, openList.includes(name));
+
+    const toggle = () => { setSection(head, body, body.classList.contains('closed')); saveOpenSections(); };
+    head.addEventListener('click', toggle);
+    head.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+
+  // "Open all" / "Close all" buttons above the first section
+  const tools = document.createElement('div');
+  tools.className = 'acc-tools';
+  tools.innerHTML = '<button class="btn-reset-checks" onclick="setAllSections(true)">▼ Open all</button>' +
+                    '<button class="btn-reset-checks" onclick="setAllSections(false)">▲ Close all</button>';
+  heads[0].parentNode.insertBefore(tools, heads[0]);
+}
+
+function setSection(head, body, open) {
+  body.classList.toggle('closed', !open);
+  head.classList.toggle('open', open);
+  head.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function setAllSections(open) {
+  document.querySelectorAll('.acc-head').forEach(h => setSection(h, h.nextElementSibling, open));
+  saveOpenSections();
+}
+
+function saveOpenSections() {
+  const open = [];
+  document.querySelectorAll('.acc-head.open').forEach(h => open.push(h.dataset.name));
+  try { localStorage.setItem(ACC_KEY, JSON.stringify(open)); } catch (e) {}
 }
 
 // ── CHECKLIST ────────────────────────────────────────────────────────────────
