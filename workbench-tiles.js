@@ -282,7 +282,13 @@ var WORKBENCH_TILES = [
   { section: "admin", icon: "🔑", title: "PIN Manager",
     desc: "Choose who can enter each area, issue welcome codes and reset forgotten PINs.",
     roles: ["admin"],
-    links: [["🔑 Manage Access", "pin-admin.html"]] }
+    links: [["🔑 Manage Access", "pin-admin.html"]] },
+
+  { section: "admin", icon: "🔍", title: "Search",
+    desc: "Manage the site search index and custom keyword mappings.",
+    roles: ["admin"],
+    links: [["⚙️ Search Admin", "search-admin.html"],
+            ["👁 Test Search", "index.html", "outline"]] }
 ];
 
 // ── Daily checklist items, by role (everyone gets the items for all their roles) ──
