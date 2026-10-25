@@ -117,7 +117,7 @@
     <li><strong>Unused files:</strong> <code>styles.css</code> and <code>search-index.json</code>; the <code>REGISTRY_SHEET_ID</code> setting in <code>index.html</code> still names the old Document Registry but nothing uses it.</li>
     <li><strong>Two contact-list Sheets</strong> — consolidate to the one the Residents Data script reads, then stop publishing it to the web.</li>
     <li><strong>Action Register history</strong> — edits made before the 2026 row-number fix may sit on the wrong action; worth a one-off check against the minutes.</li>
-    <li><strong>Menu kept in two places</strong> — <code>sidebar.js</code> and a copy inside <code>index.html</code>. Change both, or in future make <code>index.html</code> use <code>sidebar.js</code>.</li>
+    <li><strong>Menu kept in two places</strong> — <code>sidebar.js</code> (every other page) and a copy inside <code>index.html</code> (the Home page). <strong>Always change both.</strong> A note at the top of each menu points to the other copy. Making <code>index.html</code> use <code>sidebar.js</code> was considered in October 2026 and decided against: the Home page’s menu switches sections within the page, its sidebar also holds the weather, Emergency button and Upcoming Events box, and <code>sidebar.js</code> rearranges any page it is added to, so the change would mean rebuilding the Home page. The two menus were checked and brought into line on 25 October 2026.</li>
   </ul>
 
   <footer class="hb-foot"><span><a href="page-directory.html">← Page Directory</a> · <a href="index.html">Contents</a></span><span>Last reviewed: 25 October 2026</span></footer>
