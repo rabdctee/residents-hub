@@ -208,5 +208,187 @@
     "title": "🌤️ Weather",
     "description": "Current weather for Bridgeman Downs",
     "keywords": "weather forecast temperature rain sunny cloudy Bridgeman Downs Brisbane"
+  },
+  {
+    "page": "concerts",
+    "section": null,
+    "title": "🎵 Lord Mayor's City Hall Concerts",
+    "description": "Monthly free concerts at Brisbane City Hall, updated each month",
+    "keywords": "concert concerts city hall lord mayor brisbane city council free music orchestra band choir performance show entertainment monthly"
+  },
+  {
+    "page": "sports-hub",
+    "section": null,
+    "title": "🏆 Sports Hub",
+    "description": "Sporting results, fixtures, and broadcast information for major competitions",
+    "keywords": "sport sports sports hub nrl afl rugby union league cricket football soccer a-league basketball netball nbl wnbl tennis golf motorsport racing bathurst horse racing melbourne cup everest results fixtures scores broadcast tv schedule grand final state of origin world cup world series nba nhl bledisloe cup"
+  },
+  {
+    "page": "welcome",
+    "section": null,
+    "title": "🌟 Welcome to BDRV",
+    "description": "An introduction to the village and the Hub for new or visiting residents",
+    "keywords": "welcome new resident first time visiting introduction orientation getting started moving in guide overview tour village"
+  },
+  {
+    "page": "news",
+    "section": null,
+    "title": "🌏 World News — Major Media Outlets",
+    "description": "Quick links to major news outlets for world and national news",
+    "keywords": "world news headlines news outlets national international news abc current affairs media"
+  },
+  {
+    "page": "whats-new",
+    "section": null,
+    "title": "📰 The Roundup",
+    "description": "Curated headlines — health & wellbeing, technology, books/film/TV, local Brisbane news, science & nature, nostalgia",
+    "keywords": "the roundup what's new health wellbeing technology tech books film tv entertainment local brisbane news science nature nasa nostalgia on this day history headlines curated articles"
+  },
+  {
+    "page": "fireside-talks",
+    "section": null,
+    "title": "☕ Fireside Talks",
+    "description": "Informal guest-speaker talks and discussion sessions",
+    "keywords": "fireside talks guest speaker presentation session chat informal talk coffee morning afternoon"
+  },
+  {
+    "page": "event-gallery",
+    "section": null,
+    "title": "📷 Event Photos & Videos",
+    "description": "Photos and videos from village events, submitted by residents and staff",
+    "keywords": "photos videos event photos gallery pictures fashion parade photo album event media submit camera"
+  },
+  {
+    "page": "community-life",
+    "section": null,
+    "title": "🎨 Artists & Creators — Life in Our Community",
+    "description": "Resident-contributed arts & crafts, recipes, village life, poetry & writing, music & dance, trivia & quizzes, humour",
+    "keywords": "community life artists creators arts crafts recipes village life poetry writing music dance trivia quizzes humour jokes contribution share"
+  },
+  {
+    "page": "charities",
+    "section": null,
+    "title": "💛 Charities We Support",
+    "description": "Charities the village community contributes to",
+    "keywords": "charity charities donate donation uniforms 4 kids hummingbird house giving support cause fundraising"
+  },
+  {
+    "page": "classifieds",
+    "section": null,
+    "title": "📌 Classifieds",
+    "description": "Resident classifieds — items for sale, wanted, swap or free",
+    "keywords": "classifieds for sale buy sell swap wanted free items listing advertisement marketplace"
+  },
+  {
+    "page": "savings",
+    "section": null,
+    "title": "💲 Price Checker — Best Buys",
+    "description": "Comparing grocery and everyday prices to help find the best buys",
+    "keywords": "price checker best buys savings compare prices groceries shopping cheap deals specials discount comparison supermarket"
+  },
+  {
+    "page": "travel-gallery",
+    "section": null,
+    "title": "✈️ Travel Pics",
+    "description": "Resident-submitted photo albums from personal travels",
+    "keywords": "travel pics photos travel album holiday trip overseas vacation pictures resident travel egypt"
+  },
+  {
+    "page": "our-story",
+    "section": null,
+    "title": "📜 History — Our Story",
+    "description": "The village's history and resident-submitted memory stories",
+    "keywords": "our story history village history founding heritage stories from residents memories"
+  },
+  {
+    "page": "memories",
+    "section": null,
+    "title": "🕰️ Down Memory Lane",
+    "description": "Nostalgia and reminiscing — looking back at earlier times",
+    "keywords": "down memory lane memories nostalgia old photos reminiscing history memory lane"
+  },
+  {
+    "page": "village-map",
+    "section": null,
+    "title": "🗺️ Village Map",
+    "description": "Map of the village showing all precincts and facilities",
+    "keywords": "map village map layout precinct location directions find building unit where plan"
+  },
+  {
+    "page": "getting-around",
+    "section": null,
+    "title": "🚌 Getting Around",
+    "description": "Transport options around the village and Brisbane",
+    "keywords": "getting around transport bus train taxi rideshare shuttle courtesy bus driving parking mobility scooter"
+  },
+  {
+    "page": "how-to",
+    "section": null,
+    "title": "❓ Help & How To",
+    "description": "Step-by-step help with phones, TV, email, photos, home and online safety, and new technology",
+    "keywords": "help how to guide instructions tech support computer phone email tv photos getting started staying safe new technology ring call deleting messages scam"
+  },
+  {
+    "page": "info-sessions",
+    "section": null,
+    "title": "🎤 Information Sessions",
+    "description": "Scheduled information sessions and guest presentations for residents",
+    "keywords": "information sessions presentation seminar talk guest speaker scam awareness scheduled session"
+  },
+  {
+    "page": "raise-a-concern",
+    "section": null,
+    "title": "💬 Raise a Concern",
+    "description": "Submit a concern or issue privately to the Residents Committee",
+    "keywords": "raise a concern complaint issue problem feedback submit concern residents committee private"
+  },
+  {
+    "page": "community-info",
+    "section": null,
+    "title": "🔒 Residents Only — Community Info",
+    "description": "Restricted resident-only information, including Village Budgets",
+    "keywords": "residents only community info village budgets restricted information private resident area"
+  },
+  {
+    "page": "residents-contact-list",
+    "section": null,
+    "title": "📒 Residents Contact List",
+    "description": "Directory of resident names, units and contact details",
+    "keywords": "residents contact list phone numbers unit numbers directory neighbours residents list"
+  },
+  {
+    "page": "events-list",
+    "section": null,
+    "title": "🎉 Events List",
+    "description": "Full list of upcoming events with a Register button",
+    "keywords": "events list full list upcoming events register sausage sizzle ice cream social club event list"
+  },
+  {
+    "page": "facility-calendar-print",
+    "section": null,
+    "title": "🗓️ Village Calendar",
+    "description": "Weekly and monthly village facility and activity schedule",
+    "keywords": "village calendar facility calendar schedule weekly monthly activities timetable printable calendar trivia roast night book club poetry zodiac lunch movie bus happy hour"
+  },
+  {
+    "page": "progress-tracker",
+    "section": null,
+    "title": "⚠️ Issues Progress Tracker",
+    "description": "Status and progress of reported maintenance and village issues",
+    "keywords": "issues progress tracker maintenance issue status pool repair tracking dashboard outstanding resolved"
+  },
+  {
+    "page": "rc-notices",
+    "section": null,
+    "title": "📋 RC Notices",
+    "description": "Residents Committee notices and announcements",
+    "keywords": "rc notices residents committee notices announcements updates bulletin surveys"
+  },
+  {
+    "page": "register-for-event",
+    "section": null,
+    "title": "🎉 Register for an Event",
+    "description": "Register your name for an upcoming Social Club or village event",
+    "keywords": "register registration sign up book event booking rsvp reserve place"
   }
 ]
