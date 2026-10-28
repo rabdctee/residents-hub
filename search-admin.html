@@ -148,6 +148,8 @@
     .page-cell{ font-size:0.85em; color:#555; }
     .badge-active  { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; border-radius:4px; padding:2px 8px; font-size:0.78em; font-weight:700; }
     .badge-inactive{ background:#f5f5f5; color:#999; border:1px solid #ddd; border-radius:4px; padding:2px 8px; font-size:0.78em; font-weight:700; }
+    .index-table tr.suggested td{ background:#fff8ea; }
+    .index-table tr.suggested:nth-child(even) td{ background:#fff4db; }
 
     /* ── Log table ── */
     .log-table{ width:100%; border-collapse:collapse; font-size:0.88em; }
@@ -259,6 +261,15 @@
 
   <!-- ── TAB: SEARCH INDEX ── -->
   <div class="tab-panel active" id="tab-index">
+
+    <div class="section-title" id="suggestSection" style="display:none;">💡 Suggested Mappings <span id="suggest-count" style="font-weight:400;font-size:0.75em;color:#888;"></span></div>
+    <div id="suggestWrap" style="display:none;margin-bottom:24px;">
+      <p style="font-size:0.85em;color:#666;margin-bottom:12px;">
+        These are best-guess matches for searches that found nothing, worked out automatically from the Hub's search keywords.
+        Nothing here goes live until you approve it — reject anything that doesn't look right.
+      </p>
+      <div id="suggestTableWrap"></div>
+    </div>
 
     <div class="section-title">Add a New Search Mapping</div>
     <div class="add-form">
@@ -395,7 +406,11 @@ function loadIndex() {
 }
 
 function renderIndex() {
-  if (!indexData.length) {
+  var pending = indexData.filter(function(i) { return i.status === 'Pending'; });
+  var active  = indexData.filter(function(i) { return i.status !== 'Pending'; });
+  renderSuggestions(pending);
+
+  if (!active.length) {
     document.getElementById('indexTableWrap').innerHTML =
       '<div class="loading">No mappings yet. Add one above.</div>';
     return;
@@ -404,7 +419,7 @@ function renderIndex() {
     '<th>Keyword / Phrase</th><th>Goes To</th><th>Section</th>' +
     '<th>Display Title</th><th>Status</th><th>Actions</th>' +
     '</tr></thead><tbody>';
-  indexData.forEach(function(item) {
+  active.forEach(function(item) {
     html += '<tr class="' + (item.active ? '' : 'inactive') + '">' +
       '<td class="keyword-cell">' + esc(item.keyword) + '</td>' +
       '<td class="page-cell">' + esc(item.page) + '</td>' +
@@ -421,6 +436,60 @@ function renderIndex() {
   });
   html += '</tbody></table>';
   document.getElementById('indexTableWrap').innerHTML = html;
+}
+
+function renderSuggestions(items) {
+  var heading = document.getElementById('suggestSection');
+  var wrap    = document.getElementById('suggestWrap');
+  if (!items.length) {
+    heading.style.display = 'none';
+    wrap.style.display    = 'none';
+    return;
+  }
+  heading.style.display = '';
+  wrap.style.display    = '';
+  document.getElementById('suggest-count').textContent = '(' + items.length + ')';
+
+  var html = '<table class="index-table"><thead><tr>' +
+    '<th>Search Term</th><th>Suggested Page</th><th>Section</th>' +
+    '<th>Display Title</th><th>Actions</th>' +
+    '</tr></thead><tbody>';
+  items.forEach(function(item) {
+    html += '<tr class="suggested">' +
+      '<td class="keyword-cell">' + esc(item.keyword) + '</td>' +
+      '<td class="page-cell">' + esc(item.page) + '</td>' +
+      '<td class="page-cell">' + (item.section ? esc(item.section) : '<span style="color:#ccc;">—</span>') + '</td>' +
+      '<td>' + esc(item.title) + '</td>' +
+      '<td style="white-space:nowrap;">' +
+        '<button class="btn btn-gold btn-sm" onclick="approveSuggestion(' + item.row + ')" style="margin-right:4px;">✅ Approve</button>' +
+        '<button class="btn btn-danger btn-sm" onclick="rejectSuggestion(' + item.row + ',\'' + esc(item.keyword) + '\')">✕ Reject</button>' +
+      '</td></tr>';
+  });
+  html += '</tbody></table>';
+  document.getElementById('suggestTableWrap').innerHTML = html;
+}
+
+function approveSuggestion(row) {
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: signedBody({ action: 'approveSuggestion', row: row })
+  })
+  .then(r => r.json()).then(checkSignIn)
+  .then(() => { toast('✅ Suggestion approved — now live'); loadIndex(); })
+  .catch(() => toast('⚠️ Failed to approve', true));
+}
+
+function rejectSuggestion(row, keyword) {
+  if (!confirm('Discard the suggested mapping for "' + keyword + '"?')) return;
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: signedBody({ action: 'rejectSuggestion', row: row })
+  })
+  .then(r => r.json()).then(checkSignIn)
+  .then(() => { toast('🗑️ Suggestion discarded'); loadIndex(); })
+  .catch(() => toast('⚠️ Failed to reject', true));
 }
 
 function editMapping(row) {
