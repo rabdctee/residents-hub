@@ -621,9 +621,12 @@ function loadLog() {
     .then(data => {
       logData = data.items || [];
       renderLog(logData);
-      buildStats();
+      // Keep a Statistics hiccup from being mistaken for the log itself failing —
+      // the log has already loaded fine by this point either way.
+      try { buildStats(); } catch (err) { console.error('Could not build statistics:', err); }
     })
-    .catch(() => {
+    .catch((err) => {
+      console.error('Could not load search log:', err);
       document.getElementById('logTableWrap').innerHTML =
         '<div class="loading">Could not load log.</div>';
     });
@@ -654,7 +657,7 @@ function renderLog(items) {
 
 function filterLog() {
   var q = document.getElementById('logFilter').value.toLowerCase();
-  var filtered = logData.filter(i => i.term.toLowerCase().includes(q));
+  var filtered = logData.filter(i => String(i.term || '').toLowerCase().includes(q));
   renderLog(filtered);
 }
 
@@ -664,7 +667,9 @@ function buildStats() {
   var noResults = logData.filter(i => i.results == 0).length;
   var termCount = {};
   logData.forEach(function(i) {
-    termCount[i.term] = (termCount[i.term] || 0) + 1;
+    var t = String(i.term || '').trim();
+    if (!t) return;
+    termCount[t] = (termCount[t] || 0) + 1;
   });
   var unique = Object.keys(termCount).length;
 
@@ -678,9 +683,8 @@ function buildStats() {
     .slice(0, 30);
 
   // Which terms have no mapping?
-  var mappedKeywords = indexData.map(i => i.keyword.toLowerCase());
   var noResultTerms  = new Set(
-    logData.filter(i => i.results == 0).map(i => i.term.toLowerCase())
+    logData.filter(i => i.results == 0).map(i => String(i.term || '').toLowerCase())
   );
 
   var html = sorted.map(function(entry) {
