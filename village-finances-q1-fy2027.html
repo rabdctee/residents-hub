@@ -224,130 +224,8 @@ h2.precinct {
   .header-inner { flex-direction: column; align-items: flex-start; }
 }
 
-/* ============================================================
-   PRINT STYLES
-   When printing a single section, JS adds .print-single to
-   <body> and .print-target to the one block to show.
-   ============================================================ */
-@media print {
-  /* Force background graphics on — needed for coloured table headers */
-  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-
-  /* Reset page to white, dark text */
-  html, body {
-    background: #ffffff !important;
-    color: #1a1a1a !important;
-    font-size: 12px !important;
-    margin: 0 !important; padding: 0 !important;
-  }
-
-  /* Keep the dark navy header — it looks good and identifies the document */
-  .site-header {
-    background: #263746 !important;
-    border-bottom: 3px solid #D4B860 !important;
-    padding: 14px 20px 12px !important;
-  }
-  .header-inner { display: block !important; }
-  .site-header h1 { color: #F6F2E7 !important; font-size: 20px !important; margin-bottom: 4px !important; }
-  .header-eyebrow { color: #D4B860 !important; opacity: 1 !important; }
-  .header-meta { color: #B9AF9C !important; }
-
-  /* Hide print buttons */
-  .btn-print, .btn-print-all, .header-actions { display: none !important; }
-
-  .content { padding: 16px 0 20px !important; max-width: 100% !important; }
-
-  /* Intro card */
-  .intro-card {
-    background: #f5f2eb !important;
-    border: 1px solid #ccc !important;
-    border-left: 4px solid #D4B860 !important;
-    margin-bottom: 16px !important;
-  }
-  .intro-card p { color: #1a1a1a !important; opacity: 1 !important; font-size: 12px !important; }
-
-  /* Each precinct block: white background, visible border */
-  .precinct-block {
-    background: #ffffff !important;
-    border: 1px solid #bbb !important;
-    border-radius: 4px !important;
-    padding: 16px !important;
-    margin-bottom: 14px !important;
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-
-  /* Precinct header layout */
-  .precinct-header { display: block !important; }
-  .precinct-title-wrap { border-bottom: 2px solid #ccc !important; padding-bottom: 6px !important; margin-bottom: 8px !important; }
-  h2.precinct { color: #7a5e10 !important; font-size: 15px !important; border: none !important; margin: 0 !important; }
-  .section-label { color: #666 !important; }
-  .precinct-desc { color: #555 !important; font-size: 11px !important; margin-bottom: 12px !important; }
-
-  /* Stat tiles: light grey box */
-  .stat-grid { gap: 8px !important; margin-bottom: 14px !important; }
-  .stat-tile {
-    background: #f0ede6 !important;
-    border: 1px solid #ccc !important;
-    padding: 10px 12px !important;
-  }
-  .stat-label { color: #555 !important; }
-  .stat-val { color: #1a1a1a !important; font-size: 15px !important; }
-  .stat-val.positive { color: #1e6b3a !important; }
-  .stat-val.negative { color: #8b2a22 !important; }
-  .stat-note { color: #666 !important; }
-
-  /* Tables */
-  .ie-table { font-size: 11px !important; }
-  .ie-table th {
-    background: #3a3a3a !important;
-    color: #D4B860 !important;
-    padding: 6px 10px !important;
-  }
-  .ie-table td {
-    color: #1a1a1a !important;
-    opacity: 1 !important;
-    padding: 6px 10px !important;
-    border-bottom: 1px solid #ddd !important;
-  }
-  .ie-table tr.total-row td {
-    background: #e8e4da !important;
-    color: #1a1a1a !important;
-    border-top: 2px solid #7a5e10 !important;
-    font-weight: 700 !important;
-  }
-  .ie-table tr.section-head td {
-    background: #f0ece0 !important;
-    color: #5a440a !important;
-    opacity: 1 !important;
-  }
-
-  /* Key points */
-  .key-points li {
-    color: #1a1a1a !important;
-    opacity: 1 !important;
-    border-top: 1px solid #ddd !important;
-    font-size: 11px !important;
-  }
-
-  .page-footer { color: #666 !important; border-top: 1px solid #ccc !important; font-size: 10px !important; }
-
-  /* ---- Single-section print mode ---- */
-  body.print-single .intro-card,
-  body.print-single .page-footer { display: none !important; }
-
-  body.print-single .precinct-block { display: none !important; }
-  body.print-single .precinct-block.print-target { display: block !important; }
-
-  body.print-single .print-section-header { display: block !important; }
-}
-
-/* The mini section header shown only in single-print mode */
-.print-section-header {
-  display: none;
-  font-size: 11px; color: var(--hub-muted);
-  margin-bottom: 10px;
-}
+/* The mini section header shown only in single-print mode — hidden on screen */
+.print-section-header { display: none; }
 </style>
 </head>
 <body>
@@ -356,7 +234,7 @@ h2.precinct {
   <div class="header-inner">
     <div class="header-text">
       <p class="header-eyebrow">Bridgeman Downs Retirement Village</p>
-      <h1>Financial Summary — Q1 FY2026/27</h1>
+      <h1>Financial Summary — Q1 FY2027</h1>
       <p class="header-meta">July – September 2026 &nbsp;·&nbsp; Prepared for residents by the Residents' Committee</p>
     </div>
     <div class="header-actions">
@@ -376,7 +254,7 @@ h2.precinct {
 
   <!-- ===== SERVICED APARTMENTS ===== -->
   <div class="precinct-block" id="area-sa">
-    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2026/27 Financial Summary</div>
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 1</div>
     <div class="precinct-header">
       <div class="precinct-title-wrap">
@@ -414,7 +292,7 @@ h2.precinct {
 
   <!-- ===== BODY CORPORATE ===== -->
   <div class="precinct-block" id="area-bc">
-    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2026/27 Financial Summary</div>
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 2</div>
     <div class="precinct-header">
       <div class="precinct-title-wrap">
@@ -453,7 +331,7 @@ h2.precinct {
 
   <!-- ===== FREEHOLD ===== -->
   <div class="precinct-block" id="area-fh">
-    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2026/27 Financial Summary</div>
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 3</div>
     <div class="precinct-header">
       <div class="precinct-title-wrap">
@@ -491,7 +369,7 @@ h2.precinct {
 
   <!-- ===== LEASEHOLD ===== -->
   <div class="precinct-block" id="area-lh">
-    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2026/27 Financial Summary</div>
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 4</div>
     <div class="precinct-header">
       <div class="precinct-title-wrap">
@@ -531,7 +409,7 @@ h2.precinct {
 
   <!-- ===== LEASEHOLD AVEO WAY ===== -->
   <div class="precinct-block" id="area-law">
-    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2026/27 Financial Summary</div>
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 5</div>
     <div class="precinct-header">
       <div class="precinct-title-wrap">
@@ -570,7 +448,7 @@ h2.precinct {
 
   <!-- ===== VILLAGE TOTAL ===== -->
   <div class="precinct-block" id="area-all">
-    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2026/27 Financial Summary</div>
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Village Total — All Areas Combined</div>
     <div class="precinct-header">
       <div class="precinct-title-wrap">
@@ -579,8 +457,8 @@ h2.precinct {
       <button class="btn-print" onclick="printSection('area-all', 'Whole Village Summary')">🖨️ Print this summary</button>
     </div>
     <div class="stat-grid">
-      <div class="stat-tile"><p class="stat-label">Combined Income</p><p class="stat-val">$2,713,080</p><p class="stat-note">All 5 funds, Q1 FY2026/27</p></div>
-      <div class="stat-tile"><p class="stat-label">Combined Expenses</p><p class="stat-val">$2,513,622</p><p class="stat-note">All 5 funds, Q1 FY2026/27</p></div>
+      <div class="stat-tile"><p class="stat-label">Combined Income</p><p class="stat-val">$2,713,080</p><p class="stat-note">All 5 funds, Q1 FY2027</p></div>
+      <div class="stat-tile"><p class="stat-label">Combined Expenses</p><p class="stat-val">$2,513,622</p><p class="stat-note">All 5 funds, Q1 FY2027</p></div>
       <div class="stat-tile"><p class="stat-label">Combined Surplus</p><p class="stat-val positive">+$199,458</p><p class="stat-note">Total across all funds</p></div>
     </div>
     <ul class="key-points">
@@ -592,37 +470,84 @@ h2.precinct {
   </div>
 
   <div class="page-footer">
-    <p>Source: Aveo Financial Reports — Bridgeman Downs Retirement Village, September 2026 (Q1 FY2026/27). Compiled by the Residents' Committee. Figures are rounded for readability; refer to the official Aveo reports for exact figures. This summary is provided for information purposes only.</p>
+    <p>Source: Aveo Financial Reports — Bridgeman Downs Retirement Village, September 2026 (Q1 FY2027). Compiled by the Residents' Committee. Figures are rounded for readability; refer to the official Aveo reports for exact figures. This summary is provided for information purposes only.</p>
   </div>
 
 </main>
 
 <script>
+// Shared print CSS injected into the popup window
+var PRINT_CSS = [
+  'body { font-family: Inter, Arial, sans-serif; font-size: 13px; color: #1a1a1a; margin: 20px 28px; background: #fff; }',
+  '.doc-header { background: #263746; color: #F6F2E7; padding: 14px 18px 12px; margin: -20px -28px 18px; border-bottom: 3px solid #D4B860; }',
+  '.doc-header .eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #D4B860; margin: 0 0 5px; }',
+  '.doc-header h1 { font-family: Georgia, serif; font-size: 20px; margin: 0 0 4px; color: #F6F2E7; }',
+  '.doc-header .meta { font-size: 12px; color: #B9AF9C; margin: 0; }',
+  '.intro-card { background: #f5f2eb; border: 1px solid #ccc; border-left: 4px solid #D4B860; padding: 12px 16px; margin-bottom: 16px; border-radius: 4px; }',
+  '.intro-card p { margin: 0 0 6px; font-size: 12px; color: #1a1a1a; }',
+  '.intro-card p:last-child { margin: 0; }',
+  '.section-label { font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin: 0 0 3px; }',
+  'h2.precinct { font-family: Georgia, serif; font-size: 16px; color: #6a4f0a; margin: 0 0 4px; border-bottom: 2px solid #ccc; padding-bottom: 6px; }',
+  '.precinct-block { border: 1px solid #bbb; border-radius: 4px; padding: 14px 16px; margin-bottom: 14px; page-break-inside: avoid; break-inside: avoid; }',
+  '.precinct-desc { font-size: 11px; color: #666; font-style: italic; margin: 0 0 12px; }',
+  '.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }',
+  '.stat-tile { background: #f0ede6; border: 1px solid #ccc; border-radius: 4px; padding: 8px 10px; }',
+  '.stat-label { font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #666; margin: 0 0 3px; }',
+  '.stat-val { font-size: 15px; font-weight: 700; color: #1a1a1a; margin: 0; }',
+  '.stat-val.positive { color: #1e6b3a; }',
+  '.stat-val.negative { color: #8b2a22; }',
+  '.stat-note { font-size: 9px; color: #888; margin: 2px 0 0; }',
+  'table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 12px; }',
+  'th { background: #3a3a3a; color: #D4B860; text-align: left; padding: 6px 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }',
+  'th:last-child { text-align: right; }',
+  'td { padding: 5px 10px; border-bottom: 1px solid #ddd; color: #1a1a1a; }',
+  'td:last-child { text-align: right; font-weight: 600; }',
+  'tr.total-row td { background: #e8e4da; font-weight: 700; border-top: 2px solid #7a5e10; }',
+  'tr.section-head td { background: #f0ece0; color: #5a440a; font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }',
+  'ul.key-points { margin: 0; padding: 0; list-style: none; }',
+  'ul.key-points li { display: flex; gap: 8px; font-size: 12px; padding: 5px 0; border-top: 1px solid #eee; color: #1a1a1a; align-items: flex-start; }',
+  'ul.key-points li:first-child { border-top: none; }',
+  '.kp-icon { font-size: 13px; flex-shrink: 0; }',
+  '.page-footer { font-size: 10px; color: #888; border-top: 1px solid #ccc; padding-top: 10px; margin-top: 10px; }'
+].join('\n');
+
+// Build HTML for the popup window
+function buildPrintHTML(title, bodyHTML, includeIntro, includeFooter) {
+  var intro = includeIntro ? document.querySelector('.intro-card').outerHTML : '';
+  var footer = includeFooter ? document.querySelector('.page-footer').outerHTML : '';
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<title>' + title + '</title>' +
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">' +
+    '<style>' + PRINT_CSS + '</style></head><body>' +
+    '<div class="doc-header">' +
+      '<p class="eyebrow">Bridgeman Downs Retirement Village</p>' +
+      '<h1>Financial Summary — Q1 FY2026/27</h1>' +
+      '<p class="meta">July – September 2026 &nbsp;·&nbsp; Prepared for residents by the Residents\' Committee</p>' +
+    '</div>' +
+    intro +
+    bodyHTML +
+    footer +
+    '<script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};}<\/script>' +
+    '</body></html>';
+}
+
 // Print the full report (all sections)
 function printAll() {
-  document.body.classList.remove('print-single');
-  document.querySelectorAll('.precinct-block').forEach(function(b) {
-    b.classList.remove('print-target');
-  });
-  window.print();
+  var blocks = document.querySelectorAll('.precinct-block');
+  var html = '';
+  blocks.forEach(function(b) { html += b.outerHTML; });
+  var win = window.open('', '_blank', 'width=900,height=700');
+  win.document.write(buildPrintHTML('Q1 FY2026/27 Financial Summary', html, true, true));
+  win.document.close();
 }
 
 // Print a single area section
 function printSection(id, label) {
-  // Remove any previous target
-  document.querySelectorAll('.precinct-block').forEach(function(b) {
-    b.classList.remove('print-target');
-  });
-  // Mark the chosen block
   var block = document.getElementById(id);
-  if (block) block.classList.add('print-target');
-  document.body.classList.add('print-single');
-  window.print();
-  // Clean up after print dialog closes
-  setTimeout(function() {
-    document.body.classList.remove('print-single');
-    if (block) block.classList.remove('print-target');
-  }, 1000);
+  if (!block) return;
+  var win = window.open('', '_blank', 'width=900,height=700');
+  win.document.write(buildPrintHTML(label + ' — Q1 FY2026/27', block.outerHTML, false, false));
+  win.document.close();
 }
 </script>
 
