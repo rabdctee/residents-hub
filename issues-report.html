@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Issues Report – Bridgeman Downs Residents Hub</title>
+<style>
+  :root {
+    --page-bg: #263746; --surface: #2E4256; --border: #3F4143;
+    --text: #F6F2E7; --muted: #B9AF9C; --gold: #D4B860; --navy: #263746;
+    --red-bg: #4a2626; --red: #e8857a;
+    --amber-bg: #4a3a1a; --amber: #C9A44A;
+    --green-bg: #24402f; --green: #5fb87e;
+    --gray-bg: #33424f; --gray: #8a97a3;
+    --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--page-bg); color: var(--text); font-size: 18px; line-height: 1.6; }
+  a { color: var(--gold); }
+
+  .topbar { background: var(--surface); border-bottom: 2px solid var(--border); padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+  .topbar a { font-weight: 700; font-size: 0.9em; text-decoration: none; }
+  .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 0.85em; }
+  .controls select, .controls button { font-family: var(--font); font-size: 1em; font-weight: 700; padding: 6px 12px; border-radius: 20px; border: 2px solid var(--gold); background: var(--page-bg); color: var(--gold); cursor: pointer; }
+  .controls button:hover { background: var(--gold); color: var(--navy); }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 1.25rem 16px 2.5rem; }
+  .report-head { border-bottom: 3px solid var(--gold); padding-bottom: 0.75rem; margin-bottom: 1.25rem; }
+  .report-head h1 { font-size: 1.8em; color: var(--gold); line-height: 1.2; }
+  .report-head .sub { color: var(--muted); font-size: 0.9em; }
+
+  .summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+  .sum-card { border: 2px solid; border-radius: 8px; padding: 10px 8px; text-align: center; }
+  .sum-num { font-size: 2em; font-weight: 800; line-height: 1.1; }
+  .sum-lbl { font-size: 0.72em; font-weight: 700; line-height: 1.3; }
+  .c-red   { background: var(--red-bg);   border-color: var(--red);   color: var(--red); }
+  .c-amber { background: var(--amber-bg); border-color: var(--amber); color: var(--amber); }
+  .c-gray  { background: var(--gray-bg);  border-color: var(--gray);  color: var(--text); }
+  .c-green { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+
+  .intro { background: var(--surface); border-left: 4px solid var(--gold); padding: 10px 14px; font-size: 0.88em; margin-bottom: 1.5rem; }
+
+  section { margin-bottom: 2rem; }
+  h2 { font-size: 1.25em; color: var(--gold); margin-bottom: 0.25rem; display: flex; align-items: center; gap: 8px; }
+  h2 .count { font-size: 0.75em; background: var(--surface); border: 1.5px solid var(--gold); border-radius: 20px; padding: 0 10px; }
+  .sec-note { color: var(--muted); font-size: 0.85em; margin-bottom: 0.75rem; }
+  .none { color: var(--green); font-weight: 700; font-size: 0.9em; padding: 8px 0; }
+
+  .item { border: 1px solid var(--border); border-left: 5px solid; border-radius: 6px; background: var(--surface); padding: 10px 14px; margin-bottom: 10px; page-break-inside: avoid; break-inside: avoid; }
+  .item.red { border-left-color: var(--red); }
+  .item.amber { border-left-color: var(--amber); }
+  .item-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; }
+  .iss { font-size: 0.75em; font-weight: 700; color: var(--gold); border: 1px solid var(--gold); border-radius: 4px; padding: 0 6px; text-decoration: none; }
+  .topic { font-weight: 700; flex: 1; min-width: 200px; }
+  .wait { font-size: 0.78em; font-weight: 700; padding: 2px 10px; border-radius: 20px; white-space: nowrap; }
+  .wait.long { background: var(--red-bg); color: var(--red); border: 1.5px solid var(--red); }
+  .wait.short { background: var(--amber-bg); color: var(--amber); border: 1.5px solid var(--amber); }
+  .meta { font-size: 0.75em; color: var(--muted); text-transform: uppercase; letter-spacing: 0.03em; margin: 2px 0 6px; }
+  .note { font-size: 0.85em; background: var(--page-bg); border-radius: 4px; padding: 6px 10px; }
+  .note .lbl { color: var(--green); font-weight: 700; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.85em; }
+  th { text-align: left; color: var(--gold); border-bottom: 2px solid var(--gold); padding: 6px 8px; }
+  td { border-bottom: 1px solid var(--border); padding: 6px 8px; vertical-align: top; }
+  tr { page-break-inside: avoid; break-inside: avoid; }
+  .stale { color: var(--red); font-weight: 700; }
+
+  .state { text-align: center; padding: 2.5rem 1rem; color: var(--muted); }
+  .foot { color: var(--muted); font-size: 0.75em; border-top: 1px solid var(--border); padding-top: 0.75rem; }
+
+  @media (max-width: 600px) {
+    .summary { grid-template-columns: repeat(2, 1fr); }
+    .report-head h1 { font-size: 1.4em; }
+    th:nth-child(3), td:nth-child(3) { display: none; }
+  }
+
+  /* ── Printed / PDF version: white paper, dark ink, gold accents ── */
+  @media print {
+    @page { margin: 14mm; }
+    body { background: #fff; color: #222; font-size: 11pt; }
+    .topbar { display: none !important; }
+    .wrap { padding: 0; max-width: none; }
+    .report-head h1, h2, th { color: #263746; }
+    .report-head { border-bottom-color: #D4B860; }
+    .report-head .sub, .sec-note, .meta, .foot { color: #555; }
+    .intro, .item, .note, h2 .count { background: #fff; color: #222; }
+    .intro { border-left-color: #D4B860; border: 1px solid #ccc; border-left: 4px solid #D4B860; }
+    .item { border-color: #bbb; }
+    .item.red { border-left-color: #b03a2e; }
+    .item.amber { border-left-color: #b8860b; }
+    .note { background: #f4f1ea; }
+    .note .lbl { color: #2e6b45; }
+    .iss { color: #263746; border-color: #263746; }
+    .sum-card { background: #fff !important; color: #222 !important; }
+    .wait.long, .stale { color: #b03a2e; background: #fff; }
+    .wait.short { color: #8a6500; background: #fff; }
+    td { border-bottom-color: #ddd; }
+    a { color: #263746; text-decoration: none; }
+    .none { color: #2e6b45; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="progress-tracker.html">&#9664; Back to What We're Working On</a>
+  <div class="controls">
+    <label for="month-pick">Report month:</label>
+    <select id="month-pick"></select>
+    <button onclick="window.print()">🖨️ Print / Save PDF</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="report-head">
+    <h1 id="title">Issues Progress Report</h1>
+    <div class="sub">Bridgeman Downs Retirement Village — Residents Committee · <span id="gen-date"></span></div>
+  </div>
+
+  <div id="loading" class="state">⏳ Loading the latest tracker information…</div>
+  <div id="error" class="state" style="display:none"></div>
+
+  <div id="report" style="display:none">
+    <div class="summary" id="summary"></div>
+
+    <div class="intro">
+      This report is produced straight from the Issues Progress Tracker, so it is always up to date.
+      The first two sections list the issues still <strong>waiting on the Community Manager</strong>.
+      “Days waiting” counts from the date of the RC’s latest note, or from when the issue was last updated.
+      Anything waiting <strong>30 days or more</strong> is shown in red.
+    </div>
+
+    <section>
+      <h2>① Waiting for the CM to reply to the RC <span class="count" id="n-a"></span></h2>
+      <div class="sec-note">Open issues where the RC has written a note or question, and the CM has not replied since.</div>
+      <div id="sec-a"></div>
+    </section>
+
+    <section>
+      <h2>② Not yet taken up by the CM <span class="count" id="n-b"></span></h2>
+      <div class="sec-note">Issues still “Waiting to start” that have no dated reply from the CM.</div>
+      <div id="sec-b"></div>
+    </section>
+
+    <section>
+      <h2>③ Other open issues <span class="count" id="n-c"></span></h2>
+      <div class="sec-note">Being worked on or on hold, where the CM has replied. Issues with no update for 60 days or more are marked in red.</div>
+      <div id="sec-c"></div>
+    </section>
+
+    <section>
+      <h2>④ Marked done, but the RC’s last note has no CM reply <span class="count" id="n-d"></span></h2>
+      <div class="sec-note">Worth a quick check that the RC is satisfied before these are treated as finished.</div>
+      <div id="sec-d"></div>
+    </section>
+
+    <section>
+      <h2>⑤ Completed during <span id="month-name"></span> <span class="count" id="n-e"></span></h2>
+      <div id="sec-e"></div>
+    </section>
+
+    <div class="foot" id="foot"></div>
+  </div>
+</div>
+
+<script>
+// Same published sheet that the "What We're Working On" page reads
+const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgVlYaBPjGJkfQWiySdwnnr7OKJvhnVmHb3dEqLJ2o7plAgDMbjox_-f47I1LrO3YN8Seiwru5Xmxv/pub?gid=363698576&single=true&output=csv";
+const LONG_WAIT_DAYS = 30;   // waiting this long or more shows in red
+const STALE_DAYS     = 60;   // "other open" issues with no update for this long show in red
+
+// Same resident-friendly groupings as the tracker page
+const CAT_MAP = {
+  "safety & emergency": "Safety, Security & Emergency", "security": "Safety, Security & Emergency",
+  "infrastructure & maintenance": "Village Maintenance", "staffing & management": "Village Maintenance",
+  "facilities & amenities": "Village Maintenance", "environment & grounds": "Village Maintenance",
+  "access": "Manor"
+};
+function mapCategory(c) {
+  const clean = (c || "").replace(/\s+/g, " ").trim();
+  return CAT_MAP[clean.toLowerCase()] || clean;
+}
+
+let allIssues = [];
+
+// ── Reading the sheet (handles line breaks inside notes) ──
+function parseCSV(text) {
+  const rows = []; let cur = "", inQ = false, cols = [];
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') { if (inQ && text[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+    else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ""; }
+    else if ((ch === '\n' || (ch === '\r' && text[i+1] === '\n')) && !inQ) {
+      if (ch === '\r') i++;
+      cols.push(cur.trim()); cur = ""; rows.push(cols); cols = [];
+    } else cur += ch;
+  }
+  if (cur || cols.length) { cols.push(cur.trim()); rows.push(cols); }
+  const out = [];
+  for (let i = 1; i < rows.length; i++) {
+    const c = rows[i];
+    if (c[1] && c[2] && c[4]) out.push({
+      num: (c[0] || "").trim(), category: mapCategory(c[1]), topic: c[2].trim(),
+      notes: (c[3] || "").trim(), status: c[4].trim(), lastUpdated: parseDate(c[6])
+    });
+  }
+  return out;
+}
+
+// Reads dates written as 24/08/2026, 3/10/2026 or 06/07/26
+function parseDate(s) {
+  const m = String(s || "").match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+  if (!m) return null;
+  let y = +m[3]; if (y < 100) y += 2000;
+  return new Date(y, +m[2] - 1, +m[1]);
+}
+
+// Splits the notes into separate entries: RC notes, CM replies, "Added" notes and older untagged notes
+function splitEntries(notes) {
+  return notes.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean).map(block => {
+    const m = block.match(/^\[(RC|CM|Added)[^\]]*\]\s*([\s\S]*)$/);
+    if (!m) return { kind: "Untagged", date: null, text: block };
+    return { kind: m[1], date: parseDate(block.slice(0, block.indexOf("]"))), text: m[2].trim() };
+  });
+}
+
+function latest(entries) {
+  return entries.reduce((best, e) => (e.date && (!best || e.date > best.date)) ? e : best, null);
+}
+
+// Decides which section of the report each issue belongs in
+function classify(issue) {
+  const entries  = splitEntries(issue.notes);
+  const lastRC   = latest(entries.filter(e => e.kind === "RC"));
+  const cmAll    = entries.filter(e => e.kind === "CM");
+  const lastCM   = latest(cmAll);
+  const open     = issue.status !== "Completed";
+  issue.lastRC = lastRC;
+  issue.details = entries.filter(e => e.kind === "Added" || e.kind === "Untagged").map(e => e.text).join("\n");
+
+  // The RC wrote after the CM's last dated reply (or the CM has never replied)
+  if (lastRC && (!lastCM || lastRC.date > lastCM.date)) {
+    issue.waitFrom = lastRC.date;
+    return open ? "A" : "D";
+  }
+  if (open && issue.status === "Not Started" && cmAll.length === 0) {
+    const added = latest(entries.filter(e => e.kind === "Added"));
+    issue.waitFrom = (added && added.date) || issue.lastUpdated;
+    return "B";
+  }
+  return open ? "C" : "done";
+}
+
+function daysSince(d) {
+  if (!d) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.max(0, Math.round((today - d) / 86400000));
+}
+function fmt(d) { return d ? d.toLocaleDateString("en-AU", { day: "numeric", month: "short", year: "numeric" }) : "—"; }
+function esc(s) { return String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function shorten(s, n) { s = String(s || "").replace(/\s+/g, " ").trim(); return s.length > n ? s.slice(0, n).replace(/\s\S*$/, "") + "…" : s; }
+function statusWords(s) { return s === "In Progress" ? "Being worked on" : s === "On Hold" ? "On hold" : s === "Not Started" ? "Waiting to start" : "Done"; }
+function issLink(i) { return i.num ? `<a class="iss" href="progress-tracker.html?issue=${encodeURIComponent(i.num)}">${esc(i.num)}</a>` : ""; }
+
+function waitBadge(days) {
+  if (days === null) return "";
+  return `<span class="wait ${days >= LONG_WAIT_DAYS ? "long" : "short"}">${days} day${days === 1 ? "" : "s"} waiting</span>`;
+}
+
+// Longest-waiting first
+function byWait(a, b) { return (a.waitFrom || 0) - (b.waitFrom || 0); }
+
+function card(i, noteLabel, noteText) {
+  const days = daysSince(i.waitFrom);
+  return `<div class="item ${days !== null && days >= LONG_WAIT_DAYS ? "red" : "amber"}">
+    <div class="item-top">${issLink(i)}<span class="topic">${esc(i.topic)}</span>${waitBadge(days)}</div>
+    <div class="meta">${esc(i.category)} · ${statusWords(i.status)}</div>
+    ${noteText ? `<div class="note"><span class="lbl">${noteLabel}</span> ${esc(shorten(noteText, 320))}</div>` : ""}
+  </div>`;
+}
+
+function render() {
+  const pick = document.getElementById("month-pick").value.split("-");
+  const yr = +pick[0], mo = +pick[1];
+  const monthName = new Date(yr, mo, 1).toLocaleDateString("en-AU", { month: "long", year: "numeric" });
+
+  const groups = { A: [], B: [], C: [], D: [], done: [] };
+  allIssues.forEach(i => groups[classify(i)].push(i));
+  const closedThisMonth = allIssues.filter(i => i.status === "Completed" && i.lastUpdated &&
+    i.lastUpdated.getFullYear() === yr && i.lastUpdated.getMonth() === mo);
+
+  document.getElementById("title").textContent = "Issues Progress Report — " + monthName;
+  document.getElementById("month-name").textContent = monthName;
+  document.title = "Issues Report " + monthName + " – Bridgeman Downs";
+
+  document.getElementById("summary").innerHTML = [
+    { n: groups.A.length, l: "Waiting for CM reply to RC", c: "c-red" },
+    { n: groups.B.length, l: "Not yet taken up by CM", c: "c-amber" },
+    { n: groups.C.length, l: "Other open issues", c: "c-gray" },
+    { n: closedThisMonth.length, l: "Completed this month", c: "c-green" }
+  ].map(s => `<div class="sum-card ${s.c}"><div class="sum-num">${s.n}</div><div class="sum-lbl">${s.l}</div></div>`).join("");
+
+  const none = msg => `<div class="none">✓ ${msg}</div>`;
+
+  groups.A.sort(byWait);
+  document.getElementById("n-a").textContent = groups.A.length;
+  document.getElementById("sec-a").innerHTML = groups.A.length
+    ? groups.A.map(i => card(i, "RC note, " + fmt(i.lastRC.date) + ":", i.lastRC.text)).join("")
+    : none("Nothing waiting — the CM has replied to every RC note.");
+
+  groups.B.sort(byWait);
+  document.getElementById("n-b").textContent = groups.B.length;
+  document.getElementById("sec-b").innerHTML = groups.B.length
+    ? groups.B.map(i => card(i, "Issue raised:", i.details)).join("")
+    : none("Every issue has been taken up by the CM.");
+
+  groups.C.sort((a, b) => (a.lastUpdated || 0) - (b.lastUpdated || 0));
+  document.getElementById("n-c").textContent = groups.C.length;
+  document.getElementById("sec-c").innerHTML = groups.C.length
+    ? `<table><thead><tr><th>Issue</th><th>Topic</th><th>Status</th><th>Last updated</th></tr></thead><tbody>` +
+      groups.C.map(i => {
+        const d = daysSince(i.lastUpdated);
+        return `<tr><td>${issLink(i)}</td><td>${esc(i.topic)}</td><td>${statusWords(i.status)}</td>
+          <td class="${d !== null && d >= STALE_DAYS ? "stale" : ""}">${fmt(i.lastUpdated)}${d !== null ? ` (${d} days)` : ""}</td></tr>`;
+      }).join("") + `</tbody></table>`
+    : none("No other open issues.");
+
+  groups.D.sort(byWait);
+  document.getElementById("n-d").textContent = groups.D.length;
+  document.getElementById("sec-d").innerHTML = groups.D.length
+    ? `<table><thead><tr><th>Issue</th><th>Topic</th><th>RC’s last note</th></tr></thead><tbody>` +
+      groups.D.map(i => `<tr><td>${issLink(i)}</td><td>${esc(i.topic)}</td><td>${fmt(i.lastRC.date)} — ${esc(shorten(i.lastRC.text, 160))}</td></tr>`).join("") +
+      `</tbody></table>`
+    : none("None.");
+
+  document.getElementById("n-e").textContent = closedThisMonth.length;
+  document.getElementById("sec-e").innerHTML = closedThisMonth.length
+    ? `<table><thead><tr><th>Issue</th><th>Topic</th><th>Area</th><th>Date</th></tr></thead><tbody>` +
+      closedThisMonth.map(i => `<tr><td>${issLink(i)}</td><td>${esc(i.topic)}</td><td>${esc(i.category)}</td><td>${fmt(i.lastUpdated)}</td></tr>`).join("") +
+      `</tbody></table>`
+    : `<div class="sec-note">No issues were marked done during ${monthName}.</div>`;
+
+  document.getElementById("foot").textContent =
+    allIssues.length + " issues in the tracker · " + (allIssues.length - groups.done.length - groups.D.length) +
+    " still open · Report produced " + new Date().toLocaleString("en-AU", { dateStyle: "long", timeStyle: "short" }) + ".";
+}
+
+function buildMonthPicker() {
+  const sel = document.getElementById("month-pick");
+  const now = new Date();
+  for (let k = 0; k < 12; k++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - k, 1);
+    const opt = document.createElement("option");
+    opt.value = d.getFullYear() + "-" + d.getMonth();
+    opt.textContent = d.toLocaleDateString("en-AU", { month: "long", year: "numeric" });
+    sel.appendChild(opt);
+  }
+  sel.addEventListener("change", render);
+}
+
+async function loadData() {
+  try {
+    const resp = await fetch(SHEET_CSV_URL + "&cachebust=" + Date.now());
+    if (!resp.ok) throw new Error("HTTP " + resp.status);
+    allIssues = parseCSV(await resp.text());
+    if (!allIssues.length) throw new Error("No issues found");
+    render();
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("report").style.display = "block";
+  } catch (err) {
+    document.getElementById("loading").style.display = "none";
+    const e = document.getElementById("error");
+    e.textContent = "⚠️ Unable to load the tracker. Please try refreshing the page. (" + err.message + ")";
+    e.style.display = "block";
+  }
+}
+
+document.getElementById("gen-date").textContent = "Produced " +
+  new Date().toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+buildMonthPicker();
+loadData();
+</script>
+</body>
+</html>
