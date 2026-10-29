@@ -7,146 +7,183 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;500;600&display=swap">
 <style>
 :root {
-  --navy:    #263746;
-  --gold:    #C9A84C;
-  --gold-lt: #E8D08A;
-  --cream:   #F7F3E8;
-  --ink:     #1A2430;
-  --ink-mid: #3D5060;
-  --muted:   #647A8A;
-  --rule:    #D4C9B0;
-  --surface: #FFFFFF;
-  --success: #2A7A4B;
-  --warn:    #B54D00;
-  --bg:      var(--cream);
-  --fg:      var(--ink);
+  --hub-navy:       #263746;
+  --hub-navy-panel: #2E4256;
+  --hub-navy-hover: #324A5F;
+  --hub-gold:       #D4B860;
+  --hub-cream:      #F6F2E7;
+  --hub-muted:      #B9AF9C;
+  --hub-charcoal:   #3F4143;
+  --hub-green:      #5fb87e;
+  --hub-red:        #e8998c;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--fg);
+  background: var(--hub-navy);
+  color: var(--hub-cream);
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
+/* === HEADER === */
 .site-header {
-  background: var(--navy);
-  color: #fff;
-  padding: 28px 24px 20px;
-  border-bottom: 3px solid var(--gold);
+  background: var(--hub-navy);
+  border-bottom: 3px solid var(--hub-gold);
+  padding: 28px 24px 22px;
 }
-.header-inner { max-width: 900px; margin: 0 auto; }
+.header-inner { max-width: 960px; margin: 0 auto; }
+
 .header-eyebrow {
-  font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--gold-lt); margin: 0 0 6px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--hub-gold); opacity: 0.85; margin: 0 0 8px;
 }
 .site-header h1 {
   font-family: 'Merriweather', Georgia, serif;
-  font-size: clamp(20px, 4vw, 28px); font-weight: 700;
-  margin: 0 0 6px; line-height: 1.2; color: #fff;
+  font-size: clamp(22px, 4vw, 32px); font-weight: 700;
+  margin: 0 0 8px; line-height: 1.2; color: var(--hub-cream);
 }
-.header-meta { font-size: 13px; color: rgba(255,255,255,0.65); margin: 0; }
+.header-meta { font-size: 14px; color: var(--hub-muted); margin: 0; }
 
+/* === CONTENT === */
 .content {
-  max-width: 900px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 32px 24px 48px;
+  padding: 32px 24px 56px;
 }
 
+/* === INTRO CARD === */
 .intro-card {
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--gold);
+  background: var(--hub-navy-panel);
+  border: 1px solid var(--hub-charcoal);
+  border-left: 4px solid var(--hub-gold);
   border-radius: 6px;
   padding: 20px 24px;
   margin-bottom: 32px;
 }
-.intro-card p { margin: 0 0 8px; color: var(--ink-mid); font-size: 15px; }
+.intro-card p { margin: 0 0 10px; color: var(--hub-cream); font-size: 15px; opacity: 0.92; }
 .intro-card p:last-child { margin-bottom: 0; }
 
+/* === PRECINCT BLOCKS === */
 .section-label {
   font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--muted); margin: 0 0 4px;
+  text-transform: uppercase; color: var(--hub-muted); margin: 0 0 4px;
 }
 
 h2.precinct {
   font-family: 'Merriweather', Georgia, serif;
-  font-size: clamp(17px, 3vw, 21px); font-weight: 700;
-  color: var(--navy); margin: 0 0 16px;
-  border-bottom: 2px solid var(--gold); padding-bottom: 8px;
+  font-size: clamp(18px, 3vw, 23px); font-weight: 700;
+  color: var(--hub-gold); margin: 0 0 14px;
+  border-bottom: 2px solid var(--hub-charcoal); padding-bottom: 10px;
 }
 
 .precinct-block {
-  background: var(--surface);
-  border: 1px solid var(--rule);
+  background: var(--hub-navy-panel);
+  border: 1px solid var(--hub-charcoal);
   border-radius: 8px;
   padding: 24px;
   margin-bottom: 28px;
 }
-.precinct-desc { font-size: 14px; color: var(--ink-mid); margin: 0 0 20px; font-style: italic; }
 
+.precinct-desc {
+  font-size: 14px; color: var(--hub-muted);
+  margin: 0 0 22px; font-style: italic;
+}
+
+/* === STAT GRID === */
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 12px;
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 .stat-tile {
-  background: var(--bg);
-  border: 1px solid var(--rule);
+  background: var(--hub-navy);
+  border: 1px solid var(--hub-charcoal);
   border-radius: 6px;
   padding: 14px 16px;
+  min-width: 0;
 }
 .stat-label {
   font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--muted); margin: 0 0 4px;
+  text-transform: uppercase; color: var(--hub-muted); margin: 0 0 5px;
 }
 .stat-val {
-  font-size: 18px; font-weight: 700;
-  font-variant-numeric: tabular-nums; color: var(--fg);
-  margin: 0; line-height: 1.2;
+  font-size: 20px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--hub-cream); margin: 0; line-height: 1.2;
 }
-.stat-val.positive { color: var(--success); }
-.stat-note { font-size: 11px; color: var(--muted); margin: 3px 0 0; }
+.stat-val.positive { color: var(--hub-green); }
+.stat-val.negative { color: var(--hub-red); }
+.stat-note { font-size: 11px; color: var(--hub-muted); margin: 4px 0 0; }
 
-.ie-table-wrap { overflow-x: auto; margin-bottom: 16px; }
-.ie-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+/* === INCOME / EXPENSE TABLE === */
+.ie-table-wrap { overflow-x: auto; margin-bottom: 18px; }
+.ie-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 0; }
 .ie-table th {
-  background: var(--navy); color: #fff; text-align: left;
-  padding: 8px 12px; font-size: 11px; font-weight: 600;
-  letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--hub-charcoal);
+  color: var(--hub-gold);
+  text-align: left; padding: 9px 14px;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase;
 }
 .ie-table th:last-child { text-align: right; }
-.ie-table td { padding: 7px 12px; border-bottom: 1px solid var(--rule); color: var(--fg); }
-.ie-table td:last-child { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
-.ie-table tr.total-row td { font-weight: 700; background: var(--bg); border-top: 2px solid var(--rule); }
+.ie-table td {
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--hub-charcoal);
+  color: var(--hub-cream); opacity: 0.9;
+}
+.ie-table td:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600; opacity: 1;
+}
+.ie-table tr.total-row td {
+  font-weight: 700; opacity: 1;
+  background: var(--hub-navy);
+  border-top: 2px solid var(--hub-gold);
+  color: var(--hub-cream);
+}
 .ie-table tr.section-head td {
-  font-weight: 600; color: var(--navy);
-  background: rgba(201,168,76,0.08);
-  font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase;
+  font-weight: 600; color: var(--hub-gold);
+  background: rgba(212,184,96,0.08);
+  font-size: 11px; letter-spacing: 0.06em;
+  text-transform: uppercase; opacity: 1;
 }
 
+/* === KEY POINTS === */
 .key-points { margin: 0; padding: 0; list-style: none; }
 .key-points li {
-  display: flex; gap: 10px; font-size: 14px; color: var(--ink-mid);
-  padding: 6px 0; border-top: 1px solid var(--rule); align-items: flex-start;
+  display: flex; gap: 12px; font-size: 14px;
+  color: var(--hub-cream); opacity: 0.88;
+  padding: 8px 0; border-top: 1px solid var(--hub-charcoal);
+  align-items: flex-start;
 }
 .key-points li:first-child { border-top: none; }
-.kp-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.kp-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 
-.page-footer {
-  border-top: 1px solid var(--rule);
-  padding-top: 20px; margin-top: 8px;
-  font-size: 12px; color: var(--muted);
+/* === DIVIDER === */
+.section-divider {
+  margin: 4px 0 20px;
+  border: none; border-top: 1px solid var(--hub-charcoal);
 }
 
-@media (max-width: 480px) {
+/* === FOOTER === */
+.page-footer {
+  border-top: 1px solid var(--hub-charcoal);
+  padding-top: 20px; margin-top: 8px;
+  font-size: 12px; color: var(--hub-muted);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 520px) {
   .content { padding: 20px 16px 40px; }
-  .precinct-block { padding: 18px 16px; }
+  .precinct-block { padding: 18px 14px; }
+  .stat-val { font-size: 18px; }
 }
 </style>
 </head>
@@ -163,11 +200,11 @@ h2.precinct {
 <main class="content">
 
   <div class="intro-card">
-    <p>This summary covers the first quarter of the 2026–27 financial year (1 July – 30 September 2026). Aveo provides five separate financial reports for Bridgeman Downs — one for each area of the village. We've translated those reports into plain language here so you can see where money comes from and where it goes in your area.</p>
+    <p>This summary covers the first quarter of the 2026–27 financial year (1 July – 30 September 2026). Aveo provides five separate financial reports for Bridgeman Downs — one for each area of the village. We've translated those reports into plain language so you can see where money comes from and where it goes in your area.</p>
     <p>All figures are <strong>year-to-date</strong> (the full quarter) unless otherwise noted. The <em>closing balance</em> is the cash held in the fund at 30 September 2026.</p>
   </div>
 
-  <!-- SERVICED APARTMENTS -->
+  <!-- ===== SERVICED APARTMENTS ===== -->
   <div class="precinct-block">
     <div class="section-label">Area 1</div>
     <h2 class="precinct">🏢 Serviced Apartments</h2>
@@ -199,7 +236,7 @@ h2.precinct {
     </ul>
   </div>
 
-  <!-- BODY CORPORATE -->
+  <!-- ===== BODY CORPORATE ===== -->
   <div class="precinct-block">
     <div class="section-label">Area 2</div>
     <h2 class="precinct">🏛️ Body Corporate</h2>
@@ -232,7 +269,7 @@ h2.precinct {
     </ul>
   </div>
 
-  <!-- FREEHOLD -->
+  <!-- ===== FREEHOLD ===== -->
   <div class="precinct-block">
     <div class="section-label">Area 3</div>
     <h2 class="precinct">🏠 Freehold</h2>
@@ -264,7 +301,7 @@ h2.precinct {
     </ul>
   </div>
 
-  <!-- LEASEHOLD -->
+  <!-- ===== LEASEHOLD ===== -->
   <div class="precinct-block">
     <div class="section-label">Area 4</div>
     <h2 class="precinct">🏡 Leasehold</h2>
@@ -298,7 +335,7 @@ h2.precinct {
     </ul>
   </div>
 
-  <!-- LEASEHOLD AVEO WAY -->
+  <!-- ===== LEASEHOLD AVEO WAY ===== -->
   <div class="precinct-block">
     <div class="section-label">Area 5</div>
     <h2 class="precinct">🌿 Leasehold — Aveo Way</h2>
@@ -331,7 +368,7 @@ h2.precinct {
     </ul>
   </div>
 
-  <!-- VILLAGE TOTAL -->
+  <!-- ===== VILLAGE TOTAL ===== -->
   <div class="precinct-block">
     <div class="section-label">Village Total — All Areas Combined</div>
     <h2 class="precinct">📊 At a Glance: Whole Village</h2>
