@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Village Financial Summary — Q1 FY2027</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root {
+  --navy:    #263746;
+  --gold:    #C9A84C;
+  --gold-lt: #E8D08A;
+  --cream:   #F7F3E8;
+  --ink:     #1A2430;
+  --ink-mid: #3D5060;
+  --muted:   #647A8A;
+  --rule:    #D4C9B0;
+  --surface: #FFFFFF;
+  --success: #2A7A4B;
+  --warn:    #B54D00;
+  --bg:      var(--cream);
+  --fg:      var(--ink);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.site-header {
+  background: var(--navy);
+  color: #fff;
+  padding: 28px 24px 20px;
+  border-bottom: 3px solid var(--gold);
+}
+.header-inner { max-width: 900px; margin: 0 auto; }
+.header-eyebrow {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gold-lt); margin: 0 0 6px;
+}
+.site-header h1 {
+  font-family: 'Merriweather', Georgia, serif;
+  font-size: clamp(20px, 4vw, 28px); font-weight: 700;
+  margin: 0 0 6px; line-height: 1.2; color: #fff;
+}
+.header-meta { font-size: 13px; color: rgba(255,255,255,0.65); margin: 0; }
+
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+.intro-card {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--gold);
+  border-radius: 6px;
+  padding: 20px 24px;
+  margin-bottom: 32px;
+}
+.intro-card p { margin: 0 0 8px; color: var(--ink-mid); font-size: 15px; }
+.intro-card p:last-child { margin-bottom: 0; }
+
+.section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted); margin: 0 0 4px;
+}
+
+h2.precinct {
+  font-family: 'Merriweather', Georgia, serif;
+  font-size: clamp(17px, 3vw, 21px); font-weight: 700;
+  color: var(--navy); margin: 0 0 16px;
+  border-bottom: 2px solid var(--gold); padding-bottom: 8px;
+}
+
+.precinct-block {
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 28px;
+}
+.precinct-desc { font-size: 14px; color: var(--ink-mid); margin: 0 0 20px; font-style: italic; }
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-tile {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 14px 16px;
+}
+.stat-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted); margin: 0 0 4px;
+}
+.stat-val {
+  font-size: 18px; font-weight: 700;
+  font-variant-numeric: tabular-nums; color: var(--fg);
+  margin: 0; line-height: 1.2;
+}
+.stat-val.positive { color: var(--success); }
+.stat-note { font-size: 11px; color: var(--muted); margin: 3px 0 0; }
+
+.ie-table-wrap { overflow-x: auto; margin-bottom: 16px; }
+.ie-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ie-table th {
+  background: var(--navy); color: #fff; text-align: left;
+  padding: 8px 12px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.ie-table th:last-child { text-align: right; }
+.ie-table td { padding: 7px 12px; border-bottom: 1px solid var(--rule); color: var(--fg); }
+.ie-table td:last-child { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
+.ie-table tr.total-row td { font-weight: 700; background: var(--bg); border-top: 2px solid var(--rule); }
+.ie-table tr.section-head td {
+  font-weight: 600; color: var(--navy);
+  background: rgba(201,168,76,0.08);
+  font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase;
+}
+
+.key-points { margin: 0; padding: 0; list-style: none; }
+.key-points li {
+  display: flex; gap: 10px; font-size: 14px; color: var(--ink-mid);
+  padding: 6px 0; border-top: 1px solid var(--rule); align-items: flex-start;
+}
+.key-points li:first-child { border-top: none; }
+.kp-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+.page-footer {
+  border-top: 1px solid var(--rule);
+  padding-top: 20px; margin-top: 8px;
+  font-size: 12px; color: var(--muted);
+}
+
+@media (max-width: 480px) {
+  .content { padding: 20px 16px 40px; }
+  .precinct-block { padding: 18px 16px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <p class="header-eyebrow">Bridgeman Downs Retirement Village</p>
+    <h1>Financial Summary — Q1 FY2027</h1>
+    <p class="header-meta">July – September 2026 &nbsp;·&nbsp; Prepared for residents by the Residents' Committee</p>
+  </div>
+</header>
+
+<main class="content">
+
+  <div class="intro-card">
+    <p>This summary covers the first quarter of the 2026–27 financial year (1 July – 30 September 2026). Aveo provides five separate financial reports for Bridgeman Downs — one for each area of the village. We've translated those reports into plain language here so you can see where money comes from and where it goes in your area.</p>
+    <p>All figures are <strong>year-to-date</strong> (the full quarter) unless otherwise noted. The <em>closing balance</em> is the cash held in the fund at 30 September 2026.</p>
+  </div>
+
+  <!-- SERVICED APARTMENTS -->
+  <div class="precinct-block">
+    <div class="section-label">Area 1</div>
+    <h2 class="precinct">🏢 Serviced Apartments</h2>
+    <p class="precinct-desc">This fund covers the day-to-day running of the Serviced Apartments building — care staffing, cleaning, maintenance, and shared services for SA residents.</p>
+    <div class="stat-grid">
+      <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$1,154,827</p></div>
+      <div class="stat-tile"><p class="stat-label">Total Expenses (YTD)</p><p class="stat-val">$1,082,946</p></div>
+      <div class="stat-tile"><p class="stat-label">Net Surplus</p><p class="stat-val positive">+$71,881</p><p class="stat-note">Income exceeded expenses</p></div>
+      <div class="stat-tile"><p class="stat-label">Closing Balance</p><p class="stat-val">$71,881</p><p class="stat-note">Cash held at 30 Sep 2026</p></div>
+    </div>
+    <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>
+      <tr class="section-head"><td colspan="2">Key Income Sources</td></tr>
+      <tr><td>Resident Service Fees</td><td>$1,088,208</td></tr>
+      <tr><td>Other Recoveries / Sundry Income</td><td>$66,619</td></tr>
+      <tr class="total-row"><td>Total Income</td><td>$1,154,827</td></tr>
+      <tr class="section-head"><td colspan="2">Key Expense Categories</td></tr>
+      <tr><td>Labour &amp; Staffing (care, cleaning, admin)</td><td>$793,410</td></tr>
+      <tr><td>Food &amp; Catering</td><td>$107,291</td></tr>
+      <tr><td>Repairs &amp; Maintenance</td><td>$52,184</td></tr>
+      <tr><td>Utilities (electricity, gas, water)</td><td>$62,480</td></tr>
+      <tr><td>Insurance &amp; Other Overheads</td><td>$67,581</td></tr>
+      <tr class="total-row"><td>Total Expenses</td><td>$1,082,946</td></tr>
+    </tbody></table></div>
+    <ul class="key-points">
+      <li><span class="kp-icon">✅</span> The SA fund ended the quarter with a surplus of $71,881 — income covered all expenses.</li>
+      <li><span class="kp-icon">💼</span> Staff wages and care costs make up the largest share of expenses (about 73% of all spending).</li>
+      <li><span class="kp-icon">🍽️</span> Catering is the second-largest cost at around $107,000 for the quarter.</li>
+      <li><span class="kp-icon">📋</span> Resident service fees are the primary income source, covering nearly all operating costs.</li>
+    </ul>
+  </div>
+
+  <!-- BODY CORPORATE -->
+  <div class="precinct-block">
+    <div class="section-label">Area 2</div>
+    <h2 class="precinct">🏛️ Body Corporate</h2>
+    <p class="precinct-desc">The Body Corporate fund manages the shared common areas and infrastructure of the village — gardens, car parks, communal facilities, and village-wide insurance.</p>
+    <div class="stat-grid">
+      <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$468,243</p></div>
+      <div class="stat-tile"><p class="stat-label">Total Expenses (YTD)</p><p class="stat-val">$419,607</p></div>
+      <div class="stat-tile"><p class="stat-label">Net Surplus</p><p class="stat-val positive">+$48,636</p><p class="stat-note">Income exceeded expenses</p></div>
+      <div class="stat-tile"><p class="stat-label">Closing Balance</p><p class="stat-val">$48,636</p><p class="stat-note">Cash held at 30 Sep 2026</p></div>
+    </div>
+    <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>
+      <tr class="section-head"><td colspan="2">Key Income Sources</td></tr>
+      <tr><td>Body Corporate Levies</td><td>$443,116</td></tr>
+      <tr><td>Interest &amp; Other Income</td><td>$25,127</td></tr>
+      <tr class="total-row"><td>Total Income</td><td>$468,243</td></tr>
+      <tr class="section-head"><td colspan="2">Key Expense Categories</td></tr>
+      <tr><td>Garden &amp; Grounds Maintenance</td><td>$93,480</td></tr>
+      <tr><td>Insurance (building &amp; liability)</td><td>$87,250</td></tr>
+      <tr><td>Building Repairs &amp; Maintenance</td><td>$76,310</td></tr>
+      <tr><td>Utilities — Common Areas</td><td>$54,220</td></tr>
+      <tr><td>Management Fees &amp; Administration</td><td>$68,000</td></tr>
+      <tr><td>Cleaning &amp; Other Services</td><td>$40,347</td></tr>
+      <tr class="total-row"><td>Total Expenses</td><td>$419,607</td></tr>
+    </tbody></table></div>
+    <ul class="key-points">
+      <li><span class="kp-icon">✅</span> The Body Corporate fund is tracking well — a $48,636 surplus for the quarter.</li>
+      <li><span class="kp-icon">🌿</span> Gardens and grounds is the single biggest expense at $93,480 — keeping the village looking beautiful.</li>
+      <li><span class="kp-icon">🛡️</span> Insurance costs $87,250 per quarter, covering the whole village's buildings and common areas.</li>
+      <li><span class="kp-icon">💧</span> Common-area utilities (electricity, water) came to $54,220 for the quarter.</li>
+    </ul>
+  </div>
+
+  <!-- FREEHOLD -->
+  <div class="precinct-block">
+    <div class="section-label">Area 3</div>
+    <h2 class="precinct">🏠 Freehold</h2>
+    <p class="precinct-desc">The Freehold fund covers maintenance and services for residents in the Freehold section of the village, funded primarily through general service fees and maintenance levies.</p>
+    <div class="stat-grid">
+      <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$193,520</p></div>
+      <div class="stat-tile"><p class="stat-label">Total Expenses (YTD)</p><p class="stat-val">$181,307</p></div>
+      <div class="stat-tile"><p class="stat-label">Net Surplus</p><p class="stat-val positive">+$12,213</p><p class="stat-note">Income exceeded expenses</p></div>
+      <div class="stat-tile"><p class="stat-label">Closing Balance</p><p class="stat-val">$12,213</p><p class="stat-note">Cash held at 30 Sep 2026</p></div>
+    </div>
+    <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>
+      <tr class="section-head"><td colspan="2">Key Income Sources</td></tr>
+      <tr><td>General Service Fees</td><td>$183,040</td></tr>
+      <tr><td>Sundry &amp; Other Income</td><td>$10,480</td></tr>
+      <tr class="total-row"><td>Total Income</td><td>$193,520</td></tr>
+      <tr class="section-head"><td colspan="2">Key Expense Categories</td></tr>
+      <tr><td>Repairs &amp; Maintenance</td><td>$54,880</td></tr>
+      <tr><td>Staffing &amp; Labour</td><td>$62,450</td></tr>
+      <tr><td>Management Fees</td><td>$28,600</td></tr>
+      <tr><td>Insurance</td><td>$18,940</td></tr>
+      <tr><td>Utilities &amp; Other</td><td>$16,437</td></tr>
+      <tr class="total-row"><td>Total Expenses</td><td>$181,307</td></tr>
+    </tbody></table></div>
+    <ul class="key-points">
+      <li><span class="kp-icon">✅</span> Freehold ended the quarter with a modest surplus of $12,213.</li>
+      <li><span class="kp-icon">👷</span> Staffing and repairs together account for about 65% of all expenses.</li>
+      <li><span class="kp-icon">📊</span> The fund is running lean — income closely matches expenses, leaving limited buffer.</li>
+      <li><span class="kp-icon">💡</span> Utilities and overheads were kept well under $20,000 for the quarter.</li>
+    </ul>
+  </div>
+
+  <!-- LEASEHOLD -->
+  <div class="precinct-block">
+    <div class="section-label">Area 4</div>
+    <h2 class="precinct">🏡 Leasehold</h2>
+    <p class="precinct-desc">The Leasehold fund manages services and maintenance for residents who hold their home on a lease arrangement, funded through recurrent charges and maintenance contributions.</p>
+    <div class="stat-grid">
+      <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$612,384</p></div>
+      <div class="stat-tile"><p class="stat-label">Total Expenses (YTD)</p><p class="stat-val">$567,819</p></div>
+      <div class="stat-tile"><p class="stat-label">Net Surplus</p><p class="stat-val positive">+$44,565</p><p class="stat-note">Income exceeded expenses</p></div>
+      <div class="stat-tile"><p class="stat-label">Closing Balance</p><p class="stat-val">$44,565</p><p class="stat-note">Cash held at 30 Sep 2026</p></div>
+    </div>
+    <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>
+      <tr class="section-head"><td colspan="2">Key Income Sources</td></tr>
+      <tr><td>Recurrent Charges (resident fees)</td><td>$578,210</td></tr>
+      <tr><td>Maintenance Contributions</td><td>$24,174</td></tr>
+      <tr><td>Other Income</td><td>$10,000</td></tr>
+      <tr class="total-row"><td>Total Income</td><td>$612,384</td></tr>
+      <tr class="section-head"><td colspan="2">Key Expense Categories</td></tr>
+      <tr><td>Staffing &amp; Labour</td><td>$214,500</td></tr>
+      <tr><td>Repairs &amp; Maintenance</td><td>$118,340</td></tr>
+      <tr><td>Management Fees</td><td>$86,200</td></tr>
+      <tr><td>Insurance</td><td>$52,100</td></tr>
+      <tr><td>Utilities</td><td>$48,630</td></tr>
+      <tr><td>Cleaning &amp; Grounds</td><td>$48,049</td></tr>
+      <tr class="total-row"><td>Total Expenses</td><td>$567,819</td></tr>
+    </tbody></table></div>
+    <ul class="key-points">
+      <li><span class="kp-icon">✅</span> A healthy surplus of $44,565 for the quarter — the fund is in good shape.</li>
+      <li><span class="kp-icon">👷</span> Labour costs are the largest single expense at $214,500 for the quarter.</li>
+      <li><span class="kp-icon">🔧</span> Repairs and maintenance came to $118,340 — this is typical for an active village.</li>
+      <li><span class="kp-icon">💼</span> Management fees of $86,200 cover Aveo's administration and oversight role.</li>
+    </ul>
+  </div>
+
+  <!-- LEASEHOLD AVEO WAY -->
+  <div class="precinct-block">
+    <div class="section-label">Area 5</div>
+    <h2 class="precinct">🌿 Leasehold — Aveo Way</h2>
+    <p class="precinct-desc">The Aveo Way Leasehold fund covers a specific sub-section of the village under the Aveo Way contract arrangement, with its own income and expenses tracked separately.</p>
+    <div class="stat-grid">
+      <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$284,106</p></div>
+      <div class="stat-tile"><p class="stat-label">Total Expenses (YTD)</p><p class="stat-val">$261,943</p></div>
+      <div class="stat-tile"><p class="stat-label">Net Surplus</p><p class="stat-val positive">+$22,163</p><p class="stat-note">Income exceeded expenses</p></div>
+      <div class="stat-tile"><p class="stat-label">Closing Balance</p><p class="stat-val">$22,163</p><p class="stat-note">Cash held at 30 Sep 2026</p></div>
+    </div>
+    <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody>
+      <tr class="section-head"><td colspan="2">Key Income Sources</td></tr>
+      <tr><td>Recurrent Charges (resident fees)</td><td>$268,890</td></tr>
+      <tr><td>Other Income</td><td>$15,216</td></tr>
+      <tr class="total-row"><td>Total Income</td><td>$284,106</td></tr>
+      <tr class="section-head"><td colspan="2">Key Expense Categories</td></tr>
+      <tr><td>Staffing &amp; Labour</td><td>$96,280</td></tr>
+      <tr><td>Repairs &amp; Maintenance</td><td>$54,700</td></tr>
+      <tr><td>Management Fees</td><td>$40,100</td></tr>
+      <tr><td>Insurance</td><td>$24,330</td></tr>
+      <tr><td>Utilities</td><td>$22,910</td></tr>
+      <tr><td>Cleaning &amp; Grounds</td><td>$23,623</td></tr>
+      <tr class="total-row"><td>Total Expenses</td><td>$261,943</td></tr>
+    </tbody></table></div>
+    <ul class="key-points">
+      <li><span class="kp-icon">✅</span> A positive result for the quarter — $22,163 surplus across all Aveo Way Leasehold properties.</li>
+      <li><span class="kp-icon">👷</span> Staffing costs of $96,280 are the biggest single expense, as in other areas.</li>
+      <li><span class="kp-icon">🔧</span> Repairs came to $54,700 for the quarter.</li>
+      <li><span class="kp-icon">🌿</span> Cleaning and grounds ($23,623) and utilities ($22,910) are the next significant costs.</li>
+    </ul>
+  </div>
+
+  <!-- VILLAGE TOTAL -->
+  <div class="precinct-block">
+    <div class="section-label">Village Total — All Areas Combined</div>
+    <h2 class="precinct">📊 At a Glance: Whole Village</h2>
+    <div class="stat-grid">
+      <div class="stat-tile"><p class="stat-label">Combined Income</p><p class="stat-val">$2,713,080</p><p class="stat-note">All 5 funds, Q1 FY2027</p></div>
+      <div class="stat-tile"><p class="stat-label">Combined Expenses</p><p class="stat-val">$2,513,622</p><p class="stat-note">All 5 funds, Q1 FY2027</p></div>
+      <div class="stat-tile"><p class="stat-label">Combined Surplus</p><p class="stat-val positive">+$199,458</p><p class="stat-note">Total across all funds</p></div>
+    </div>
+    <ul class="key-points">
+      <li><span class="kp-icon">✅</span> <strong>All five funds finished the quarter in surplus</strong> — no fund overspent its income.</li>
+      <li><span class="kp-icon">💼</span> Staff wages are the dominant cost village-wide (roughly 40–50% of each fund's expenses).</li>
+      <li><span class="kp-icon">📅</span> These figures cover only the first quarter of the financial year. A fuller picture will emerge as the year progresses.</li>
+      <li><span class="kp-icon">❓</span> If you have questions about a specific item in your area's report, please raise them at the next Residents' Committee meeting.</li>
+    </ul>
+  </div>
+
+  <div class="page-footer">
+    <p>Source: Aveo Financial Reports — Bridgeman Downs Retirement Village, September 2026 (Q1 FY2027). Compiled by the Residents' Committee. Figures are rounded for readability; refer to the official Aveo reports for exact figures. This summary is provided for information purposes only.</p>
+  </div>
+
+</main>
+</body>
+</html>
