@@ -451,12 +451,12 @@
     <!-- 3. FINANCES & REPORTS -->
     <div id="sec-finances" style="margin-top:4px;"></div>
     <div class="collapsible-header" onclick="toggleSection('financials')">
-      <span class="collapsible-title">💰 Finances &amp; Reports</span>
+      <span class="collapsible-title">💰 Residents' Social Funds</span>
       <span id="financials-arrow" class="collapsible-arrow">▼</span>
     </div>
     <div id="financials" class="collapsible-content">
-      <p class="section-desc">Residents' Finances — funds generated from Social Club events.
-      Monthly and annual financial and bank statements, expenditure reports and other financial documents.</p>
+      <p class="section-desc">Funds generated and managed by residents through Social Club events.
+      Monthly and annual financial and bank statements, expenditure reports and other Social Club financial documents.</p>
 
       <h4 style="margin-bottom:10px;color:var(--hub-gold);font-size:0.95em;">📊 Monthly Financial Reports</h4>
       <p style="color:var(--hub-cream);margin-bottom:12px;font-size:0.85em;">Select a reporting period to view the financial report:</p>
@@ -479,6 +479,7 @@
       <p style="color:var(--hub-cream);opacity:0.85;font-size:0.82em;margin-top:6px;">
         💡 Statements open in a new window. Use Ctrl+P or Cmd+P to print.
       </p>
+
     </div>
 
 
@@ -518,14 +519,27 @@
 
 
 
-    <!-- VILLAGE BUDGETS -->
+    <!-- VILLAGE FINANCES (AVEO) -->
     <div id="sec-budgets" style="margin-top:4px;"></div>
     <div class="collapsible-header" onclick="toggleSection('budgets')">
-      <span class="collapsible-title">📋 Village Budgets</span>
+      <span class="collapsible-title">🏘️ Village Finances (Aveo)</span>
       <span id="budgets-arrow" class="collapsible-arrow">▼</span>
     </div>
     <div id="budgets" class="collapsible-content">
-      <p class="section-desc">Levy rates and budget breakdowns for each area for the current financial year (FY2026/27). Click an area below to see its levy details.</p>
+      <p class="section-desc">Financial reports and levy budgets managed by Aveo on behalf of residents — covering Serviced Apartments, Body Corporate, Freehold, Leasehold, and Leasehold Aveo Way.</p>
+
+      <h4 style="margin-bottom:10px;color:var(--hub-gold);font-size:0.95em;">📊 Quarterly Financial Summaries</h4>
+      <a href="https://claude.ai/artifact/J24qn1GERXKExWPd7Tv8AU" target="_blank" class="doc-link" style="margin-bottom:20px;">
+        📊 Q1 FY2027 Summary — July to September 2026
+        <span style="display:block;font-weight:400;font-size:0.85em;color:var(--hub-cream);opacity:0.85;margin-top:2px;">
+          All five area reports simplified for easy reading · Opens in a new window
+        </span>
+      </a>
+
+      <hr style="margin:16px 0;border:none;border-top:1px solid var(--hub-charcoal);">
+
+      <h4 style="margin-bottom:10px;color:var(--hub-gold);font-size:0.95em;">📋 Annual Levy Budgets (FY2026/27)</h4>
+      <p class="section-desc" style="margin-bottom:12px;">Levy rates and budget breakdowns for each area. Click an area below to see its levy details.</p>
 
       <!-- Sub-accordion: Leasehold ILU -->
       <div class="collapsible-header" onclick="toggleSection('budget-leasehold')" style="margin-top:8px;background:var(--hub-navy-hover);">
@@ -716,10 +730,10 @@
     var sections = [
       { id: 'rcnotices',    anchor: 'sec-rcnotices',    title: '📋 Residents Committee Notices',       keywords: 'rc notices residents committee monthly summary budget refurbishment update' },
       { id: 'meetings',     anchor: 'sec-meetings',     title: '📝 Meetings & Minutes',               keywords: 'meetings minutes agenda agm quarterly annual general residents committee social club' },
-      { id: 'financials',   anchor: 'sec-finances',     title: '💰 Finances & Reports',               keywords: 'finances financial reports bank statement income expenditure budget monthly quarterly' },
+      { id: 'financials',   anchor: 'sec-finances',     title: "💰 Residents' Social Funds",          keywords: 'social club funds finances financial reports bank statement income expenditure monthly quarterly residents' },
       { id: 'assets',       anchor: 'sec-assets',       title: '🧾 Asset Register',                   keywords: 'assets asset register equipment items furniture maintenance disposal purchased social club' },
       { id: 'issues',       anchor: 'sec-issues',       title: '📊 Village Issues & Progress',        keywords: 'issues progress tracker maintenance updates village problems' },
-      { id: 'budgets',      anchor: 'sec-budgets',      title: '📋 Village Budgets',                  keywords: 'budgets levy rates financial year leasehold freehold aveo way serviced apartments bundled unbundled GSC MRF body corporate quarterly monthly' },
+      { id: 'budgets',      anchor: 'sec-budgets',      title: '🏘️ Village Finances (Aveo)',           keywords: 'village finances aveo budgets levy rates financial year leasehold freehold aveo way serviced apartments bundled unbundled GSC MRF body corporate quarterly monthly summary reports' },
       { id: 'aveo',         anchor: 'sec-aveo',         title: '🏛️ Aveo Documents & Presentations',   keywords: 'aveo documents presentations roundtable pet policy solar' }
     ];
 
