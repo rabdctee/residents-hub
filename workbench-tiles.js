@@ -77,6 +77,11 @@ var WORKBENCH_TILES = [
     roles: ["rc-chair", "rc-secretary", "rc-treasurer", "rc-member"],
     links: [["💬 RC Response", "rc-issues.html"]] },
 
+  { section: "issues", icon: "📊", title: "Monthly Issues Report",
+    desc: "Issues still waiting on the Community Manager — ready to print or save as PDF.",
+    roles: RC,
+    links: [["📊 Open Report", "issues-report.html"]] },
+
   { section: "issues", icon: "🏡", title: "Manor Issues",
     desc: "Log, view and update issues specific to Ken Richards Manor residents.",
     roles: ["manor-advisor"],
