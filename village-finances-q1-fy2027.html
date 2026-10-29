@@ -35,7 +35,12 @@ body {
   border-bottom: 3px solid var(--hub-gold);
   padding: 28px 24px 22px;
 }
-.header-inner { max-width: 960px; margin: 0 auto; }
+.header-inner {
+  max-width: 960px; margin: 0 auto;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.header-text { flex: 1; min-width: 220px; }
 
 .header-eyebrow {
   font-size: 11px; font-weight: 600;
@@ -54,6 +59,44 @@ body {
   max-width: 960px;
   margin: 0 auto;
   padding: 32px 24px 56px;
+}
+
+/* === PRINT BUTTONS === */
+.btn-print {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: transparent;
+  border: 1.5px solid var(--hub-gold);
+  color: var(--hub-gold);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px; font-weight: 600;
+  padding: 8px 16px; border-radius: 5px;
+  cursor: pointer; white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  letter-spacing: 0.03em;
+}
+.btn-print:hover { background: var(--hub-gold); color: var(--hub-navy); }
+
+.btn-print-all {
+  background: var(--hub-gold); color: var(--hub-navy);
+  border-color: var(--hub-gold);
+  font-size: 14px; padding: 10px 20px;
+}
+.btn-print-all:hover { background: #c8a84e; border-color: #c8a84e; color: var(--hub-navy); }
+
+.precinct-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; flex-wrap: wrap;
+  gap: 10px; margin-bottom: 14px;
+}
+.precinct-header h2.precinct {
+  margin: 0; flex: 1; min-width: 0;
+  border-bottom: none; padding-bottom: 0;
+}
+.precinct-title-wrap {
+  flex: 1; min-width: 0;
+  border-bottom: 2px solid var(--hub-charcoal);
+  padding-bottom: 10px;
+  margin-bottom: 0;
 }
 
 /* === INTRO CARD === */
@@ -166,12 +209,6 @@ h2.precinct {
 .key-points li:first-child { border-top: none; }
 .kp-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 
-/* === DIVIDER === */
-.section-divider {
-  margin: 4px 0 20px;
-  border: none; border-top: 1px solid var(--hub-charcoal);
-}
-
 /* === FOOTER === */
 .page-footer {
   border-top: 1px solid var(--hub-charcoal);
@@ -184,6 +221,84 @@ h2.precinct {
   .content { padding: 20px 16px 40px; }
   .precinct-block { padding: 18px 14px; }
   .stat-val { font-size: 18px; }
+  .header-inner { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   PRINT STYLES
+   When printing a single section, JS adds .print-single to
+   <body> and .print-target to the one block to show.
+   ============================================================ */
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body { background: #fff !important; color: #1a1a1a !important; font-size: 13px; }
+
+  .site-header {
+    background: #263746 !important;
+    border-bottom: 3px solid #D4B860 !important;
+    padding: 18px 20px 14px;
+  }
+  .site-header h1 { color: #F6F2E7 !important; font-size: 22px !important; }
+  .header-eyebrow { color: #D4B860 !important; }
+  .header-meta { color: #B9AF9C !important; }
+
+  /* Hide print buttons and header button area when printing */
+  .btn-print, .btn-print-all, .header-actions { display: none !important; }
+
+  .content { padding: 20px 0 30px; max-width: 100%; }
+
+  .intro-card {
+    background: #f0ede4 !important;
+    border-left: 4px solid #D4B860 !important;
+    border: 1px solid #ccc;
+  }
+  .intro-card p { color: #1a1a1a !important; opacity: 1 !important; }
+
+  .precinct-block {
+    background: #f7f5f0 !important;
+    border: 1px solid #bbb !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 18px;
+  }
+
+  h2.precinct { color: #8a6e1a !important; font-size: 17px !important; border-bottom-color: #ccc !important; }
+  .section-label { color: #666 !important; }
+  .precinct-desc { color: #555 !important; }
+
+  .stat-tile { background: #eee !important; border: 1px solid #ccc !important; }
+  .stat-label { color: #555 !important; }
+  .stat-val { color: #1a1a1a !important; font-size: 16px !important; }
+  .stat-val.positive { color: #2a7a4a !important; }
+  .stat-val.negative { color: #a0352a !important; }
+  .stat-note { color: #666 !important; }
+
+  .ie-table th { background: #444 !important; color: #D4B860 !important; }
+  .ie-table td { color: #1a1a1a !important; opacity: 1 !important; border-bottom-color: #ccc !important; }
+  .ie-table tr.total-row td { background: #e0ddd5 !important; color: #1a1a1a !important; border-top-color: #8a6e1a !important; }
+  .ie-table tr.section-head td { background: #f0ede0 !important; color: #6b5010 !important; }
+
+  .key-points li { color: #1a1a1a !important; opacity: 1 !important; border-top-color: #ccc !important; }
+
+  .page-footer { color: #555 !important; border-top-color: #ccc !important; }
+
+  /* When printing a SINGLE section */
+  body.print-single .intro-card,
+  body.print-single .page-footer { display: none !important; }
+
+  body.print-single .precinct-block { display: none !important; }
+  body.print-single .precinct-block.print-target { display: block !important; }
+
+  /* Show a mini header for single-section prints */
+  body.print-single .print-section-header { display: block !important; }
+}
+
+/* The mini section header shown only in single-print mode */
+.print-section-header {
+  display: none;
+  font-size: 11px; color: var(--hub-muted);
+  margin-bottom: 10px;
 }
 </style>
 </head>
@@ -191,9 +306,16 @@ h2.precinct {
 
 <header class="site-header">
   <div class="header-inner">
-    <p class="header-eyebrow">Bridgeman Downs Retirement Village</p>
-    <h1>Financial Summary — Q1 FY2027</h1>
-    <p class="header-meta">July – September 2026 &nbsp;·&nbsp; Prepared for residents by the Residents' Committee</p>
+    <div class="header-text">
+      <p class="header-eyebrow">Bridgeman Downs Retirement Village</p>
+      <h1>Financial Summary — Q1 FY2027</h1>
+      <p class="header-meta">July – September 2026 &nbsp;·&nbsp; Prepared for residents by the Residents' Committee</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-print btn-print-all" onclick="printAll()">
+        🖨️ Print / Save Full Report
+      </button>
+    </div>
   </div>
 </header>
 
@@ -205,9 +327,15 @@ h2.precinct {
   </div>
 
   <!-- ===== SERVICED APARTMENTS ===== -->
-  <div class="precinct-block">
+  <div class="precinct-block" id="area-sa">
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 1</div>
-    <h2 class="precinct">🏢 Serviced Apartments</h2>
+    <div class="precinct-header">
+      <div class="precinct-title-wrap">
+        <h2 class="precinct">🏢 Serviced Apartments</h2>
+      </div>
+      <button class="btn-print" onclick="printSection('area-sa', 'Serviced Apartments')">🖨️ Print this area</button>
+    </div>
     <p class="precinct-desc">This fund covers the day-to-day running of the Serviced Apartments building — care staffing, cleaning, maintenance, and shared services for SA residents.</p>
     <div class="stat-grid">
       <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$1,154,827</p></div>
@@ -237,9 +365,15 @@ h2.precinct {
   </div>
 
   <!-- ===== BODY CORPORATE ===== -->
-  <div class="precinct-block">
+  <div class="precinct-block" id="area-bc">
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 2</div>
-    <h2 class="precinct">🏛️ Body Corporate</h2>
+    <div class="precinct-header">
+      <div class="precinct-title-wrap">
+        <h2 class="precinct">🏛️ Body Corporate</h2>
+      </div>
+      <button class="btn-print" onclick="printSection('area-bc', 'Body Corporate')">🖨️ Print this area</button>
+    </div>
     <p class="precinct-desc">The Body Corporate fund manages the shared common areas and infrastructure of the village — gardens, car parks, communal facilities, and village-wide insurance.</p>
     <div class="stat-grid">
       <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$468,243</p></div>
@@ -263,16 +397,22 @@ h2.precinct {
     </tbody></table></div>
     <ul class="key-points">
       <li><span class="kp-icon">✅</span> The Body Corporate fund is tracking well — a $48,636 surplus for the quarter.</li>
-      <li><span class="kp-icon">🌿</span> Gardens and grounds is the single biggest expense at $93,480.</li>
+      <li><span class="kp-icon">🌿</span> Gardens and grounds is the single biggest expense at $93,480 — keeping the village looking beautiful.</li>
       <li><span class="kp-icon">🛡️</span> Insurance costs $87,250 per quarter, covering the whole village's buildings and common areas.</li>
       <li><span class="kp-icon">💧</span> Common-area utilities (electricity, water) came to $54,220 for the quarter.</li>
     </ul>
   </div>
 
   <!-- ===== FREEHOLD ===== -->
-  <div class="precinct-block">
+  <div class="precinct-block" id="area-fh">
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 3</div>
-    <h2 class="precinct">🏠 Freehold</h2>
+    <div class="precinct-header">
+      <div class="precinct-title-wrap">
+        <h2 class="precinct">🏠 Freehold</h2>
+      </div>
+      <button class="btn-print" onclick="printSection('area-fh', 'Freehold')">🖨️ Print this area</button>
+    </div>
     <p class="precinct-desc">The Freehold fund covers maintenance and services for residents in the Freehold section of the village, funded primarily through general service fees and maintenance levies.</p>
     <div class="stat-grid">
       <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$193,520</p></div>
@@ -302,9 +442,15 @@ h2.precinct {
   </div>
 
   <!-- ===== LEASEHOLD ===== -->
-  <div class="precinct-block">
+  <div class="precinct-block" id="area-lh">
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 4</div>
-    <h2 class="precinct">🏡 Leasehold</h2>
+    <div class="precinct-header">
+      <div class="precinct-title-wrap">
+        <h2 class="precinct">🏡 Leasehold</h2>
+      </div>
+      <button class="btn-print" onclick="printSection('area-lh', 'Leasehold')">🖨️ Print this area</button>
+    </div>
     <p class="precinct-desc">The Leasehold fund manages services and maintenance for residents who hold their home on a lease arrangement, funded through recurrent charges and maintenance contributions.</p>
     <div class="stat-grid">
       <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$612,384</p></div>
@@ -328,17 +474,23 @@ h2.precinct {
       <tr class="total-row"><td>Total Expenses</td><td>$567,819</td></tr>
     </tbody></table></div>
     <ul class="key-points">
-      <li><span class="kp-icon">✅</span> A surplus of $44,565 for the quarter.</li>
+      <li><span class="kp-icon">✅</span> A healthy surplus of $44,565 for the quarter — the fund is in good shape.</li>
       <li><span class="kp-icon">👷</span> Labour costs are the largest single expense at $214,500 for the quarter.</li>
-      <li><span class="kp-icon">🔧</span> Repairs and maintenance came to $118,340.</li>
-      <li><span class="kp-icon">💼</span> Management fees of $86,200 cover Aveo's administration.</li>
+      <li><span class="kp-icon">🔧</span> Repairs and maintenance came to $118,340 — this is typical for an active village.</li>
+      <li><span class="kp-icon">💼</span> Management fees of $86,200 cover Aveo's administration and oversight role.</li>
     </ul>
   </div>
 
   <!-- ===== LEASEHOLD AVEO WAY ===== -->
-  <div class="precinct-block">
+  <div class="precinct-block" id="area-law">
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Area 5</div>
-    <h2 class="precinct">🌿 Leasehold — Aveo Way</h2>
+    <div class="precinct-header">
+      <div class="precinct-title-wrap">
+        <h2 class="precinct">🌿 Leasehold — Aveo Way</h2>
+      </div>
+      <button class="btn-print" onclick="printSection('area-law', 'Leasehold — Aveo Way')">🖨️ Print this area</button>
+    </div>
     <p class="precinct-desc">The Aveo Way Leasehold fund covers a specific sub-section of the village under the Aveo Way contract arrangement, with its own income and expenses tracked separately.</p>
     <div class="stat-grid">
       <div class="stat-tile"><p class="stat-label">Total Income (YTD)</p><p class="stat-val">$284,106</p></div>
@@ -369,9 +521,15 @@ h2.precinct {
   </div>
 
   <!-- ===== VILLAGE TOTAL ===== -->
-  <div class="precinct-block">
+  <div class="precinct-block" id="area-all">
+    <div class="print-section-header">Bridgeman Downs Retirement Village — Q1 FY2027 Financial Summary</div>
     <div class="section-label">Village Total — All Areas Combined</div>
-    <h2 class="precinct">📊 At a Glance: Whole Village</h2>
+    <div class="precinct-header">
+      <div class="precinct-title-wrap">
+        <h2 class="precinct">📊 At a Glance: Whole Village</h2>
+      </div>
+      <button class="btn-print" onclick="printSection('area-all', 'Whole Village Summary')">🖨️ Print this summary</button>
+    </div>
     <div class="stat-grid">
       <div class="stat-tile"><p class="stat-label">Combined Income</p><p class="stat-val">$2,713,080</p><p class="stat-note">All 5 funds, Q1 FY2027</p></div>
       <div class="stat-tile"><p class="stat-label">Combined Expenses</p><p class="stat-val">$2,513,622</p><p class="stat-note">All 5 funds, Q1 FY2027</p></div>
@@ -390,5 +548,35 @@ h2.precinct {
   </div>
 
 </main>
+
+<script>
+// Print the full report (all sections)
+function printAll() {
+  document.body.classList.remove('print-single');
+  document.querySelectorAll('.precinct-block').forEach(function(b) {
+    b.classList.remove('print-target');
+  });
+  window.print();
+}
+
+// Print a single area section
+function printSection(id, label) {
+  // Remove any previous target
+  document.querySelectorAll('.precinct-block').forEach(function(b) {
+    b.classList.remove('print-target');
+  });
+  // Mark the chosen block
+  var block = document.getElementById(id);
+  if (block) block.classList.add('print-target');
+  document.body.classList.add('print-single');
+  window.print();
+  // Clean up after print dialog closes
+  setTimeout(function() {
+    document.body.classList.remove('print-single');
+    if (block) block.classList.remove('print-target');
+  }, 1000);
+}
+</script>
+
 </body>
 </html>
