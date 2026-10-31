@@ -173,7 +173,7 @@
   </div>
 
   <div class="info-bar">
-    📎 Upload a PDF document for this event. It will be saved to the <strong>Events Management</strong> folder in Google Drive and the link will be automatically added to the event on the <strong>What's On</strong> widget.
+    📎 Upload a PDF or a picture (photo, JPG or PNG) for this event. It will be saved to the <strong>Events Management</strong> folder in Google Drive and the link will be automatically added to the event on the <strong>What's On</strong> widget.
   </div>
 
   <div class="card">
@@ -194,11 +194,11 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">PDF File *</label>
+          <label class="form-label">PDF or Picture *</label>
           <div class="drop-zone" id="dropZone">
-            <input type="file" id="fileInput" accept=".pdf,application/pdf">
+            <input type="file" id="fileInput" accept=".pdf,application/pdf,image/*">
             <div class="drop-icon">📄</div>
-            <div class="drop-text">Click to choose a PDF file</div>
+            <div class="drop-text">Click to choose a PDF or a picture</div>
             <div class="drop-sub">or drag and drop it here</div>
           </div>
           <div class="file-chosen" id="fileChosen">✓ <span id="fileName"></span></div>
@@ -287,11 +287,20 @@
     if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
   });
 
+  function isPdf(file) {
+    return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+  }
+  function isPicture(file) {
+    return (file.type || '').indexOf('image/') === 0 ||
+           /\.(jpe?g|png|gif|webp|heic|heif)$/i.test(file.name);
+  }
+
   function setFile(file) {
-    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-      showAlert('error', 'Please select a PDF file.');
+    if (!isPdf(file) && !isPicture(file)) {
+      showAlert('error', 'Please choose a PDF or a picture (photo, JPG or PNG).');
       return;
     }
+    clearAlert();
     selectedFile = file;
     document.getElementById('fileName').textContent = file.name;
     document.getElementById('fileChosen').style.display = 'block';
@@ -324,17 +333,18 @@
     var uploader = document.getElementById('uploaderEmail').value.trim();
 
     if (!docType)      { showAlert('error', 'Please select a document type.'); return; }
-    if (!selectedFile) { showAlert('error', 'Please choose a PDF file.'); return; }
+    if (!selectedFile) { showAlert('error', 'Please choose a PDF or a picture.'); return; }
     if (!uploader)     { showAlert('error', 'Please enter your committee email.'); return; }
-
-    // Build filename: "EventName - DocType.pdf"
-    var safeName = (eventName || 'Event').replace(/[^a-zA-Z0-9 \-]/g,'').trim();
-    var fileName = safeName + ' - ' + docType + '.pdf';
 
     var btn = document.getElementById('uploadBtn');
     btn.disabled = true;
     showProgress();
     setProgress(10, 'Reading file…');
+
+    prepareFile(selectedFile).then(function(prepared) {
+    // Build filename: "EventName - DocType.pdf" (or .jpg for a picture)
+    var safeName = (eventName || 'Event').replace(/[^a-zA-Z0-9 \-]/g,'').trim();
+    var fileName = safeName + ' - ' + docType + '.' + prepared.ext;
 
     var reader = new FileReader();
     reader.onload = function(e) {
@@ -349,7 +359,7 @@
           action:    'uploadEventDocument',
           fileName:   fileName,
           fileData:   base64,
-          mimeType:  'application/pdf',
+          mimeType:   prepared.mimeType,
           eventName:  eventName,
           eventRow:   eventRow,
           docType:    docType,
@@ -385,7 +395,36 @@
         showAlert('error', 'Could not connect. Please try again or contact Rick.');
       });
     };
-    reader.readAsDataURL(selectedFile);
+    reader.readAsDataURL(prepared.blob);
+    });
+  }
+
+  // PDFs are sent as they are. Pictures are shrunk to a sharp-but-sensible size
+  // (longest side 2048 pixels, same as the Event Photos page) and saved as JPG,
+  // so a large phone photo uploads quickly and opens easily for residents.
+  // If the browser can't read the picture, it is sent unchanged.
+  function prepareFile(file) {
+    if (isPdf(file)) {
+      return Promise.resolve({ blob: file, ext: 'pdf', mimeType: 'application/pdf' });
+    }
+    var origExt = (file.name.match(/\.([a-z0-9]+)$/i) || [, 'jpg'])[1].toLowerCase();
+    var fallback = { blob: file, ext: origExt, mimeType: file.type || 'image/jpeg' };
+    if (typeof createImageBitmap !== 'function') return Promise.resolve(fallback);
+    return createImageBitmap(file, { imageOrientation: 'from-image' }).then(function(bitmap) {
+      var scale  = Math.min(1, 2048 / Math.max(bitmap.width, bitmap.height));
+      var canvas = document.createElement('canvas');
+      canvas.width  = Math.round(bitmap.width  * scale);
+      canvas.height = Math.round(bitmap.height * scale);
+      var ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';                 // white behind see-through PNGs
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      return new Promise(function(resolve) {
+        canvas.toBlob(function(blob) {
+          resolve(blob ? { blob: blob, ext: 'jpg', mimeType: 'image/jpeg' } : fallback);
+        }, 'image/jpeg', 0.9);
+      });
+    }).catch(function() { return fallback; });
   }
 
   // ── Write link back to Events sheet column F ───────────

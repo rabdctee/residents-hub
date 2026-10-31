@@ -245,6 +245,7 @@
 
       var byName = {};
       events.forEach(function(ev){
+        if (ev.category === 'Flyer') return; // stand-alone flyers aren't events — leave them out
         var name = (ev.name || '').trim();
         if (!name) return;
         var sortKey = parseDdMmYyyy(ev.date || '');

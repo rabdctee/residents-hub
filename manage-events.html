@@ -451,7 +451,7 @@
         </div>
 
         <div class="form-hint add-flyer-only" style="display:none;margin-bottom:14px;">
-          📄 A stand-alone flyer shows in a <strong>Flyers &amp; Notices</strong> box at the top of the Events page until its "Show until" date, then disappears by itself. Save it first, then use <strong>Upload Doc</strong> to add the PDF.
+          📄 A stand-alone flyer shows in a <strong>Flyers &amp; Notices</strong> box at the top of the Events page until its "Show until" date, then disappears by itself. Save it first, then use <strong>Upload Doc</strong> to add the flyer (a PDF or a picture).
         </div>
 
         <div class="form-row">
@@ -521,7 +521,7 @@
 
         <div class="form-group" id="uploadDocGroup" style="display:none;">
           <label class="form-label">Document</label>
-          <div class="form-hint" style="margin-bottom:8px;">Event saved — you can now upload a PDF flyer or programme.</div>
+          <div class="form-hint" style="margin-bottom:8px;">Event saved — you can now upload a flyer or programme (a PDF or a picture).</div>
           <button type="button" class="btn-upload" id="uploadDocBtn" onclick="uploadDocFromForm()">📎 Upload Doc</button>
           <span id="uploadDocLinkDisplay" style="display:none; margin-left:10px; font-size:0.85em;">
             🔗 <a id="uploadDocLink" href="#" target="_blank" rel="noopener">View uploaded document</a>
@@ -972,7 +972,7 @@
             (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
             (ev.location ? ' &nbsp;|&nbsp; 📍 ' + esc(ev.location)     : '') +
             (ev.email    ? '<br>📧 ' + esc(ev.email)                    : '') +
-            (isFlyer && !ev.link ? '<br>⚠️ No PDF yet — click Upload Doc. Residents won\'t see it until then.' : '') +
+            (isFlyer && !ev.link ? '<br>⚠️ No flyer uploaded yet — click Upload Doc. Residents won\'t see it until then.' : '') +
           '</div>' +
           (ev.link ? '<div class="event-row-link">🔗 ' + esc(ev.link) + '</div>' : '') +
         '</div>' +
