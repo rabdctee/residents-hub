@@ -226,6 +226,28 @@ h2.precinct {
 
 /* The mini section header shown only in single-print mode — hidden on screen */
 .print-section-header { display: none; }
+
+/* === MRF BLOCK === */
+.mrf-block {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 2px dashed var(--hub-charcoal);
+}
+.mrf-heading {
+  font-family: 'Merriweather', Georgia, serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--hub-gold); margin: 0 0 6px;
+}
+.mrf-desc {
+  font-size: 13px; color: var(--hub-muted);
+  font-style: italic; margin: 0 0 12px;
+}
+.mrf-note {
+  font-size: 13px; color: var(--hub-red);
+  margin: 10px 0 0; font-style: italic;
+}
+td.positive-text { color: var(--hub-green) !important; font-weight: 700; }
+td.negative-text { color: var(--hub-red) !important; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -288,6 +310,17 @@ h2.precinct {
       <li><span class="kp-icon">🍽️</span> Catering is the second-largest cost at around $107,000 for the quarter.</li>
       <li><span class="kp-icon">📋</span> Resident service fees are the primary income source, covering nearly all operating costs.</li>
     </ul>
+    <div class="mrf-block">
+      <p class="mrf-heading">🔧 Maintenance Reserve Fund (MRF)</p>
+      <p class="mrf-desc">The MRF is a separate long-term fund built up from levies, used to pay for major maintenance and capital works. It is reported separately from the day-to-day operating fund above.</p>
+      <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>MRF Item</th><th>Amount</th></tr></thead><tbody>
+        <tr><td>Q1 Levy Contributions (income)</td><td>$31,917</td></tr>
+        <tr><td>Q1 Maintenance Expenditure</td><td>$22,229</td></tr>
+        <tr><td>Q1 Net Surplus</td><td class="positive-text">+$11,031</td></tr>
+        <tr><td>Opening Balance (1 Jul 2026)</td><td>$129,737</td></tr>
+        <tr class="total-row"><td>Closing Balance (30 Sep 2026)</td><td>$140,768</td></tr>
+      </tbody></table></div>
+    </div>
   </div>
 
   <!-- ===== BODY CORPORATE ===== -->
@@ -327,6 +360,10 @@ h2.precinct {
       <li><span class="kp-icon">🛡️</span> Insurance costs $87,250 per quarter, covering the whole village's buildings and common areas.</li>
       <li><span class="kp-icon">💧</span> Common-area utilities (electricity, water) came to $54,220 for the quarter.</li>
     </ul>
+    <div class="mrf-block">
+      <p class="mrf-heading">🔧 Maintenance Reserve Fund (MRF)</p>
+      <p class="mrf-desc">The Body Corporate does not operate a separate MRF — major maintenance for common areas is funded through the Body Corporate operating fund and Sinking Fund arrangements.</p>
+    </div>
   </div>
 
   <!-- ===== FREEHOLD ===== -->
@@ -365,6 +402,17 @@ h2.precinct {
       <li><span class="kp-icon">📊</span> The fund is running lean — income closely matches expenses, leaving limited buffer.</li>
       <li><span class="kp-icon">💡</span> Utilities and overheads were kept well under $20,000 for the quarter.</li>
     </ul>
+    <div class="mrf-block">
+      <p class="mrf-heading">🔧 Maintenance Reserve Fund (MRF)</p>
+      <p class="mrf-desc">The MRF is a separate long-term fund built up from levies, used to pay for major maintenance and capital works. It is reported separately from the day-to-day operating fund above.</p>
+      <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>MRF Item</th><th>Amount</th></tr></thead><tbody>
+        <tr><td>Q1 Levy Contributions (income)</td><td>$1,857</td></tr>
+        <tr><td>Q1 Maintenance Expenditure</td><td>$66</td></tr>
+        <tr><td>Q1 Net Surplus</td><td class="positive-text">+$2,158</td></tr>
+        <tr><td>Opening Balance (1 Jul 2026)</td><td>$27,283</td></tr>
+        <tr class="total-row"><td>Closing Balance (30 Sep 2026)</td><td>$29,441</td></tr>
+      </tbody></table></div>
+    </div>
   </div>
 
   <!-- ===== LEASEHOLD ===== -->
@@ -405,6 +453,17 @@ h2.precinct {
       <li><span class="kp-icon">🔧</span> Repairs and maintenance came to $118,340 — this is typical for an active village.</li>
       <li><span class="kp-icon">💼</span> Management fees of $86,200 cover Aveo's administration and oversight role.</li>
     </ul>
+    <div class="mrf-block">
+      <p class="mrf-heading">🔧 Maintenance Reserve Fund (MRF)</p>
+      <p class="mrf-desc">The MRF is a separate long-term fund built up from levies, used to pay for major maintenance and capital works. It is reported separately from the day-to-day operating fund above.</p>
+      <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>MRF Item</th><th>Amount</th></tr></thead><tbody>
+        <tr><td>Q1 Levy Contributions (income)</td><td>$7,907</td></tr>
+        <tr><td>Q1 Maintenance Expenditure</td><td>$2,764</td></tr>
+        <tr><td>Q1 Net Surplus</td><td class="positive-text">+$6,845</td></tr>
+        <tr><td>Opening Balance (1 Jul 2026)</td><td>$141,168</td></tr>
+        <tr class="total-row"><td>Closing Balance (30 Sep 2026)</td><td>$148,013</td></tr>
+      </tbody></table></div>
+    </div>
   </div>
 
   <!-- ===== LEASEHOLD AVEO WAY ===== -->
@@ -444,6 +503,18 @@ h2.precinct {
       <li><span class="kp-icon">🔧</span> Repairs came to $54,700 for the quarter.</li>
       <li><span class="kp-icon">🌿</span> Cleaning and grounds ($23,623) and utilities ($22,910) are the next significant costs.</li>
     </ul>
+    <div class="mrf-block">
+      <p class="mrf-heading">🔧 Maintenance Reserve Fund (MRF)</p>
+      <p class="mrf-desc">The MRF is a separate long-term fund built up from levies, used to pay for major maintenance and capital works. It is reported separately from the day-to-day operating fund above.</p>
+      <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>MRF Item</th><th>Amount</th></tr></thead><tbody>
+        <tr><td>Q1 Levy Contributions (income)</td><td>$15,832</td></tr>
+        <tr><td>Q1 Maintenance Expenditure</td><td>$5,800</td></tr>
+        <tr><td>Q1 Net Surplus</td><td class="positive-text">+$10,054</td></tr>
+        <tr><td>Opening Balance (1 Jul 2026)</td><td class="negative-text">($12,994)</td></tr>
+        <tr class="total-row"><td>Closing Balance (30 Sep 2026)</td><td class="negative-text">($2,940)</td></tr>
+      </tbody></table></div>
+      <p class="mrf-note">⚠️ This MRF carries a negative balance — it started the year in deficit and is recovering as levy contributions come in each quarter.</p>
+    </div>
   </div>
 
   <!-- ===== VILLAGE TOTAL ===== -->
@@ -467,6 +538,19 @@ h2.precinct {
       <li><span class="kp-icon">🗓️</span> These figures cover only the first quarter of the financial year. A fuller picture will emerge as the year progresses.</li>
       <li><span class="kp-icon">❓</span> If you have questions about a specific item in your area's report, please raise them at the next Residents' Committee meeting.</li>
     </ul>
+    <div class="mrf-block">
+      <p class="mrf-heading">🔧 Maintenance Reserve Funds — All Areas at a Glance</p>
+      <p class="mrf-desc">Each area's MRF is a separate long-term fund, distinct from the day-to-day operating fund. Levies are collected from residents each quarter and held in the MRF to pay for major maintenance and capital works when required.</p>
+      <div class="ie-table-wrap"><table class="ie-table"><thead><tr><th>Area</th><th>Q1 Contributions</th><th>Q1 Spend</th><th>Closing Balance</th></tr></thead><tbody>
+        <tr><td>Serviced Apartments</td><td>$31,917</td><td>$22,229</td><td>$140,768</td></tr>
+        <tr><td>Freehold</td><td>$1,857</td><td>$66</td><td>$29,441</td></tr>
+        <tr><td>Leasehold</td><td>$7,907</td><td>$2,764</td><td>$148,013</td></tr>
+        <tr><td>Leasehold — Aveo Way</td><td>$15,832</td><td>$5,800</td><td class="negative-text">($2,940) ⚠️</td></tr>
+        <tr><td>Body Corporate</td><td colspan="2" style="color:var(--hub-muted);font-style:italic;">No separate MRF</td><td>—</td></tr>
+        <tr class="total-row"><td>Total (4 MRFs)</td><td>$57,513</td><td>$30,859</td><td>$315,282</td></tr>
+      </tbody></table></div>
+      <p class="mrf-note">⚠️ The Leasehold Aveo Way MRF has a small negative balance. This is being addressed through ongoing quarterly levy contributions and will recover over time.</p>
+    </div>
   </div>
 
   <div class="page-footer">
@@ -508,7 +592,13 @@ var PRINT_CSS = [
   'ul.key-points li { display: flex; gap: 8px; font-size: 12px; padding: 5px 0; border-top: 1px solid #eee; color: #1a1a1a; align-items: flex-start; }',
   'ul.key-points li:first-child { border-top: none; }',
   '.kp-icon { font-size: 13px; flex-shrink: 0; }',
-  '.page-footer { font-size: 10px; color: #888; border-top: 1px solid #ccc; padding-top: 10px; margin-top: 10px; }'
+  '.page-footer { font-size: 10px; color: #888; border-top: 1px solid #ccc; padding-top: 10px; margin-top: 10px; }',
+  '.mrf-block { margin-top: 14px; padding-top: 12px; border-top: 2px dashed #bbb; }',
+  '.mrf-heading { font-family: Georgia, serif; font-size: 13px; font-weight: 700; color: #6a4f0a; margin: 0 0 4px; }',
+  '.mrf-desc { font-size: 11px; color: #666; font-style: italic; margin: 0 0 10px; }',
+  '.mrf-note { font-size: 11px; color: #8b2a22; margin: 8px 0 0; font-style: italic; }',
+  'td.positive-text { color: #1e6b3a !important; font-weight: 700; }',
+  'td.negative-text { color: #8b2a22 !important; font-weight: 700; }'
 ].join('\n');
 
 // Build HTML for the popup window
