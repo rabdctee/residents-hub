@@ -1704,6 +1704,9 @@ For Manor events use the sign-up sheets in the Manor.
 })();
 </script>
 	
+<!-- Stand-alone flyers (added in Manage Events as "Stand-alone flyer"). Hidden when there are none. -->
+<div id="flyersSection" style="display:none;margin-bottom:25px;"></div>
+
 <h2 style="margin-bottom:15px;">🎉 Events</h2>
 
 <div id="eventsListFull"><div class="event-item" style="color:#B9AF9C;font-style:italic;font-size:0.85em;">Loading events…</div></div>
@@ -1740,6 +1743,25 @@ For Manor events use the sign-up sheets in the Manor.
     return link;
   }
 
+  // "Flyers & Notices" box at the top of the Events page.
+  // Only flyers that have a PDF uploaded are shown; each one drops off
+  // by itself after its "Show until" date (the date filter above does this).
+  function renderFlyers(flyers) {
+    var box = document.getElementById('flyersSection');
+    if (!box) return;
+    flyers = flyers.filter(function(f) { return f.link; });
+    if (flyers.length === 0) { box.innerHTML = ''; box.style.display = 'none'; return; }
+    var html = '<h2 style="margin-bottom:15px;">📄 Flyers &amp; Notices</h2>';
+    flyers.forEach(function(f) {
+      html += '<div class="evc-card"><div class="evc-card-body" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+                '<div class="evc-title" style="margin:0;">' + f.name + '</div>' +
+                '<a class="evc-link-btn" href="' + toViewerUrl(f.link, f.name) + '" target="_blank">📄 View Flyer</a>' +
+              '</div></div>';
+    });
+    box.innerHTML = html;
+    box.style.display = 'block';
+  }
+
   function loadFullEventsList() {
     var container = document.getElementById('eventsListFull');
     if (!container) return;
@@ -1768,6 +1790,10 @@ For Manor events use the sign-up sheets in the Manor.
           })
           .filter(function(e) { return e.dateObj && e.dateObj >= today; })
           .sort(function(a, b) { return a.dateObj - b.dateObj; });
+
+        // Stand-alone flyers go in their own box at the top, not among the events
+        renderFlyers(events.filter(function(e) { return e.category === 'Flyer'; }));
+        events = events.filter(function(e) { return e.category !== 'Flyer'; });
 
         if (events.length === 0) {
           container.innerHTML = '<div class="event-item" style="color:#B9AF9C;font-style:italic;font-size:0.85em;">No upcoming events.</div>';
@@ -1864,7 +1890,10 @@ For Manor events use the sign-up sheets in the Manor.
           html += '<div class="evc-badges">' + regBadge + '</div>';
           html += paymentLine;
           if (ev.link) {
-            html += '<a class="evc-link-btn" href="' + toViewerUrl(ev.link, ev.name) + '" target="_blank">🔗 More Information</a>';
+            // A document uploaded through Manage Events (a Google Drive file) is the flyer
+            var isDoc = /\/file\/d\//.test(ev.link);
+            html += '<a class="evc-link-btn" href="' + toViewerUrl(ev.link, ev.name) + '" target="_blank">' +
+                    (isDoc ? '📄 View Flyer' : '🔗 More Information') + '</a>';
           }
           html += '</div></div>';
         });

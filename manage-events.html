@@ -427,7 +427,8 @@
   <div class="tab-panel" id="tab-events">
 
     <div class="info-bar">
-      📋 Add and manage all Social Club events here. To feature an event on the home page <strong>Upcoming Events</strong> widget, go to the <strong>⭐ Upcoming Events</strong> tab.
+      📋 Add and manage all Social Club events here. To feature an event on the home page <strong>Upcoming Events</strong> widget, go to the <strong>⭐ Upcoming Events</strong> tab.<br>
+      📄 For a flyer that isn't tied to one event, choose <strong>Stand-alone flyer</strong> as the Event Type.
     </div>
 
     <div class="card">
@@ -445,22 +446,26 @@
         <input type="hidden" id="editRow" value="">
 
         <div class="form-group">
-          <label class="form-label" for="evtName">Event Name *</label>
+          <label class="form-label" for="evtName" id="evtNameLabel">Event Name *</label>
           <input class="form-input" type="text" id="evtName" placeholder="e.g. Happy Hour">
+        </div>
+
+        <div class="form-hint add-flyer-only" style="display:none;margin-bottom:14px;">
+          📄 A stand-alone flyer shows in a <strong>Flyers &amp; Notices</strong> box at the top of the Events page until its "Show until" date, then disappears by itself. Save it first, then use <strong>Upload Doc</strong> to add the PDF.
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="evtDate">Event Date *</label>
+            <label class="form-label" for="evtDate" id="evtDateLabel">Event Date *</label>
             <input class="form-input" type="date" id="evtDate">
           </div>
-          <div class="form-group">
+          <div class="form-group add-event-only">
             <label class="form-label" for="evtTime">Time *</label>
             <input class="form-input" type="time" id="evtTime">
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group add-event-only">
           <label class="form-label" for="evtLocation">Location *</label>
           <input class="form-input" type="text" id="evtLocation" placeholder="e.g. MRC, Manor, PDR">
         </div>
@@ -468,12 +473,13 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label" for="evtCategory">Event Type *</label>
-            <select class="form-input" id="evtCategory">
+            <select class="form-input" id="evtCategory" onchange="toggleFlyerFields('add')">
               <option value="Social Club">🎉 Social Club Event</option>
               <option value="Manor">🏢 Manor Event (run by Aveo)</option>
+              <option value="Flyer">📄 Stand-alone flyer (not an event)</option>
             </select>
           </div>
-          <div class="form-group">
+          <div class="form-group add-event-only">
             <label class="form-label" for="evtRegistration">Registration *</label>
             <select class="form-input" id="evtRegistration">
               <option value="Required">📝 Registration required</option>
@@ -481,17 +487,17 @@
             </select>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group add-event-only">
           <label class="form-label" for="evtCost">Cost <span style="font-weight:400;color:var(--grey);">(optional — leave blank if free)</span></label>
           <input class="form-input" type="text" id="evtCost" placeholder="e.g. $10 per person">
         </div>
 
-        <div class="form-group">
+        <div class="form-group add-event-only">
           <label class="form-label" for="evtRegisterBy">Register By <span style="font-weight:400;color:var(--grey);">(deadline to register, optional)</span></label>
           <input class="form-input" type="date" id="evtRegisterBy">
         </div>
 
-        <div class="form-row">
+        <div class="form-row add-event-only">
           <div class="form-group">
             <label class="form-label" for="evtPaymentType">Payment</label>
             <select class="form-input" id="evtPaymentType" onchange="togglePaymentDate('evtPaymentType','evtPaymentByDateGroup')">
@@ -627,32 +633,33 @@
     <div class="modal-title" id="editModalTitle">✏️ Edit Event</div>
     <input type="hidden" id="editModalRow">
     <div class="form-group">
-      <label class="form-label">Event Name *</label>
+      <label class="form-label" id="editEvtNameLabel">Event Name *</label>
       <input class="form-input" type="text" id="editEvtName">
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Event Date *</label>
+        <label class="form-label" id="editEvtDateLabel">Event Date *</label>
         <input class="form-input" type="date" id="editEvtDate">
       </div>
-      <div class="form-group">
+      <div class="form-group edit-event-only">
         <label class="form-label">Time *</label>
         <input class="form-input" type="time" id="editEvtTime">
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group edit-event-only">
       <label class="form-label">Location *</label>
       <input class="form-input" type="text" id="editEvtLocation">
     </div>
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Event Type *</label>
-        <select class="form-input" id="editEvtCategory">
+        <select class="form-input" id="editEvtCategory" onchange="toggleFlyerFields('edit')">
           <option value="Social Club">🎉 Social Club Event</option>
           <option value="Manor">🏢 Manor Event (run by Aveo)</option>
+          <option value="Flyer">📄 Stand-alone flyer (not an event)</option>
         </select>
       </div>
-      <div class="form-group">
+      <div class="form-group edit-event-only">
         <label class="form-label">Registration *</label>
         <select class="form-input" id="editEvtRegistration">
           <option value="Required">📝 Registration required</option>
@@ -660,15 +667,15 @@
         </select>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group edit-event-only">
       <label class="form-label">Cost <span style="font-weight:400;color:var(--grey);">(optional)</span></label>
       <input class="form-input" type="text" id="editEvtCost" placeholder="e.g. $10 per person">
     </div>
-    <div class="form-group">
+    <div class="form-group edit-event-only">
       <label class="form-label">Register By <span style="font-weight:400;color:var(--grey);">(deadline to register, optional)</span></label>
       <input class="form-input" type="date" id="editEvtRegisterBy">
     </div>
-    <div class="form-row">
+    <div class="form-row edit-event-only">
       <div class="form-group">
         <label class="form-label">Payment</label>
         <select class="form-input" id="editEvtPaymentType" onchange="togglePaymentDate('editEvtPaymentType','editEvtPaymentByDateGroup')">
@@ -795,6 +802,24 @@
     setTimeout(function(){ t.classList.add('show'); }, 10);
     setTimeout(function(){ t.classList.remove('show'); }, 3000);
   }
+  // Stand-alone flyers: hide the event-only boxes (time, location, registration,
+  // cost, payment) and relabel the name/date boxes. prefix is 'add' or 'edit'.
+  function toggleFlyerFields(prefix) {
+    var isAdd   = (prefix === 'add');
+    var cat     = document.getElementById(isAdd ? 'evtCategory' : 'editEvtCategory').value;
+    var isFlyer = (cat === 'Flyer');
+    document.querySelectorAll('.' + prefix + '-event-only').forEach(function(el){
+      el.style.display = isFlyer ? 'none' : '';
+    });
+    document.querySelectorAll('.' + prefix + '-flyer-only').forEach(function(el){
+      el.style.display = isFlyer ? 'block' : 'none';
+    });
+    document.getElementById(isAdd ? 'evtNameLabel' : 'editEvtNameLabel').textContent =
+      isFlyer ? 'Flyer Title *' : 'Event Name *';
+    document.getElementById(isAdd ? 'evtDateLabel' : 'editEvtDateLabel').textContent =
+      isFlyer ? 'Show until *' : 'Event Date *';
+  }
+
   function togglePaymentDate(selectId, groupId) {
     var val = document.getElementById(selectId).value;
     document.getElementById(groupId).style.display = (val === 'Cash by date') ? 'block' : 'none';
@@ -926,11 +951,14 @@
     var html = '';
     sorted.forEach(function(ev) {
       var isManor = (ev.category === 'Manor');
-      var badge = isManor
+      var isFlyer = (ev.category === 'Flyer');
+      var badge = isFlyer
+        ? '<span style="background:#eee;color:#555;padding:2px 8px;border-radius:10px;font-size:0.78em;">📄 Stand-alone flyer</span>'
+        : isManor
         ? '<span style="background:#eee;color:#555;padding:2px 8px;border-radius:10px;font-size:0.78em;">🏢 Manor</span>'
         : '<span style="background:#e8f0fe;color:#1a56b0;padding:2px 8px;border-radius:10px;font-size:0.78em;">🎉 Social Club</span>';
       var regBadge = '', costBadge = '';
-      if (!isManor) {
+      if (!isManor && !isFlyer) {
         regBadge = ev.registration === 'Not required'
           ? ' &nbsp;<span style="color:#555;font-size:0.78em;">Registration not required</span>'
           : ' &nbsp;<span style="color:#555;font-size:0.78em;">📝 Registration required</span>';
@@ -940,10 +968,11 @@
         '<div class="event-row-info">' +
           '<div class="event-row-name">' + esc(ev.name) + ' &nbsp;' + badge + regBadge + costBadge + '</div>' +
           '<div class="event-row-meta">' +
-            '🗓️ ' + fmtDate(ev.date) +
+            (isFlyer ? '🗓️ Showing until ' : '🗓️ ') + fmtDate(ev.date) +
             (ev.time     ? ' &nbsp;|&nbsp; 🕐 ' + fmtTime(ev.time)     : '') +
             (ev.location ? ' &nbsp;|&nbsp; 📍 ' + esc(ev.location)     : '') +
             (ev.email    ? '<br>📧 ' + esc(ev.email)                    : '') +
+            (isFlyer && !ev.link ? '<br>⚠️ No PDF yet — click Upload Doc. Residents won\'t see it until then.' : '') +
           '</div>' +
           (ev.link ? '<div class="event-row-link">🔗 ' + esc(ev.link) + '</div>' : '') +
         '</div>' +
@@ -973,9 +1002,14 @@
     var paymentByDate = document.getElementById('evtPaymentByDate').value;
     var row      = document.getElementById('editRow').value;
 
-    if (!name || !date || !time || !location || !email) {
+    var isFlyer = (category === 'Flyer');
+    if (!name || !date || !email || (!isFlyer && (!time || !location))) {
       showAlert('alertForm','error','Please fill in all required fields before saving.');
       return;
+    }
+    if (isFlyer) {  // flyers have no time, place, registration or payment
+      time = ''; location = ''; registration = ''; cost = '';
+      registerBy = ''; paymentType = ''; paymentByDate = '';
     }
     var btn = document.getElementById('submitBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
@@ -1041,6 +1075,7 @@
     document.getElementById('evtPaymentType').value    = 'On the day';
     document.getElementById('evtPaymentByDate').value  = '';
     document.getElementById('evtPaymentByDateGroup').style.display = 'none';
+    toggleFlyerFields('add');
     document.getElementById('submitBtn').textContent = '✓ Add Event';
     document.getElementById('submitBtn').style.display = 'inline-block';
     document.getElementById('addAnotherBtn').style.display = 'none';
@@ -1081,6 +1116,7 @@
     document.getElementById('editEvtPaymentType').value   = ev.paymentType   || 'On the day';
     document.getElementById('editEvtPaymentByDate').value = toInputDate(ev.paymentByDate || '');
     togglePaymentDate('editEvtPaymentType','editEvtPaymentByDateGroup');
+    toggleFlyerFields('edit');
     document.getElementById('editModal').classList.add('open');
   }
 
@@ -1103,8 +1139,13 @@
     var paymentType   = document.getElementById('editEvtPaymentType').value;
     var paymentByDate = document.getElementById('editEvtPaymentByDate').value;
 
-    if (!name || !date || !time || !location || !email) {
+    var isFlyer = (category === 'Flyer');
+    if (!name || !date || !email || (!isFlyer && (!time || !location))) {
       showToast('Please fill in all required fields.', true); return;
+    }
+    if (isFlyer) {
+      time = ''; location = ''; registration = ''; cost = '';
+      registerBy = ''; paymentType = ''; paymentByDate = '';
     }
     var btn = document.getElementById('editSaveBtn');
     btn.disabled = true; btn.textContent = 'Saving…';
